@@ -51,6 +51,12 @@ public class XmlSpaceTypeTest {
 		} catch (IllegalArgumentException e) {
 			assertTrue(true);
 		}
+		try {
+			XmlSpaceType.xmlValueOf(null);
+			fail("xmlValueOf accepted a null value");
+		} catch (IllegalArgumentException e) {
+			assertTrue(true);
+		}
 	}
 
 }

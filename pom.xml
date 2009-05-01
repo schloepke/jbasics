@@ -112,7 +112,11 @@
 				<configuration>
 					<header>LICENSE</header>
 					<encoding>iso-8859-1</encoding>
-					<aggregate>true</aggregate>
+					<failIfMissing>true</failIfMissing>
+					<useDefaultMapping>true</useDefaultMapping>
+					<mapping>
+						<java>SLASHSTAR_STYLE</java>
+					</mapping>
                     <includes>
                         <include>src/**</include>
                     </includes>
