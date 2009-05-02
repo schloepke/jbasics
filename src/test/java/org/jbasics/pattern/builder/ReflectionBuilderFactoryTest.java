@@ -25,10 +25,11 @@
 package org.jbasics.pattern.builder;
 
 import org.jbasics.pattern.factory.Factory;
+import org.jbasics.testing.Java14LoggingTestCase;
 import org.jbasics.types.Pair;
 import org.junit.Test;
 
-public class ReflectionBuilderFactoryTest {
+public class ReflectionBuilderFactoryTest extends Java14LoggingTestCase {
 
 	public static class TestPair extends Pair<String, String> {
 
@@ -69,14 +70,12 @@ public class ReflectionBuilderFactoryTest {
 
 	@Test
 	public void testBuildConstruction() {
+		this.logger.entering(this.sourceClassName, "testBuildConstruction");
 		Factory<Builder<TestPair>> temp = ReflectionBuilderFactory.createFactory(TestPair.class);
-
 		TestBuilder builder = (TestBuilder) temp.newInstance();
-
 		TestPair result = builder.setLeft("MyKey").setRight("MyValue").build();
-
-		System.out.println(result);
-
+		this.logger.info("String representaion of pair: " + result);
+		this.logger.exiting(this.sourceClassName, "testBuildConstruction");
 	}
 
 }

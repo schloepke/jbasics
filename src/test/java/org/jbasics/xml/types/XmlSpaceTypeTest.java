@@ -28,21 +28,25 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.jbasics.testing.Java14LoggingTestCase;
 import org.junit.Test;
 
-public class XmlSpaceTypeTest {
+public class XmlSpaceTypeTest extends Java14LoggingTestCase {
 	private static final String PRESERVED_VALUE = "preserved";
 	private static final String DEFAULT_VALUE = "default";
 	private static final String ILLEGAL_VALUE = "illegal";
 
 	@Test
 	public void testToXmlString() {
+		this.logger.entering(this.sourceClassName, "testToXmlString");
 		assertEquals(DEFAULT_VALUE, XmlSpaceType.DEFAULT.toXmlString());
 		assertEquals(PRESERVED_VALUE, XmlSpaceType.PRESERVED.toXmlString());
+		this.logger.exiting(this.sourceClassName, "testToXmlString");
 	}
 
 	@Test
 	public void testXmlValueOf() {
+		this.logger.entering(this.sourceClassName, "testXmlValueOf");
 		assertTrue(XmlSpaceType.DEFAULT == XmlSpaceType.xmlValueOf(DEFAULT_VALUE));
 		assertTrue(XmlSpaceType.PRESERVED == XmlSpaceType.xmlValueOf(PRESERVED_VALUE));
 		try {
@@ -57,6 +61,7 @@ public class XmlSpaceTypeTest {
 		} catch (IllegalArgumentException e) {
 			assertTrue(true);
 		}
+		this.logger.exiting(this.sourceClassName, "testXmlValueOf");
 	}
 
 }

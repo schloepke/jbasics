@@ -31,14 +31,16 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import org.jbasics.testing.Java14LoggingTestCase;
 import org.junit.Test;
 
-public class PairTest {
+public class PairTest extends Java14LoggingTestCase {
 	private static final String LEFT_VALUE = "left";
 	private static final String RIGHT_VALUE = "right";
 
 	@Test
 	public void testPair() {
+		this.logger.entering(this.sourceClassName, "testPair");
 		Pair<String, String> temp = new Pair<String, String>(LEFT_VALUE, RIGHT_VALUE);
 		assertEquals(LEFT_VALUE, temp.left());
 		assertEquals(LEFT_VALUE, temp.first());
@@ -59,10 +61,12 @@ public class PairTest {
 		assertNull(temp.first());
 		assertNull(temp.right());
 		assertNull(temp.second());
+		this.logger.exiting(this.sourceClassName, "testPair");
 	}
 
 	@Test
 	public void testJavaEqualsHashCode() {
+		this.logger.entering(this.sourceClassName, "testJavaEqualsHashCode");
 		Pair<String, String> tempOne = new Pair<String, String>(LEFT_VALUE, RIGHT_VALUE);
 		Pair<String, String> tempTwo = new Pair<String, String>(RIGHT_VALUE, LEFT_VALUE);
 		assertNotSame(tempOne, tempTwo);
@@ -114,10 +118,12 @@ public class PairTest {
 		assertFalse(tempOne.equals(null));
 		assertTrue(tempOne.equals(tempOne));
 		assertFalse(tempOne.equals(LEFT_VALUE));
+		this.logger.exiting(this.sourceClassName, "testJavaEqualsHashCode");
 	}
 
 	@Test
 	public void testToString() {
+		this.logger.entering(this.sourceClassName, "testToString");
 		Pair<String, String> temp = new Pair<String, String>(null, null);
 		assertNotNull(temp.toString());
 		temp = new Pair<String, String>(LEFT_VALUE, null);
@@ -126,6 +132,7 @@ public class PairTest {
 		assertNotNull(temp.toString());
 		temp = new Pair<String, String>(LEFT_VALUE, RIGHT_VALUE);
 		assertNotNull(temp.toString());
+		this.logger.exiting(this.sourceClassName, "testToString");
 	}
 
 }
