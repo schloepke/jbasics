@@ -22,11 +22,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.pattern.factory;
+package org.jbasics.types.factories;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+
+import org.jbasics.pattern.factory.Factory;
 
 public class ReflectionFactory<T> implements Factory<T> {
 	public static final String DEFAULT_FACTORY_METHOD_NAME = "newInstance";

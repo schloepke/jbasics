@@ -22,20 +22,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.pattern.factory;
+package org.jbasics.types.pools;
 
-/**
- * Factory supposed to create an implementation for a given class (usually an interface).
- * <p>
- * The implementation factory can be used in certain situations. For example you are having a set of interfaces which needs
- * to create an implementation. One typically is for instance a collection.
- * </p>
- * @author stephan
- *
- * @param <T>
- */
-public interface ImplementationFactory {
+import org.jbasics.pattern.delegation.Delegate;
+import org.jbasics.pattern.factory.Factory;
+import org.jbasics.pattern.pooling.Pool;
+import org.jbasics.types.delegates.LazySoftReferenceDelegate;
+import org.jbasics.types.delegates.UnmodifiableDelegate;
 
-	<T> T newInstance(Class<T> type);
+public class SharedInstancePool<T> implements Pool<T> {
+	private final Delegate<T> instance;
+
+	public SharedInstancePool(final T instance) {
+		if (instance == null) { throw new IllegalArgumentException("Null parameter: instance"); }
+		this.instance = new UnmodifiableDelegate<T>(instance);
+	}
+
+	public SharedInstancePool(final Delegate<T> delegate) {
+		if (delegate == null) { throw new IllegalArgumentException("Null parameter: delegate"); }
+		this.instance = delegate;
+	}
+
+	public SharedInstancePool(final Factory<T> factory) {
+		if (factory == null) { throw new IllegalArgumentException("Null parameter: factory"); }
+		this.instance = new LazySoftReferenceDelegate<T>(factory);
+	}
+
+	public T acquire() {
+		return this.instance.delegate();
+	}
+
+	public boolean release(final T object) {
+		return true;
+	}
 
 }

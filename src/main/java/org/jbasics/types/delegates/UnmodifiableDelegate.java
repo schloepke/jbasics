@@ -22,33 +22,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.parser.checker;
+package org.jbasics.types.delegates;
 
-/**
- * Simple class offering methods to check if a call contract is broken.
- * 
- * @author Stephan Schloepke
- * @since 1.0.0
- */
-public class ContractCheck {
-	/**
-	 * Checks if the given instance is not null
-	 * 
-	 * @param <T> The type of instance to check
-	 * @param instanceName The name of the instance (should not be null).
-	 * @param instance The instance to check.
-	 * @return The checked instance which is guaranteed to not be null.
-	 * @throws IllegalArgumentException If the instance to check is null.
-	 */
-	public static <T> T mustNotBeNull(T instance, String instanceName) {
-		if (instance == null) {
-			if (instanceName != null) {
-				throw new IllegalArgumentException("[ContractCheck] The instance " + instanceName + " must not be null");
-			} else {
-				throw new IllegalArgumentException(
-						"[ContractCheck] The unknown instance must not be null (please consider the call to know which one)");
-			}
-		}
-		return instance;
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.pattern.delegation.Delegate;
+
+public final class UnmodifiableDelegate<T> implements Delegate<T> {
+	private final T delegate;
+
+	public UnmodifiableDelegate(final T delegate) {
+		this.delegate = ContractCheck.mustNotBeNull(delegate, "delegate");
 	}
+
+	public T delegate() {
+		return this.delegate;
+	}
+
 }

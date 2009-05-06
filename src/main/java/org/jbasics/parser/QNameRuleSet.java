@@ -31,7 +31,7 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import org.jbasics.parser.checker.ContractCheck;
+import org.jbasics.checker.ContractCheck;
 
 /**
  * Listenbeschreibung

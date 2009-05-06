@@ -27,38 +27,76 @@ package org.jbasics.parser;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import org.jbasics.parser.annotations.AnyAttribute;
+import org.jbasics.parser.annotations.AnyElement;
 import org.jbasics.parser.annotations.Attribute;
+import org.jbasics.parser.annotations.Element;
 import org.jbasics.pattern.builder.Builder;
 
 public class AnnotationScanner {
-	private Map<Class<Builder<?>>, Object> scanned;
-	
-	public void scan(Class<Builder<?>>...builderTypes) {
-		if (builderTypes == null || builderTypes.length == 0) {
-			throw new IllegalArgumentException("Null or empty parameter: builderTypes[]");
-		}
-		for(Class<Builder<?>> builderType : builderTypes) {
-			
+	private Map<Class<? extends Builder<?>>, Object> scanned;
+
+	public void scan(Class<? extends Builder<?>>... builderTypes) {
+		if (builderTypes == null || builderTypes.length == 0) { throw new IllegalArgumentException(
+				"Null or empty parameter: builderTypes[]"); }
+		for (Class<? extends Builder<?>> builderType : builderTypes) {
+			scanType(builderType);
 		}
 	}
-	
-	private void scanType(Class<Builder<?>> builderType) {
+
+	private void scanType(Class<? extends Builder<?>> builderType) {
 		assert builderType != null;
 		for (Method m : builderType.getMethods()) {
 			Attribute directAttribute = m.getAnnotation(Attribute.class);
 			AnyAttribute anyAttribute = m.getAnnotation(AnyAttribute.class);
-			scanAttributes(m);
+			Element directElement = m.getAnnotation(Element.class);
+			AnyElement anyElement = m.getAnnotation(AnyElement.class);
+			if (isMoreThanNotNull(directAttribute, anyAttribute, directElement, anyElement)) { throw new IllegalArgumentException(
+					"Cannot have more than one type of annotaion on method " + m.getName()); }
+			if (directAttribute != null || anyAttribute != null) {
+				processAttribute(m, directAttribute, anyAttribute);
+			}
+			if (directElement != null || anyElement != null) {
+				processElement(m, directElement, anyElement);
+			}
 		}
 	}
-	
-	private void scanAttributes(Method m) {
-		assert m != null;
-		Attribute directAttribute = m.getAnnotation(Attribute.class);
+
+	private void processAttribute(Method m, Attribute directAttribute, AnyAttribute anyAttribute) {
+		assert m != null && (directAttribute != null || anyAttribute != null);
 		if (directAttribute != null) {
-			// direct attributes need to be one single attribute not more
+			QName qualifiedName = new QName(directAttribute.namespace(), directAttribute.name());
 			
+			System.out.println("Found direct attribute " + qualifiedName);
+		} else if (anyAttribute != null) {
+			System.out.println("Found any attribute");
 		}
+	}
+
+	private void processElement(Method m, Element directElement, AnyElement anyElement) {
+		assert m != null && (directElement != null || anyElement != null);
+		if (directElement != null) {
+			QName qualifiedName = new QName(directElement.namespace(), directElement.name());
+			System.out.println("Found direct element " + qualifiedName);
+		} else if (anyElement != null) {
+			System.out.println("Found any element");
+		}
+	}
+
+	private boolean isMoreThanNotNull(Object... elements) {
+		boolean foundOne = false;
+		for (Object temp : elements) {
+			if (temp != null) {
+				if (foundOne) {
+					return true;
+				} else {
+					foundOne = true;
+				}
+			}
+		}
+		return false;
 	}
 
 }

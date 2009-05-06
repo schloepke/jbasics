@@ -22,20 +22,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.pattern.factory;
+package org.jbasics.pattern.singleton;
 
-/**
- * Factory supposed to create an implementation for a given class (usually an interface).
- * <p>
- * The implementation factory can be used in certain situations. For example you are having a set of interfaces which needs
- * to create an implementation. One typically is for instance a collection.
- * </p>
- * @author stephan
- *
- * @param <T>
- */
-public interface ImplementationFactory {
+import java.util.EventObject;
 
-	<T> T newInstance(Class<T> type);
+@SuppressWarnings("serial")
+public class SingletonChangeEvent extends EventObject {
+
+	public SingletonChangeEvent(final Singleton<?> singleton) {
+		super(singleton);
+	}
+
+	public Singleton<?> getSingleton() {
+		return (Singleton<?>) getSource();
+	}
 
 }

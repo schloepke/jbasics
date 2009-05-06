@@ -22,20 +22,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.pattern.factory;
+package org.jbasics.event;
 
-/**
- * Factory supposed to create an implementation for a given class (usually an interface).
- * <p>
- * The implementation factory can be used in certain situations. For example you are having a set of interfaces which needs
- * to create an implementation. One typically is for instance a collection.
- * </p>
- * @author stephan
- *
- * @param <T>
- */
-public interface ImplementationFactory {
+import java.util.Collections;
+import java.util.EventListener;
+import java.util.HashSet;
+import java.util.Set;
 
-	<T> T newInstance(Class<T> type);
+@SuppressWarnings("unchecked")
+public class SynchronizedEventListenerSet<T extends EventListener> {
+	private Set<T> eventListeners = Collections.EMPTY_SET;
+
+	public synchronized void addListener(final T listener) {
+		if (listener == null) {
+			throw new IllegalArgumentException("Null parameter: listener");
+		}
+		if (this.eventListeners == Collections.EMPTY_SET) {
+			this.eventListeners = new HashSet<T>();
+		}
+		if (!this.eventListeners.contains(listener)) {
+			this.eventListeners.add(listener);
+		}
+	}
+
+	public synchronized void removeListener(final T listener) {
+		if (listener == null) {
+			throw new IllegalArgumentException("Null parameter: listener");
+		}
+		this.eventListeners.remove(listener);
+		if (this.eventListeners.size() == 0) {
+			this.eventListeners = Collections.EMPTY_SET;
+		}
+	}
+
+	public Set<T> getEventListeners() {
+		return this.eventListeners;
+	}
 
 }

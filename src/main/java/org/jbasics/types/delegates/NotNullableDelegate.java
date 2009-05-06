@@ -22,20 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.pattern.factory;
+package org.jbasics.types.delegates;
 
-/**
- * Factory supposed to create an implementation for a given class (usually an interface).
- * <p>
- * The implementation factory can be used in certain situations. For example you are having a set of interfaces which needs
- * to create an implementation. One typically is for instance a collection.
- * </p>
- * @author stephan
- *
- * @param <T>
- */
-public interface ImplementationFactory {
 
-	<T> T newInstance(Class<T> type);
+public final class NotNullableDelegate<T> extends AbstractConstrainedDelegate<T> {
+
+	public NotNullableDelegate(final T delegate) {
+		super(delegate);
+	}
+
+	@Override
+	protected void checkChangeCostrain(final T delegate, final T oldDelegate) {
+		if (delegate == null) {
+			throw new IllegalArgumentException("Null parameter: delegate");
+		}
+	}
+
+	@Override
+	protected void checkInitConstrain(final T delegate) {
+		if (delegate == null) {
+			throw new IllegalArgumentException("Null parameter: delegate");
+		}
+	}
 
 }

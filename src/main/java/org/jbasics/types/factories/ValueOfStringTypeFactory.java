@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.pattern.factory;
+package org.jbasics.types.factories;
 
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
@@ -32,6 +32,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.jbasics.pattern.factory.ParameterFactory;
 
 
 

@@ -22,20 +22,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.pattern.factory;
+package org.jbasics.types.singleton;
 
-/**
- * Factory supposed to create an implementation for a given class (usually an interface).
- * <p>
- * The implementation factory can be used in certain situations. For example you are having a set of interfaces which needs
- * to create an implementation. One typically is for instance a collection.
- * </p>
- * @author stephan
- *
- * @param <T>
- */
-public interface ImplementationFactory {
+import org.jbasics.pattern.factory.Factory;
 
-	<T> T newInstance(Class<T> type);
+public final class SingletonThreadInstance<T> extends AbstractManageableSingleton<T> {
+	private final ThreadLocal<T> instances;
+
+	public SingletonThreadInstance(final Factory<T> factory) {
+		super(factory);
+		this.instances = new ThreadLocal<T>();
+	}
+
+	public T instance() {
+		T temp = this.instances.get();
+		if (temp == null) {
+			temp = this.factory.newInstance();
+			fireSingletonCreate(temp);
+			this.instances.set(temp);
+		}
+		return temp;
+	}
+
+	public void setInstance(final T instance) {
+		if (instance == null) { throw new IllegalArgumentException("Null parameter: instance"); }
+		if (this.instances.get() == instance) { return; }
+		if (this.instances.get() != null) { throw new IllegalStateException(
+				"The singleton instance is already set for this thread"); }
+		fireSingletonSet(instance);
+		this.instances.set(instance);
+	}
+
+	public void resetInstance() {
+		if (this.instances.get() != null) {
+			fireSingletonRemove(this.instances.get());
+			this.instances.set(null);
+		}
+	}
+
+	public boolean isInstanciated() {
+		return this.instances.get() != null;
+	}
 
 }

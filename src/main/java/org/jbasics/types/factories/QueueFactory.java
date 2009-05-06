@@ -22,20 +22,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.pattern.factory;
+package org.jbasics.types.factories;
+
+import java.util.LinkedList;
+import java.util.Queue;
+
+import org.jbasics.pattern.factory.Factory;
 
 /**
- * Factory supposed to create an implementation for a given class (usually an interface).
- * <p>
- * The implementation factory can be used in certain situations. For example you are having a set of interfaces which needs
- * to create an implementation. One typically is for instance a collection.
- * </p>
- * @author stephan
- *
- * @param <T>
+ * Factory for a {@link Queue} implementation which is implemented by a {@link LinkedList}.
+ * 
+ * @author Stephan Schloepke
+ * @since 1.0.0
+ * @param <T> The type of the elements in the Queue
+ * @see Queue
+ * @see LinkedList
  */
-public interface ImplementationFactory {
+public class QueueFactory<T> implements Factory<Queue<T>> {
 
-	<T> T newInstance(Class<T> type);
+	public Queue<T> newInstance() {
+		return CollectionsFactory.instance().newQueueInstance();
+	}
 
 }

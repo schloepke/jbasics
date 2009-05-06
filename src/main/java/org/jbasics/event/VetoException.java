@@ -22,20 +22,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.pattern.factory;
+package org.jbasics.event;
 
-/**
- * Factory supposed to create an implementation for a given class (usually an interface).
- * <p>
- * The implementation factory can be used in certain situations. For example you are having a set of interfaces which needs
- * to create an implementation. One typically is for instance a collection.
- * </p>
- * @author stephan
- *
- * @param <T>
- */
-public interface ImplementationFactory {
+public class VetoException extends RuntimeException {
 
-	<T> T newInstance(Class<T> type);
+	public VetoException() {
+		super();
+	}
+
+	public VetoException(final String message, final Throwable cause) {
+		super(message, cause);
+	}
+
+	public VetoException(final String message) {
+		super(message);
+	}
+
+	public VetoException(final Throwable cause) {
+		super(cause);
+	}
 
 }

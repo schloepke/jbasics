@@ -22,20 +22,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.pattern.factory;
+package org.jbasics.types.delegates;
 
-/**
- * Factory supposed to create an implementation for a given class (usually an interface).
- * <p>
- * The implementation factory can be used in certain situations. For example you are having a set of interfaces which needs
- * to create an implementation. One typically is for instance a collection.
- * </p>
- * @author stephan
- *
- * @param <T>
- */
-public interface ImplementationFactory {
+import org.jbasics.pattern.delegation.MutableDelegate;
 
-	<T> T newInstance(Class<T> type);
+public final class ModifiableDelegate<T> implements MutableDelegate<T> {
+	private T delegate;
+
+	public ModifiableDelegate(final T delegate) {
+		this.delegate = delegate;
+	}
+
+	public T delegate() {
+		return this.delegate;
+	}
+
+	public boolean isDelegateSet() {
+		return this.delegate != null;
+	}
+
+	public T setDelegate(final T delegate) {
+		T temp = this.delegate;
+		this.delegate = delegate;
+		return temp;
+	}
 
 }
