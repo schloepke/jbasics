@@ -40,9 +40,9 @@ public final class ReflectionBuilderFactory<BuildType> implements Factory<Builde
 			throw new IllegalArgumentException("Null parameter: type");
 		}
 		try {
-			staticFactoryMethod = buildType
+			this.staticFactoryMethod = buildType
 					.getMethod(BUILDER_FACTORY_METHOD_NAME);
-			if (!Modifier.isStatic(staticFactoryMethod.getModifiers())) {
+			if (!Modifier.isStatic(this.staticFactoryMethod.getModifiers())) {
 				throw new RuntimeException(
 						"The method newBuilder must be static on type "
 								+ buildType);

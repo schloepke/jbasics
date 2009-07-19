@@ -94,7 +94,7 @@ public class PooledDelegate<T> implements ReleasableDelegate<T>, MutableDelegate
 	 * @see de.rms.foundation.patterns.delegation.Delegate#isDelegateSet()
 	 */
 	public boolean isDelegateSet() {
-		return delegate != null;
+		return this.delegate != null;
 	}
 
 	/**

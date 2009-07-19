@@ -45,38 +45,46 @@ public class BuilderContentHandler<T> implements ContentHandler {
 
 	public void startPrefixMapping(String prefix, String uri)
 			throws SAXException {
+		// Currently left empty
 	}
 
 	public void endPrefixMapping(String prefix) throws SAXException {
+		// Currently left empty
 	}
 
 	// The document section (we need to only allow start document if the content
 	// handler is a document handler)
 
 	public void startDocument() throws SAXException {
+		// TODO
 	}
 
 	public void endDocument() throws SAXException {
+		// TODO
 	}
 
 	// The main element handling comes here
 
 	public void startElement(String uri, String localName, String name,
 			Attributes atts) throws SAXException {
+		// TODO
 	}
 
 	public void endElement(String uri, String localName, String name)
 			throws SAXException {
+		// TODO
 	}
 
 	// Here we have anything hadling character content
 
 	public void ignorableWhitespace(char[] ch, int start, int length)
 			throws SAXException {
+		// TODO
 	}
 
 	public void characters(char[] ch, int start, int length)
 			throws SAXException {
+		// TODO
 	}
 
 	// We might want to someday allow processing instructions for the builder
@@ -84,6 +92,7 @@ public class BuilderContentHandler<T> implements ContentHandler {
 
 	public void processingInstruction(String target, String data)
 			throws SAXException {
+		// Currently left empty
 	}
 
 	// Ok what is the skipped entity thing?

@@ -48,6 +48,7 @@ public class ReflectionFactory<T> implements Factory<T> {
 			factoryMethod = type.getMethod(factoryMethodName);
 			if (Modifier.isStatic(factoryMethod.getModifiers())
 					&& factoryMethod.getReturnType().isAssignableFrom(this.type)) {
+				// FIXME What is missing here?
 			} else {
 				factoryMethod = null;
 			}

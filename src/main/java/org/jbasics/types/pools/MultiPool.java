@@ -49,7 +49,7 @@ import org.jbasics.types.factories.MapFactory;
  */
 public class MultiPool<K, T> {
 	private final ParameterFactory<Pool<T>, K> poolFactory;
-	private final MutableDelegate<Map<K, Pool<T>>> poolMapDelegate;
+	protected final MutableDelegate<Map<K, Pool<T>>> poolMapDelegate;
 
 	/**
 	 * Creates a {@link MultiPool} with a {@link LazySoftReferenceDelegate} delegated map.
@@ -77,7 +77,7 @@ public class MultiPool<K, T> {
 		this.poolMapDelegate = ContractCheck.mustNotBeNull(poolMapDelegate, "poolMapDelegate");
 	}
 
-	private Pool<T> getOrCreatePool(final K key) {
+	protected Pool<T> getOrCreatePool(final K key) {
 		Map<K, Pool<T>> temp = this.poolMapDelegate.delegate();
 		synchronized (temp) {
 			Pool<T> result = temp.get(key);
@@ -114,12 +114,12 @@ public class MultiPool<K, T> {
 	private class PoolDelegate implements MutableDelegate<Pool<T>> {
 		private final K key;
 
-		private PoolDelegate(final K key) {
+		protected PoolDelegate(final K key) {
 			this.key = key;
 		}
 
 		public Pool<T> delegate() {
-			return MultiPool.this.getOrCreatePool(key);
+			return MultiPool.this.getOrCreatePool(this.key);
 		}
 
 		public boolean isDelegateSet() {

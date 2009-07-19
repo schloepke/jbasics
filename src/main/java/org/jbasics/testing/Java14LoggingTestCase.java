@@ -40,8 +40,8 @@ import org.jbasics.checker.ContractCheck;
 public class Java14LoggingTestCase {
 
 	private final static Logger JDK_ROOT_LOGGER;
-	protected final Logger logger = Logger.getLogger(getClass().getName());
-	protected final String sourceClassName = getClass().getSimpleName() + ".java";
+	public final Logger logger = Logger.getLogger(getClass().getName());
+	public final String sourceClassName = getClass().getSimpleName() + ".java";
 
 	static {
 		JDK_ROOT_LOGGER = Logger.getLogger("");

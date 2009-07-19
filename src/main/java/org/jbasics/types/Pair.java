@@ -28,7 +28,7 @@ package org.jbasics.types;
  * Immutable type to hold a pair of two values each having its own generic type.
  * 
  * @author Stephan Schloepke
- * @since 1.0.0
+ * @since 1.0
  * @param <LeftType> The type of the left value of the pair (or first value).
  * @param <RightType> The type of the right value of the pair (or second value).
  */
@@ -43,6 +43,7 @@ public class Pair<LeftType, RightType> {
 	 * 
 	 * @param left The left (or first) value of the pair (can be null).
 	 * @param right The right (or second) value of the pair (can be null).
+	 * @since 1.0
 	 */
 	public Pair(LeftType left, RightType right) {
 		this.left = left;
@@ -54,6 +55,7 @@ public class Pair<LeftType, RightType> {
 	 * 
 	 * @return The left (or first) value of the pair (can be null).
 	 * @see #first()
+	 * @since 1.0
 	 */
 	public LeftType left() {
 		return this.left;
@@ -64,6 +66,7 @@ public class Pair<LeftType, RightType> {
 	 * 
 	 * @return The right (or second) value of the pair (can be null).
 	 * @see #second()
+	 * @since 1.0
 	 */
 	public RightType right() {
 		return this.right;
@@ -74,6 +77,7 @@ public class Pair<LeftType, RightType> {
 	 * 
 	 * @return The first (or left) value of the pair (can be null).
 	 * @see #left()
+	 * @since 1.0
 	 */
 	public LeftType first() {
 		return this.left;
@@ -84,11 +88,16 @@ public class Pair<LeftType, RightType> {
 	 * 
 	 * @return The second (or right) value of the pair (can be null).
 	 * @see #right()
+	 * @since 1.0
 	 */
 	public RightType second() {
 		return this.right;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		StringBuilder temp = new StringBuilder("PAIR(");
@@ -114,8 +123,8 @@ public class Pair<LeftType, RightType> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((left == null) ? 0 : left.hashCode());
-		result = prime * result + ((right == null) ? 0 : right.hashCode());
+		result = prime * result + ((this.left == null) ? 0 : this.left.hashCode());
+		result = prime * result + ((this.right == null) ? 0 : this.right.hashCode());
 		return result;
 	}
 
@@ -129,12 +138,12 @@ public class Pair<LeftType, RightType> {
 		if (obj == null) return false;
 		if (!(obj instanceof Pair)) return false;
 		Pair<?, ?> other = (Pair<?, ?>) obj;
-		if (left == null) {
+		if (this.left == null) {
 			if (other.left != null) return false;
-		} else if (!left.equals(other.left)) return false;
-		if (right == null) {
+		} else if (!this.left.equals(other.left)) return false;
+		if (this.right == null) {
 			if (other.right != null) return false;
-		} else if (!right.equals(other.right)) return false;
+		} else if (!this.right.equals(other.right)) return false;
 		return true;
 	}
 

@@ -85,7 +85,7 @@ public class PropertyMethodTypeInfo {
 		}
 		if (!isGetMethod()) {
 			return this.method.invoke(instance, value);
-		} else if (counterpart != null) {
+		} else if (this.counterpart != null) {
 			return this.counterpart.invokeSetOrAdd(instance, value);
 		} else {
 			throw new UnsupportedOperationException("invoking a set method on a get type info cannot be done");
@@ -95,7 +95,7 @@ public class PropertyMethodTypeInfo {
 	public Object invokeGet(Object instance) throws InvocationTargetException, IllegalAccessException {
 		if (isGetMethod()) {
 			return this.method.invoke(instance);
-		} else if (counterpart != null) {
+		} else if (this.counterpart != null) {
 			return this.counterpart.invokeGet(instance);
 		} else {
 			throw new UnsupportedOperationException("invoking a get method on a get type info cannot be done");
