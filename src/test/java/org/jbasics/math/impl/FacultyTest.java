@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.math.obsolete;
+package org.jbasics.math.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -35,6 +35,7 @@ import java.math.RoundingMode;
 import org.jbasics.math.BigRational;
 import org.jbasics.math.IrationalNumber;
 import org.jbasics.math.impl.ExponentialIrationalNumber;
+import org.jbasics.math.impl.Faculty;
 import org.junit.Test;
 
 public class FacultyTest {

@@ -24,24 +24,54 @@
  */
 package org.jbasics.math.impl;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
+import java.math.BigInteger;
+import java.util.Iterator;
 
-import org.jbasics.math.IrationalNumber;
+public class Faculty implements Iterator<BigInteger> {
 
-public class CosineIrationalNumber extends BigDecimalIrationalNumber {
+	private final int facultyStep;
+	private int current;
+	private BigInteger value;
 
-	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
-		return new CosineIrationalNumber(x);
+	public Faculty() {
+		this(1);
 	}
 
-	private CosineIrationalNumber(BigDecimal x) {
-		super(x);
+	public Faculty(int facultyStep) {
+		if (facultyStep <= 0) {
+			throw new IllegalArgumentException("The k step of the faculty (k*n)! must be greater than zero");
+		}
+		this.current = 0;
+		this.facultyStep = facultyStep;
 	}
 
-	@Override
-	protected BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc) {
-		return BigDecimal.valueOf(Math.cos(x.doubleValue())).round(mc);
+	public boolean hasNext() {
+		return true;
+	}
+
+	public BigInteger next() {
+		if (this.current == 0) {
+			this.value = BigInteger.ONE;
+			this.current++;
+
+		} else {
+			for (int k = this.facultyStep; k > 0; k--) {
+				this.value = this.value.multiply(BigInteger.valueOf(this.current++));
+			}
+		}
+		return this.value;
+	}
+
+	public void remove() {
+		throw new UnsupportedOperationException("Calculated iteration cannot remove elements");
+	}
+
+	public int current() {
+		return this.current;
+	}
+
+	public BigInteger currentValue() {
+		return this.value;
 	}
 
 }

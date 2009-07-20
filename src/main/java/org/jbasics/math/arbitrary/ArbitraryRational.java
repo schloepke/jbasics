@@ -25,12 +25,12 @@
 package org.jbasics.math.arbitrary;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 public class ArbitraryRational implements ArbitraryNumber {
-	public static final ArbitraryRational ZERO = ArbitraryRational.valueOf(ArbitraryInteger.ZERO, ArbitraryInteger.ONE);
-	public static final ArbitraryRational ONE = ArbitraryRational.valueOf(ArbitraryInteger.ONE, ArbitraryInteger.ONE);
-	public static final ArbitraryRational MINUS_ONE = ArbitraryRational.valueOf(ArbitraryInteger.MINUS_ONE,
-			ArbitraryInteger.ONE);
+	public static final ArbitraryRational ZERO = new ArbitraryRational(ArbitraryInteger.ZERO, ArbitraryInteger.ONE);
+	public static final ArbitraryRational ONE = new ArbitraryRational(ArbitraryInteger.ONE, ArbitraryInteger.ONE);
+	public static final ArbitraryRational MINUS_ONE = new ArbitraryRational(ArbitraryInteger.MINUS_ONE, ArbitraryInteger.ONE);
 
 	private final ArbitraryInteger numerator;
 	private final ArbitraryInteger denominator;
@@ -63,10 +63,14 @@ public class ArbitraryRational implements ArbitraryNumber {
 
 	// Converting
 
-	public Number toNumber() {
+	public BigDecimal toNumber() {
 		return new BigDecimal(this.numerator.toNumber()).divide(new BigDecimal(this.denominator.toNumber()));
 	}
-	
+
+	public BigDecimal toNumber(MathContext mc) {
+		return new BigDecimal(this.numerator.toNumber()).divide(new BigDecimal(this.denominator.toNumber()), mc);
+	}
+
 	public ArbitraryInteger numerator() {
 		return this.numerator;
 	}

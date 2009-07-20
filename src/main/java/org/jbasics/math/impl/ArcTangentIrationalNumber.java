@@ -40,7 +40,7 @@ public class ArcTangentIrationalNumber extends BigDecimalIrationalNumber {
 	}
 
 	@Override
-	protected BigDecimal calculate(BigDecimal x, MathContext mc) {
+	protected BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc) {
 		return BigDecimal.valueOf(Math.atan(x.doubleValue())).round(mc);
 	}
 

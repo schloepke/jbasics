@@ -30,7 +30,6 @@ import java.math.MathContext;
 import org.jbasics.math.IrationalNumber;
 
 public class HyperbolicCosineIrationalNumber extends BigDecimalIrationalNumber {
-	private static final BigDecimal ONE_HALF = new BigDecimal("0.5");
 
 	private final IrationalNumber<BigDecimal> expX;
 
@@ -44,14 +43,13 @@ public class HyperbolicCosineIrationalNumber extends BigDecimalIrationalNumber {
 	}
 
 	@Override
-	protected BigDecimal calculate(BigDecimal x, MathContext mc) {
+	protected BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc) {
 		// Hyperbolic Cosine is cosh x = (e^x + e^(-x)) / 2
 		// e^-x is the same as 1/e^x so we can actually do the math hence we only need to calculate
 		// e^x once! so we calculate
 		// cosh x = 1/2 * (e^x + 1/e^x)
-		return this.expX.valueToPrecision(mc).add(BigDecimal.ONE.divide(this.expX.valueToPrecision(mc)), mc)
-				.multiply(ONE_HALF);
+		return this.expX.valueToPrecision(mc).add(BigDecimal.ONE.divide(this.expX.valueToPrecision(mc)), mc).multiply(
+				MathImplConstants.HALF);
 	}
-
 
 }

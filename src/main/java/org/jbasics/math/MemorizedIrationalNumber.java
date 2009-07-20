@@ -22,39 +22,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.math.obsolete;
+package org.jbasics.math;
 
-import java.math.BigInteger;
-import java.util.Iterator;
+/**
+ * Extension to the interface {@link IrationalNumber} which can be used to access the information
+ * what the current memorized precision is and if the the memorized number is the an exact result.
+ * 
+ * @author Stephan Schloepke
+ * @param <T> The type of the number.
+ * @since 1.0
+ */
+public interface MemorizedIrationalNumber<T> extends IrationalNumber<T> {
 
-public class Faculty implements Iterator<BigInteger> {
-	private int current;
-	private BigInteger value;
+	/**
+	 * Returns the current precision if a result is memorized.
+	 * 
+	 * @return The current precision of the memorized number or zero if no number is memorized.
+	 * @since 1.0
+	 */
+	int precision();
 
-	public Faculty() {
-		this.current = 0;
-	}
-
-	public boolean hasNext() {
-		return true;
-	}
-
-	public BigInteger next() {
-		if (this.current == 0) {
-			this.value = BigInteger.ONE;
-		} else {
-			this.value = this.value.multiply(BigInteger.valueOf(this.current));
-		}
-		this.current++;
-		return this.value;
-	}
-
-	public void remove() {
-		throw new UnsupportedOperationException("Calculated iteration cannot remove elements");
-	}
-	
-	public int current() {
-		return this.current;
-	}
+	/**
+	 * Returns true if the memorized number is an exact number or not.
+	 * 
+	 * @return True if the memorized number is exact.
+	 * @since 1.0
+	 */
+	boolean isExact();
 
 }

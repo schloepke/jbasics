@@ -27,21 +27,43 @@ package org.jbasics.math.impl;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.IrationalNumber;
 
-public class CosineIrationalNumber extends BigDecimalIrationalNumber {
+public class SquareRootReciprocalIrationalNumber extends BigDecimalIrationalNumber {
+
+	public static final IrationalNumber<BigDecimal> SQUARE_ROOT_RECIPROCAL_OF_2 = new SquareRootReciprocalIrationalNumber(
+			MathImplConstants.TWO);
 
 	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
-		return new CosineIrationalNumber(x);
+		if (ContractCheck.mustNotBeNull(x, "x").signum() <= 0) {
+			throw new ArithmeticException("Square root can only be calculated of a positiv number " + x);
+		}
+		if (MathImplConstants.TWO.equals(x)) {
+			return SQUARE_ROOT_RECIPROCAL_OF_2;
+		} else if (MathImplConstants.HALF.equals(x)) {
+			return SquareRootIrationalNumber.SQUARE_ROOT_OF_2;
+		}
+		return new SquareRootReciprocalIrationalNumber(x);
 	}
 
-	private CosineIrationalNumber(BigDecimal x) {
+	private SquareRootReciprocalIrationalNumber(BigDecimal x) {
 		super(x);
 	}
 
 	@Override
 	protected BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc) {
-		return BigDecimal.valueOf(Math.cos(x.doubleValue())).round(mc);
+		if (BigDecimal.ONE.compareTo(x) == 0) {
+			return BigDecimal.ONE;
+		}
+		BigDecimal result = currentValue != null ? currentValue : BigDecimal.valueOf(1.0d / Math.sqrt(x.doubleValue()));
+		BigDecimal oldResult;
+		do {
+			oldResult = result;
+			result = result.multiply(MathImplConstants.THREE.subtract(x.multiply(result.multiply(result, mc), mc)), mc)
+					.multiply(MathImplConstants.HALF, mc);
+		} while (result.subtract(oldResult, mc).signum() != 0);
+		return result;
 	}
 
 }

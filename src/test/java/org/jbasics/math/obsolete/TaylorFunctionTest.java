@@ -34,19 +34,24 @@ import org.junit.Test;
 
 public class TaylorFunctionTest extends Java14LoggingTestCase {
 
-	public final static IrationalNumber<BigDecimal> E = ExponentialIrationalNumber.valueOf(BigDecimal.ONE);
-	
 	@Test
 	public void testTaylorFunction() {
+		MathContext mc = new MathContext(30);
+		long time = System.currentTimeMillis();
 		TaylorFunction temp = new TaylorFunction(1);
-		this.logger.info("1 = "+temp.value());
-		for(int i = 2; i < 100; i++) {
+		for(int i = 2; i < 40; i++) {
 			temp.extend(i);
-			this.logger.info(i+" = "+temp.value());
 		}
-		this.logger.info("---");
-		this.logger.info("Result:  "+temp.value().decimalValue(MathContext.DECIMAL128));
-		this.logger.info("Compare: "+E.valueToPrecision(MathContext.DECIMAL128));
+		BigDecimal result = temp.value().decimalValue(mc);
+		long used = System.currentTimeMillis() - time;
+		this.logger.info("Result:  "+result);
+		this.logger.info("... "+used+"ms");
+		time = System.currentTimeMillis();
+		ExponentialIrationalNumber.E.valueToPrecision(mc);
+		used = System.currentTimeMillis() - time;
+		this.logger.info("Compare: "+ExponentialIrationalNumber.E.valueToPrecision(mc));
+		this.logger.info("... "+used+"ms");
+		this.logger.info("Distance: "+ExponentialIrationalNumber.E.valueToPrecision(mc).subtract(result).toEngineeringString());
 	}
 
 }

@@ -43,7 +43,7 @@ public class PowIrationalNumber extends BigDecimalIrationalNumber {
 	}
 
 	@Override
-	protected BigDecimal calculate(BigDecimal x, MathContext mc) {
+	protected BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc) {
 		return ExponentialIrationalNumber.valueOf(this.lna.valueToPrecision(mc)).valueToPrecision(mc).multiply(x, mc);
 	}
 

@@ -31,7 +31,6 @@ import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.IrationalNumber;
 
 public class HyperbolicTangentIrationalNumber extends BigDecimalIrationalNumber {
-	private static final BigDecimal TWO = BigDecimal.valueOf(2);
 
 	private final IrationalNumber<BigDecimal> exp2X;
 
@@ -41,11 +40,12 @@ public class HyperbolicTangentIrationalNumber extends BigDecimalIrationalNumber 
 
 	private HyperbolicTangentIrationalNumber(BigDecimal x) {
 		super(BigDecimal.ZERO);
-		this.exp2X = ExponentialIrationalNumber.valueOf(ContractCheck.mustNotBeNull(x, "x").multiply(TWO));
+		this.exp2X = ExponentialIrationalNumber.valueOf(ContractCheck.mustNotBeNull(x, "x").multiply(
+				MathImplConstants.TWO));
 	}
 
 	@Override
-	protected BigDecimal calculate(BigDecimal x, MathContext mc) {
+	protected BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc) {
 		// Hyperbolic Tangent is tanh x = (e^2x - 1) / (e^2x + 1)
 		return this.exp2X.valueToPrecision(mc).subtract(BigDecimal.ONE).divide(
 				this.exp2X.valueToPrecision(mc).add(BigDecimal.ONE), mc);

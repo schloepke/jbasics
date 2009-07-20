@@ -27,21 +27,36 @@ package org.jbasics.math.impl;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.IrationalNumber;
 
-public class CosineIrationalNumber extends BigDecimalIrationalNumber {
+/**
+ * Holds a constant number offering the {@link IrationalNumber} interface.
+ * 
+ * @author Stephan Schloepke
+ * @since 1.0
+ */
+public final class ConstantIrationalNumber implements IrationalNumber<BigDecimal> {
+	private final BigDecimal value;
 
-	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
-		return new CosineIrationalNumber(x);
+	/**
+	 * Create a constant {@link IrationalNumber} with the given value (must not be null).
+	 * 
+	 * @param value The constant value to return by the {@link IrationalNumber} interface (must not
+	 *            be null).
+	 * @throws IllegalArgumentException when the given value is null.
+	 * @since 1.0
+	 */
+	public ConstantIrationalNumber(BigDecimal value) {
+		this.value = ContractCheck.mustNotBeNull(value, "value");
 	}
 
-	private CosineIrationalNumber(BigDecimal x) {
-		super(x);
-	}
-
-	@Override
-	protected BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc) {
-		return BigDecimal.valueOf(Math.cos(x.doubleValue())).round(mc);
+	/*
+	 * (non-Javadoc)
+	 * @see org.jbasics.math.IrationalNumber#valueToPrecision(java.math.MathContext)
+	 */
+	public BigDecimal valueToPrecision(MathContext mc) {
+		return this.value;
 	}
 
 }

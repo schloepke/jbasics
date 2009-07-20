@@ -44,8 +44,20 @@ public class Java14LoggingFormatter extends Formatter {
 	 */
 	@Override
 	public String format(final LogRecord record) {
-		StringBuilder temp = new StringBuilder().append(record.getLevel().getName()).append(":\t").append(
-				formatMessage(record)).append("   [").append(record.getLoggerName()).append("]").append("\n");
+		String message = record.getMessage();
+		if ("ENTRY".equals(message)) {
+			message = "ENTRY  ===> " + record.getSourceClassName() + "#" + record.getSourceMethodName();
+		} else if ("RETURN".equals(message)) {
+			message = "RETURN <=== "+ record.getSourceClassName() + "#" + record.getSourceMethodName();
+		}
+		String logName = record.getLoggerName();
+		if (logName.length() > 40) {
+			logName = logName.substring(logName.length() - 40);
+			if (logName.indexOf('.') >= 0) {
+				logName = logName.substring(logName.indexOf('.'));
+			}
+		}
+		StringBuilder temp = new StringBuilder(String.format("[%-40s]  %-5s  %s\n", logName, record.getLevel(), formatMessage(record)));
 		if (record.getThrown() != null) {
 			Throwable t = record.getThrown();
 			int nesting = 0;
@@ -70,6 +82,17 @@ public class Java14LoggingFormatter extends Formatter {
 			}
 		}
 		return temp.toString();
+	}
+	
+	@Override
+	public synchronized String formatMessage(LogRecord record) {
+		String message = record.getMessage();
+		if ("ENTRY".equals(message)) {
+			return "----->  " + record.getSourceClassName() + "#" + record.getSourceMethodName();
+		} else if ("RETURN".equals(message)) {
+			return "<----- "+ record.getSourceClassName() + "#" + record.getSourceMethodName() + "\n";
+		}
+		return super.formatMessage(record);
 	}
 
 }

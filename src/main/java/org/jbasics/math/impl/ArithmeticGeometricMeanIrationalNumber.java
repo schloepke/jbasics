@@ -31,12 +31,48 @@ import java.math.RoundingMode;
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.IrationalNumber;
 
+/**
+ * Calculates the arithmetic geometric mean (agm) of the two given numbers x and y to the
+ * {@link IrationalNumber} agm(x,y). Can result in a rational number which is exact (for instance
+ * the agm(2, 2) is 2).
+ * <p>
+ * The iteration used to find the agm is: <code>
+ * <ul>
+ * <li>a<sub>0</sub> = (x+y)/2</li>
+ * <li>b<sub>0</sub> = &radic;xy</li>
+ * </ul>
+ * <p>Repeat
+ * </p>
+ * <ul>
+ * <li>a<sub>n+1</sub> = 2<sup>-1</sup>(a<sub>n</sub>+b<sub>n</sub>)</li>
+ * <li>b<sub>n+1</sub> = &radic;a<sub>n</sub>b<sub>n</sub></li>
+ * </ul>
+ * <p>
+ * until a<sub>n+1</sub> = b<sub>n</sub> than the result is either a<sub>n</sub> or b<sub>n</sub>
+ * (since both are equal)
+ * </p>
+ * </code> </p>
+ * 
+ * @author Stephan Schloepke
+ * @since 1.0
+ */
 public class ArithmeticGeometricMeanIrationalNumber extends BigDecimalIrationalNumber {
-	private static final BigDecimal TWO = BigDecimal.valueOf(2);
-
 	private final BigDecimal y;
 
+	/**
+	 * Returns the irational arithmetic geometric mean of x and y.
+	 * 
+	 * @param x The x value (must not be null)
+	 * @param y The y value (must not be null)
+	 * @return The agm(x, y)
+	 * @since 1.0
+	 */
 	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x, BigDecimal y) {
+		if (x.signum() == 0 && y.signum() == 0) {
+			return MathImplConstants.IRATIONAL_ZERO;
+		} else if (BigDecimal.ONE.compareTo(x) == 0 && BigDecimal.ONE.compareTo(y) == 0) {
+			return MathImplConstants.IRATIONAL_ONE;
+		}
 		return new ArithmeticGeometricMeanIrationalNumber(x, y);
 	}
 
@@ -45,16 +81,18 @@ public class ArithmeticGeometricMeanIrationalNumber extends BigDecimalIrationalN
 		this.y = ContractCheck.mustNotBeNull(y, "y");
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.jbasics.math.impl.BigDecimalIrationalNumber#calculate(java.math.BigDecimal,
+	 * java.math.BigDecimal, java.math.MathContext)
+	 */
 	@Override
-	protected BigDecimal calculate(BigDecimal x, MathContext mc) {
-		if (x.signum() == 0 || this.y.signum() == 0) {
-			return BigDecimal.ZERO;
-		}
+	protected BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc) {
 		MathContext calcContext = new MathContext(mc.getPrecision() + 5, RoundingMode.HALF_EVEN);
 		BigDecimal a = x;
 		BigDecimal b = this.y;
 		do {
-			BigDecimal t = a.add(b).divide(TWO);
+			BigDecimal t = a.add(b).divide(MathImplConstants.TWO);
 			b = SquareRootIrationalNumber.valueOf(a.multiply(b, calcContext)).valueToPrecision(calcContext);
 			a = t;
 		} while (a.compareTo(b) != 0);

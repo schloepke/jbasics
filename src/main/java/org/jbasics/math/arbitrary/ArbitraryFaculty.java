@@ -22,26 +22,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.math.impl;
+package org.jbasics.math.arbitrary;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
 
-import org.jbasics.math.IrationalNumber;
+public class ArbitraryFaculty {
+	private final int facultyStep;
+	private int current;
+	private ArbitraryInteger value;
 
-public class CosineIrationalNumber extends BigDecimalIrationalNumber {
-
-	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
-		return new CosineIrationalNumber(x);
+	public ArbitraryFaculty() {
+		this(1);
 	}
 
-	private CosineIrationalNumber(BigDecimal x) {
-		super(x);
+	public ArbitraryFaculty(int facultyStep) {
+		if (facultyStep <= 0) {
+			throw new IllegalArgumentException("The k step of the faculty (k*n)! must be greater than zero");
+		}
+		this.current = 0;
+		this.facultyStep = facultyStep;
 	}
 
-	@Override
-	protected BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc) {
-		return BigDecimal.valueOf(Math.cos(x.doubleValue())).round(mc);
+	public boolean hasNext() {
+		return true;
+	}
+
+	public ArbitraryInteger next() {
+		if (this.current == 0) {
+			this.value = ArbitraryInteger.ONE;
+			this.current++;
+
+		} else {
+			for (int k = this.facultyStep; k > 0; k--) {
+				this.value = this.value.multiply(ArbitraryInteger.valueOf(this.current++));
+			}
+		}
+		return this.value;
+	}
+
+	public void remove() {
+		throw new UnsupportedOperationException("Calculated iteration cannot remove elements");
+	}
+
+	public int current() {
+		return this.current;
+	}
+
+	public ArbitraryInteger currentValue() {
+		return this.value;
 	}
 
 }

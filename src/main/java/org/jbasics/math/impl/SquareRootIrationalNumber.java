@@ -26,7 +26,6 @@ package org.jbasics.math.impl;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.math.RoundingMode;
 
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.IrationalNumber;
@@ -41,11 +40,20 @@ import org.jbasics.math.IrationalNumber;
  * @author Stephan Schloepke
  */
 public class SquareRootIrationalNumber extends BigDecimalIrationalNumber {
-	private static final BigDecimal TWO = BigDecimal.valueOf(2);
+	/**
+	 * The constant square root of two.
+	 */
+	public static final IrationalNumber<BigDecimal> SQUARE_ROOT_OF_2 = new SquareRootIrationalNumber(
+			MathImplConstants.TWO);
 
 	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
-		if (ContractCheck.mustNotBeNull(x, "x").signum() > 0) {
-			throw new ArithmeticException("Square root can only be calculated of a positiv number");
+		if (ContractCheck.mustNotBeNull(x, "x").signum() < 0) {
+			throw new ArithmeticException("Square root can only be calculated of a positiv number " + x);
+		}
+		if (MathImplConstants.TWO.equals(x)) {
+			return SQUARE_ROOT_OF_2;
+		} else if (MathImplConstants.HALF.equals(x)) {
+			return SquareRootReciprocalIrationalNumber.SQUARE_ROOT_RECIPROCAL_OF_2;
 		}
 		return new SquareRootIrationalNumber(x);
 	}
@@ -55,21 +63,22 @@ public class SquareRootIrationalNumber extends BigDecimalIrationalNumber {
 	}
 
 	@Override
-	protected BigDecimal calculate(BigDecimal x, MathContext mc) {
+	protected BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc) {
 		if (x.signum() == 0) {
 			return BigDecimal.ZERO;
 		}
 		if (BigDecimal.ONE.compareTo(x) == 0) {
 			return BigDecimal.ONE;
 		}
-		MathContext calcContext = new MathContext(mc.getPrecision() + 5, RoundingMode.HALF_EVEN);
-		BigDecimal result = new BigDecimal(Math.sqrt(x.doubleValue()), calcContext);
+		BigDecimal result = currentValue != null ? BigDecimal.ONE.divide(currentValue, mc) : BigDecimal
+				.valueOf(1.0d / Math.sqrt(x.doubleValue()));
 		BigDecimal oldResult;
 		do {
 			oldResult = result;
-			result = result.add(x.divide(result, calcContext)).divide(TWO, calcContext);
-		} while (result.subtract(oldResult, calcContext).signum() != 0);
-		return result.round(mc);
+			result = result.multiply(MathImplConstants.THREE.subtract(x.multiply(result.multiply(result, mc), mc)), mc)
+					.multiply(MathImplConstants.HALF, mc);
+		} while (result.subtract(oldResult, mc).signum() != 0);
+		return BigDecimal.ONE.divide(result, mc).stripTrailingZeros();
 	}
 
 }

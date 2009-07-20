@@ -26,57 +26,59 @@ package org.jbasics.math.impl;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 
-import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.IrationalNumber;
 
-public class LogNaturalFunctionIrationalNumber extends BigDecimalIrationalNumber {
+public class PiIrationalNumber extends BigDecimalIrationalNumber {
 	/**
-	 * The logarithm naturals of two as cached value.
+	 * The constant PI.
 	 */
-	public static final IrationalNumber<BigDecimal> LN2 = new LogNaturalFunctionIrationalNumber(MathImplConstants.TWO);
+	public static final IrationalNumber<BigDecimal> PI = new PiIrationalNumber(BigDecimal.ONE,
+			MathImplConstants.PI_INITIAL);
 	/**
-	 * The logarithm naturals of ten as cached value.
+	 * The constant 2*PI.
 	 */
-	public static final IrationalNumber<BigDecimal> LN10 = new LogNaturalFunctionIrationalNumber(BigDecimal.TEN);
+	public static final IrationalNumber<BigDecimal> PI2 = new PiIrationalNumber(MathImplConstants.TWO,
+			MathImplConstants.PI2_INITIAL);
 
-	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
-		if (ContractCheck.mustNotBeNull(x, "x").signum() == 0) {
-			throw new ArithmeticException("Logarithm of zero or negative number cannot be calculated");
-		}
+	public static final IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
 		if (BigDecimal.ONE.compareTo(x) == 0) {
-			return MathImplConstants.IRATIONAL_ZERO;
+			return PI;
 		} else if (MathImplConstants.TWO.compareTo(x) == 0) {
-			return LN2;
-		} else if (BigDecimal.TEN.compareTo(x) == 0) {
-			return LN10;
+			return PI2;
 		} else {
-			return new LogNaturalFunctionIrationalNumber(x);
+			return new PiIrationalNumber(x);
 		}
 	}
 
-	private LogNaturalFunctionIrationalNumber(BigDecimal x) {
+	private PiIrationalNumber(BigDecimal x) {
 		super(x);
-		assert x != null && x.signum() > 0;
+	}
+
+	private PiIrationalNumber(BigDecimal x, BigDecimal initial) {
+		super(x, initial);
 	}
 
 	@Override
 	protected BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc) {
-		if (x.signum() <= 0) {
-			throw new ArithmeticException("Logarithm of zero or negative number cannot be calculated"); //$NON-NLS-1$
-		}
-		if (BigDecimal.ONE.compareTo(x) == 0) {
-			return BigDecimal.ZERO;
-		}
-		BigDecimal result = new BigDecimal(Math.log(x.doubleValue()), mc);
-		BigDecimal oldResult;
+		MathContext calcMC = new MathContext(mc.getPrecision() + 2, RoundingMode.HALF_EVEN);
+		BigDecimal an = BigDecimal.ONE;
+		IrationalNumber<BigDecimal> bn = SquareRootReciprocalIrationalNumber.SQUARE_ROOT_RECIPROCAL_OF_2;
+		BigDecimal tn = MathImplConstants.QUARTER;
+		BigDecimal pn = BigDecimal.ONE;
+		BigDecimal anNext;
+		BigDecimal anDiff;
 		do {
-			oldResult = result;
-			BigDecimal temp = ExponentialIrationalNumber.valueOf(result.negate()).valueToPrecision(mc).multiply(x)
-					.subtract(BigDecimal.ONE, mc);
-			result = result.add(temp);
-		} while (oldResult.round(mc).subtract(result.round(mc)).signum() != 0);
-		return result.round(mc);
+			anNext = an.add(bn.valueToPrecision(calcMC)).divide(MathImplConstants.TWO, calcMC);
+			bn = SquareRootIrationalNumber.valueOf(an.multiply(bn.valueToPrecision(mc), calcMC));
+			anDiff = an.subtract(anNext);
+			tn = tn.subtract(pn.multiply(anDiff.pow(2, calcMC), calcMC), calcMC);
+			pn = pn.add(pn);
+			an = anNext;
+		} while (calcMC.getPrecision() - anDiff.scale() + anDiff.precision() - 1 > 0);
+		return an.add(bn.valueToPrecision(calcMC)).pow(2, calcMC).divide(tn, calcMC).multiply(
+				MathImplConstants.QUARTER, calcMC).multiply(x, mc);
 	}
 
 }

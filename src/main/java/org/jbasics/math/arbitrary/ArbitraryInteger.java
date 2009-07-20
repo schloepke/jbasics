@@ -272,6 +272,26 @@ public class ArbitraryInteger implements ArbitraryNumber {
 	public ArbitraryRational divide(ArbitraryInteger divisor) {
 		return ArbitraryRational.valueOf(this, divisor);
 	}
+	
+	public ArbitraryInteger pow(int n) {
+		if (n < 0) {
+			throw new UnsupportedOperationException("negativ exponent currently unsupported since would lead to rational number x^-y = 1/x^y");
+		} else if (this.signum() == 0) {
+			return n == 0 ? ONE : ZERO;
+		} else if (n == 1) {
+			return this;
+		} else {
+			ArbitraryInteger a = this;
+			ArbitraryInteger b = n % 2 == 0 ? ONE : this;
+			while((n >>>= 1) > 0) {
+				a = a.multiply(a);
+				if (n % 2 == 1) {
+					b = b.multiply(a);
+				}
+			}
+			return b;
+		}
+	}
 
 	// Binary rational operations
 

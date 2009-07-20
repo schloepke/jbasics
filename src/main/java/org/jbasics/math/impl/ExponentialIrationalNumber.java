@@ -32,6 +32,7 @@ import java.math.RoundingMode;
 import org.jbasics.math.IrationalNumber;
 
 public class ExponentialIrationalNumber extends BigDecimalIrationalNumber {
+
 	public static final IrationalNumber<BigDecimal> E = new ExponentialIrationalNumber(BigDecimal.ONE);
 
 	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
@@ -46,7 +47,7 @@ public class ExponentialIrationalNumber extends BigDecimalIrationalNumber {
 	}
 
 	@Override
-	protected BigDecimal calculate(BigDecimal x, MathContext mc) {
+	protected BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc) {
 		int scale = (int) Math.ceil(Math.sqrt((mc.getPrecision() + 10) * Math.log(10) / Math.log(2)));
 		if (x.abs().compareTo(BigDecimal.ONE) > 0) {
 			BigInteger temp = x.unscaledValue();
@@ -56,10 +57,9 @@ public class ExponentialIrationalNumber extends BigDecimalIrationalNumber {
 		} else {
 			scale = scale + ((int) (x.scale() * (Math.log(10) / Math.log(2))));
 		}
-		MathContext roundContext = mc == null ? MathContext.DECIMAL128 : mc;
 		BigDecimal xScaled = x.divide(new BigDecimal(BigInteger.ONE.shiftLeft(scale)));
-		MathContext calcContext = new MathContext(roundContext.getPrecision() + (int) Math.ceil(scale * Math.log10(2))
-				+ 1, RoundingMode.HALF_EVEN);
+		MathContext calcContext = new MathContext(mc.getPrecision() + (int) Math.ceil(scale * Math.log10(2)) + 1,
+				RoundingMode.HALF_EVEN);
 		BigInteger k = BigInteger.ONE;
 		int n = 1;
 		BigDecimal xPower = BigDecimal.ONE;
@@ -73,7 +73,7 @@ public class ExponentialIrationalNumber extends BigDecimalIrationalNumber {
 		for (int i = scale; i > 0; i--) {
 			result = result.multiply(result, calcContext);
 		}
-		return result.round(roundContext);
+		return result.round(mc);
 	}
 
 }

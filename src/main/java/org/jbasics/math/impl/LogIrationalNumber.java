@@ -30,10 +30,6 @@ import java.math.MathContext;
 import org.jbasics.math.IrationalNumber;
 
 public class LogIrationalNumber extends BigDecimalIrationalNumber {
-	/**
-	 * {@link BigDecimal} constant of the value two.
-	 */
-	public static final BigDecimal TWO = BigDecimal.valueOf(2);
 
 	private final IrationalNumber<BigDecimal> base;
 	private final IrationalNumber<BigDecimal> lnx;
@@ -49,7 +45,7 @@ public class LogIrationalNumber extends BigDecimalIrationalNumber {
 	}
 
 	@Override
-	protected BigDecimal calculate(BigDecimal x, MathContext mc) {
+	protected BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc) {
 		return this.lnx.valueToPrecision(mc).divide(this.base.valueToPrecision(mc), mc);
 	}
 

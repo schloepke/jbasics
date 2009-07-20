@@ -495,7 +495,7 @@ public class BigRationalTest extends Java14LoggingTestCase {
 		this.logger.info("Distance: " + dist.decimalValue(new MathContext(1)) + " (" + dist + ")");
 		dist = xPows[steps - 1].multiply(x).multiply(faculty).multiply(new BigRational(1, steps)).reduce();
 		this.logger.info("Distance Next: " + dist.decimalValue(new MathContext(1)) + " (" + dist + ")");
-		this.logger.info("Econst = " + BigDecimalFunctions.exp(startX).valueToPrecision(MathContext.DECIMAL128));
+		this.logger.info("Econst = " + BigDecimalMathLibrary.exp(startX).valueToPrecision(MathContext.DECIMAL128));
 		this.logger.info("Ecalc  = "
 				+ results[steps - 1].reduce().pow(64).multiply(
 						BigRational.valueOf(
