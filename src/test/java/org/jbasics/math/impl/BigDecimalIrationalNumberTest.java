@@ -31,6 +31,7 @@ import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
+import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.BigRational;
 import org.jbasics.math.IrationalNumber;
 import org.jbasics.math.arbitrary.ArbitraryFaculty;
@@ -96,30 +97,19 @@ public class BigDecimalIrationalNumberTest extends Java14LoggingTestCase {
 	@Test
 	public void testPiFormulaNew() {
 		MathContext mc = new MathContext(1000, RoundingMode.HALF_EVEN);
+		BigDecimal x = BigDecimal.valueOf(7);
+		IrationalNumber<BigDecimal> piReference = PiIrationalNumber.valueOf(x);
 		long time = System.currentTimeMillis();
-		BigRational pi = BigRational.ZERO;
-		BigDecimal endFactor = new BigDecimal("4900.5").divide(SquareRootIrationalNumber.SQUARE_ROOT_OF_2.valueToPrecision(mc), mc);
-		BigInteger c1 = BigInteger.valueOf(1103);
-		BigInteger c2 = BigInteger.valueOf(26390);
-		BigInteger c3 = BigInteger.valueOf(396); 
-		Faculty k4 = new Faculty(4);
-		Faculty k = new Faculty();
-		BigInteger c2k = c2.negate();
-		for(int i = 0; i < 130; i++) {
-			BigInteger numerator = k4.next().multiply(c1.add(c2k = c2k.add(c2)));
-			BigInteger denominator = k.next().pow(4).multiply(c3.pow(4*i));
-			pi = pi.add(new BigRational(numerator, denominator));
-		}
-		BigDecimal piResult = pi.reciprocal().decimalValue(mc).multiply(endFactor, mc);
+		BigDecimal piResult = PiSeriesAlgorithmStrategy.STRATEGY.calculate(mc, null, x);
 		long used = System.currentTimeMillis() - time;
 		System.out.println(String.format("Calced(%4dms) = %s", used, piResult));
 		time = System.currentTimeMillis();
-		PiIrationalNumber.PI.valueToPrecision(mc);
+		piReference.valueToPrecision(mc);
 		used = System.currentTimeMillis() - time;
-		System.out.println(String.format("Refer (%4dms) = %s", used, PiIrationalNumber.PI.valueToPrecision(mc)));
-		BigDecimal piDistance = PiIrationalNumber.PI.valueToPrecision(mc).subtract(piResult);;
+		System.out.println(String.format("Refer (%4dms) = %s", used, piReference.valueToPrecision(mc)));
+		BigDecimal piDistance = piReference.valueToPrecision(mc).subtract(piResult);;
 		System.out.println("Dist: "+piDistance);
-		System.out.println(PiIrationalNumber.PI2.valueToPrecision(new MathContext(100)));
+		assertTrue(piReference.valueToPrecision(mc).compareTo(piResult) == 0);
 	}
 
 	@Test
