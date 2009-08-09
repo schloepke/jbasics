@@ -82,7 +82,7 @@ public class IntArrayComparator implements Comparator<int[]> {
 		if (x == null) {
 			return y == null || y.length == 0 ? 0 : -1;
 		} else if (y == null) {
-			return x == null ? 0 : 1;
+			return 1;
 		} else if (x.length < y.length) {
 			return -1;
 		} else if (x.length > y.length) {
@@ -109,7 +109,7 @@ public class IntArrayComparator implements Comparator<int[]> {
 	public static boolean isZeroOrNull(int[] x) {
 		if (x != null && x.length > 0) {
 			int i = x.length;
-			while (--i <= 0) {
+			while (--i >= 0) {
 				if (x[i] != 0) {
 					return false;
 				}

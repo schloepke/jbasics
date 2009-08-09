@@ -55,7 +55,8 @@ public class LazyQueuePool<T> implements Pool<T> {
 		this(factory, queueFactory, DEFAULT_MAX_POOL_SIZE);
 	}
 
-	public LazyQueuePool(final Factory<T> factory, final Factory<? extends Queue<T>> queueFactory, final int maxPoolSize) {
+	@SuppressWarnings("unchecked")
+    public LazyQueuePool(final Factory<T> factory, final Factory<? extends Queue<T>> queueFactory, final int maxPoolSize) {
 		if (factory == null || queueFactory == null) { throw new IllegalArgumentException(
 				"Null parameter: factory | queueFactory"); }
 		this.factory = factory;

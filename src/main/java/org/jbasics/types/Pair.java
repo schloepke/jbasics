@@ -136,7 +136,7 @@ public class Pair<LeftType, RightType> {
 	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (obj == null) return false;
-		if (!(obj instanceof Pair)) return false;
+		if (!(obj instanceof Pair<?, ?>)) return false;
 		Pair<?, ?> other = (Pair<?, ?>) obj;
 		if (this.left == null) {
 			if (other.left != null) return false;

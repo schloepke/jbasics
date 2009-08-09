@@ -26,12 +26,13 @@ package org.jbasics.math.obsolete;
 
 import java.util.concurrent.Callable;
 
+@SuppressWarnings("unused")
 public class Multiplier implements Callable<int[]> {
 	private static final long INT_MASK = 0xffffffffL;
 	private final int[] x;
 	private final int[] y;
 	private final int[] z;
-	private final int[] zAdd;
+    private final int[] zAdd;
 	private final int[] zAdd2;
 
 	public Multiplier(int[] x, int[] y) {

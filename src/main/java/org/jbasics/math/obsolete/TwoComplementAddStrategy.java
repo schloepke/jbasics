@@ -27,6 +27,7 @@ package org.jbasics.math.obsolete;
 
 public class TwoComplementAddStrategy {
 
+	@SuppressWarnings("all" /* we want to re assign the parameter to lower stack usage and local varss */)
 	public int[] execute(int[] lhs, int[] rhs, boolean complement) {
 		boolean complementX = false;
 		int[] x = lhs;

@@ -22,39 +22,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.math.obsolete;
+package org.jbasics.parser.deprecated;
 
-import java.math.BigInteger;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
-import org.jbasics.math.BigRational;
+import javax.xml.namespace.QName;
 
-public class TaylorFunction {
-	private BigRational current;
-	private BigInteger faculty;
-	private long facultyIndex;
-	@SuppressWarnings("unused")
-    private int facultyScale;
-
-	public TaylorFunction(int n) {
-		this.current = BigRational.ONE;
-		this.faculty = BigInteger.ONE;
-		this.facultyIndex = 1;
-		extend(n);
-	}
-
-	public void extend(int n) {
-		for (long i = this.facultyIndex; i < n; i++) {
-			this.current = calculateNext(this.current, this.facultyIndex, this.faculty.multiply(BigInteger
-					.valueOf(this.facultyIndex++)));
-		}
-	}
-
-	public BigRational value() {
-		return this.current;
-	}
+public class AttributeEntry<T> {
+	private Method method;
+	private Method builderMethod;
+	private Constructor<T> builderConstructor;
+	private boolean required;
 	
-	protected BigRational calculateNext(BigRational current, long i, BigInteger faculty) {
-		return current.extend(i).addNumerator(BigInteger.ONE);
+	public void setAttribute(QName name, String value) {
+		// TODO:
 	}
 
 }

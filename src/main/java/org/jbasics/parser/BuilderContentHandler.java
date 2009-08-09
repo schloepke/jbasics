@@ -25,81 +25,158 @@
 package org.jbasics.parser;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.xml.namespace.QName;
+
+import org.jbasics.parser.invoker.Invoker;
+import org.jbasics.types.Pair;
 import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.DefaultHandler;
 
-public class BuilderContentHandler<T> implements ContentHandler {
-	private Map<Class<?>, Class<?>> builderFactoryMap;
-	private Locator documentLocator;
-	private boolean skipWhitespace = true;
+public class BuilderContentHandler<T> extends DefaultHandler {
+	private final Map<QName, ParsingInfo> context;
+	private final AtomicBoolean parsing;
+	private StateStack<BuildHandler> states;
+	private T result;
+	private StringBuilder characterBuffer;
 
-	public void setDocumentLocator(Locator locator) {
-		this.documentLocator = locator;
+	public BuilderContentHandler(Class<? extends T> root) {
+		this.context = new AnnotationScanner().scan(root);
+		this.parsing = new AtomicBoolean(false);
 	}
 
-	// Handling of prefix mapping (we might want to store them somehow)
-
-	public void startPrefixMapping(String prefix, String uri)
-			throws SAXException {
-		// Currently left empty
+	public T getParsingResult() {
+		return this.result;
 	}
 
-	public void endPrefixMapping(String prefix) throws SAXException {
-		// Currently left empty
-	}
-
-	// The document section (we need to only allow start document if the content
-	// handler is a document handler)
-
+	@Override
 	public void startDocument() throws SAXException {
-		// TODO
+		if (this.parsing.compareAndSet(false, true)) {
+			this.states = new StateStack<BuildHandler>();
+			this.characterBuffer = new StringBuilder();
+			this.result = null;
+		} else {
+			throw new IllegalStateException("Start of document event occured while already parsing another document");
+		}
 	}
 
+	@Override
 	public void endDocument() throws SAXException {
-		// TODO
+		// TODO: setResult. Maybe using a sort of push handler?
+		if (!this.parsing.compareAndSet(true, false)) {
+			throw new IllegalStateException("End of document event occured while not parsing");
+		}
 	}
 
-	// The main element handling comes here
-
-	public void startElement(String uri, String localName, String name,
-			Attributes atts) throws SAXException {
-		// TODO
+	@Override
+	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+		if (this.parsing.get()) {
+			QName name = new QName(uri, localName);
+			ParsingInfo parseInfo = null;
+			if (this.states.isEmpty()) {
+				// Root processing
+				parseInfo = this.context.get(name);
+				if (parseInfo == null) {
+					throw new SAXException("Unknown root element " + name);
+				}
+			} else {
+				BuildHandler current = this.states.peek();
+				if (this.characterBuffer.length() > 0) {
+					current.addText(this.characterBuffer.toString());
+					this.characterBuffer.setLength(0);
+				}
+				parseInfo = current.getParsingInfo();
+				if (parseInfo != null) {
+					Pair<ParsingInfo, Invoker<?, ?>> x = parseInfo.getElementInvoker(name);
+					if (x != null) {
+						parseInfo = x.first();
+					} else {
+						parseInfo = null;
+					}
+				}
+			}
+			BuildHandler handler = parseInfo != null ? new BuildHandlerImpl(name, parseInfo) : IGNORE_HANDLER;
+			for (int i = 0; i < attributes.getLength(); i++) {
+				QName attrName = new QName(attributes.getURI(i), attributes.getLocalName(i));
+				String attrValue = attributes.getValue(i);
+				handler.setAttribute(attrName, attrValue);
+			}
+			this.states.push(handler);
+			// newBuilderInfo = currentState.getBuilderInstanceFor(temp)
+			// newBuilderInfo.processAttributes(attributes)
+			// stateStack.push(newBuilderInfo)
+			// Ok what do we have to do now.
+			//
+			// 1. We need to create a new Builder suitable for the given URI and local name
+			// 2. We need to call the attributes on the builder (consume them)
+			// 3. We need to push the new builder on a stack in order to add the result of the
+			// builder to the parent in the end element
+		} else {
+			throw new IllegalStateException("Start of Element event occured while not parsing");
+		}
 	}
 
-	public void endElement(String uri, String localName, String name)
-			throws SAXException {
-		// TODO
+	@Override
+	public void endElement(String uri, String localName, String qName) throws SAXException {
+		if (this.parsing.get()) {
+			QName name = new QName(uri, localName);
+			BuildHandler current = this.states.pop();
+			if (this.characterBuffer.length() > 0) {
+				current.addText(this.characterBuffer.toString());
+				this.characterBuffer.setLength(0);
+			}
+			if (this.states.isEmpty()) {
+				this.result = (T) current.getResult();
+			} else {
+				BuildHandler parent = this.states.peek();
+				parent.addElement(name, current.getResult());
+			}
+			// TODO: We need to build() the current builder and keep the result
+			// temp = current.build();
+			// TODO: We need to add the result of the current builder to the parent builder (next on
+			// stack after the current)
+			// current.addToParent(temp);
+		} else {
+			throw new IllegalStateException("Start of Element event occured while not parsing");
+		}
+	}
+	
+	@Override
+	public void characters(char[] ch, int start, int length) throws SAXException {
+		this.characterBuffer.append(ch, start,length);
+	}
+	
+	@Override
+	public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
+		System.out.println("Found ignorable whitespace");
 	}
 
-	// Here we have anything hadling character content
+	@Deprecated
+	private static final BuildHandler IGNORE_HANDLER = new BuildHandler() {
 
-	public void ignorableWhitespace(char[] ch, int start, int length)
-			throws SAXException {
-		// TODO
-	}
+		public void addElement(QName name, Object element) {
+			System.out.println("Element ignore: "+name+ " ("+element+")");
+		}
 
-	public void characters(char[] ch, int start, int length)
-			throws SAXException {
-		// TODO
-	}
+		public void addText(String text) {
+			System.out.println("Text ignore: "+text);
+		}
 
-	// We might want to someday allow processing instructions for the builder
-	// but for now we really ignore them
+		public ParsingInfo getParsingInfo() {
+			// We always return null
+			return null;
+		}
 
-	public void processingInstruction(String target, String data)
-			throws SAXException {
-		// Currently left empty
-	}
+		public Object getResult() {
+			// We create nothing so null returns
+			return null;
+		}
 
-	// Ok what is the skipped entity thing?
+		public void setAttribute(QName name, String value) {
+			System.out.println("Attribute ignore: "+name+ " ("+value+")");
+		}
 
-	public void skippedEntity(String name) throws SAXException {
-		throw new SAXParseException("Cannot resolve entity " + name,
-				this.documentLocator);
-	}
-
+	};
 }

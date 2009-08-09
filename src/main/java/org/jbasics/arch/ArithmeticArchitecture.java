@@ -85,8 +85,4 @@ public final class ArithmeticArchitecture {
 		return INTEGER_BITS == 64;
 	}
 
-	private ArithmeticArchitecture() {
-		// Left empty to avoid accidental instantiation.
-	}
-
 }

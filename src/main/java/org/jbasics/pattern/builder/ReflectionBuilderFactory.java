@@ -40,20 +40,16 @@ public final class ReflectionBuilderFactory<BuildType> implements Factory<Builde
 			throw new IllegalArgumentException("Null parameter: type");
 		}
 		try {
-			this.staticFactoryMethod = buildType
-					.getMethod(BUILDER_FACTORY_METHOD_NAME);
+			this.staticFactoryMethod = buildType.getMethod(BUILDER_FACTORY_METHOD_NAME);
 			if (!Modifier.isStatic(this.staticFactoryMethod.getModifiers())) {
-				throw new RuntimeException(
-						"The method newBuilder must be static on type "
-								+ buildType);
+				throw new RuntimeException("The method newBuilder must be static on type " + buildType);
 			}
 		} catch (NoSuchMethodException e) {
-			throw new RuntimeException(
-					"No \"public static newBuilder()\" factory method on type "
-							+ buildType);
+			throw new RuntimeException("No \"public static newBuilder()\" factory method on type " + buildType);
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public Builder<BuildType> newInstance() {
 		try {
 			return (Builder<BuildType>) this.staticFactoryMethod.invoke(null);
@@ -68,7 +64,11 @@ public final class ReflectionBuilderFactory<BuildType> implements Factory<Builde
 		}
 	}
 
-	public static <T> Factory<Builder<T>> createFactory(Class<T> type) {
+	public Class<? extends Builder> getBuilderClass() {
+		return this.staticFactoryMethod.getReturnType().asSubclass(Builder.class);
+	}
+
+	public static <T> ReflectionBuilderFactory<T> createFactory(Class<T> type) {
 		return new ReflectionBuilderFactory<T>(type);
 	}
 

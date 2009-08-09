@@ -273,6 +273,7 @@ public class ArbitraryInteger implements ArbitraryNumber {
 		return ArbitraryRational.valueOf(this, divisor);
 	}
 	
+	@SuppressWarnings("all" /* since we want to allow the assignment of the parameter here */)
 	public ArbitraryInteger pow(int n) {
 		if (n < 0) {
 			throw new UnsupportedOperationException("negativ exponent currently unsupported since would lead to rational number x^-y = 1/x^y");

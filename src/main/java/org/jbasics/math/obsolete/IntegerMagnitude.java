@@ -24,7 +24,6 @@
  */
 package org.jbasics.math.obsolete;
 
-import org.jbasics.arrays.IntArrayComparator;
 
 public class IntegerMagnitude implements DataStorage<IntegerMagnitude> {
 	public static final IntegerMagnitude ZERO = new IntegerMagnitude();

@@ -22,11 +22,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.parser;
+package org.jbasics.parser.deprecated;
 
 import java.lang.reflect.Method;
 
 import javax.xml.namespace.QName;
+
 
 public class BuildTypeInfo {
 	private Class<?> type;

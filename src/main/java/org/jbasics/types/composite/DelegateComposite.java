@@ -41,7 +41,8 @@ public class DelegateComposite<T> implements MutableDelegate<T>, Composite<T> {
 		this.value = value;
 	}
 
-	public Iterator<Composite<T>> iterator() {
+	@SuppressWarnings("unchecked")
+    public Iterator<Composite<T>> iterator() {
 		if (this.childrean != null) {
 			return this.childrean.iterator();
 		} else {

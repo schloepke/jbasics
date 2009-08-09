@@ -56,8 +56,4 @@ public final class ArrayConstants {
 	 */
 	public static final long[] ZERO_LENGTH_LONG_ARRAY = new long[0];
 
-	private ArrayConstants() {
-		// To avoid accidental instantiation.
-	}
-
 }

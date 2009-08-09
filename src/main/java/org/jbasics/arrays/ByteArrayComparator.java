@@ -82,15 +82,18 @@ public class ByteArrayComparator implements Comparator<byte[]> {
 		if (x == null) {
 			return y == null || y.length == 0 ? 0 : -1;
 		} else if (y == null) {
-			return x == null ? 0 : 1;
+			return 1;
 		} else if (x.length < y.length) {
 			return -1;
 		} else if (x.length > y.length) {
 			return 1;
+		} else if (x.length == 1) {
+			return x[0] == y[0] ? 0 : x[0] < y[0] ? -1 : 1;
 		} else {
+			int k = x.length - 1;
 			int i = 0;
-			while (i < x.length && x[i] == y[i]) {
-				// noting to do here since the break condition is already in the while
+			while (i < k && x[i] == y[i]) {
+				i++;
 			}
 			return x[i] == y[i] ? 0 : x[i] < y[i] ? -1 : 1;
 		}
@@ -106,7 +109,7 @@ public class ByteArrayComparator implements Comparator<byte[]> {
 	public static boolean isZeroOrNull(byte[] x) {
 		if (x != null && x.length > 0) {
 			int i = x.length;
-			while (--i <= 0) {
+			while (--i >= 0) {
 				if (x[i] != 0) {
 					return false;
 				}

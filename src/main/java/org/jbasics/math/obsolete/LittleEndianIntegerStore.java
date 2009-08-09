@@ -79,6 +79,7 @@ public class LittleEndianIntegerStore implements DataStorage<LittleEndianInteger
 		return add(summand, true);
 	}
 
+	@SuppressWarnings("all" /* we want to re assign the parameter to lower stack usage and local varss */)
 	public LittleEndianIntegerStore add(LittleEndianIntegerStore summand, boolean complement) {
 		boolean complementX = false;
 		int[] x = this.magnitude;

@@ -42,6 +42,7 @@ public class Addition {
 		}
 	}
 
+	@SuppressWarnings("all" /* we want to re assign the parameter to lower stack usage and local varss */)
 	public static int[] addYtoX(int[] result, int[] x, int[] y) {
 		if (x.length < y.length) {
 			int[] temp = x;

@@ -72,6 +72,7 @@ class Int32CalculationImpl implements InternalCalculation {
 	 * @param ylen The length from the offset to add (must be less than or equal to xlen).
 	 * @return The addition result in a newly created array
 	 */
+	@SuppressWarnings("all" /* swapping the two sides lhs => rhs and rhs => lhs is better suitable on the parameter to lower stack usage */)
 	public int[] add(int[] x, int[] y, int xoff, int xlen, int yoff, int ylen) {
 		if (xlen < ylen) {
 			int[] t = x;

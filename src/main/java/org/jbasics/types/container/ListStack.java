@@ -55,7 +55,7 @@ public class ListStack<E> implements Stack<E> {
 	public E peek() {
 		List<E> temp = this.stackList.delegate();
 		if (temp.isEmpty()) throw new NoSuchElementException("Stack empty");
-		if (temp instanceof LinkedList) return ((LinkedList<E>) temp).getLast();
+		if (temp instanceof LinkedList<?>) return ((LinkedList<E>) temp).getLast();
 		return temp.get(temp.size() - 1);
 	}
 
@@ -66,7 +66,7 @@ public class ListStack<E> implements Stack<E> {
 	public E pop() {
 		List<E> temp = this.stackList.delegate();
 		if (temp.isEmpty()) throw new NoSuchElementException("Stack empty");
-		if (temp instanceof LinkedList) return ((LinkedList<E>) temp).removeLast();
+		if (temp instanceof LinkedList<?>) return ((LinkedList<E>) temp).removeLast();
 		return temp.remove(temp.size() - 1);
 	}
 

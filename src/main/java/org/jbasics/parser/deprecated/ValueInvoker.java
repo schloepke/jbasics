@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.parser.invoker;
+package org.jbasics.parser.deprecated;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -31,6 +31,7 @@ import java.lang.reflect.Type;
 
 import javax.xml.namespace.QName;
 
+import org.jbasics.parser.invoker.Invoker;
 import org.jbasics.pattern.factory.ParameterFactory;
 
 public class ValueInvoker<InstanceType, ValueType> implements Invoker<InstanceType, String> {

@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.parser.invoker;
+package org.jbasics.parser.deprecated;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

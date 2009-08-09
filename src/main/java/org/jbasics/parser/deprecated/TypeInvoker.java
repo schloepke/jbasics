@@ -22,11 +22,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.parser.invoker;
+package org.jbasics.parser.deprecated;
 
 import javax.xml.namespace.QName;
 
-import org.jbasics.parser.QNameRuleSet;
+import org.jbasics.parser.invoker.Invoker;
 
 public class TypeInvoker<T> {
 	private final Class<T> type;

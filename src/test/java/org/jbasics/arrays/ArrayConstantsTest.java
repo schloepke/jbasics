@@ -22,21 +22,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.parser;
+package org.jbasics.arrays;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
+import static org.junit.Assert.assertTrue;
 
-import javax.xml.namespace.QName;
+import org.junit.Test;
 
-public class AttributeEntry<T> {
-	private Method method;
-	private Method builderMethod;
-	private Constructor<T> builderConstructor;
-	private boolean required;
-	
-	public void setAttribute(QName name, String value) {
-		// TODO:
+public class ArrayConstantsTest {
+
+	@Test
+	public void testDiscouragedConstruction() {
+		new ArrayConstants(); // To trigger the default creator in order to reach 100% test coverage
+	}
+
+	@Test
+	public void testZeroByteArray() {
+		assertTrue(ArrayConstants.ZERO_LENGTH_BYTE_ARRAY != null);
+		assertTrue(ArrayConstants.ZERO_LENGTH_BYTE_ARRAY.length == 0);
+	}
+
+	@Test
+	public void testZeroShortArray() {
+		assertTrue(ArrayConstants.ZERO_LENGTH_SHORT_ARRAY != null);
+		assertTrue(ArrayConstants.ZERO_LENGTH_SHORT_ARRAY.length == 0);
+	}
+
+	@Test
+	public void testZeroIntArray() {
+		assertTrue(ArrayConstants.ZERO_LENGTH_INT_ARRAY != null);
+		assertTrue(ArrayConstants.ZERO_LENGTH_INT_ARRAY.length == 0);
+	}
+
+	@Test
+	public void testZeroLongArray() {
+		assertTrue(ArrayConstants.ZERO_LENGTH_LONG_ARRAY != null);
+		assertTrue(ArrayConstants.ZERO_LENGTH_LONG_ARRAY.length == 0);
 	}
 
 }

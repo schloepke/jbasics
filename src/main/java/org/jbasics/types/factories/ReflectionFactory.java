@@ -67,8 +67,13 @@ public class ReflectionFactory<T> implements Factory<T> {
 			}
 		}
 	}
+	
+	public static <T> Factory<T> create(Class<T> input) {
+		return new ReflectionFactory<T>(input);
+	}
 
-	public T newInstance() {
+	@SuppressWarnings("unchecked")
+    public T newInstance() {
 		try {
 			if (this.staticFactoryMethod != null) {
 				return (T) this.staticFactoryMethod.invoke(null);
