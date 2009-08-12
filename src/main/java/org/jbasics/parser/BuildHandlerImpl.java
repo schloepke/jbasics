@@ -31,6 +31,7 @@ import org.jbasics.parser.invoker.Invoker;
 import org.jbasics.pattern.builder.Builder;
 import org.jbasics.types.Pair;
 
+@SuppressWarnings("unchecked")
 public class BuildHandlerImpl implements BuildHandler {
 	private final ParsingInfo parsingInfo;
 	private final Builder<?> builder;

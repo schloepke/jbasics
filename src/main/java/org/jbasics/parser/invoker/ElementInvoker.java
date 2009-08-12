@@ -31,6 +31,7 @@ import javax.xml.namespace.QName;
 
 import org.jbasics.checker.ContractCheck;
 
+@SuppressWarnings("unchecked")
 public class ElementInvoker<T, E> implements Invoker<T, E> {
 	private final Method method;
 	private final Class<E> dataClass;

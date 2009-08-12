@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
 @Target( { ElementType.METHOD })
 public @interface Attribute {
 
-	String namespace();
+	String namespace() default "";
 
 	String name();
 	

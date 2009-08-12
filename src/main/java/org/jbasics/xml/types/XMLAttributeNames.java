@@ -22,39 +22,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.parser.deprecated;
+package org.jbasics.xml.types;
 
-import java.lang.reflect.Method;
-
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
+/**
+ * Constant class holding the standard XML attributes from the xml:* namespace.
+ * 
+ * @author Stephan Schloepke
+ */
+public final class XMLAttributeNames {
+	/**
+	 * The standard xml:base attribute name.
+	 */
+	public static final QName XML_BASE_QNAME = new QName(XMLConstants.XML_NS_URI, "base", XMLConstants.XML_NS_PREFIX);
+	/**
+	 * The standard xml:lang attribute name.
+	 */
+	public static final QName XML_LANG_QNAME = new QName(XMLConstants.XML_NS_URI, "lang", XMLConstants.XML_NS_PREFIX);
+	/**
+	 * The standard xml:space attribute name.
+	 */
+	public static final QName XML_SPACE_QNAME = new QName(XMLConstants.XML_NS_URI, "space", XMLConstants.XML_NS_PREFIX);
 
-public class BuildTypeInfo {
-	private Class<?> type;
-	private QNameRuleSet<Entry> attributes;
-	private QNameRuleSet<Entry> elements;
-	
-	public QNameRuleSet<Entry> getAttributeMethods() {
-		if (this.attributes == null) {
-			this.attributes = new QNameRuleSet<Entry>();
-		}
-		return this.attributes;
-	}
-	
-	public void temp() {
-		getAttributeMethods();
-	}
-
-	public static class Entry {
-		private Method m;
-		private int minOccurs;
-		private int maxOccurs;
-		private Class<?> type;
-	}
-	
-	public static class ValidationEntry {
-		private QName name;
-		private int minOccurs;
-		private int maxOccurs;
-	}
 }

@@ -64,6 +64,7 @@ public final class ReflectionBuilderFactory<BuildType> implements Factory<Builde
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public Class<? extends Builder> getBuilderClass() {
 		return this.staticFactoryMethod.getReturnType().asSubclass(Builder.class);
 	}

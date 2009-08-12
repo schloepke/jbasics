@@ -25,6 +25,7 @@
 package org.jbasics.parser;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -49,7 +50,9 @@ import org.jbasics.pattern.factory.Factory;
 import org.jbasics.types.Pair;
 import org.jbasics.types.factories.ReflectionFactory;
 
+@SuppressWarnings("unchecked")
 public class AnnotationScanner {
+	private final Map<Class<? extends Builder>, ParsingInfo> parsedBuilders = new HashMap<Class<? extends Builder>, ParsingInfo>();
 
 	public Map<QName, ParsingInfo> scan(Class<?>... root) {
 		if (root == null || root.length == 0) {
@@ -92,6 +95,7 @@ public class AnnotationScanner {
 	private ParsingInfoBuilder scanType(ParsingInfoBuilder builder, Class<? extends Builder> builderType,
 			Factory<? extends Builder> builderFactory) {
 		assert builderType != null;
+		builder.setBuilderType(builderType);
 		if (builderFactory != null) {
 			builder.setBuilderFactory(builderFactory);
 		} else {
@@ -104,7 +108,8 @@ public class AnnotationScanner {
 			Element directElement = m.getAnnotation(Element.class);
 			AnyElement anyElement = m.getAnnotation(AnyElement.class);
 			Content contentElement = m.getAnnotation(Content.class);
-			if (isMoreThanNotNull(qualifiedName, directAttribute, anyAttribute, directElement, anyElement, contentElement)) {
+			if (isMoreThanNotNull(qualifiedName, directAttribute, anyAttribute, directElement, anyElement,
+					contentElement)) {
 				throw new IllegalArgumentException("Cannot have more than one type of annotaion on method "
 						+ m.getName());
 			}
@@ -123,7 +128,7 @@ public class AnnotationScanner {
 
 	private void processContent(ParsingInfoBuilder builder, Class<? extends Builder> builderType, Method m,
 			Content contentElement) {
-		if(contentElement.mixed()) {
+		if (contentElement.mixed()) {
 			throw new UnsupportedOperationException("Mixed content is not yet implemented");
 		} else {
 			builder.setContentInvoker(ContentInvoker.createInvoker(builderType, m));
@@ -149,11 +154,6 @@ public class AnnotationScanner {
 		Class<?> type = null;
 		if (params.length == 1) {
 			type = params[0];
-// } else if (params.length == 2) {
-// if (params[0] != QName.class) {
-// throw new IllegalArgumentException("Wrong method signature");
-// }
-// type = params[1];
 		} else {
 			throw new IllegalArgumentException("Wrong signature for element method");
 		}
@@ -163,13 +163,24 @@ public class AnnotationScanner {
 		// return type would be the builder class
 		// 2. Annotate the builder class at the instance type with a BuilderAnnotation
 		// 3. Annotate the builder in the element description
-		ReflectionBuilderFactory<?> factory = ReflectionBuilderFactory.createFactory(type);
-		ParsingInfoBuilder sub = scanType(new ParsingInfoBuilder(), factory.getBuilderClass(), factory);
-		// TODO: We need to somehow add this thing do we?
-
-		Pair<ParsingInfo, Invoker<?, ?>> x = new Pair<ParsingInfo, Invoker<?, ?>>(sub.build(), ElementInvoker
-				.createInvoker(factory.getBuilderClass(), type, m));
-
+		ParsingInfo subInfo = null;
+		try {
+			ReflectionBuilderFactory<?> factory = ReflectionBuilderFactory.createFactory(type);
+			if (factory.getBuilderClass() == builder.getBuilderType()) {
+				// this is a bad work arround we need to fix later
+				subInfo = ParsingInfo.SELF;
+			} else {
+				subInfo = scanType(new ParsingInfoBuilder(), factory.getBuilderClass(), factory).build();
+			}
+		} catch (RuntimeException e) {
+			subInfo = scanType(new ParsingInfoBuilder(), SimpleTypeBuilder.class, SimpleTypeBuilder.BuilderFactory.createFactory(type)).build();
+		}
+		// TODO: The builderType cannot be right here can it? It should be the builder on which the
+		// element to add right? That however is another
+		// one than the builder of the element we now want to add! So the parsing info could
+		// possible have the right builder set
+		Pair<ParsingInfo, Invoker<?, ?>> x = new Pair<ParsingInfo, Invoker<?, ?>>(subInfo, ElementInvoker
+				.createInvoker(builder.getBuilderType(), type, m));
 		if (directElement != null) {
 			QName qualifiedName = new QName(directElement.namespace(), directElement.name());
 			builder.addElement(qualifiedName, x);

@@ -36,7 +36,9 @@ import org.jbasics.pattern.builder.Builder;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.types.Pair;
 
+@SuppressWarnings("unchecked")
 public class ParsingInfoBuilder implements Builder<Object> {
+	private Class<? extends Builder> builderType;
 	private Factory<? extends Builder> builderFactory;
 	private Invoker<?, QName> qualifiedNameInvoker;
 	private Map<QName, Invoker<?, String>> attributeInvokers;
@@ -71,6 +73,7 @@ public class ParsingInfoBuilder implements Builder<Object> {
 	}
 
 	public void reset() {
+		this.builderType = null;
 		this.builderFactory = null;
 		this.qualifiedNameInvoker = null;
 		if (this.attributeInvokers != null) {
@@ -147,6 +150,15 @@ public class ParsingInfoBuilder implements Builder<Object> {
 					+ ". Duplicate " + invoker);
 		}
 		this.contentInvoker = ContractCheck.mustNotBeNull(invoker, "invoker");
+		return this;
+	}
+	
+	public Class<? extends Builder> getBuilderType() {
+		return this.builderType;
+	}
+	
+	public ParsingInfoBuilder setBuilderType(Class<? extends Builder> builderType) {
+		this.builderType = builderType;
 		return this;
 	}
 

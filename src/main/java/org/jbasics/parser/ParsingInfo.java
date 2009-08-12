@@ -34,7 +34,10 @@ import org.jbasics.pattern.builder.Builder;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.types.Pair;
 
+@SuppressWarnings("unchecked")
 public class ParsingInfo {
+	public static final ParsingInfo SELF = new ParsingInfo();
+	
 	private final Factory<? extends Builder> builderFactory;
 	private final Invoker<?, QName> qualifiedNameInvoker;
 	private final Map<QName, Invoker<?, String>> attributeInvokers;
@@ -43,6 +46,17 @@ public class ParsingInfo {
 	private final Pair<ParsingInfo, Invoker<?, ?>> defaultElementInvoker;
 	private final Invoker<?, String> contentInvoker;
 
+	private ParsingInfo() {
+		// To create self;
+		this.builderFactory = null;
+		this.qualifiedNameInvoker = null;
+		this.attributeInvokers = null;
+		this.defaultAttributeInvoker = null;
+		this.elementInvokers = null;
+		this.defaultElementInvoker = null;
+		this.contentInvoker = null;
+	}
+	
 	protected ParsingInfo(Factory<? extends Builder> builderFactory, Invoker<?, QName> qualifiedNameInvoker,
 			Map<QName, Invoker<?, String>> attributeInvokers, Invoker<?, String> defaultAttributeInvoker,
 			Map<QName, Pair<ParsingInfo, Invoker<?, ?>>> elementInvokers,
@@ -82,6 +96,9 @@ public class ParsingInfo {
 		Pair<ParsingInfo, Invoker<?, ?>> temp = this.elementInvokers.get(name);
 		if (temp == null) {
 			temp = this.defaultElementInvoker;
+		}
+		if (temp != null && temp.first() == SELF) {
+			temp = new Pair<ParsingInfo, Invoker<?,?>>(this, temp.second());
 		}
 		return temp;
 	}
