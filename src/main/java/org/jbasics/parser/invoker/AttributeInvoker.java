@@ -75,6 +75,9 @@ public class AttributeInvoker<T> implements Invoker<T, String> {
 				this.method.invoke(instance, temp);
 			}
 		} catch (InvocationTargetException e) {
+			if (e.getCause() instanceof RuntimeException) {
+				throw (RuntimeException)e.getCause();
+			}
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);

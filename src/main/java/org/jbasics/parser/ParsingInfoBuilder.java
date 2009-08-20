@@ -84,6 +84,7 @@ public class ParsingInfoBuilder implements Builder<Object> {
 			this.elementInvokers.clear();
 		}
 		this.anyElementInvoker = null;
+		this.contentInvoker = null;
 	}
 
 	public ParsingInfoBuilder setBuilderFactory(Factory<? extends Builder> builderFactory) {

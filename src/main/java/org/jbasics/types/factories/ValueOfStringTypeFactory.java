@@ -35,8 +35,6 @@ import java.util.Map;
 
 import org.jbasics.pattern.factory.ParameterFactory;
 
-
-
 /**
  * Listenbeschreibung
  * <p>
@@ -50,22 +48,21 @@ public class ValueOfStringTypeFactory<InstanceType> implements ParameterFactory<
 	private final Constructor<InstanceType> stringConstructor;
 
 	private static Reference<Map<Class<?>, ValueOfStringTypeFactory<?>>> factoryCache;
-	
+
 	@SuppressWarnings("unchecked")
 	public synchronized static <T> ParameterFactory<T, String> getFactoryFor(Class<T> type) {
 		Map<Class<?>, ValueOfStringTypeFactory<?>> cacheMap = factoryCache != null ? factoryCache.get() : null;
-		ValueOfStringTypeFactory<T> result = cacheMap != null ? (ValueOfStringTypeFactory<T>) cacheMap.get(type) : null; 
+		ValueOfStringTypeFactory<T> result = cacheMap != null ? (ValueOfStringTypeFactory<T>) cacheMap.get(type) : null;
 		if (result == null) {
 			result = new ValueOfStringTypeFactory<T>(type);
 			if (cacheMap == null) {
 				cacheMap = new HashMap<Class<?>, ValueOfStringTypeFactory<?>>();
-				factoryCache = new SoftReference<Map<Class<?>,ValueOfStringTypeFactory<?>>>(cacheMap);
+				factoryCache = new SoftReference<Map<Class<?>, ValueOfStringTypeFactory<?>>>(cacheMap);
 			}
 			cacheMap.put(type, result);
 		}
 		return result;
 	}
-	
 
 	private ValueOfStringTypeFactory(Class<InstanceType> type) {
 		if (type == null) {
@@ -75,7 +72,8 @@ public class ValueOfStringTypeFactory<InstanceType> implements ParameterFactory<
 		if (this.valueOfMethod == null) {
 			this.stringConstructor = getStringConstructor(type);
 			if (this.stringConstructor == null) {
-				throw new RuntimeException("Cannot find static valueOf(String) method or string constructor");
+				throw new RuntimeException("Cannot find static valueOf(String) method or string constructor (" + type
+						+ ")");
 			}
 		} else if (!type.isAssignableFrom(this.valueOfMethod.getReturnType())) {
 			throw new RuntimeException("Type of the valueOf(String) method does not match with the type to create");
@@ -133,5 +131,5 @@ public class ValueOfStringTypeFactory<InstanceType> implements ParameterFactory<
 			return null;
 		}
 	}
-	
+
 }

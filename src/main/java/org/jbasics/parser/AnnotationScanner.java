@@ -36,6 +36,7 @@ import org.jbasics.parser.annotations.AnyElement;
 import org.jbasics.parser.annotations.Attribute;
 import org.jbasics.parser.annotations.Content;
 import org.jbasics.parser.annotations.Element;
+import org.jbasics.parser.annotations.ElementBuilder;
 import org.jbasics.parser.annotations.ElementImplementor;
 import org.jbasics.parser.annotations.ElementImplementors;
 import org.jbasics.parser.annotations.QualifiedName;
@@ -88,8 +89,18 @@ public class AnnotationScanner {
 	}
 
 	private <T> ParsingInfoBuilder scan(ParsingInfoBuilder builder, Class<T> implClass) {
-		ReflectionBuilderFactory<T> factory = ReflectionBuilderFactory.createFactory(implClass);
-		return scanType(builder, factory.getBuilderClass(), factory);
+		ElementBuilder temp = implClass.getAnnotation(ElementBuilder.class);
+		Class<? extends Builder> builderType;
+		Factory<? extends Builder> factory;
+		if (temp != null) {
+			builderType = temp.value();
+			factory = ReflectionFactory.create(builderType);
+		} else {
+			ReflectionBuilderFactory<T> tempFactory = ReflectionBuilderFactory.createFactory(implClass);
+			builderType = tempFactory.getBuilderClass();
+			factory = tempFactory;
+		}
+		return scanType(builder, builderType, factory);
 	}
 
 	private ParsingInfoBuilder scanType(ParsingInfoBuilder builder, Class<? extends Builder> builderType,
@@ -163,17 +174,30 @@ public class AnnotationScanner {
 		// return type would be the builder class
 		// 2. Annotate the builder class at the instance type with a BuilderAnnotation
 		// 3. Annotate the builder in the element description
-		ParsingInfo subInfo = null;
+		Class<? extends Builder> subBuilderType = null;
+		Factory<? extends Builder> subBuilderFactory = null;
 		try {
-			ReflectionBuilderFactory<?> factory = ReflectionBuilderFactory.createFactory(type);
-			if (factory.getBuilderClass() == builder.getBuilderType()) {
-				// this is a bad work arround we need to fix later
-				subInfo = ParsingInfo.SELF;
+			ElementBuilder temp = m.getAnnotation(ElementBuilder.class);
+			if (temp == null) {
+				temp = type.getAnnotation(ElementBuilder.class);
+			}
+			if (temp != null) {
+				subBuilderType = temp.value();
+				subBuilderFactory = ReflectionFactory.create(subBuilderType);
 			} else {
-				subInfo = scanType(new ParsingInfoBuilder(), factory.getBuilderClass(), factory).build();
+				ReflectionBuilderFactory<?> tempFactory = ReflectionBuilderFactory.createFactory(type);
+				subBuilderType = tempFactory.getBuilderClass();
+				subBuilderFactory = tempFactory;
 			}
 		} catch (RuntimeException e) {
-			subInfo = scanType(new ParsingInfoBuilder(), SimpleTypeBuilder.class, SimpleTypeBuilder.BuilderFactory.createFactory(type)).build();
+			subBuilderType = SimpleTypeBuilder.class;
+			subBuilderFactory = SimpleTypeBuilder.BuilderFactory.createFactory(type);
+		}
+		ParsingInfo subInfo = null;
+		if (subBuilderType == builder.getBuilderType()) {
+			subInfo = ParsingInfo.SELF;
+		} else {
+			subInfo = scanType(new ParsingInfoBuilder(), subBuilderType, subBuilderFactory).build();
 		}
 		// TODO: The builderType cannot be right here can it? It should be the builder on which the
 		// element to add right? That however is another

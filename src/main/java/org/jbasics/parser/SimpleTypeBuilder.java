@@ -42,14 +42,14 @@ public class SimpleTypeBuilder<T> implements Builder<T> {
 	private Map<QName, String> attributes;
 
 	public static class BuilderFactory<T> implements Factory<Builder<T>> {
-		private final Class<T> type;
+		private final ParameterFactory<T, String> typeFactory;
 
 		private BuilderFactory(Class<T> type) {
-			this.type = type;
+			this.typeFactory = ValueOfStringTypeFactory.getFactoryFor(type);
 		}
 
 		public Builder<T> newInstance() {
-			return new SimpleTypeBuilder<T>(this.type);
+			return new SimpleTypeBuilder<T>(this.typeFactory);
 		}
 
 		public static <T> Factory<Builder<T>> createFactory(Class<T> type) {
@@ -58,8 +58,8 @@ public class SimpleTypeBuilder<T> implements Builder<T> {
 
 	}
 
-	protected SimpleTypeBuilder(Class<T> type) {
-		this.typeFactory = ValueOfStringTypeFactory.getFactoryFor(type);
+	protected SimpleTypeBuilder(ParameterFactory<T, String> typeFactory) {
+		this.typeFactory = typeFactory;
 	}
 
 	public T build() {

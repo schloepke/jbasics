@@ -24,7 +24,6 @@
  */
 package org.jbasics.parser;
 
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.xml.namespace.QName;
@@ -32,19 +31,22 @@ import javax.xml.namespace.QName;
 import org.jbasics.parser.invoker.Invoker;
 import org.jbasics.types.Pair;
 import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 @SuppressWarnings("unchecked")
 public class BuilderContentHandler<T> extends DefaultHandler {
-	private final Map<QName, ParsingInfo> context;
+	private final BuilderParserContext<T> context;
 	private final AtomicBoolean parsing;
 	private StateStack<BuildHandler> states;
 	private T result;
 	private StringBuilder characterBuffer;
+	private Locator locator;
 
-	public BuilderContentHandler(Class<? extends T> root) {
-		this.context = new AnnotationScanner().scan(root);
+	public BuilderContentHandler(BuilderParserContext<T> context) {
+		this.context = context;
 		this.parsing = new AtomicBoolean(false);
 	}
 
@@ -74,46 +76,58 @@ public class BuilderContentHandler<T> extends DefaultHandler {
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		if (this.parsing.get()) {
-			QName name = new QName(uri, localName);
-			ParsingInfo parseInfo = null;
-			if (this.states.isEmpty()) {
-				// Root processing
-				parseInfo = this.context.get(name);
-				if (parseInfo == null) {
-					throw new SAXException("Unknown root element " + name);
-				}
-			} else {
-				BuildHandler current = this.states.peek();
-				if (this.characterBuffer.length() > 0) {
-					current.addText(this.characterBuffer.toString());
-					this.characterBuffer.setLength(0);
-				}
-				parseInfo = current.getParsingInfo();
-				if (parseInfo != null) {
-					Pair<ParsingInfo, Invoker<?, ?>> x = parseInfo.getElementInvoker(name);
-					if (x != null) {
-						parseInfo = x.first();
-					} else {
-						parseInfo = null;
+			try {
+				QName name = new QName(uri, localName);
+				ParsingInfo parseInfo = null;
+				if (this.states.isEmpty()) {
+					// Root processing
+					parseInfo = this.context.getParsingInfo(name);
+					if (parseInfo == null) {
+						throw new SAXException("Unknown root element " + name);
+					}
+				} else {
+					BuildHandler current = this.states.peek();
+					if (this.characterBuffer.length() > 0) {
+						current.addText(this.characterBuffer.toString());
+						this.characterBuffer.setLength(0);
+					}
+					parseInfo = current.getParsingInfo();
+					if (parseInfo != null) {
+						Pair<ParsingInfo, Invoker<?, ?>> x = parseInfo.getElementInvoker(name);
+						if (x != null) {
+							parseInfo = x.first();
+						} else {
+							parseInfo = null;
+						}
 					}
 				}
+				if (parseInfo == null) {
+					StringBuilder message = new StringBuilder("Unrecognized element ").append(name);
+					if (this.locator != null) {
+						message.append(" (").append(this.locator.getLineNumber()).append("/").append(
+								this.locator.getColumnNumber()).append(")");
+					}
+					throw new SAXParseException(message.toString(), this.locator);
+				}
+				BuildHandler handler = new BuildHandlerImpl(name, parseInfo);
+				for (int i = 0; i < attributes.getLength(); i++) {
+					QName attrName = new QName(attributes.getURI(i), attributes.getLocalName(i));
+					String attrValue = attributes.getValue(i);
+					handler.setAttribute(attrName, attrValue);
+				}
+				this.states.push(handler);
+				// newBuilderInfo = currentState.getBuilderInstanceFor(temp)
+				// newBuilderInfo.processAttributes(attributes)
+				// stateStack.push(newBuilderInfo)
+				// Ok what do we have to do now.
+				//
+				// 1. We need to create a new Builder suitable for the given URI and local name
+				// 2. We need to call the attributes on the builder (consume them)
+				// 3. We need to push the new builder on a stack in order to add the result of the
+				// builder to the parent in the end element
+			} catch (RuntimeException eo) {
+				throw createParsingException(eo);
 			}
-			BuildHandler handler = parseInfo != null ? new BuildHandlerImpl(name, parseInfo) : IGNORE_HANDLER;
-			for (int i = 0; i < attributes.getLength(); i++) {
-				QName attrName = new QName(attributes.getURI(i), attributes.getLocalName(i));
-				String attrValue = attributes.getValue(i);
-				handler.setAttribute(attrName, attrValue);
-			}
-			this.states.push(handler);
-			// newBuilderInfo = currentState.getBuilderInstanceFor(temp)
-			// newBuilderInfo.processAttributes(attributes)
-			// stateStack.push(newBuilderInfo)
-			// Ok what do we have to do now.
-			//
-			// 1. We need to create a new Builder suitable for the given URI and local name
-			// 2. We need to call the attributes on the builder (consume them)
-			// 3. We need to push the new builder on a stack in order to add the result of the
-			// builder to the parent in the end element
 		} else {
 			throw new IllegalStateException("Start of Element event occured while not parsing");
 		}
@@ -122,62 +136,57 @@ public class BuilderContentHandler<T> extends DefaultHandler {
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		if (this.parsing.get()) {
-			QName name = new QName(uri, localName);
-			BuildHandler current = this.states.pop();
-			if (this.characterBuffer.length() > 0) {
-				current.addText(this.characterBuffer.toString());
-				this.characterBuffer.setLength(0);
+			try {
+				QName name = new QName(uri, localName);
+				BuildHandler current = this.states.pop();
+				if (this.characterBuffer.length() > 0) {
+					current.addText(this.characterBuffer.toString());
+					this.characterBuffer.setLength(0);
+				}
+				if (this.states.isEmpty()) {
+					this.result = (T) current.getResult();
+				} else {
+					BuildHandler parent = this.states.peek();
+					parent.addElement(name, current.getResult());
+				}
+			} catch (RuntimeException e) {
+				throw createParsingException(e);
 			}
-			if (this.states.isEmpty()) {
-				this.result = (T) current.getResult();
-			} else {
-				BuildHandler parent = this.states.peek();
-				parent.addElement(name, current.getResult());
-			}
-			// TODO: We need to build() the current builder and keep the result
-			// temp = current.build();
-			// TODO: We need to add the result of the current builder to the parent builder (next on
-			// stack after the current)
-			// current.addToParent(temp);
 		} else {
 			throw new IllegalStateException("Start of Element event occured while not parsing");
 		}
 	}
-	
+
 	@Override
 	public void characters(char[] ch, int start, int length) throws SAXException {
-		this.characterBuffer.append(ch, start,length);
+		this.characterBuffer.append(ch, start, length);
 	}
-	
+
 	@Override
 	public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
 		System.out.println("Found ignorable whitespace");
 	}
 
-	@Deprecated
-	private static final BuildHandler IGNORE_HANDLER = new BuildHandler() {
+	@Override
+	public void setDocumentLocator(Locator locator) {
+		super.setDocumentLocator(locator);
+		this.locator = locator;
+	}
 
-		public void addElement(QName name, Object element) {
-			System.out.println("Element ignore: "+name+ " ("+element+")");
+	private SAXParseException createParsingException(RuntimeException eo) {
+		Throwable e = eo;
+		while (e.getCause() != null && e.getCause() != e) {
+			e = e.getCause();
 		}
-
-		public void addText(String text) {
-			System.out.println("Text ignore: "+text);
+		StringBuilder message = new StringBuilder();
+		message.append("[").append(e.getClass().getSimpleName()).append("] ").append(e.getMessage());
+		if (this.locator != null) {
+			message.append(" (").append(this.locator.getLineNumber()).append("/")
+					.append(this.locator.getColumnNumber()).append(")");
 		}
+		SAXParseException en = new SAXParseException(message.toString(), this.locator);
+		en.setStackTrace(e.getStackTrace());
+		return en;
+	}
 
-		public ParsingInfo getParsingInfo() {
-			// We always return null
-			return null;
-		}
-
-		public Object getResult() {
-			// We create nothing so null returns
-			return null;
-		}
-
-		public void setAttribute(QName name, String value) {
-			System.out.println("Attribute ignore: "+name+ " ("+value+")");
-		}
-
-	};
 }
