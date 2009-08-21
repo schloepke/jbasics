@@ -29,7 +29,7 @@ import javax.xml.namespace.QName;
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.parser.invoker.Invoker;
 import org.jbasics.pattern.builder.Builder;
-import org.jbasics.types.Pair;
+import org.jbasics.types.tuples.Pair;
 
 @SuppressWarnings("unchecked")
 public class BuildHandlerImpl implements BuildHandler {

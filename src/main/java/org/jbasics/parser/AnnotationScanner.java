@@ -48,8 +48,8 @@ import org.jbasics.parser.invoker.QualifiedNameInvoker;
 import org.jbasics.pattern.builder.Builder;
 import org.jbasics.pattern.builder.ReflectionBuilderFactory;
 import org.jbasics.pattern.factory.Factory;
-import org.jbasics.types.Pair;
 import org.jbasics.types.factories.ReflectionFactory;
+import org.jbasics.types.tuples.Pair;
 
 @SuppressWarnings("unchecked")
 public class AnnotationScanner {

@@ -32,6 +32,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.jbasics.testing.Java14LoggingTestCase;
+import org.jbasics.types.tuples.Pair;
 import org.junit.Test;
 
 public class PairTest extends Java14LoggingTestCase {

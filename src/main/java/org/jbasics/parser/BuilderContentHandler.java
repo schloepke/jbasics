@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.xml.namespace.QName;
 
 import org.jbasics.parser.invoker.Invoker;
-import org.jbasics.types.Pair;
+import org.jbasics.types.tuples.Pair;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;

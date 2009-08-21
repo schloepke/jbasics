@@ -26,7 +26,7 @@ package org.jbasics.pattern.builder;
 
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.testing.Java14LoggingTestCase;
-import org.jbasics.types.Pair;
+import org.jbasics.types.tuples.Pair;
 import org.junit.Test;
 
 public class ReflectionBuilderFactoryTest extends Java14LoggingTestCase {

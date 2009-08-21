@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.types;
+package org.jbasics.types.tuples;
 
 /**
  * Immutable type to hold a pair of two values each having its own generic type.
@@ -32,7 +32,7 @@ package org.jbasics.types;
  * @param <LeftType> The type of the left value of the pair (or first value).
  * @param <RightType> The type of the right value of the pair (or second value).
  */
-public class Pair<LeftType, RightType> {
+public class Pair<LeftType, RightType> implements Tuple<LeftType, RightType> {
 	private static final String NULL_STRING_VALUE = "#null#";
 
 	private final LeftType left;
@@ -70,6 +70,15 @@ public class Pair<LeftType, RightType> {
 	 */
 	public RightType right() {
 		return this.right;
+	}
+
+	/**
+	 * Returns the size of this 2-Tuple.
+	 * 
+	 * @return The size which is always 2.
+	 */
+	public int size() {
+		return 2;
 	}
 
 	/**
@@ -121,11 +130,7 @@ public class Pair<LeftType, RightType> {
 	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((this.left == null) ? 0 : this.left.hashCode());
-		result = prime * result + ((this.right == null) ? 0 : this.right.hashCode());
-		return result;
+		return (17 + ((this.left == null) ? 0 : this.left.hashCode())) * 17 + ((this.right == null) ? 0 : this.right.hashCode());
 	}
 
 	/*
@@ -134,16 +139,26 @@ public class Pair<LeftType, RightType> {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (!(obj instanceof Pair<?, ?>)) return false;
+		if (this == obj) {
+			return true;
+		} else if (obj == null || !(obj instanceof Pair<?, ?>)) {
+			return false;
+		}
 		Pair<?, ?> other = (Pair<?, ?>) obj;
 		if (this.left == null) {
-			if (other.left != null) return false;
-		} else if (!this.left.equals(other.left)) return false;
+			if (other.left != null) {
+				return false;
+			}
+		} else if (!this.left.equals(other.left)) {
+			return false;
+		}
 		if (this.right == null) {
-			if (other.right != null) return false;
-		} else if (!this.right.equals(other.right)) return false;
+			if (other.right != null) {
+				return false;
+			}
+		} else if (!this.right.equals(other.right)) {
+			return false;
+		}
 		return true;
 	}
 
