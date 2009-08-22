@@ -22,57 +22,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.arrays;
+package org.jbasics.checker;
 
-/**
- * Often used constant arrays.
- * 
- * @author Stephan Schloepke
- * @since 1.0
- */
-public final class ArrayConstants {
-	/**
-	 * A zero length byte array constant.
-	 * 
-	 * @since 1.0
-	 */
-	public static final byte[] ZERO_LENGTH_BYTE_ARRAY = new byte[0];
-	/**
-	 * A zero length short array constant.
-	 * 
-	 * @since 1.0
-	 */
-	public static final short[] ZERO_LENGTH_SHORT_ARRAY = new short[0];
-	/**
-	 * A zero length integer array constant.
-	 * 
-	 * @since 1.0
-	 */
-	public static final int[] ZERO_LENGTH_INT_ARRAY = new int[0];
-	/**
-	 * A zero length long array constant.
-	 * 
-	 * @since 1.0
-	 */
-	public static final long[] ZERO_LENGTH_LONG_ARRAY = new long[0];
+import org.jbasics.localize.LocalizedRuntimeException;
 
-	/**
-	 * A zero length {@link Object} array constant.
-	 * 
-	 * @since 1.0
-	 */
-	public static final Object[] ZERO_LENGTH_OBJECT_ARRAY = new Object[0];
+public final class ContractViolationException extends LocalizedRuntimeException {
 
-	/**
-	 * Returns a zero length array of type T.
-	 * 
-	 * @param <T> The type of the array.
-	 * @return The {@link #ZERO_LENGTH_OBJECT_ARRAY} casted to the type T
-	 * @since 1.0
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T> T[] zeroLegnthArray() {
-		return (T[]) ZERO_LENGTH_OBJECT_ARRAY;
+	public ContractViolationException(String messageKey, Object... arguments) {
+		super(ContractCheck.class, messageKey, arguments);
 	}
 
 }

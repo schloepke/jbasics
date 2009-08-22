@@ -29,6 +29,7 @@ import static org.junit.Assert.fail;
 
 import java.math.BigInteger;
 
+import org.jbasics.checker.ContractViolationException;
 import org.jbasics.math.obsolete.ComplementHelper;
 import org.junit.Test;
 
@@ -78,13 +79,13 @@ public class ComplementHelperTest {
 		try {
 			ComplementHelper.bigEndianTwoComplementAbsolut(null);
 			fail("ComplementHalper.bigEndianTwoComplementAbsolut(byte[]) accepts null value");
-		} catch (IllegalArgumentException e) {
+		} catch (ContractViolationException e) {
 			// expected
 		}
 		try {
 			ComplementHelper.bigEndianTwoComplementAbsolut(new byte[0]);
 			fail("ComplementHalper.bigEndianTwoComplementAbsolut(byte[]) accepts empty value");
-		} catch (IllegalArgumentException e) {
+		} catch (ContractViolationException e) {
 			// expected
 		}
 	}

@@ -24,97 +24,106 @@
  */
 package org.jbasics.checker;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
+import java.math.BigDecimal;
+import java.util.Locale;
+import java.util.regex.Pattern;
+
+import org.jbasics.localize.LocalizedMessageAccessor;
 import org.junit.Test;
 
 public class ContractCheckTest {
 
 	@Test
 	public void testDiscouragedConstruction() {
-		// Only here to get 100% coverage since it is never required nor really useful to instanciate this class
+		// Only here to get 100% coverage since it is never required nor really useful to
+		// instanciate this class
 		new ContractCheck();
 	}
-	
+
 	@Test
 	public void testMustNotBeNull() {
+		LocalizedMessageAccessor.setCurrentThreadDefaultLocale(Locale.FRANCE);
 		try {
 			ContractCheck.mustNotBeNull(null, "test");
-			fail("ContractCheck.mustNotBeNull(null, <NonNull>) did not throw an IllegalArgumentException");
-		} catch(IllegalArgumentException e) {
+			fail("ContractViolationException expected");
+		} catch (ContractViolationException e) {
 			// This is the correct behavior
 		}
 		try {
 			ContractCheck.mustNotBeNull(null, null);
-			fail("ContractCheck.mustNotBeNull(null, null) did not throw an IllegalArgumentException");
-		} catch(IllegalArgumentException e) {
+			fail("ContractViolationException expected");
+		} catch (ContractViolationException e) {
 			// This is the correct behavior
 		}
 		try {
 			String temp = "MyTest";
 			assertEquals(temp, ContractCheck.mustNotBeNull(temp, "test"));
-		} catch(IllegalArgumentException e) {
-			fail("ContractCheck.mustNotBeNull(<NonNull>, ?) did throw an IllegalArgumentException");
+		} catch (ContractViolationException e) {
+			fail("Unexpected ContractViolationException");
 		}
 	}
 
 	@Test
 	public void testMustNotBeNullOrEmptyTArrayString() {
 		try {
-			ContractCheck.mustNotBeNullOrEmpty((String[])null, "test");
-			fail("IllegalArgumentException expected");
-		} catch(IllegalArgumentException e) {
+			ContractCheck.mustNotBeNullOrEmpty((String[]) null, "test");
+			fail("ContractViolationException expected");
+		} catch (ContractViolationException e) {
 			// This is the correct behavior
 		}
 		try {
-			ContractCheck.mustNotBeNullOrEmpty((String[])null, null);
-			fail("IllegalArgumentException expected");
-		} catch(IllegalArgumentException e) {
+			ContractCheck.mustNotBeNullOrEmpty((String[]) null, null);
+			fail("ContractViolationException expected");
+		} catch (ContractViolationException e) {
 			// This is the correct behavior
 		}
 		try {
 			ContractCheck.mustNotBeNullOrEmpty(new String[0], "test");
-			fail("IllegalArgumentException expected");
-		} catch(IllegalArgumentException e) {
+			fail("ContractViolationException expected");
+		} catch (ContractViolationException e) {
 			// This is the correct behavior
 		}
 		try {
 			ContractCheck.mustNotBeNullOrEmpty(new String[0], null);
-			fail("IllegalArgumentException expected");
-		} catch(IllegalArgumentException e) {
+			fail("ContractViolationException expected");
+		} catch (ContractViolationException e) {
 			// This is the correct behavior
 		}
-		String[] temp = new String[]{"1", "2", "3"};
+		String[] temp = new String[] { "1", "2", "3" };
 		assertArrayEquals(temp, ContractCheck.mustNotBeNullOrEmpty(temp, "test"));
 	}
 
 	@Test
 	public void testMustNotBeNullOrEmptyByteArrayString() {
 		try {
-			ContractCheck.mustNotBeNullOrEmpty((byte[])null, "test");
-			fail("IllegalArgumentException expected");
-		} catch(IllegalArgumentException e) {
+			ContractCheck.mustNotBeNullOrEmpty((byte[]) null, "test");
+			fail("ContractViolationException expected");
+		} catch (ContractViolationException e) {
 			// This is the correct behavior
 		}
 		try {
-			ContractCheck.mustNotBeNullOrEmpty((byte[])null, null);
-			fail("IllegalArgumentException expected");
-		} catch(IllegalArgumentException e) {
+			ContractCheck.mustNotBeNullOrEmpty((byte[]) null, null);
+			fail("ContractViolationException expected");
+		} catch (ContractViolationException e) {
 			// This is the correct behavior
 		}
 		try {
 			ContractCheck.mustNotBeNullOrEmpty(new byte[0], "test");
-			fail("IllegalArgumentException expected");
-		} catch(IllegalArgumentException e) {
+			fail("ContractViolationException expected");
+		} catch (ContractViolationException e) {
 			// This is the correct behavior
 		}
 		try {
 			ContractCheck.mustNotBeNullOrEmpty(new byte[0], null);
-			fail("IllegalArgumentException expected");
-		} catch(IllegalArgumentException e) {
+			fail("ContractViolationException expected");
+		} catch (ContractViolationException e) {
 			// This is the correct behavior
 		}
-		byte[] temp = new byte[]{1, 2, 3};
+		byte[] temp = new byte[] { 1, 2, 3 };
 		assertArrayEquals(temp, ContractCheck.mustNotBeNullOrEmpty(temp, "test"));
 	}
 
@@ -123,14 +132,14 @@ public class ContractCheckTest {
 		int temp = 134;
 		try {
 			ContractCheck.mustBeInRange(temp, 4, 6, "test");
-			fail("IllegalArgumentException expected");
-		} catch(IllegalArgumentException e) {
+			fail("ContractViolationException expected");
+		} catch (ContractViolationException e) {
 			// This is the correct behavior
 		}
 		try {
 			ContractCheck.mustBeInRange(temp, 4, 6, null);
-			fail("IllegalArgumentException expected");
-		} catch(IllegalArgumentException e) {
+			fail("ContractViolationException expected");
+		} catch (ContractViolationException e) {
 			// This is the correct behavior
 		}
 		assertEquals(temp, ContractCheck.mustBeInRange(temp, 100, 200, "test"));
@@ -141,17 +150,55 @@ public class ContractCheckTest {
 		long temp = 134;
 		try {
 			ContractCheck.mustBeInRange(temp, 4, 6, "test");
-			fail("IllegalArgumentException expected");
-		} catch(IllegalArgumentException e) {
+			fail("ContractViolationException expected");
+		} catch (ContractViolationException e) {
 			// This is the correct behavior
 		}
 		try {
 			ContractCheck.mustBeInRange(temp, 4, 6, null);
-			fail("IllegalArgumentException expected");
-		} catch(IllegalArgumentException e) {
+			fail("ContractViolationException expected");
+		} catch (ContractViolationException e) {
 			// This is the correct behavior
 		}
 		assertEquals(temp, ContractCheck.mustBeInRange(temp, 100, 200, "test"));
+	}
+
+	@Test
+	public void testMustBeInRangeNumber() {
+		BigDecimal temp = new BigDecimal(134);
+		try {
+			ContractCheck.mustBeInRange(temp, new BigDecimal(4), new BigDecimal(6), "test");
+			fail("ContractViolationException expected");
+		} catch (ContractViolationException e) {
+			// This is the correct behavior
+		}
+		try {
+			ContractCheck.mustBeInRange(temp, new BigDecimal(4), new BigDecimal(6), null);
+			fail("ContractViolationException expected");
+		} catch (ContractViolationException e) {
+			// This is the correct behavior
+		}
+		assertEquals(temp, ContractCheck.mustBeInRange(temp, new BigDecimal(100), new BigDecimal(200), "test"));
+	}
+
+	@Test
+	public void testMustMatchPattern() {
+		Pattern pattern = Pattern.compile("ab*c");
+		String temp = "bac";
+		try {
+			ContractCheck.mustMatchPattern(temp, pattern, "test");
+			fail("ContractViolationException expected");
+		} catch (ContractViolationException e) {
+			// This is the correct behavior
+		}
+		try {
+			ContractCheck.mustMatchPattern(temp, pattern, null);
+			fail("ContractViolationException expected");
+		} catch (ContractViolationException e) {
+			// This is the correct behavior
+		}
+		temp = "abc";
+		assertEquals(temp, ContractCheck.mustMatchPattern(temp, pattern, "test"));
 	}
 
 }

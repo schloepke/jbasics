@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
  *
  * Stephan Schloepke: http://www.schloepke.de/
@@ -22,57 +22,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.arrays;
+package org.jbasics.net.http;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
- * Often used constant arrays.
+ * Handler to handle the request done thru the {@link HttpAccessor}
+ * <p>
+ * In order to handle the input and output of a request thru the {@link HttpAccessor} it is required that you provide an implementation of the request
+ * handler to handle the input and output streaming. If an input and/or output streaming happens is dependent on the request. Only those having either
+ * do call the suitable process method on the request handler implementation.S
+ * </p>
  * 
  * @author Stephan Schloepke
- * @since 1.0
  */
-public final class ArrayConstants {
-	/**
-	 * A zero length byte array constant.
-	 * 
-	 * @since 1.0
-	 */
-	public static final byte[] ZERO_LENGTH_BYTE_ARRAY = new byte[0];
-	/**
-	 * A zero length short array constant.
-	 * 
-	 * @since 1.0
-	 */
-	public static final short[] ZERO_LENGTH_SHORT_ARRAY = new short[0];
-	/**
-	 * A zero length integer array constant.
-	 * 
-	 * @since 1.0
-	 */
-	public static final int[] ZERO_LENGTH_INT_ARRAY = new int[0];
-	/**
-	 * A zero length long array constant.
-	 * 
-	 * @since 1.0
-	 */
-	public static final long[] ZERO_LENGTH_LONG_ARRAY = new long[0];
+public interface RequestHandler {
 
 	/**
-	 * A zero length {@link Object} array constant.
+	 * Handles the input received from the server.
 	 * 
-	 * @since 1.0
+	 * @param metaData The response meta data holds the information gotten from the server like character set, media type.
+	 * @param in The input stream to read your data from. It is required that the implementor knows the content type and encoding.
+	 * @throws IOException Thrown if an error occurred writing the data.
 	 */
-	public static final Object[] ZERO_LENGTH_OBJECT_ARRAY = new Object[0];
-
-	/**
-	 * Returns a zero length array of type T.
-	 * 
-	 * @param <T> The type of the array.
-	 * @return The {@link #ZERO_LENGTH_OBJECT_ARRAY} casted to the type T
-	 * @since 1.0
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T> T[] zeroLegnthArray() {
-		return (T[]) ZERO_LENGTH_OBJECT_ARRAY;
-	}
+	void processInput(ResponseMeta metaData, InputStream in) throws IOException;
 
 }
