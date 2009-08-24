@@ -92,4 +92,8 @@ public class ListStack<E> implements Stack<E> {
 		return this.stackList.delegate().iterator();
 	}
 
+	public boolean isEmpty() {
+		return this.stackList.delegate().isEmpty();
+	}
+
 }

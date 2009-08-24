@@ -22,24 +22,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.pattern.container;
+package org.jbasics.parser;
 
-public interface Stack<E> extends Iterable<E> {
+import java.util.Map;
 
-	E push(E element);
+import javax.xml.namespace.QName;
 
-	E pop();
-	
-	E[] pop(int count);
+public interface CustomParserRegistry {
 
-	E peek();
-	
-	E peek(int depth);
-	
-	int depth();
-	
-	int size();
-	
-	boolean isEmpty();
-	
+	CustomParser getCustomParser(QName element, Map<QName, String> attributes);
+
 }

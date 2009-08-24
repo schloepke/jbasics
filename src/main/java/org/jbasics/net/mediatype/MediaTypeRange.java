@@ -24,6 +24,7 @@
  */
 package org.jbasics.net.mediatype;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
@@ -36,7 +37,7 @@ import org.jbasics.types.tuples.Pair;
  * @author Stephan Schloepke
  * @since 1.0
  */
-public class MediaTypeRange {
+public class MediaTypeRange implements Serializable {
 	/**
 	 * The wildcard string used to identify a type or sub type as a wildcard element.
 	 */
@@ -132,14 +133,14 @@ public class MediaTypeRange {
 	 */
 	public final boolean isMediaTypeMatching(final MediaType typeToMatch) {
 		ContractCheck.mustNotBeNull(typeToMatch, "typeToMatch");
-		if (!isAnyType() && !this.type.equals(typeToMatch.getType())) {
+		if (!isAnyType() && !this.type.equalsIgnoreCase(typeToMatch.getType())) {
 			return false;
 		}
 		if (this.subType == null) {
 			if (typeToMatch.getSubType() != null) {
 				return false;
 			}
-		} else if (!isAnySubType() && !this.subType.equals(typeToMatch.getSubType())) {
+		} else if (!isAnySubType() && !this.subType.equalsIgnoreCase(typeToMatch.getSubType())) {
 			return false;
 		}
 		if (this.parameters != null) {

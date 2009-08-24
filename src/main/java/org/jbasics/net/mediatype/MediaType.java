@@ -57,7 +57,11 @@ public class MediaType extends MediaTypeRange {
 	 * Text/Html media type constant.
 	 */
 	public static final MediaType TEXT_HTML_TYPE = MediaType.valueOf("text/html");
-	
+	/**
+	 * application/xhtml+xml media type constant.
+	 */
+	public static final MediaType APPLICATION_XHTML_TYPE = new MediaType("application", "xhtml+xml");
+
 	/**
 	 * Parses a media type from its string representation as of RFC 2616.
 	 * 
@@ -114,4 +118,5 @@ public class MediaType extends MediaTypeRange {
 	public MediaType deriveWithNewParameters(final Pair<String, String>... parameters) {
 		return new MediaType(this.getType(), this.getSubType(), parameters);
 	}
+
 }

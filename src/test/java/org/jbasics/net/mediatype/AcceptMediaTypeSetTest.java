@@ -22,24 +22,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.pattern.container;
+package org.jbasics.net.mediatype;
 
-public interface Stack<E> extends Iterable<E> {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-	E push(E element);
+import org.jbasics.testing.Java14LoggingTestCase;
+import org.junit.Test;
 
-	E pop();
-	
-	E[] pop(int count);
+public class AcceptMediaTypeSetTest extends Java14LoggingTestCase {
 
-	E peek();
-	
-	E peek(int depth);
-	
-	int depth();
-	
-	int size();
-	
-	boolean isEmpty();
-	
+	@Test
+	public void testSimple() {
+		this.logger.entering(AcceptMediaTypeSetTest.class.getName(), "testSimple");
+		AcceptMediaTypeSet temp = new AcceptMediaTypeSet();
+		temp.add("text/html;charset=iso-8859-1;q=0.7, text/html;charset=utf-8;q=0.8, */*;q=0.5, text/*;q=0.5");
+		MediaType toMatch = MediaType.valueOf("text/html;charset=cp1252");
+		MediaType matchedOne = temp.matchClosest(null, toMatch);
+		assertNotNull(matchedOne);
+		assertEquals(toMatch, matchedOne);
+		this.logger.exiting(AcceptMediaTypeSetTest.class.getName(), "testSimple");
+	}
+
 }

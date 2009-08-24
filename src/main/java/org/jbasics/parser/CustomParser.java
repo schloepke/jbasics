@@ -22,24 +22,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.pattern.container;
+package org.jbasics.parser;
 
-public interface Stack<E> extends Iterable<E> {
+import org.xml.sax.ContentHandler;
 
-	E push(E element);
+public interface CustomParser {
 
-	E pop();
-	
-	E[] pop(int count);
+	ContentHandler beginParsing();
 
-	E peek();
-	
-	E peek(int depth);
-	
-	int depth();
-	
-	int size();
-	
-	boolean isEmpty();
+	void finishParsing();
 	
 }

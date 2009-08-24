@@ -24,6 +24,9 @@
  */
 package org.jbasics.parser;
 
+import java.net.URI;
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.xml.namespace.QName;
@@ -31,6 +34,7 @@ import javax.xml.namespace.QName;
 import org.jbasics.parser.invoker.Invoker;
 import org.jbasics.types.tuples.Pair;
 import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -44,6 +48,11 @@ public class BuilderContentHandler<T> extends DefaultHandler {
 	private T result;
 	private StringBuilder characterBuffer;
 	private Locator locator;
+	private NamespacePrefixStack prefixes;
+
+	private CustomParser activeCustomParser;
+	private ContentHandler activeCustomParserContentHandler;
+	private int customParserDepth;
 
 	public BuilderContentHandler(BuilderParserContext<T> context) {
 		this.context = context;
@@ -59,6 +68,7 @@ public class BuilderContentHandler<T> extends DefaultHandler {
 		if (this.parsing.compareAndSet(false, true)) {
 			this.states = new StateStack<BuildHandler>();
 			this.characterBuffer = new StringBuilder();
+			this.prefixes = new NamespacePrefixStack();
 			this.result = null;
 		} else {
 			throw new IllegalStateException("Start of document event occured while already parsing another document");
@@ -71,60 +81,80 @@ public class BuilderContentHandler<T> extends DefaultHandler {
 		if (!this.parsing.compareAndSet(true, false)) {
 			throw new IllegalStateException("End of document event occured while not parsing");
 		}
+		this.prefixes = null;
+		this.characterBuffer = null;
+		this.states = null;
 	}
 
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		if (this.parsing.get()) {
 			try {
-				QName name = new QName(uri, localName);
-				ParsingInfo parseInfo = null;
-				if (this.states.isEmpty()) {
-					// Root processing
-					parseInfo = this.context.getParsingInfo(name);
-					if (parseInfo == null) {
-						throw new SAXException("Unknown root element " + name);
-					}
+				if (this.activeCustomParserContentHandler != null) {
+					this.activeCustomParserContentHandler.startElement(uri, localName, qName, attributes);
+					this.customParserDepth++;
 				} else {
-					BuildHandler current = this.states.peek();
-					if (this.characterBuffer.length() > 0) {
-						current.addText(this.characterBuffer.toString());
-						this.characterBuffer.setLength(0);
-					}
-					parseInfo = current.getParsingInfo();
-					if (parseInfo != null) {
-						Pair<ParsingInfo, Invoker<?, ?>> x = parseInfo.getElementInvoker(name);
-						if (x != null) {
-							parseInfo = x.first();
-						} else {
-							parseInfo = null;
+					QName name = new QName(uri, localName);
+					ParsingInfo parseInfo = null;
+					if (this.states.isEmpty()) {
+						// Root processing
+						parseInfo = this.context.getParsingInfo(name);
+						if (parseInfo == null) {
+							throw new SAXException("Unknown root element " + name);
+						}
+					} else {
+						BuildHandler current = this.states.peek();
+						if (this.characterBuffer.length() > 0) {
+							current.addText(this.characterBuffer.toString());
+							this.characterBuffer.setLength(0);
+						}
+						if (current instanceof CustomParserRegistry) {
+							// TODO: We need to handle the attributes here but ignoring this right now
+							Map<QName, String> attTemp = Collections.emptyMap();
+							CustomParser customParser = ((CustomParserRegistry)current).getCustomParser(name, attTemp);
+							if (customParser != null) {
+								this.activeCustomParser = customParser;
+								this.customParserDepth = 0;
+								this.activeCustomParserContentHandler = customParser.beginParsing();
+								this.activeCustomParserContentHandler.setDocumentLocator(this.locator);
+								this.activeCustomParserContentHandler.startDocument();
+								for (Pair<String, URI> prefix : this.prefixes) {
+									this.activeCustomParserContentHandler.startPrefixMapping(prefix.left(), prefix.right().toString());
+								}
+								this.activeCustomParserContentHandler.startElement(uri, localName, qName, attributes);
+								// here we need to end execution
+								return;
+							}
+						}
+						parseInfo = current.getParsingInfo();
+						if (parseInfo != null) {
+							Pair<ParsingInfo, Invoker<?, ?>> x = parseInfo.getElementInvoker(name);
+							if (x != null) {
+								parseInfo = x.first();
+							} else {
+								parseInfo = null;
+							}
 						}
 					}
-				}
-				if (parseInfo == null) {
-					StringBuilder message = new StringBuilder("Unrecognized element ").append(name);
-					if (this.locator != null) {
-						message.append(" (").append(this.locator.getLineNumber()).append("/").append(
-								this.locator.getColumnNumber()).append(")");
+					if (parseInfo == null) {
+						StringBuilder message = new StringBuilder("Unrecognized element ").append(name);
+						if (this.locator != null) {
+							message.append(" (").append(this.locator.getLineNumber()).append("/").append(this.locator.getColumnNumber()).append(")");
+						}
+						throw new SAXParseException(message.toString(), this.locator);
 					}
-					throw new SAXParseException(message.toString(), this.locator);
+					
+					// TODO: Here we need to discover if we have a content handler delegate set so we can delegate everything instead of the following
+					
+					
+					BuildHandler handler = new BuildHandlerImpl(name, parseInfo);
+					for (int i = 0; i < attributes.getLength(); i++) {
+						QName attrName = new QName(attributes.getURI(i), attributes.getLocalName(i));
+						String attrValue = attributes.getValue(i);
+						handler.setAttribute(attrName, attrValue);
+					}
+					this.states.push(handler);
 				}
-				BuildHandler handler = new BuildHandlerImpl(name, parseInfo);
-				for (int i = 0; i < attributes.getLength(); i++) {
-					QName attrName = new QName(attributes.getURI(i), attributes.getLocalName(i));
-					String attrValue = attributes.getValue(i);
-					handler.setAttribute(attrName, attrValue);
-				}
-				this.states.push(handler);
-				// newBuilderInfo = currentState.getBuilderInstanceFor(temp)
-				// newBuilderInfo.processAttributes(attributes)
-				// stateStack.push(newBuilderInfo)
-				// Ok what do we have to do now.
-				//
-				// 1. We need to create a new Builder suitable for the given URI and local name
-				// 2. We need to call the attributes on the builder (consume them)
-				// 3. We need to push the new builder on a stack in order to add the result of the
-				// builder to the parent in the end element
 			} catch (RuntimeException eo) {
 				throw createParsingException(eo);
 			}
@@ -137,17 +167,29 @@ public class BuilderContentHandler<T> extends DefaultHandler {
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		if (this.parsing.get()) {
 			try {
-				QName name = new QName(uri, localName);
-				BuildHandler current = this.states.pop();
-				if (this.characterBuffer.length() > 0) {
-					current.addText(this.characterBuffer.toString());
-					this.characterBuffer.setLength(0);
-				}
-				if (this.states.isEmpty()) {
-					this.result = (T) current.getResult();
+				if (this.activeCustomParserContentHandler != null) {
+					this.activeCustomParserContentHandler.endElement(uri, localName, qName);
+					if (this.customParserDepth <= 0) {
+						this.activeCustomParserContentHandler.endDocument();
+						this.activeCustomParser.finishParsing();
+						this.activeCustomParserContentHandler = null;
+						this.activeCustomParser = null;
+					} else {
+						this.customParserDepth--;
+					}
 				} else {
-					BuildHandler parent = this.states.peek();
-					parent.addElement(name, current.getResult());
+					QName name = new QName(uri, localName);
+					BuildHandler current = this.states.pop();
+					if (this.characterBuffer.length() > 0) {
+						current.addText(this.characterBuffer.toString());
+						this.characterBuffer.setLength(0);
+					}
+					if (this.states.isEmpty()) {
+						this.result = (T) current.getResult();
+					} else {
+						BuildHandler parent = this.states.peek();
+						parent.addElement(name, current.getResult());
+					}
 				}
 			} catch (RuntimeException e) {
 				throw createParsingException(e);
@@ -158,13 +200,39 @@ public class BuilderContentHandler<T> extends DefaultHandler {
 	}
 
 	@Override
+	public void startPrefixMapping(String prefix, String uri) throws SAXException {
+		if (this.activeCustomParserContentHandler != null) {
+			this.activeCustomParserContentHandler.startPrefixMapping(prefix, uri);
+		} else {
+			this.prefixes.pushMapping(prefix, URI.create(uri));
+		}
+	}
+
+	@Override
+	public void endPrefixMapping(String prefix) throws SAXException {
+		if (this.activeCustomParserContentHandler != null) {
+			this.activeCustomParserContentHandler.endPrefixMapping(prefix);
+		} else {
+			this.prefixes.popMapping(prefix);
+		}
+	}
+
+	@Override
 	public void characters(char[] ch, int start, int length) throws SAXException {
-		this.characterBuffer.append(ch, start, length);
+		if (this.activeCustomParserContentHandler != null) {
+			this.activeCustomParserContentHandler.characters(ch, start, length);
+		} else {
+			this.characterBuffer.append(ch, start, length);
+		}
 	}
 
 	@Override
 	public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
-		System.out.println("Found ignorable whitespace");
+		if (this.activeCustomParserContentHandler != null) {
+			this.activeCustomParserContentHandler.ignorableWhitespace(ch, start, length);
+		} else {
+			System.out.println("Found ignorable whitespace");
+		}
 	}
 
 	@Override
@@ -181,8 +249,7 @@ public class BuilderContentHandler<T> extends DefaultHandler {
 		StringBuilder message = new StringBuilder();
 		message.append("[").append(e.getClass().getSimpleName()).append("] ").append(e.getMessage());
 		if (this.locator != null) {
-			message.append(" (").append(this.locator.getLineNumber()).append("/")
-					.append(this.locator.getColumnNumber()).append(")");
+			message.append(" (").append(this.locator.getLineNumber()).append("/").append(this.locator.getColumnNumber()).append(")");
 		}
 		SAXParseException en = new SAXParseException(message.toString(), this.locator);
 		en.setStackTrace(e.getStackTrace());

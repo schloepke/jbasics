@@ -203,7 +203,7 @@ public class AcceptMediaTypeRange implements Comparable<AcceptMediaTypeRange>, S
 
 	private static String createCompareString(final MediaTypeRange mediaTypeRange) {
 		StringBuilder temp = new StringBuilder();
-		if (mediaTypeRange.isAnyType()) {
+		if (!mediaTypeRange.isAnyType()) {
 			temp.append(mediaTypeRange.getType());
 		}
 		if (mediaTypeRange.getSubType() != null) {
