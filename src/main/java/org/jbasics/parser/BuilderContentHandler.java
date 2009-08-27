@@ -94,7 +94,7 @@ public class BuilderContentHandler<T> extends DefaultHandler {
 					this.activeCustomParserContentHandler.startElement(uri, localName, qName, attributes);
 					this.customParserDepth++;
 				} else {
-					QName name = new QName(uri, localName);
+					QName name = createQualifiedName(uri, localName, qName);
 					ParsingInfo parseInfo = null;
 					if (this.states.isEmpty()) {
 						// Root processing
@@ -149,7 +149,7 @@ public class BuilderContentHandler<T> extends DefaultHandler {
 					
 					BuildHandler handler = new BuildHandlerImpl(name, parseInfo);
 					for (int i = 0; i < attributes.getLength(); i++) {
-						QName attrName = new QName(attributes.getURI(i), attributes.getLocalName(i));
+						QName attrName = createQualifiedName(attributes.getURI(i), attributes.getLocalName(i), attributes.getQName(i));
 						String attrValue = attributes.getValue(i);
 						handler.setAttribute(attrName, attrValue);
 					}
@@ -178,7 +178,7 @@ public class BuilderContentHandler<T> extends DefaultHandler {
 						this.customParserDepth--;
 					}
 				} else {
-					QName name = new QName(uri, localName);
+					QName name = createQualifiedName(uri, localName, qName);
 					BuildHandler current = this.states.pop();
 					if (this.characterBuffer.length() > 0) {
 						current.addText(this.characterBuffer.toString());
@@ -256,4 +256,24 @@ public class BuilderContentHandler<T> extends DefaultHandler {
 		return en;
 	}
 
+	private QName createQualifiedName(String namespace, String localname, String qName) {
+		String prefix = null;
+		if (qName != null) {
+			int temp = qName.indexOf(':');
+			if (temp > 0) {
+				prefix = qName.substring(0, temp);
+			}
+		}
+		// Some people append a / at the end of the namespace. However this is quite problematic really so we remove it
+		// in general.
+		// FIXME: We need to check that with the xml spec!!
+		if (namespace.endsWith("/")) {
+			namespace = namespace.substring(0, namespace.length() -1);
+		}
+		if (prefix != null) {
+			return new QName(namespace, localname, prefix);
+		} else {
+			return new QName(namespace, localname);
+		}
+	}
 }

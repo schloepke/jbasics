@@ -54,6 +54,10 @@ public final class HTTPHeaderConstants {
 	 * From header.
 	 */
 	public static final String FROM_HEADER = "From";
+	/**
+	 * The authorization header
+	 */
+	public static final String AUTHORIZATION_HEADER = "Authorization";
 
 	// Entity headers
 
