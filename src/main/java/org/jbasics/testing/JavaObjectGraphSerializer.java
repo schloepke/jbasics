@@ -25,38 +25,69 @@
 package org.jbasics.testing;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.jbasics.checker.ContractCheck;
 
 public final class JavaObjectGraphSerializer {
+	private static final Level LOG_LEVEL = Level.FINE;
+	private final Logger logger = Logger.getLogger(JavaObjectGraphSerializer.class.getName());
 
-	public static boolean serialize(Object objectGraph, File directory, String outputFileName) {
-		if (objectGraph == null || directory == null || outputFileName == null) {
+	public boolean serialize(Object objectGraph, File directory, String fileName) {
+		if (objectGraph == null || directory == null || fileName == null) {
+			if (this.logger.isLoggable(LOG_LEVEL)) {
+				Logger.getLogger(JavaObjectGraphSerializer.class.getName()).log(LOG_LEVEL,
+						"Skiping serialization since either object, directory or file name is null");
+			}
 			return false;
 		}
 		try {
-			return serialize(objectGraph, new FileOutputStream(new File(directory, outputFileName)));
+			return serialize(objectGraph, new FileOutputStream(new File(directory, fileName)));
 		} catch (FileNotFoundException e) {
+			if (this.logger.isLoggable(LOG_LEVEL)) {
+				Logger.getLogger(JavaObjectGraphSerializer.class.getName()).log(LOG_LEVEL, "Could not serialize due to exception", e);
+			}
 			return false;
 		}
 	}
 
-	public static boolean serialize(Object objectGraph, File outputFile) {
+	public boolean serialize(Object objectGraph, File outputFile) {
 		if (objectGraph == null || outputFile == null) {
+			if (this.logger.isLoggable(LOG_LEVEL)) {
+				Logger.getLogger(JavaObjectGraphSerializer.class.getName()).log(LOG_LEVEL,
+						"Skiping serialization since either object or output fule is null");
+			}
 			return false;
 		}
 		try {
-			return serialize(objectGraph, new FileOutputStream(outputFile));
+			boolean temp = serialize(objectGraph, new FileOutputStream(outputFile));
+			if (this.logger.isLoggable(LOG_LEVEL)) {
+				Logger.getLogger(JavaObjectGraphSerializer.class.getName()).log(Level.INFO, "Java Object Graph serilized to " + outputFile);
+			}
+			return temp;
 		} catch (FileNotFoundException e) {
+			if (this.logger.isLoggable(LOG_LEVEL)) {
+				Logger.getLogger(JavaObjectGraphSerializer.class.getName()).log(LOG_LEVEL, "Could not serialize due to exception", e);
+			}
 			return false;
 		}
 	}
 
-	public static boolean serialize(Object objectGraph, OutputStream out) {
+	public boolean serialize(Object objectGraph, OutputStream out) {
 		if (objectGraph == null || out == null) {
+			if (this.logger.isLoggable(LOG_LEVEL)) {
+				Logger.getLogger(JavaObjectGraphSerializer.class.getName()).log(LOG_LEVEL,
+						"Skiping serialization since either object output stream is null");
+			}
 			return false;
 		}
 		ObjectOutputStream objectOut = null;
@@ -65,6 +96,9 @@ public final class JavaObjectGraphSerializer {
 			objectOut.writeObject(objectGraph);
 			return true;
 		} catch (Exception e) {
+			if (this.logger.isLoggable(LOG_LEVEL)) {
+				Logger.getLogger(JavaObjectGraphSerializer.class.getName()).log(LOG_LEVEL, "Could not serialize due to exception", e);
+			}
 			return false;
 		} finally {
 			try {
@@ -73,6 +107,43 @@ public final class JavaObjectGraphSerializer {
 				}
 			} catch (IOException e) {
 				// we ignore any close problem
+			}
+		}
+	}
+
+	public <T> T deserialize(Class<T> type, File directory, String fileName) {
+		try {
+			return deserialize(type, new FileInputStream(new File(ContractCheck.mustNotBeNull(directory, "directory"), ContractCheck.mustNotBeNull(
+					fileName, "fileName"))));
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException("File not found " + fileName + " in directory " + directory, e);
+		}
+	}
+
+	public <T> T deserialize(Class<T> type, File file) {
+		try {
+			return deserialize(type, new FileInputStream(ContractCheck.mustNotBeNull(file, "file")));
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException("File not found " + file, e);
+		}
+	}
+
+	public <T> T deserialize(Class<T> type, InputStream in) {
+		ObjectInputStream objectIn = null;
+		try {
+			objectIn = new ObjectInputStream(ContractCheck.mustNotBeNull(in, "in"));
+			return type.cast(objectIn.readObject());
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Cannot deserialize instance of " + type, e);
+		} catch (IOException e) {
+			throw new RuntimeException("Cannot deserialize instance of " + type, e);
+		} finally {
+			if (objectIn != null) {
+				try {
+					objectIn.close();
+				} catch (IOException e) {
+					// we ignore the close
+				}
 			}
 		}
 	}
