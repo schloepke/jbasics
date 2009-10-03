@@ -41,11 +41,11 @@
 	<distributionManagement>
 		<repository>
 			<id>step-h</id>
-			<url>sftp://step-h.com:47922/httpdocs/release</url>
+			<url>sftp://step-h.com/httpdocs/release</url>
 		</repository>
 		<snapshotRepository>
 			<id>step-h</id>
-			<url>sftp://step-h.com:47922/httpdocs/snapshot</url>
+			<url>sftp://step-h.com/httpdocs/snapshot</url>
 		</snapshotRepository>
 	</distributionManagement>
 
