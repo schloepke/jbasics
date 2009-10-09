@@ -25,7 +25,6 @@
 package org.jbasics.parser;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -34,6 +33,7 @@ import javax.xml.namespace.QName;
 import org.jbasics.parser.annotations.AnyAttribute;
 import org.jbasics.parser.annotations.AnyElement;
 import org.jbasics.parser.annotations.Attribute;
+import org.jbasics.parser.annotations.Comment;
 import org.jbasics.parser.annotations.Content;
 import org.jbasics.parser.annotations.Element;
 import org.jbasics.parser.annotations.ElementBuilder;
@@ -53,7 +53,7 @@ import org.jbasics.types.tuples.Pair;
 
 @SuppressWarnings("unchecked")
 public class AnnotationScanner {
-	private final Map<Class<? extends Builder>, ParsingInfo> parsedBuilders = new HashMap<Class<? extends Builder>, ParsingInfo>();
+//	private final Map<Class<? extends Builder>, ParsingInfo> parsedBuilders = new HashMap<Class<? extends Builder>, ParsingInfo>();
 
 	public Map<QName, ParsingInfo> scan(Class<?>... root) {
 		if (root == null || root.length == 0) {
@@ -119,8 +119,9 @@ public class AnnotationScanner {
 			Element directElement = m.getAnnotation(Element.class);
 			AnyElement anyElement = m.getAnnotation(AnyElement.class);
 			Content contentElement = m.getAnnotation(Content.class);
+			Comment commentElement = m.getAnnotation(Comment.class);
 			if (isMoreThanNotNull(qualifiedName, directAttribute, anyAttribute, directElement, anyElement,
-					contentElement)) {
+					contentElement, commentElement)) {
 				throw new IllegalArgumentException("Cannot have more than one type of annotaion on method "
 						+ m.getName());
 			}
@@ -128,6 +129,8 @@ public class AnnotationScanner {
 				builder.setQualifiedName(QualifiedNameInvoker.createInvoker(builderType, m));
 			} else if (contentElement != null) {
 				processContent(builder, builderType, m, contentElement);
+			} else if (commentElement != null) {
+				processComment(builder, builderType, m, commentElement);
 			} else if (directAttribute != null || anyAttribute != null) {
 				processAttribute(builder, builderType, m, directAttribute, anyAttribute);
 			} else if (directElement != null || anyElement != null) {
@@ -145,6 +148,10 @@ public class AnnotationScanner {
 			builder.setContentInvoker(ContentInvoker.createInvoker(builderType, m));
 		}
 	}
+
+    private void processComment(ParsingInfoBuilder builder, Class<? extends Builder> builderType, Method m, Comment commentElement) {
+    	builder.setCommentInvoker(ContentInvoker.createInvoker(builderType, m));
+    }
 
 	private ParsingInfoBuilder processAttribute(ParsingInfoBuilder builder, Class<? extends Builder> builderType,
 			Method m, Attribute directAttribute, AnyAttribute anyAttribute) {

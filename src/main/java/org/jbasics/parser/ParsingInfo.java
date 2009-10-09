@@ -37,7 +37,7 @@ import org.jbasics.types.tuples.Pair;
 @SuppressWarnings("unchecked")
 public class ParsingInfo {
 	public static final ParsingInfo SELF = new ParsingInfo();
-	
+
 	private final Factory<? extends Builder> builderFactory;
 	private final Invoker<?, QName> qualifiedNameInvoker;
 	private final Map<QName, Invoker<?, String>> attributeInvokers;
@@ -45,6 +45,7 @@ public class ParsingInfo {
 	private final Map<QName, Pair<ParsingInfo, Invoker<?, ?>>> elementInvokers;
 	private final Pair<ParsingInfo, Invoker<?, ?>> defaultElementInvoker;
 	private final Invoker<?, String> contentInvoker;
+	private final Invoker<?, String> commentInvoker;
 
 	private ParsingInfo() {
 		// To create self;
@@ -55,12 +56,13 @@ public class ParsingInfo {
 		this.elementInvokers = null;
 		this.defaultElementInvoker = null;
 		this.contentInvoker = null;
+		this.commentInvoker = null;
 	}
-	
+
 	protected ParsingInfo(Factory<? extends Builder> builderFactory, Invoker<?, QName> qualifiedNameInvoker,
-			Map<QName, Invoker<?, String>> attributeInvokers, Invoker<?, String> defaultAttributeInvoker,
-			Map<QName, Pair<ParsingInfo, Invoker<?, ?>>> elementInvokers,
-			Pair<ParsingInfo, Invoker<?, ?>> defaultElementInvoker, Invoker<?, String> contentInvoker) {
+	        Map<QName, Invoker<?, String>> attributeInvokers, Invoker<?, String> defaultAttributeInvoker,
+	        Map<QName, Pair<ParsingInfo, Invoker<?, ?>>> elementInvokers, Pair<ParsingInfo, Invoker<?, ?>> defaultElementInvoker,
+	        Invoker<?, String> contentInvoker, Invoker<?, String> commentInvoker) {
 		this.builderFactory = ContractCheck.mustNotBeNull(builderFactory, "builderFactory");
 		this.qualifiedNameInvoker = qualifiedNameInvoker;
 		this.attributeInvokers = attributeInvokers;
@@ -68,6 +70,7 @@ public class ParsingInfo {
 		this.elementInvokers = elementInvokers;
 		this.defaultElementInvoker = defaultElementInvoker;
 		this.contentInvoker = contentInvoker;
+		this.commentInvoker = commentInvoker;
 	}
 
 	/**
@@ -98,13 +101,17 @@ public class ParsingInfo {
 			temp = this.defaultElementInvoker;
 		}
 		if (temp != null && temp.first() == SELF) {
-			temp = new Pair<ParsingInfo, Invoker<?,?>>(this, temp.second());
+			temp = new Pair<ParsingInfo, Invoker<?, ?>>(this, temp.second());
 		}
 		return temp;
 	}
-	
+
 	public Invoker<?, String> getContentInvoker() {
 		return this.contentInvoker;
 	}
+	
+    public Invoker<?, String> getCommentInvoker() {
+	    return this.commentInvoker;
+    }
 
 }

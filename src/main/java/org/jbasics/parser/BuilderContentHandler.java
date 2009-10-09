@@ -38,15 +38,16 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.ext.DefaultHandler2;
 
 @SuppressWarnings("unchecked")
-public class BuilderContentHandler<T> extends DefaultHandler {
+public class BuilderContentHandler<T> extends DefaultHandler2 {
 	private final BuilderParserContext<T> context;
 	private final AtomicBoolean parsing;
 	private StateStack<BuildHandler> states;
 	private T result;
 	private StringBuilder characterBuffer;
+	private StringBuilder commentBuffer;
 	private Locator locator;
 	private NamespacePrefixStack prefixes;
 
@@ -68,6 +69,7 @@ public class BuilderContentHandler<T> extends DefaultHandler {
 		if (this.parsing.compareAndSet(false, true)) {
 			this.states = new StateStack<BuildHandler>();
 			this.characterBuffer = new StringBuilder();
+			this.commentBuffer = new StringBuilder();
 			this.prefixes = new NamespacePrefixStack();
 			this.result = null;
 		} else {
@@ -108,10 +110,14 @@ public class BuilderContentHandler<T> extends DefaultHandler {
 							current.addText(this.characterBuffer.toString());
 							this.characterBuffer.setLength(0);
 						}
+						if (this.commentBuffer.length() > 0) {
+							current.addComment(this.commentBuffer.toString());
+							this.commentBuffer.setLength(0);
+						}
 						if (current instanceof CustomParserRegistry) {
 							// TODO: We need to handle the attributes here but ignoring this right now
 							Map<QName, String> attTemp = Collections.emptyMap();
-							CustomParser customParser = ((CustomParserRegistry)current).getCustomParser(name, attTemp);
+							CustomParser customParser = ((CustomParserRegistry) current).getCustomParser(name, attTemp);
 							if (customParser != null) {
 								this.activeCustomParser = customParser;
 								this.customParserDepth = 0;
@@ -143,10 +149,9 @@ public class BuilderContentHandler<T> extends DefaultHandler {
 						}
 						throw new SAXParseException(message.toString(), this.locator);
 					}
-					
+
 					// TODO: Here we need to discover if we have a content handler delegate set so we can delegate everything instead of the following
-					
-					
+
 					BuildHandler handler = new BuildHandlerImpl(name, parseInfo);
 					for (int i = 0; i < attributes.getLength(); i++) {
 						QName attrName = createQualifiedName(attributes.getURI(i), attributes.getLocalName(i), attributes.getQName(i));
@@ -183,6 +188,10 @@ public class BuilderContentHandler<T> extends DefaultHandler {
 					if (this.characterBuffer.length() > 0) {
 						current.addText(this.characterBuffer.toString());
 						this.characterBuffer.setLength(0);
+					}
+					if (this.commentBuffer.length() > 0) {
+						current.addComment(this.commentBuffer.toString());
+						this.commentBuffer.setLength(0);
 					}
 					if (this.states.isEmpty()) {
 						this.result = (T) current.getResult();
@@ -222,6 +231,11 @@ public class BuilderContentHandler<T> extends DefaultHandler {
 		if (this.activeCustomParserContentHandler != null) {
 			this.activeCustomParserContentHandler.characters(ch, start, length);
 		} else {
+			if (this.commentBuffer.length() > 0) {
+				BuildHandler current = this.states.peek();
+				current.addComment(this.commentBuffer.toString());
+				this.commentBuffer.setLength(0);
+			}
 			this.characterBuffer.append(ch, start, length);
 		}
 	}
@@ -268,12 +282,26 @@ public class BuilderContentHandler<T> extends DefaultHandler {
 		// in general.
 		// FIXME: We need to check that with the xml spec!!
 		if (namespace.endsWith("/")) {
-			namespace = namespace.substring(0, namespace.length() -1);
+			namespace = namespace.substring(0, namespace.length() - 1);
 		}
 		if (prefix != null) {
 			return new QName(namespace, localname, prefix);
 		} else {
 			return new QName(namespace, localname);
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.xml.sax.ext.LexicalHandler#comment(char[], int, int)
+	 */
+	public void comment(char[] ch, int start, int length) throws SAXException {
+		// Ok we need to hand over the comment since in some cases we actually want to receive comments (JavaScript in HTML for example)
+		if (this.characterBuffer.length() > 0) {
+			BuildHandler current = this.states.peek();
+			current.addText(this.characterBuffer.toString());
+			this.characterBuffer.setLength(0);
+		}
+		this.commentBuffer.append(ch, start, length);
 	}
 }

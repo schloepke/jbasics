@@ -46,6 +46,7 @@ public class ParsingInfoBuilder implements Builder<Object> {
 	private Map<QName, Pair<ParsingInfo, Invoker<?, ?>>> elementInvokers;
 	private Pair<ParsingInfo, Invoker<?, ?>> anyElementInvoker;
 	private Invoker<?, String> contentInvoker;
+	private Invoker<?, String> commentInvoker;
 
 	public static ParsingInfoBuilder newInstance() {
 		return new ParsingInfoBuilder();
@@ -69,7 +70,7 @@ public class ParsingInfoBuilder implements Builder<Object> {
 			elements = Collections.unmodifiableMap(elements);
 		}
 		return new ParsingInfo(this.builderFactory, this.qualifiedNameInvoker, attributes, this.anyAttributeInvoker,
-				elements, this.anyElementInvoker, this.contentInvoker);
+				elements, this.anyElementInvoker, this.contentInvoker, this.commentInvoker);
 	}
 
 	public void reset() {
@@ -85,6 +86,7 @@ public class ParsingInfoBuilder implements Builder<Object> {
 		}
 		this.anyElementInvoker = null;
 		this.contentInvoker = null;
+		this.commentInvoker = null;
 	}
 
 	public ParsingInfoBuilder setBuilderFactory(Factory<? extends Builder> builderFactory) {
@@ -153,7 +155,16 @@ public class ParsingInfoBuilder implements Builder<Object> {
 		this.contentInvoker = ContractCheck.mustNotBeNull(invoker, "invoker");
 		return this;
 	}
-	
+
+	public ParsingInfoBuilder setCommentInvoker(Invoker<?, String> invoker) {
+		if (this.commentInvoker != null) {
+			throw new IllegalStateException("Comment invoker already set to " + this.qualifiedNameInvoker
+					+ ". Duplicate " + invoker);
+		}
+		this.commentInvoker = ContractCheck.mustNotBeNull(invoker, "invoker");
+		return this;
+	}
+
 	public Class<? extends Builder> getBuilderType() {
 		return this.builderType;
 	}

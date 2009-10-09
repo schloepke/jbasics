@@ -22,22 +22,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.parser;
+package org.jbasics.parser.annotations;
 
-import javax.xml.namespace.QName;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public interface BuildHandler {
-	
-	ParsingInfo getParsingInfo();
-	
-	void setAttribute(QName name, String value);
-	
-	void addElement(QName name, Object element);
-	
-	void addText(String text);
-	
-	void addComment(String comment);
-	
-	Object getResult();
-
+@Retention(RetentionPolicy.RUNTIME)
+@Target( { ElementType.METHOD })
+public @interface Comment {
+	// This is a tagging annotation without any specific attributes
 }

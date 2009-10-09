@@ -79,6 +79,13 @@ public class BuildHandlerImpl implements BuildHandler {
 			}
 		}
 	}
+	
+	public void addComment(String comment) {
+		Invoker<Builder<?>, String> temp = (Invoker<Builder<?>, String>) this.parsingInfo.getCommentInvoker();
+		if (temp != null) {
+			temp.invoke(this.builder, null, comment);
+		}
+	}
 
 	public Object getResult() {
 		return this.builder.build();
