@@ -25,23 +25,20 @@
 package org.jbasics.math.impl;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
+import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.IrationalNumber;
+import org.jbasics.math.strategies.CosineAlgorithmStrategy;
 
 public class CosineIrationalNumber extends BigDecimalIrationalNumber {
+	private static final AlgorithmStrategy<BigDecimal> STRATEGY = new CosineAlgorithmStrategy();
 
 	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
 		return new CosineIrationalNumber(x);
 	}
 
 	private CosineIrationalNumber(BigDecimal x) {
-		super(x);
-	}
-
-	@Override
-	protected BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc) {
-		return BigDecimal.valueOf(Math.cos(x.doubleValue())).round(mc);
+		super(STRATEGY, x);
 	}
 
 }

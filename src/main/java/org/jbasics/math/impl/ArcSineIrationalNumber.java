@@ -25,23 +25,20 @@
 package org.jbasics.math.impl;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
+import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.IrationalNumber;
+import org.jbasics.math.strategies.ArcSineAlgorithmStrategy;
 
 public class ArcSineIrationalNumber extends BigDecimalIrationalNumber {
+	private static final AlgorithmStrategy<BigDecimal> STRATEGY = new ArcSineAlgorithmStrategy();
 
 	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
 		return new ArcSineIrationalNumber(x);
 	}
 
 	private ArcSineIrationalNumber(BigDecimal x) {
-		super(x);
-	}
-
-	@Override
-	protected BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc) {
-		return BigDecimal.valueOf(Math.asin(x.doubleValue())).round(mc);
+		super(STRATEGY, x);
 	}
 
 }

@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.math.impl;
+package org.jbasics.math.strategies;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

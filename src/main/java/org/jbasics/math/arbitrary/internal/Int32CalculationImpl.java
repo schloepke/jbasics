@@ -24,7 +24,6 @@
  */
 package org.jbasics.math.arbitrary.internal;
 
-import org.jbasics.arch.ArithmeticArchitecture;
 
 class Int32CalculationImpl implements InternalCalculation {
 	private static final int KARATSUBA_THRESHOLD = 40;
@@ -138,7 +137,7 @@ class Int32CalculationImpl implements InternalCalculation {
 		int[] result = new int[k = xlen];
 		while (j > yoff) {
 			sum = result[--k] = ((xi = x[--i]) - (yj = y[--j])) + sum;
-			sum = (yj & sum | ~xi & (yj | sum)) >> ArithmeticArchitecture.INTEGER_BITS_WITHOUT_SIGN;
+			sum = (yj & sum | ~xi & (yj | sum)) >> 31;
 		}
 		while (i > xoff && sum == -1) {
 			sum = (result[--i] = x[i] - 1);

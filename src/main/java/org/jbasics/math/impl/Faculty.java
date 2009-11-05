@@ -53,7 +53,6 @@ public class Faculty implements Iterator<BigInteger> {
 		if (this.current == 0) {
 			this.value = BigInteger.ONE;
 			this.current++;
-
 		} else {
 			for (int k = this.facultyStep; k > 0; k--) {
 				this.value = this.value.multiply(BigInteger.valueOf(this.current++));

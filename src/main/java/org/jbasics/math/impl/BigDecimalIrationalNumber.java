@@ -30,6 +30,7 @@ import java.math.RoundingMode;
 import java.util.concurrent.atomic.AtomicMarkableReference;
 
 import org.jbasics.checker.ContractCheck;
+import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.IrationalNumber;
 import org.jbasics.math.MemorizedIrationalNumber;
 
@@ -39,11 +40,12 @@ import org.jbasics.math.MemorizedIrationalNumber;
  * @author Stephan Schloepke
  * @since 1.0
  */
-public abstract class BigDecimalIrationalNumber implements MemorizedIrationalNumber<BigDecimal> {
+public class BigDecimalIrationalNumber implements MemorizedIrationalNumber<BigDecimal> {
+	private final AlgorithmStrategy<BigDecimal> algorithm;
 	/**
 	 * Holds the input value x which is a immutable constant.
 	 */
-	private final BigDecimal x;
+	private final BigDecimal[] xn;
 	/**
 	 * Holds the calculated memorized value with the mark indicating if the value is a final exakt
 	 * result.
@@ -61,8 +63,8 @@ public abstract class BigDecimalIrationalNumber implements MemorizedIrationalNum
 	 *            all input variables should be considered constant like the x value is).
 	 * @since 1.0
 	 */
-	protected BigDecimalIrationalNumber(BigDecimal x) {
-		this(x, null);
+	protected BigDecimalIrationalNumber(AlgorithmStrategy<BigDecimal> algorithm, BigDecimal... xn) {
+		this(null, algorithm, xn);
 	}
 
 	/**
@@ -76,8 +78,9 @@ public abstract class BigDecimalIrationalNumber implements MemorizedIrationalNum
 	 * @param initial The initial value to use.
 	 * @since 1.0
 	 */
-	protected BigDecimalIrationalNumber(BigDecimal x, BigDecimal initial) {
-		this.x = ContractCheck.mustNotBeNull(x, "x");
+	protected BigDecimalIrationalNumber(BigDecimal initial, AlgorithmStrategy<BigDecimal> algorithm, BigDecimal... xn) {
+		this.algorithm = ContractCheck.mustNotBeNull(algorithm, "algorithm");
+		this.xn = ContractCheck.mustNotBeNull(xn, "xn");
 		this.value = new AtomicMarkableReference<BigDecimal>(initial, false);
 	}
 
@@ -91,13 +94,11 @@ public abstract class BigDecimalIrationalNumber implements MemorizedIrationalNum
 		if (!mark[0]) {
 			if (result == null || result.precision() <= mc.getPrecision()) {
 				MathContext extendedMC = new MathContext(mc.getPrecision() + 5, RoundingMode.FLOOR);
-				BigDecimal morePrecise = calculate(this.x, result, extendedMC);
-				if (!this.value
-						.compareAndSet(result, morePrecise, mark[0], morePrecise.precision() < mc.getPrecision())) {
+				BigDecimal morePrecise = this.algorithm.calculate(extendedMC, result, this.xn);
+				if (!this.value.compareAndSet(result, morePrecise, mark[0], morePrecise.precision() < mc.getPrecision())) {
 					result = this.value.get(mark);
 					if (!mark[0] && (result == null || result.precision() < morePrecise.precision())) {
-						this.value.compareAndSet(result, morePrecise, mark[0], morePrecise.precision() < mc
-								.getPrecision());
+						this.value.compareAndSet(result, morePrecise, mark[0], morePrecise.precision() < mc.getPrecision());
 						result = morePrecise;
 					}
 				} else {
@@ -124,23 +125,5 @@ public abstract class BigDecimalIrationalNumber implements MemorizedIrationalNum
 	public boolean isExact() {
 		return this.value.isMarked();
 	}
-
-	/**
-	 * Calculate the irational number with the {@link MathContext} as precision. The math context is
-	 * set to a precision five higher than the request and with a {@link RoundingMode#FLOOR}. This
-	 * can change and the algorithm must guarantee that the number is precise up to the digit of
-	 * precision without any rounding in the last digit. However the last digit only needs to be
-	 * precise enough so that a rounding with any {@link RoundingMode} can be processed.
-	 * 
-	 * @param x The value which is the input for the function
-	 * @param currentValue The current value stored in case the algorithm can continue to calculate
-	 *            (like the Newton method can use the less precise number as initial guess to be
-	 *            much faster than having either no guess or a less accurate guess).
-	 * @param mc The math context to use in the calculation.
-	 * @return The newly calculated value which will be memorized. If the precision of the result is
-	 *         less than the precision of the math context given it is expected to be an exact
-	 *         result and hence will not calculated any more in the future.
-	 */
-	protected abstract BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc);
 
 }

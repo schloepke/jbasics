@@ -25,15 +25,16 @@
 package org.jbasics.math.impl;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
 import org.jbasics.checker.ContractCheck;
+import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.IrationalNumber;
+import org.jbasics.math.strategies.ReciprocalSquareRootAlgorithmStrategy;
 
 public class SquareRootReciprocalIrationalNumber extends BigDecimalIrationalNumber {
+	public static final AlgorithmStrategy<BigDecimal> STRATEGY = new ReciprocalSquareRootAlgorithmStrategy();
 
-	public static final IrationalNumber<BigDecimal> SQUARE_ROOT_RECIPROCAL_OF_2 = new SquareRootReciprocalIrationalNumber(
-			MathImplConstants.TWO);
+	public static final IrationalNumber<BigDecimal> SQUARE_ROOT_RECIPROCAL_OF_2 = new SquareRootReciprocalIrationalNumber(MathImplConstants.TWO);
 
 	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
 		if (ContractCheck.mustNotBeNull(x, "x").signum() <= 0) {
@@ -48,22 +49,7 @@ public class SquareRootReciprocalIrationalNumber extends BigDecimalIrationalNumb
 	}
 
 	private SquareRootReciprocalIrationalNumber(BigDecimal x) {
-		super(x);
-	}
-
-	@Override
-	protected BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc) {
-		if (BigDecimal.ONE.compareTo(x) == 0) {
-			return BigDecimal.ONE;
-		}
-		BigDecimal result = currentValue != null ? currentValue : BigDecimal.valueOf(1.0d / Math.sqrt(x.doubleValue()));
-		BigDecimal oldResult;
-		do {
-			oldResult = result;
-			result = result.multiply(MathImplConstants.THREE.subtract(x.multiply(result.multiply(result, mc), mc)), mc)
-					.multiply(MathImplConstants.HALF, mc);
-		} while (result.subtract(oldResult, mc).signum() != 0);
-		return result;
+		super(STRATEGY, x);
 	}
 
 }

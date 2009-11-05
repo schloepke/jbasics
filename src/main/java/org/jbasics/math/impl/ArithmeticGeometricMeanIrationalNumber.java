@@ -25,11 +25,10 @@
 package org.jbasics.math.impl;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 
-import org.jbasics.checker.ContractCheck;
+import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.IrationalNumber;
+import org.jbasics.math.strategies.ArithmeticGeometricMeanAlgorithmStrategy;
 
 /**
  * Calculates the arithmetic geometric mean (agm) of the two given numbers x and y to the
@@ -57,7 +56,7 @@ import org.jbasics.math.IrationalNumber;
  * @since 1.0
  */
 public class ArithmeticGeometricMeanIrationalNumber extends BigDecimalIrationalNumber {
-	private final BigDecimal y;
+	private static final AlgorithmStrategy<BigDecimal> STRATEGY = new ArithmeticGeometricMeanAlgorithmStrategy();
 
 	/**
 	 * Returns the irational arithmetic geometric mean of x and y.
@@ -77,26 +76,7 @@ public class ArithmeticGeometricMeanIrationalNumber extends BigDecimalIrationalN
 	}
 
 	private ArithmeticGeometricMeanIrationalNumber(BigDecimal x, BigDecimal y) {
-		super(x);
-		this.y = ContractCheck.mustNotBeNull(y, "y");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.jbasics.math.impl.BigDecimalIrationalNumber#calculate(java.math.BigDecimal,
-	 * java.math.BigDecimal, java.math.MathContext)
-	 */
-	@Override
-	protected BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc) {
-		MathContext calcContext = new MathContext(mc.getPrecision() + 5, RoundingMode.HALF_EVEN);
-		BigDecimal a = x;
-		BigDecimal b = this.y;
-		do {
-			BigDecimal t = a.add(b).divide(MathImplConstants.TWO);
-			b = SquareRootIrationalNumber.valueOf(a.multiply(b, calcContext)).valueToPrecision(calcContext);
-			a = t;
-		} while (a.compareTo(b) != 0);
-		return a.round(mc);
+		super(STRATEGY, x, y);
 	}
 
 }

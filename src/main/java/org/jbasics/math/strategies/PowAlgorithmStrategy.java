@@ -22,23 +22,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.math.impl;
+package org.jbasics.math.strategies;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 import org.jbasics.math.AlgorithmStrategy;
-import org.jbasics.math.IrationalNumber;
-import org.jbasics.math.strategies.TangentAlgorithmStrategy;
 
-public class TangentIrationalNumber extends BigDecimalIrationalNumber {
-	public static final AlgorithmStrategy<BigDecimal> STRATEGY = new TangentAlgorithmStrategy();
+public class PowAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
+	private final AlgorithmStrategy<BigDecimal> exponentialFunction;
+	private final AlgorithmStrategy<BigDecimal> logarithmFunction;
 
-	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
-		return new TangentIrationalNumber(x);
+	public PowAlgorithmStrategy() {
+		this(null, null);
 	}
 
-	private TangentIrationalNumber(BigDecimal x) {
-		super(STRATEGY, x);
+	public PowAlgorithmStrategy(AlgorithmStrategy<BigDecimal> exponentialFunction, AlgorithmStrategy<BigDecimal> logarithmFunction) {
+		this.exponentialFunction = exponentialFunction != null ? exponentialFunction : new ExponentialTaylerAlgorithmStrategy();
+		this.logarithmFunction = logarithmFunction != null ? logarithmFunction : new NaturalLogarithmAlgorithmStrategy();
+	}
+
+	public BigDecimal calculate(MathContext mc, BigDecimal guess, BigDecimal... xn) {
+		if (xn == null || xn.length != 2) {
+			throw new IllegalArgumentException("Illegal amount of arguments supplied (required 2, got " + (xn == null ? 0 : xn.length) + ")");
+		}
+		return this.exponentialFunction.calculate(mc, null, this.logarithmFunction.calculate(mc, null, xn[0])).multiply(xn[1], mc);
 	}
 
 }

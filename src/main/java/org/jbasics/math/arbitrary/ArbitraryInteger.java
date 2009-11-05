@@ -26,7 +26,6 @@ package org.jbasics.math.arbitrary;
 
 import java.math.BigInteger;
 
-import org.jbasics.arch.ArithmeticArchitecture;
 import org.jbasics.arrays.ArrayConstants;
 import org.jbasics.arrays.IntArrayComparator;
 import org.jbasics.math.arbitrary.internal.InternalCalculation;
@@ -122,10 +121,10 @@ public class ArbitraryInteger implements ArbitraryNumber {
 	}
 
 	public int bitLength() {
-		int result = this.magnitude.length * ArithmeticArchitecture.INTEGER_BITS;
+		int result = this.magnitude.length * 32;
 		int t = this.magnitude[0];
-		int x = 1 << ArithmeticArchitecture.INTEGER_BITS_WITHOUT_SIGN;
-		for (int i = 0; i < ArithmeticArchitecture.INTEGER_BITS; i++) {
+		int x = 1 << 31;
+		for (int i = 0; i < 32; i++) {
 			if ((t & x) != 0) {
 				break;
 			}

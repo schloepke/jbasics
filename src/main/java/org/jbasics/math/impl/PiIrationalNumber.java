@@ -25,22 +25,26 @@
 package org.jbasics.math.impl;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 
+import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.IrationalNumber;
+import org.jbasics.math.strategies.PiAlgorithmStrategy;
 
 public class PiIrationalNumber extends BigDecimalIrationalNumber {
 	/**
+	 * The {@link AlgorithmStrategy} which is used to calculate PI.
+	 */
+	public static final AlgorithmStrategy<BigDecimal> STRATEGY = new PiAlgorithmStrategy();
+
+	/**
 	 * The constant PI.
 	 */
-	public static final IrationalNumber<BigDecimal> PI = new PiIrationalNumber(BigDecimal.ONE,
-			MathImplConstants.PI_INITIAL);
+	public static final IrationalNumber<BigDecimal> PI = new PiIrationalNumber(BigDecimal.ONE, MathImplConstants.PI_INITIAL);
+
 	/**
 	 * The constant 2*PI.
 	 */
-	public static final IrationalNumber<BigDecimal> PI2 = new PiIrationalNumber(MathImplConstants.TWO,
-			MathImplConstants.PI2_INITIAL);
+	public static final IrationalNumber<BigDecimal> PI2 = new PiIrationalNumber(MathImplConstants.TWO, MathImplConstants.PI2_INITIAL);
 
 	public static final IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
 		if (BigDecimal.ONE.compareTo(x) == 0) {
@@ -53,32 +57,11 @@ public class PiIrationalNumber extends BigDecimalIrationalNumber {
 	}
 
 	private PiIrationalNumber(BigDecimal x) {
-		super(x);
+		super(STRATEGY, x);
 	}
 
 	private PiIrationalNumber(BigDecimal x, BigDecimal initial) {
-		super(x, initial);
-	}
-
-	@Override
-	protected BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc) {
-		MathContext calcMC = new MathContext(mc.getPrecision() + 2, RoundingMode.HALF_EVEN);
-		BigDecimal an = BigDecimal.ONE;
-		IrationalNumber<BigDecimal> bn = SquareRootReciprocalIrationalNumber.SQUARE_ROOT_RECIPROCAL_OF_2;
-		BigDecimal tn = MathImplConstants.QUARTER;
-		BigDecimal pn = BigDecimal.ONE;
-		BigDecimal anNext;
-		BigDecimal anDiff;
-		do {
-			anNext = an.add(bn.valueToPrecision(calcMC)).divide(MathImplConstants.TWO, calcMC);
-			bn = SquareRootIrationalNumber.valueOf(an.multiply(bn.valueToPrecision(mc), calcMC));
-			anDiff = an.subtract(anNext);
-			tn = tn.subtract(pn.multiply(anDiff.pow(2, calcMC), calcMC), calcMC);
-			pn = pn.add(pn);
-			an = anNext;
-		} while (calcMC.getPrecision() - anDiff.scale() + anDiff.precision() - 1 > 0);
-		return an.add(bn.valueToPrecision(calcMC)).pow(2, calcMC).divide(tn, calcMC).multiply(
-				MathImplConstants.QUARTER, calcMC).multiply(x, mc);
+		super(initial, STRATEGY, x);
 	}
 
 }

@@ -25,31 +25,20 @@
 package org.jbasics.math.impl;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
+import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.IrationalNumber;
+import org.jbasics.math.strategies.HyperbolicSineAlgorithmStrategy;
 
 public class HyperbolicSineIrationalNumber extends BigDecimalIrationalNumber {
-
-	private final IrationalNumber<BigDecimal> expX;
+	private static final AlgorithmStrategy<BigDecimal> STRATEGY = new HyperbolicSineAlgorithmStrategy();
 
 	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
 		return new HyperbolicSineIrationalNumber(x);
 	}
 
 	private HyperbolicSineIrationalNumber(BigDecimal x) {
-		super(BigDecimal.ZERO);
-		this.expX = ExponentialIrationalNumber.valueOf(x);
-	}
-
-	@Override
-	protected BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc) {
-		// Hyperbolic Sine is sinh x = (e^x - e^(-x)) / 2
-		// e^-x is the same as 1/e^x so we can actually do the math hence we only need to calculate
-		// e^x once! so we calculate
-		// sinh x = 1/2 * (e^x - 1/e^x)
-		return this.expX.valueToPrecision(mc).subtract(BigDecimal.ONE.divide(this.expX.valueToPrecision(mc)), mc)
-				.multiply(MathImplConstants.HALF);
+		super(STRATEGY, x);
 	}
 
 }

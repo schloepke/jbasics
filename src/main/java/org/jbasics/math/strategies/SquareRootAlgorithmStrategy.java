@@ -22,23 +22,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.math.impl;
+package org.jbasics.math.strategies;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 import org.jbasics.math.AlgorithmStrategy;
-import org.jbasics.math.IrationalNumber;
-import org.jbasics.math.strategies.TangentAlgorithmStrategy;
+import org.jbasics.math.impl.MathImplConstants;
 
-public class TangentIrationalNumber extends BigDecimalIrationalNumber {
-	public static final AlgorithmStrategy<BigDecimal> STRATEGY = new TangentAlgorithmStrategy();
+public class SquareRootAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
 
-	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
-		return new TangentIrationalNumber(x);
-	}
-
-	private TangentIrationalNumber(BigDecimal x) {
-		super(STRATEGY, x);
+	public BigDecimal calculate(MathContext mc, BigDecimal guess, BigDecimal... xn) {
+		if (xn == null || xn.length != 1) {
+			throw new IllegalArgumentException("Illegal amount of arguments supplied (1 required, got " + (xn == null ? 0 : xn.length) + ")");
+		}
+		BigDecimal x = xn[0];
+		if (x.signum() == 0) {
+			return BigDecimal.ZERO;
+		}
+		if (BigDecimal.ONE.compareTo(x) == 0) {
+			return BigDecimal.ONE;
+		}
+		BigDecimal result = guess != null ? BigDecimal.ONE.divide(guess, mc) : BigDecimal.valueOf(1.0d / Math.sqrt(x.doubleValue()));
+		BigDecimal oldResult;
+		do {
+			oldResult = result;
+			result = result.multiply(MathImplConstants.THREE.subtract(x.multiply(result.multiply(result, mc), mc)), mc).multiply(
+					MathImplConstants.HALF, mc);
+		} while (result.subtract(oldResult, mc).signum() != 0);
+		return BigDecimal.ONE.divide(result, mc).stripTrailingZeros();
 	}
 
 }

@@ -25,30 +25,20 @@
 package org.jbasics.math.impl;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
-import org.jbasics.checker.ContractCheck;
+import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.IrationalNumber;
+import org.jbasics.math.strategies.HyperbolicTangentAlgorithmStrategy;
 
 public class HyperbolicTangentIrationalNumber extends BigDecimalIrationalNumber {
-
-	private final IrationalNumber<BigDecimal> exp2X;
+	private static final AlgorithmStrategy<BigDecimal> STRATEGY = new HyperbolicTangentAlgorithmStrategy();
 
 	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
 		return new HyperbolicTangentIrationalNumber(x);
 	}
 
 	private HyperbolicTangentIrationalNumber(BigDecimal x) {
-		super(BigDecimal.ZERO);
-		this.exp2X = ExponentialIrationalNumber.valueOf(ContractCheck.mustNotBeNull(x, "x").multiply(
-				MathImplConstants.TWO));
-	}
-
-	@Override
-	protected BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc) {
-		// Hyperbolic Tangent is tanh x = (e^2x - 1) / (e^2x + 1)
-		return this.exp2X.valueToPrecision(mc).subtract(BigDecimal.ONE).divide(
-				this.exp2X.valueToPrecision(mc).add(BigDecimal.ONE), mc);
+		super(STRATEGY, x);
 	}
 
 }

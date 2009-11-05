@@ -28,7 +28,7 @@ import org.jbasics.arch.ArithmeticArchitecture;
 
 public interface InternalCalculation {
 	final static InternalCalculation IMPL = ArithmeticArchitecture.is32Bit() ? new Int32CalculationImpl()
-			: new InternalCalculationImpl();
+			: new Int32CalculationImpl();
 
 	final static long LONG_32BIT_MASK = 0xffffffffL;
 

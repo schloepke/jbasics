@@ -24,7 +24,6 @@
  */
 package org.jbasics.math.arbitrary.internal;
 
-import org.jbasics.arch.ArithmeticArchitecture;
 import org.jbasics.arrays.ArrayConstants;
 
 public class MagnitudeHelper {
@@ -40,8 +39,8 @@ public class MagnitudeHelper {
 		if (i == input.length) {
 			return ArrayConstants.ZERO_LENGTH_BYTE_ARRAY;
 		}
-		int len = (input.length - i) * ArithmeticArchitecture.INTEGER_BYTES;
-		int t = 0xff << (ArithmeticArchitecture.INTEGER_BITS - 8);
+		int len = (input.length - i) * 4;
+		int t = 0xff << 24;
 		while (t != 0 && (input[i] & t) == 0) {
 			t >>>= 8;
 			len--;
@@ -51,7 +50,7 @@ public class MagnitudeHelper {
 		int j = input.length;
 		while (j > i && len > 0) {
 			int v = input[--j];
-			int z = ArithmeticArchitecture.INTEGER_BYTES;
+			int z = 4;
 			while (z-- > 0 && len > 0) {
 				result[--len] = (byte) v;
 				v = v >>> 8;

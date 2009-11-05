@@ -24,8 +24,6 @@
  */
 package org.jbasics.math.obsolete;
 
-import org.jbasics.arch.ArithmeticArchitecture;
-
 /**
  * Converts long integer numbers stored in various array types in big endian format.
  * <p>
@@ -80,14 +78,13 @@ public class TwoComplementArrayHelper {
 		if (endIndex - startIndex == 0) {
 			return ZERO_INT_ARRAY;
 		}
-		int len = ((endIndex - startIndex) + ArithmeticArchitecture.INTEGER_BYTES - 1)
-				/ ArithmeticArchitecture.INTEGER_BYTES;
+		int len = ((endIndex - startIndex) + 4) / 4;
 		int[] result = new int[len];
 		for (int i = len - 1; i >= 0; i--) {
 			int remaining = endIndex - startIndex;
 			int tmp = 0;
-			if (remaining >= ArithmeticArchitecture.INTEGER_BYTES) {
-				remaining = ArithmeticArchitecture.INTEGER_BYTES;
+			if (remaining >= 4) {
+				remaining = 4;
 			} else if (sign) {
 				tmp = -1 << remaining * 8;
 			}
@@ -125,8 +122,8 @@ public class TwoComplementArrayHelper {
 		if (endIndex - startIndex == 0) {
 			return ZERO_BYTE_ARRAY;
 		}
-		int len = (endIndex - startIndex) * ArithmeticArchitecture.INTEGER_BYTES;
-		int tmp = 0xff << (ArithmeticArchitecture.INTEGER_BYTES - 1) * 8;
+		int len = (endIndex - startIndex) * 4;
+		int tmp = 0xff << 24;
 		if (sign) {
 			while (tmp != 0xff && (input[startIndex] & tmp) == tmp) {
 				len--;
@@ -148,7 +145,7 @@ public class TwoComplementArrayHelper {
 		byte[] result = new byte[len];
 		while (endIndex > startIndex && len > 0) {
 			int v = input[--endIndex];
-			tmp = ArithmeticArchitecture.INTEGER_BYTES;
+			tmp = 4;
 			while (tmp-- > 0 && len > 0) {
 				result[--len] = (byte) v;
 				v = v >>> 8;

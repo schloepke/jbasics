@@ -22,23 +22,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.math.impl;
+package org.jbasics.math.strategies;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 import org.jbasics.math.AlgorithmStrategy;
-import org.jbasics.math.IrationalNumber;
-import org.jbasics.math.strategies.TangentAlgorithmStrategy;
 
-public class TangentIrationalNumber extends BigDecimalIrationalNumber {
-	public static final AlgorithmStrategy<BigDecimal> STRATEGY = new TangentAlgorithmStrategy();
+public class ArcCosineAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
 
-	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
-		return new TangentIrationalNumber(x);
-	}
-
-	private TangentIrationalNumber(BigDecimal x) {
-		super(STRATEGY, x);
+	public BigDecimal calculate(MathContext mc, BigDecimal guess, BigDecimal... xn) {
+		if (xn == null || xn.length != 1) {
+			throw new IllegalArgumentException("arc cos requires exactly one argument arccos(x) but supplied was " + (xn == null ? 0 : xn.length));
+		}
+		return BigDecimal.valueOf(Math.acos(xn[0].doubleValue())).round(mc);
 	}
 
 }

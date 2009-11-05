@@ -24,7 +24,6 @@
  */
 package org.jbasics.math.obsolete;
 
-import org.jbasics.arch.ArithmeticArchitecture;
 import org.jbasics.arrays.ArrayConstants;
 
 /**
@@ -70,9 +69,9 @@ public class SignMagnitudeArrayHelper {
 		if (endIndex - startIndex == 0) {
 			return ArrayConstants.ZERO_LENGTH_INT_ARRAY;
 		}
-		int len = ((endIndex - startIndex) + ArithmeticArchitecture.INTEGER_BYTES - 1)
-				/ ArithmeticArchitecture.INTEGER_BYTES;
-		if (sign && (len * ArithmeticArchitecture.INTEGER_BYTES) == (endIndex - startIndex)) {
+		int len = ((endIndex - startIndex) + 3)
+				/ 4;
+		if (sign && (len * 4) == (endIndex - startIndex)) {
 			// In the case that we exactly fit into the integers we need to ensure that the borrow
 			// propagation will be good so we check
 			// all bytes if they are zero. Than we will need one extra int
@@ -88,8 +87,8 @@ public class SignMagnitudeArrayHelper {
 		for (int i = len - 1; i >= 0; i--) {
 			int remaining = endIndex - startIndex;
 			int tmp = 0;
-			if (remaining >= ArithmeticArchitecture.INTEGER_BYTES) {
-				remaining = ArithmeticArchitecture.INTEGER_BYTES;
+			if (remaining >= 4) {
+				remaining = 4;
 			} else if (sign) {
 				tmp = -1 << remaining * 8;
 			}

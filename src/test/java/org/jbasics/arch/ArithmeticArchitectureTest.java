@@ -24,7 +24,6 @@
  */
 package org.jbasics.arch;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -40,20 +39,6 @@ public class ArithmeticArchitectureTest {
 
 	@Test
 	public void testStaticMethods() {
-		assertTrue(ArithmeticArchitecture.INTEGER_BITS == (ArithmeticArchitecture.is32Bit() ? 32
-				: (ArithmeticArchitecture.is64Bit() ? 64 : ArithmeticArchitecture.INTEGER_BITS)));
 		assertTrue(ArithmeticArchitecture.is32Bit() != ArithmeticArchitecture.is64Bit());
-		if (ArithmeticArchitecture.is32Bit()) {
-			assertEquals(32, ArithmeticArchitecture.INTEGER_BITS);
-			assertEquals(31, ArithmeticArchitecture.INTEGER_BITS_WITHOUT_SIGN);
-			assertEquals(4, ArithmeticArchitecture.INTEGER_BYTES);
-		} else if (ArithmeticArchitecture.is64Bit()) {
-			assertEquals(64, ArithmeticArchitecture.INTEGER_BITS);
-			assertEquals(63, ArithmeticArchitecture.INTEGER_BITS_WITHOUT_SIGN);
-			assertEquals(8, ArithmeticArchitecture.INTEGER_BYTES);
-		} else {
-			assertEquals(ArithmeticArchitecture.INTEGER_BITS, ArithmeticArchitecture.INTEGER_BYTES * 8);
-			assertEquals(ArithmeticArchitecture.INTEGER_BITS_WITHOUT_SIGN, ArithmeticArchitecture.INTEGER_BYTES * 8 - 1);
-		}
 	}
 }

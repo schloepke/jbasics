@@ -22,44 +22,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.math.impl;
+package org.jbasics.math.strategies;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
-import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.AlgorithmStrategy;
-import org.jbasics.math.IrationalNumber;
-import org.jbasics.math.strategies.NaturalLogarithmAlgorithmStrategy;
 
-public class LogNaturalFunctionIrationalNumber extends BigDecimalIrationalNumber {
-	private static final AlgorithmStrategy<BigDecimal> STRATEGY = new NaturalLogarithmAlgorithmStrategy();
-	/**
-	 * The logarithm naturals of two as cached value.
-	 */
-	public static final IrationalNumber<BigDecimal> LN2 = new LogNaturalFunctionIrationalNumber(MathImplConstants.TWO);
-	/**
-	 * The logarithm naturals of ten as cached value.
-	 */
-	public static final IrationalNumber<BigDecimal> LN10 = new LogNaturalFunctionIrationalNumber(BigDecimal.TEN);
+public class NaturalLogarithmAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
+	private final AlgorithmStrategy<BigDecimal> exponentialFunction;
 
-	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
-		if (ContractCheck.mustNotBeNull(x, "x").signum() == 0) {
-			throw new ArithmeticException("Logarithm of zero or negative number cannot be calculated");
-		}
-		if (BigDecimal.ONE.compareTo(x) == 0) {
-			return MathImplConstants.IRATIONAL_ZERO;
-		} else if (MathImplConstants.TWO.compareTo(x) == 0) {
-			return LN2;
-		} else if (BigDecimal.TEN.compareTo(x) == 0) {
-			return LN10;
-		} else {
-			return new LogNaturalFunctionIrationalNumber(x);
-		}
+	public NaturalLogarithmAlgorithmStrategy() {
+		this(null);
 	}
 
-	private LogNaturalFunctionIrationalNumber(BigDecimal x) {
-		super(STRATEGY, x);
-		assert x != null && x.signum() > 0;
+	public NaturalLogarithmAlgorithmStrategy(AlgorithmStrategy<BigDecimal> exponentialFunction) {
+		this.exponentialFunction = exponentialFunction != null ? exponentialFunction : new ExponentialTaylerAlgorithmStrategy();
+	}
+
+	public BigDecimal calculate(MathContext mc, BigDecimal guess, BigDecimal... xn) {
+		if (xn == null || xn.length != 1) {
+			throw new IllegalArgumentException("Illegal amount of arguments supplied (required 1, got " + (xn == null ? 0 : xn.length) + ")");
+		}
+		BigDecimal x = xn[0];
+		if (x.signum() <= 0) {
+			throw new ArithmeticException("Logarithm of zero or negative number cannot be calculated"); //$NON-NLS-1$
+		}
+		if (BigDecimal.ONE.compareTo(x) == 0) {
+			return BigDecimal.ZERO;
+		}
+		BigDecimal result = guess != null ? guess : new BigDecimal(Math.log(x.doubleValue()), mc);
+		BigDecimal oldResult;
+		do {
+			oldResult = result;
+			BigDecimal temp = this.exponentialFunction.calculate(mc, null, result.negate()).multiply(x, mc).subtract(BigDecimal.ONE);
+			result = result.add(temp);
+		} while (oldResult.round(mc).subtract(result.round(mc)).signum() != 0);
+		return result.round(mc);
 	}
 
 }

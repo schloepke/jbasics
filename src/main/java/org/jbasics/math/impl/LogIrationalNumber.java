@@ -25,28 +25,20 @@
 package org.jbasics.math.impl;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
+import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.IrationalNumber;
+import org.jbasics.math.strategies.LogarithmAlgorithmStrategy;
 
 public class LogIrationalNumber extends BigDecimalIrationalNumber {
-
-	private final IrationalNumber<BigDecimal> base;
-	private final IrationalNumber<BigDecimal> lnx;
+	private static final AlgorithmStrategy<BigDecimal> STRATEGY = new LogarithmAlgorithmStrategy();
 
 	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x, BigDecimal base) {
 		return new LogIrationalNumber(x, base);
 	}
 
 	private LogIrationalNumber(BigDecimal x, BigDecimal base) {
-		super(x);
-		this.base = LogNaturalFunctionIrationalNumber.valueOf(base);
-		this.lnx = LogNaturalFunctionIrationalNumber.valueOf(x);
-	}
-
-	@Override
-	protected BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc) {
-		return this.lnx.valueToPrecision(mc).divide(this.base.valueToPrecision(mc), mc);
+		super(STRATEGY, x, base);
 	}
 
 }

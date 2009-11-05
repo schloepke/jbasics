@@ -37,6 +37,7 @@ import org.jbasics.math.IrationalNumber;
 import org.jbasics.math.arbitrary.ArbitraryFaculty;
 import org.jbasics.math.arbitrary.ArbitraryInteger;
 import org.jbasics.math.arbitrary.ArbitraryRational;
+import org.jbasics.math.strategies.PiSeriesAlgorithmStrategy;
 import org.jbasics.testing.Java14LoggingTestCase;
 import org.junit.Test;
 
@@ -52,12 +53,12 @@ public class BigDecimalIrationalNumberTest extends Java14LoggingTestCase {
 
 		time = System.currentTimeMillis();
 		standard.valueToPrecision(mc);
-		used = time - System.currentTimeMillis();
+		used = System.currentTimeMillis() - time;
 		System.out.println("Standard "+used);
 
 		time = System.currentTimeMillis();
 		reciprocal.valueToPrecision(mc);
-		used = time - System.currentTimeMillis();
+		used = System.currentTimeMillis() - time;
 		System.out.println("Reciprocal "+used);
 
 		System.out.println("S "+standard.valueToPrecision(mc));

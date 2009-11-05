@@ -25,13 +25,13 @@
 package org.jbasics.math.impl;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.MathContext;
-import java.math.RoundingMode;
 
+import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.IrationalNumber;
+import org.jbasics.math.strategies.ExponentialTaylerAlgorithmStrategy;
 
 public class ExponentialIrationalNumber extends BigDecimalIrationalNumber {
+	private static final AlgorithmStrategy<BigDecimal> STRATEGY = new ExponentialTaylerAlgorithmStrategy();
 
 	public static final IrationalNumber<BigDecimal> E = new ExponentialIrationalNumber(BigDecimal.ONE);
 
@@ -43,37 +43,7 @@ public class ExponentialIrationalNumber extends BigDecimalIrationalNumber {
 	}
 
 	private ExponentialIrationalNumber(BigDecimal x) {
-		super(x);
-	}
-
-	@Override
-	protected BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc) {
-		int scale = (int) Math.ceil(Math.sqrt((mc.getPrecision() + 10) * Math.log(10) / Math.log(2)));
-		if (x.abs().compareTo(BigDecimal.ONE) > 0) {
-			BigInteger temp = x.unscaledValue();
-			int scale2 = (int) (x.scale() * (Math.log(10) / Math.log(2))) + 1;
-			int precis2 = temp.bitLength();
-			scale = scale + precis2 - scale2;
-		} else {
-			scale = scale + ((int) (x.scale() * (Math.log(10) / Math.log(2))));
-		}
-		BigDecimal xScaled = x.divide(new BigDecimal(BigInteger.ONE.shiftLeft(scale)));
-		MathContext calcContext = new MathContext(mc.getPrecision() + (int) Math.ceil(scale * Math.log10(2)) + 1,
-				RoundingMode.HALF_EVEN);
-		BigInteger k = BigInteger.ONE;
-		int n = 1;
-		BigDecimal xPower = BigDecimal.ONE;
-		BigDecimal result = BigDecimal.ONE;
-		do {
-			xPower = xPower.multiply(xScaled, calcContext);
-			result = result.multiply(BigDecimal.valueOf(n)).add(xPower);
-			k = k.multiply(BigInteger.valueOf(n++));
-		} while (calcContext.getPrecision() - xPower.scale() + xPower.precision() > 0);
-		result = result.round(calcContext).divide(new BigDecimal(k), calcContext);
-		for (int i = scale; i > 0; i--) {
-			result = result.multiply(result, calcContext);
-		}
-		return result.round(mc);
+		super(STRATEGY, x);
 	}
 
 }

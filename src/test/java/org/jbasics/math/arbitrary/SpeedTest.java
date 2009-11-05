@@ -24,12 +24,10 @@
  */
 package org.jbasics.math.arbitrary;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.math.BigInteger;
 
-import org.jbasics.arch.ArithmeticArchitecture;
-import org.jbasics.math.arbitrary.ArbitraryInteger;
 import org.jbasics.profile.TimeProfile;
 import org.junit.Test;
 
@@ -39,7 +37,7 @@ public class SpeedTest {
 	@Test
 	public void testAdd() throws Exception {
 		System.out.println("--- Adding ----");
-		SpeedTestSettings settings = new SpeedTestSettings(10000, BigInteger.valueOf(233443).pow(6364), null, true);
+		SpeedTestSettings settings = new SpeedTestSettings(500, BigInteger.valueOf(233443).pow(6364), null, true);
 		for (int i = 0; i < RUN_TEST_AMOUNT; i++) {
 			testSpeed(10, new LargeNumberAdd(settings), new BigIntegerAdd(settings));
 		}
@@ -48,7 +46,7 @@ public class SpeedTest {
 	@Test
 	public void testSubtract() throws Exception {
 		System.out.println("--- Subtracting ----");
-		SpeedTestSettings settings = new SpeedTestSettings(10000, BigInteger.valueOf(2334443).pow(6364), BigInteger.valueOf(2334443).pow(6364).subtract(BigInteger.valueOf(1035)), false);
+		SpeedTestSettings settings = new SpeedTestSettings(500, BigInteger.valueOf(2334443).pow(6364), BigInteger.valueOf(2334443).pow(6364).subtract(BigInteger.valueOf(1035)), false);
 		for (int i = 0; i < RUN_TEST_AMOUNT; i++) {
 			testSpeed(10, new LargeNumberSubtract(settings), new BigIntegerSubtract(settings));
 		}
@@ -67,7 +65,7 @@ public class SpeedTest {
 			throws Exception {
 		BigInteger refResult = ref.call();
 		System.out.println("BitL: " + refResult.bitLength() + " (Ints: " + (long)Math.ceil(refResult.bitLength()
-				/ (ArithmeticArchitecture.INTEGER_BYTES * 8.0)) + ", DecDig: "
+				/ 32.0) + ", DecDig: "
 				+ (long)Math.ceil(refResult.bitLength() * Math.log10(2)) + ")");
 //		System.out.println("Ref:  " + refResult);
 		BigInteger mineResult = mine.call().toNumber();

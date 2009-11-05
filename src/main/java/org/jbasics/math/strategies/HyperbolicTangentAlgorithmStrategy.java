@@ -22,23 +22,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.math.impl;
+package org.jbasics.math.strategies;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 import org.jbasics.math.AlgorithmStrategy;
-import org.jbasics.math.IrationalNumber;
-import org.jbasics.math.strategies.TangentAlgorithmStrategy;
+import org.jbasics.math.impl.MathImplConstants;
 
-public class TangentIrationalNumber extends BigDecimalIrationalNumber {
-	public static final AlgorithmStrategy<BigDecimal> STRATEGY = new TangentAlgorithmStrategy();
+/**
+ * The Hyperbolic Tangent function algorithm.
+ * <p>
+ * Hyperbolic Tangent is defined as:
+ * <p style="margin-left: 2 em">
+ * tanh(x) = (e<sup>x</sup> - 1) / (e<sup>-x</sup> + 1)
+ * </p>
+ * </p>
+ * 
+ * @author Stephan Schloepke
+ */
+public class HyperbolicTangentAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
+	private final AlgorithmStrategy<BigDecimal> exp;
 
-	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
-		return new TangentIrationalNumber(x);
+	public HyperbolicTangentAlgorithmStrategy() {
+		this(new ExponentialTaylerAlgorithmStrategy());
 	}
 
-	private TangentIrationalNumber(BigDecimal x) {
-		super(STRATEGY, x);
+	public HyperbolicTangentAlgorithmStrategy(AlgorithmStrategy<BigDecimal> expFunction) {
+		if (expFunction == null) {
+			throw new IllegalArgumentException("Null parameter: expFunction");
+		}
+		this.exp = expFunction;
+	}
+
+	public BigDecimal calculate(MathContext mc, BigDecimal guess, BigDecimal... xn) {
+		if (xn == null || xn.length != 1) {
+			throw new IllegalArgumentException("Illegal amount of arguments supplied (required 1, got " + (xn == null ? 0 : xn.length) + ")");
+		}
+		BigDecimal exp2X = this.exp.calculate(mc, null, xn[0].multiply(MathImplConstants.TWO, mc));
+		return exp2X.subtract(BigDecimal.ONE).divide(exp2X.add(BigDecimal.ONE), mc);
 	}
 
 }

@@ -22,23 +22,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.math.impl;
+package org.jbasics.math.strategies;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 import org.jbasics.math.AlgorithmStrategy;
-import org.jbasics.math.IrationalNumber;
-import org.jbasics.math.strategies.TangentAlgorithmStrategy;
+import org.jbasics.math.impl.MathImplConstants;
 
-public class TangentIrationalNumber extends BigDecimalIrationalNumber {
-	public static final AlgorithmStrategy<BigDecimal> STRATEGY = new TangentAlgorithmStrategy();
+public class ArithmeticGeometricMeanAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
+	private final AlgorithmStrategy<BigDecimal> squareRoot;
 
-	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
-		return new TangentIrationalNumber(x);
+	public ArithmeticGeometricMeanAlgorithmStrategy() {
+		this(new SquareRootAlgorithmStrategy());
 	}
 
-	private TangentIrationalNumber(BigDecimal x) {
-		super(STRATEGY, x);
+	public ArithmeticGeometricMeanAlgorithmStrategy(AlgorithmStrategy<BigDecimal> squareRootFunction) {
+		if (squareRootFunction == null) {
+			throw new IllegalArgumentException("Null parameter: squareRootFunction");
+		}
+		this.squareRoot = squareRootFunction;
+	}
+
+	public BigDecimal calculate(MathContext mc, BigDecimal guess, BigDecimal... xn) {
+		if (xn == null || xn.length != 2) {
+			throw new IllegalArgumentException("arithmetic geometric mean requires requires exactly two argument agm(a, b) but supplied was "
+					+ (xn == null ? 0 : xn.length));
+		}
+		MathContext calcContext = new MathContext(mc.getPrecision() + 5, RoundingMode.HALF_EVEN);
+		BigDecimal a = xn[0];
+		BigDecimal b = xn[1];
+		do {
+			BigDecimal t = a.add(b).divide(MathImplConstants.TWO);
+			b = this.squareRoot.calculate(calcContext, null, a.multiply(b, calcContext));
+			a = t;
+		} while (a.compareTo(b) != 0);
+		return a.round(mc);
 	}
 
 }

@@ -22,46 +22,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.math.impl;
+package org.jbasics.math.strategies;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
-import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.AlgorithmStrategy;
-import org.jbasics.math.IrationalNumber;
-import org.jbasics.math.strategies.SquareRootAlgorithmStrategy;
+import org.jbasics.math.impl.MathImplConstants;
 
 /**
- * Calculates the square root for the given number.
+ * The Hyperbolic Sine function algorithm.
  * <p>
- * Using the Heron algorithm in conjunction with a start value calculated by the
- * {@link Math#sqrt(double)} function.
+ * Hyperbolic Sine is defined as:
+ * <p style="margin-left: 2 em">
+ * cosh(x) = (e<sup>x</sup> - e<sup>-x</sup>) / 2
+ * </p>
+ * Since e<sup>-x</sup> = 1 / e<sup>x</sup> we can change the function in a way that we only need to
+ * calculate e<sup>x</sup> once:
+ * <p style="margin-left: 2 em">
+ * cosh(x) = (e<sup>x</sup> - 1/e<sup>x</sup>) / 2
+ * </p>
  * </p>
  * 
  * @author Stephan Schloepke
  */
-public class SquareRootIrationalNumber extends BigDecimalIrationalNumber {
-	public static final AlgorithmStrategy<BigDecimal> STRATEGY = new SquareRootAlgorithmStrategy();
+public class HyperbolicSineAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
+	private final AlgorithmStrategy<BigDecimal> exp;
 
-	/**
-	 * The constant square root of two.
-	 */
-	public static final IrationalNumber<BigDecimal> SQUARE_ROOT_OF_2 = new SquareRootIrationalNumber(MathImplConstants.TWO);
-
-	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
-		if (ContractCheck.mustNotBeNull(x, "x").signum() < 0) {
-			throw new ArithmeticException("Square root can only be calculated of a positiv number " + x);
-		}
-		if (MathImplConstants.TWO.equals(x)) {
-			return SQUARE_ROOT_OF_2;
-		} else if (MathImplConstants.HALF.equals(x)) {
-			return SquareRootReciprocalIrationalNumber.SQUARE_ROOT_RECIPROCAL_OF_2;
-		}
-		return new SquareRootIrationalNumber(x);
+	public HyperbolicSineAlgorithmStrategy() {
+		this(new ExponentialTaylerAlgorithmStrategy());
 	}
 
-	private SquareRootIrationalNumber(BigDecimal x) {
-		super(STRATEGY, x);
+	public HyperbolicSineAlgorithmStrategy(AlgorithmStrategy<BigDecimal> expFunction) {
+		if (expFunction == null) {
+			throw new IllegalArgumentException("Null parameter: expFunction");
+		}
+		this.exp = expFunction;
+	}
+
+	public BigDecimal calculate(MathContext mc, BigDecimal guess, BigDecimal... xn) {
+		if (xn == null || xn.length != 1) {
+			throw new IllegalArgumentException("Illegal amount of arguments supplied (required 1, got " + (xn == null ? 0 : xn.length) + ")");
+		}
+		BigDecimal expX = this.exp.calculate(mc, null, xn[0]);
+		return expX.add(BigDecimal.ONE.divide(expX, mc), mc).multiply(MathImplConstants.HALF, mc);
 	}
 
 }

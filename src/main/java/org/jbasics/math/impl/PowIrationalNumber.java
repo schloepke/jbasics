@@ -25,26 +25,20 @@
 package org.jbasics.math.impl;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
+import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.IrationalNumber;
+import org.jbasics.math.strategies.PowAlgorithmStrategy;
 
 public class PowIrationalNumber extends BigDecimalIrationalNumber {
-
-	private final IrationalNumber<BigDecimal> lna;
+	public static final AlgorithmStrategy<BigDecimal> STRATEGY = new PowAlgorithmStrategy();
 
 	public static IrationalNumber<BigDecimal> valueOf(BigDecimal a, BigDecimal x) {
 		return new PowIrationalNumber(a, x);
 	}
 
 	private PowIrationalNumber(BigDecimal a, BigDecimal x) {
-		super(x);
-		this.lna = LogNaturalFunctionIrationalNumber.valueOf(a);
-	}
-
-	@Override
-	protected BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc) {
-		return ExponentialIrationalNumber.valueOf(this.lna.valueToPrecision(mc)).valueToPrecision(mc).multiply(x, mc);
+		super(STRATEGY, a, x);
 	}
 
 }

@@ -25,23 +25,20 @@
 package org.jbasics.math.impl;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
+import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.IrationalNumber;
+import org.jbasics.math.strategies.SineAlgorithmStrategy;
 
 public class SineIrationalNumber extends BigDecimalIrationalNumber {
+	public static final AlgorithmStrategy<BigDecimal> STRATEGY = new SineAlgorithmStrategy();
 
 	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
 		return new SineIrationalNumber(x);
 	}
 
 	private SineIrationalNumber(BigDecimal x) {
-		super(x);
-	}
-
-	@Override
-	protected BigDecimal calculate(BigDecimal x, BigDecimal currentValue, MathContext mc) {
-		return BigDecimal.valueOf(Math.sin(x.doubleValue())).round(mc);
+		super(STRATEGY, x);
 	}
 
 }
