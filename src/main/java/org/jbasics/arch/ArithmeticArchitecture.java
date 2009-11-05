@@ -25,44 +25,39 @@
 package org.jbasics.arch;
 
 /**
- * A pretty static helper class to find out what the architecture is for integer. Upon first usage
- * the integer is checked to see how many bits it has. Once checked three global accessible
- * variables hold the amount of bytes an integer has as well as the amount of bits with and without
- * the sign bit.
+ * A simple helper to try and determine if the underlying JVM is a 32 bit or a 64 bit one.
+ * <p>
+ * It is wise to never depend on the underlying JVM architecture. However in some cases it is
+ * easier to have an algorithm written based on Integers rather than using Longs when you are 
+ * running on a 32 bit JVM. For such cases this is a way to determine what JVM we are running
+ * on.
+ * </p>
+ * <p>
+ * It should be noted however that currently the detection is not quite perfect. It will work
+ * fine on all SUN JVMs or derived ones (Mac OS X JVM for example). In cases that the system
+ * property "sun.arch.data.model" is not set we look at the JVM Name and only consider the
+ * JVM as beeing 64 bit if a 64 is contained in the name somewhere.
+ * </p>
  * 
  * @author Stephan Schloepke
  * @since 1.0
  */
 public final class ArithmeticArchitecture {
-
-	/**
-	 * Holds the amount of bytes an integer has in the currently running architecture.
-	 * 
-	 * @since 1.0
-	 */
-	public static final int INTEGER_BYTES;
-	/**
-	 * Holds the amount of bits an integer has in the currently running architecture.
-	 * 
-	 * @since 1.0
-	 */
-	public static final int INTEGER_BITS;
-	/**
-	 * Holds the amount of bits-1 (bits without sign bit) of the currently running architecture.
-	 * 
-	 * @since 1.0
-	 */
-	public static final int INTEGER_BITS_WITHOUT_SIGN;
+	public final static boolean JVM64BIT;
 
 	static {
-		int temp = -1;
-		int size = 1;
-		while ((temp = temp >>> 8) > 0) {
-			size++;
+		boolean env64bit = false;
+		String dataModel = System.getProperty("sun.arch.data.model");
+		if (dataModel != null) {
+			env64bit = "64".equals(dataModel);
+		} else {
+			// Ok we need to figure out maybe based on the name
+			String jvmName = System.getProperty("java.vm.name");
+			if (jvmName != null) {
+				env64bit = jvmName.contains("64");
+			}
 		}
-		INTEGER_BYTES = size;
-		INTEGER_BITS = size << 3;
-		INTEGER_BITS_WITHOUT_SIGN = INTEGER_BITS - 1;
+		JVM64BIT = env64bit;
 	}
 
 	/**
@@ -72,7 +67,7 @@ public final class ArithmeticArchitecture {
 	 * @since 1.0
 	 */
 	public static boolean is32Bit() {
-		return INTEGER_BITS == 32;
+		return !JVM64BIT;
 	}
 
 	/**
@@ -82,7 +77,7 @@ public final class ArithmeticArchitecture {
 	 * @since 1.0
 	 */
 	public static boolean is64Bit() {
-		return INTEGER_BITS == 64;
+		return JVM64BIT;
 	}
 
 }
