@@ -27,12 +27,10 @@ package org.jbasics.types.tuples;
 /**
  * A {@link Triplet} represents a 3-tuple instance.
  * <p>
- * A 3-tuple is created of three elements like {@code x = (a, b, c)}. Internally the 3-tuple is
- * mapped to a pair of a single value and a pair of two single values. Like {@code x = (a, b, c)} is
- * really implemented as {@code x = (a, (b, c))}. So calling the {@link #first()}, {@link #second()}
- * and {@link #third()} method will return the respectiv element. Calling {@link #left()} will
- * return the first value while calling {@link #right()} returns the pair of the second and third
- * value.
+ * A 3-tuple is created of three elements like {@code x = (a, b, c)}. Internally the 3-tuple is mapped to a pair of a single value and a pair of two
+ * single values. Like {@code x = (a, b, c)} is really implemented as {@code x = (a, (b, c))}. So calling the {@link #first()}, {@link #second()} and
+ * {@link #third()} method will return the respectiv element. Calling {@link #left()} will return the first value while calling {@link #right()}
+ * returns the pair of the second and third value.
  * </p>
  * 
  * @author Stephan Schloepke
@@ -46,8 +44,12 @@ public class Triplet<A, B, C> implements Tuple<A, Tuple<B, C>> {
 	private final Pair<B, C> right;
 
 	public Triplet(A first, B second, C third) {
+		this(first, new Pair<B, C>(second, third));
+	}
+
+	public Triplet(A first, Pair<B, C> secondAndThird) {
 		this.left = first;
-		this.right = new Pair<B, C>(second, third);
+		this.right = secondAndThird == null ? new Pair<B, C>(null, null) : secondAndThird;
 	}
 
 	public A first() {
