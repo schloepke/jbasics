@@ -46,7 +46,7 @@ public class Quadruple<A, B, C, D> implements Tuple<A, Tuple<B, Tuple<C, D>>> {
 	}
 
 	public A first() {
-		return this.first();
+		return this.left;
 	}
 
 	public B second() {
