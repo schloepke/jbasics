@@ -123,6 +123,29 @@ public final class ContractCheck {
 	}
 
 	/**
+	 * Checks if the supplied instance is neither null and not empty after the sequence is trimmed. Returns
+	 * the trimmed instance.
+	 * 
+	 * @param charSequence The instance to check and trim
+	 * @param instanceName The name of the instance (can be null) for the exception message
+	 *            generated
+	 * @return The checked instance which is guaranteed to be not null, trimmed and not empty.
+	 * @throws ContractViolationException If the array instance to check is null or zero length.
+	 * @since 1.0
+	 */
+	public static String mustNotBeNullOrTrimmedEmpty(CharSequence charSequence, String instanceName) {
+		if (charSequence == null) {
+			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : UNKNOWN);
+		}
+		String temp = charSequence.toString().trim();
+		if (temp.length() == 0) {
+			throw new ContractViolationException("mustNotBeEmpty", instanceName != null ? instanceName : UNKNOWN);
+		}
+		return temp;
+	}
+
+
+	/**
 	 * Checks the supplied instance array to be not null and not zero length.
 	 * 
 	 * @param byteArray The instance to check

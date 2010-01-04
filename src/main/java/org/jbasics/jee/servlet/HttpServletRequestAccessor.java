@@ -56,6 +56,15 @@ public class HttpServletRequestAccessor {
 		this.request = ContractCheck.mustNotBeNull(request, "request");
 	}
 
+	/**
+	 * Returns the embedded servlet request (is never null).
+	 * 
+	 * @return The embedded servlet request which is never null.
+	 */
+	public HttpServletRequest getServletRequest() {
+		return this.request;
+	}
+
 	public String getStringParameter(String name, String defaultValue) {
 		String temp = this.request.getParameter(ContractCheck.mustNotBeNull(name, "name"));
 		return temp != null ? temp : defaultValue;
