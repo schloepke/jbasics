@@ -33,6 +33,7 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.jbasics.checker.ContractCheck;
+import org.jbasics.xml.types.XmlStylesheetProcessInstruction;
 import org.xml.sax.SAXException;
 
 public class XmlSaxSerializer {
@@ -59,6 +60,11 @@ public class XmlSaxSerializer {
 			serializer.setOutputProperty(OutputKeys.VERSION, "1.0");
 			serializer.setOutputProperty(OutputKeys.STANDALONE, "yes");
 			handler.setResult(result);
+			if (document instanceof XmlStylesheetLinks) {
+				for (XmlStylesheetProcessInstruction stylesheet : ((XmlStylesheetLinks) document).getStylesheetLinks()) {
+					stylesheet.serialize(handler, null);
+				}
+			}
 			handler.startDocument();
 			document.serialize(handler, null);
 			handler.endDocument();
