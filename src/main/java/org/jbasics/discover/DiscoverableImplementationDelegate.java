@@ -34,11 +34,15 @@ public class DiscoverableImplementationDelegate<T> implements ReleasableDelegate
 	private final Class<? extends T> defaultImpl;
 	private transient T instance;
 
-	public DiscoverableImplementationDelegate(Class<T> abstractClass) {
-		this(abstractClass, null);
+	public static <T> DiscoverableImplementationDelegate<T> newInstance(Class<T> abstractClass) {
+		return new DiscoverableImplementationDelegate<T>(abstractClass, null);
 	}
 
-	public DiscoverableImplementationDelegate(Class<T> abstractClass, Class<? extends T> defaultImpl) {
+	public static <T> DiscoverableImplementationDelegate<T> newInstance(Class<T> abstractClass, Class<? extends T> defaultImpl) {
+		return new DiscoverableImplementationDelegate<T>(abstractClass, defaultImpl);
+	}
+	
+	protected DiscoverableImplementationDelegate(Class<T> abstractClass, Class<? extends T> defaultImpl) {
 		this.abstractClass = ContractCheck.mustNotBeNull(abstractClass, "abstractClass");
 		this.defaultImpl = defaultImpl;
 	}
