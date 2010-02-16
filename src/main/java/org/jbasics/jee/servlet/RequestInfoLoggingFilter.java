@@ -65,5 +65,6 @@ public class RequestInfoLoggingFilter implements Filter {
 				logger.log(this.logLevel, "HttpServletRequest.getRequestURL() = " + temp.getRequestURL());
 			}
 		}
+		chain.doFilter(request, response);
 	}
 }
