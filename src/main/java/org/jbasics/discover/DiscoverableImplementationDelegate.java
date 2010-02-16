@@ -31,14 +31,14 @@ import org.jbasics.pattern.delegation.ReleasableDelegate;
 
 public class DiscoverableImplementationDelegate<T> implements ReleasableDelegate<T>, Serializable {
 	private final Class<T> abstractClass;
-	private final Class<T> defaultImpl;
+	private final Class<? extends T> defaultImpl;
 	private transient T instance;
 
 	public DiscoverableImplementationDelegate(Class<T> abstractClass) {
 		this(abstractClass, null);
 	}
 
-	public DiscoverableImplementationDelegate(Class<T> abstractClass, Class<T> defaultImpl) {
+	public DiscoverableImplementationDelegate(Class<T> abstractClass, Class<? extends T> defaultImpl) {
 		this.abstractClass = ContractCheck.mustNotBeNull(abstractClass, "abstractClass");
 		this.defaultImpl = defaultImpl;
 	}
@@ -57,7 +57,7 @@ public class DiscoverableImplementationDelegate<T> implements ReleasableDelegate
 				throw new RuntimeException("Cannot instantiate implmentation " + temp.getName(), e);
 			}
 		}
-		return null;
+		return this.instance;
 	}
 
 	public boolean release() {
