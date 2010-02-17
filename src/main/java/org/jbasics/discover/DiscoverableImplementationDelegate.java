@@ -48,7 +48,7 @@ public class DiscoverableImplementationDelegate<T> implements ReleasableDelegate
 	}
 
 	public T delegate() {
-		if (this.instance != null) {
+		if (this.instance == null) {
 			Class<? extends T> temp = ServiceClassDiscovery.discoverImplementation(this.abstractClass, this.defaultImpl);
 			if (temp == null) {
 				throw new RuntimeException("Cannot find an implementation for the abstract class " + this.abstractClass.getName());
