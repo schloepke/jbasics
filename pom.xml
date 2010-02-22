@@ -22,7 +22,7 @@
 			<url>http://www.atomify.org/jbasics/license.html</url>
 			<distribution>repo</distribution>
 			<comments>
-				Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH - Use under MIT license as pointed out under the URL.	
+				Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH - Use under MIT license as pointed out under the URL.
 			</comments>
 		</license>
 	</licenses>
@@ -66,7 +66,7 @@
 			</roles>
 		</developer>
 	</developers>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -87,10 +87,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<properties>
-		<maven.compiler.encoding>ISO-8859-1</maven.compiler.encoding>
-	</properties>
 
 	<build>
 		<defaultGoal>install</defaultGoal>
@@ -166,18 +162,6 @@
 								<requireJavaVersion>
 									<version>1.5</version>
 								</requireJavaVersion>
-								<requireProperty>
-									<property>file.encoding</property>
-									<message>You must have a file.encoding property</message>
-									<regex>^[iI][sS][oO]-8859-1$</regex>
-									<regexMessage>Your file.encoding property must be set to ISO-8859-1</regexMessage>
-								</requireProperty>
-								<requireProperty>
-									<property>maven.compiler.encoding</property>
-									<message>You must have a maven.compiler.encoding property</message>
-									<regex>^[iI][sS][oO]-8859-1$</regex>
-									<regexMessage>Your maven.compiler.encoding property must be set to ISO-8859-1</regexMessage>
-								</requireProperty>
 							</rules>
 						</configuration>
 					</execution>
