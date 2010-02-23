@@ -24,6 +24,7 @@
  */
 package org.jbasics.net;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Map;
@@ -31,6 +32,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.factory.ParameterFactory;
+
+import exceptions.DelegatedException;
 
 public class URLMappingFactory implements ParameterFactory<URL, URI> {
 	public final static ParameterFactory<URL, URI> SHARED_INSTANCE = new URLMappingFactory();
@@ -51,7 +54,15 @@ public class URLMappingFactory implements ParameterFactory<URL, URI> {
 
 	public URL create(URI resourceUri) {
 		String scheme = ContractCheck.mustNotBeNull(resourceUri, "resourceUri").getScheme();
-		return null;
+		ParameterFactory<URL, URI> factory = this.schemeFactories.get(scheme);
+		if (factory != null) {
+			return factory.create(resourceUri);
+		}
+		try {
+			return resourceUri.toURL();
+		} catch (MalformedURLException e) {
+			throw DelegatedException.delegate(e);
+		}
 	}
 
 }
