@@ -123,8 +123,8 @@ public final class ContractCheck {
 	}
 
 	/**
-	 * Checks if the supplied instance is neither null and not empty after the sequence is trimmed. Returns
-	 * the trimmed instance.
+	 * Checks if the supplied instance is neither null and not empty after the sequence is trimmed.
+	 * Returns the trimmed instance.
 	 * 
 	 * @param charSequence The instance to check and trim
 	 * @param instanceName The name of the instance (can be null) for the exception message
@@ -143,7 +143,6 @@ public final class ContractCheck {
 		}
 		return temp;
 	}
-
 
 	/**
 	 * Checks the supplied instance array to be not null and not zero length.
@@ -314,6 +313,33 @@ public final class ContractCheck {
 			throw new ContractViolationException("mustMatchPattern", instanceName != null ? instanceName : UNKNOWN, pattern.pattern());
 		}
 		return charSequence;
+	}
+
+	/**
+	 * Checks if the given instance is equal to the given check instance. If the check instance is
+	 * null the instance must also be null. If the check instance is not null the instance must not
+	 * be null and must be equal to the check instance by applying check.equals(instance). Throws an
+	 * exception when the check is not valid.
+	 * 
+	 * @param <T> The type of the instance
+	 * @param instance The instance to check
+	 * @param check The instance to compare with
+	 * @param instanceName The name of the instance for the exception.
+	 * @return The instance as given
+	 * @throws ContractViolationException If the instance is not equal to the check.
+	 * @since 1.0
+	 */
+	public static <T> T mustBeEqual(T instance, T check, String instanceName) {
+		if (instance == null) {
+			if (check != null) {
+				throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : UNKNOWN);
+			}
+		} else if (check == null) {
+			throw new ContractViolationException("mustBeNull", instanceName != null ? instanceName : UNKNOWN);
+		} else if (!check.equals(instance)) {
+			throw new ContractViolationException("mustBeEqualTo", instanceName != null ? instanceName : UNKNOWN, check);
+		}
+		return instance;
 	}
 
 }
