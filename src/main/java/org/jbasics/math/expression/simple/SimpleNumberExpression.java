@@ -37,7 +37,7 @@ public class SimpleNumberExpression extends SimpleExpression {
 	}
 
 	public BigDecimal getNumber() {
-		return number;
+		return this.number;
 	}
 
 	public BigDecimal eval(SimpleSymbolResolver resolver, MathContext mc) {

@@ -37,7 +37,7 @@ public class SimpleSymbolExpression extends SimpleExpression {
 	}
 
 	public String getSymbol() {
-		return symbol;
+		return this.symbol;
 	}
 
 	public BigDecimal eval(SimpleSymbolResolver resolver, MathContext mc) {
