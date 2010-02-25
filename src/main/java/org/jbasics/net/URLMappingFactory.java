@@ -31,9 +31,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jbasics.checker.ContractCheck;
+import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.factory.ParameterFactory;
 
-import exceptions.DelegatedException;
 
 public class URLMappingFactory implements ParameterFactory<URL, URI> {
 	public final static ParameterFactory<URL, URI> SHARED_INSTANCE = new URLMappingFactory();

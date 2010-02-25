@@ -27,9 +27,9 @@ package org.jbasics.jaxb;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
+import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.factory.Factory;
 
-import exceptions.DelegatedException;
 
 public class JAXBContextFactory implements Factory<JAXBContext> {
 	private final String contextPath;

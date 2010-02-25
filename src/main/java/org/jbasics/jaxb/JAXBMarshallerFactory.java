@@ -28,11 +28,11 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.types.delegates.LazySoftReferenceDelegate;
 
-import exceptions.DelegatedException;
 
 public class JAXBMarshallerFactory implements Factory<Marshaller> {
 	private final Delegate<JAXBContext> jaxbContextDelegate;
