@@ -26,6 +26,8 @@ package org.jbasics.math.expression.simple;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Collection;
+import java.util.Set;
 
 public abstract class SimpleExpression {
 
@@ -34,5 +36,6 @@ public abstract class SimpleExpression {
 	}
 
 	public abstract BigDecimal eval(SimpleSymbolResolver resolver, MathContext mc);
+	public abstract <T extends Collection<String>> void collectSymbols(T collection);
 
 }

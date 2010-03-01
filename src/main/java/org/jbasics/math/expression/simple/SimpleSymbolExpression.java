@@ -26,6 +26,7 @@ package org.jbasics.math.expression.simple;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Collection;
 
 import org.jbasics.checker.ContractCheck;
 
@@ -55,6 +56,11 @@ public class SimpleSymbolExpression extends SimpleExpression {
 		} else {
 			return "$" + this.symbol;
 		}
+	}
+
+	@Override
+	public <T extends Collection<String>> void collectSymbols(T collection) {
+		ContractCheck.mustNotBeNull(collection, "collection").add(this.symbol);
 	}
 
 }

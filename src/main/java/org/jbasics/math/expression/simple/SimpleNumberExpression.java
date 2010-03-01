@@ -26,6 +26,7 @@ package org.jbasics.math.expression.simple;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Collection;
 
 import org.jbasics.checker.ContractCheck;
 
@@ -47,5 +48,10 @@ public class SimpleNumberExpression extends SimpleExpression {
 	@Override
 	public String toString() {
 		return this.number.toString();
+	}
+
+	@Override
+	public <T extends Collection<String>> void collectSymbols(T collection) {
+		// Numbers cannot have any symbols
 	}
 }

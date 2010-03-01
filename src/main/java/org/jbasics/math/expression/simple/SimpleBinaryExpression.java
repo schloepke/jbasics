@@ -26,6 +26,7 @@ package org.jbasics.math.expression.simple;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Collection;
 
 import org.jbasics.checker.ContractCheck;
 
@@ -45,6 +46,11 @@ public abstract class SimpleBinaryExpression extends SimpleExpression {
 		}
 		return evalOp(this.lhs.eval(resolver, mc), this.rhs.eval(resolver, mc), mc);
 	}
+
+	public <T extends Collection<String>> void collectSymbols(T collection) {
+		this.lhs.collectSymbols(collection);
+		this.rhs.collectSymbols(collection);
+	};
 
 	protected abstract BigDecimal evalOp(BigDecimal left, BigDecimal right, MathContext mc);
 
