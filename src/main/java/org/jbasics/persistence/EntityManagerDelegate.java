@@ -22,37 +22,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.pattern.delegation;
+package org.jbasics.persistence;
 
-/**
- * Interface offering the access to an element inside a delegated wrapper.
- * <p>
- * The contract of usage does not put any constraints on how the delegate is
- * received / lazy created or must be set. It is depending on the implementation
- * if the delegate always returns a value different from null. It is also up to
- * the implementor if the instance is created on demand or if the instance can
- * change in the life of the delegate.
- * </p>
- * <p>
- * It is however important that the user of the delegate should avoid saving the
- * instance inside the delegate for later use. It is by contract not allowed to
- * safe the instance. The access should always go thru the delegate method.
- * </p>
- *
- * @author Stephan Schloepke
- * @param <T>
- *            The type of the embedded instance which is delegated (can be
- *            null).
- * @since 1.0
- */
-public interface Delegate<T> {
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 
-	/**
-	 * Returns the instance to which it is supposed to be delegated.
-	 *
-	 * @return The instance (can be null or lazy created. Even changing in every
-	 *         call).
-	 */
-	T delegate();
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.pattern.delegation.LifecycleDelegate;
+
+public class EntityManagerDelegate implements LifecycleDelegate<EntityManager> {
+	private final EntityManager manager;
+
+	public EntityManagerDelegate(final EntityManager manager) {
+		this.manager = ContractCheck.mustNotBeNull(manager, "manager"); //$NON-NLS-1$
+	}
+
+	public void activate() {
+		if (!this.manager.isOpen()) {
+			throw new IllegalStateException("EntityManager already close or not yet open"); //$NON-NLS-1$
+		}
+	}
+
+	public void passivate() {
+		if (this.manager.isOpen()) {
+			// We flush all changes and than clear the manager
+			EntityTransaction transaction = this.manager.getTransaction();
+			if (transaction != null && transaction.isActive()) {
+				this.manager.flush();
+			} else {
+				this.manager.clear();
+			}
+		}
+	}
+
+	public boolean release() {
+		passivate();
+		this.manager.close();
+		return true;
+	}
+
+	public EntityManager delegate() {
+		assert this.manager.isOpen();
+		return this.manager;
+	}
 
 }

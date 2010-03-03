@@ -52,25 +52,27 @@ public class LazyQueuePool<T> implements Pool<T> {
 	}
 
 	public LazyQueuePool(final Factory<T> factory, final Factory<? extends Queue<T>> queueFactory) {
-		this(factory, queueFactory, DEFAULT_MAX_POOL_SIZE);
+		this(factory, queueFactory, LazyQueuePool.DEFAULT_MAX_POOL_SIZE);
 	}
 
 	@SuppressWarnings("unchecked")
-    public LazyQueuePool(final Factory<T> factory, final Factory<? extends Queue<T>> queueFactory, final int maxPoolSize) {
-		if (factory == null || queueFactory == null) { throw new IllegalArgumentException(
-				"Null parameter: factory | queueFactory"); }
+	public LazyQueuePool(final Factory<T> factory, final Factory<? extends Queue<T>> queueFactory, final int maxPoolSize) {
+		if (factory == null || queueFactory == null) {
+			throw new IllegalArgumentException("Null parameter: factory | queueFactory"); //$NON-NLS-1$
+		}
 		this.factory = factory;
 		this.pool = new LazySoftReferenceDelegate<Queue<T>>((Factory<Queue<T>>) queueFactory);
 		this.maxPoolSize = maxPoolSize;
 	}
 
 	public LazyQueuePool(final Factory<T> factory, final MutableDelegate<Queue<T>> queueDelegate) {
-		this(factory, queueDelegate, DEFAULT_MAX_POOL_SIZE);
+		this(factory, queueDelegate, LazyQueuePool.DEFAULT_MAX_POOL_SIZE);
 	}
 
 	public LazyQueuePool(final Factory<T> factory, final MutableDelegate<Queue<T>> queueDelegate, final int maxPoolSize) {
-		if (factory == null || queueDelegate == null) { throw new IllegalArgumentException(
-				"Null parameter: factory | queueDelegate"); }
+		if (factory == null || queueDelegate == null) {
+			throw new IllegalArgumentException("Null parameter: factory | queueDelegate"); //$NON-NLS-1$
+		}
 		this.factory = factory;
 		this.pool = queueDelegate;
 		this.maxPoolSize = maxPoolSize;
@@ -78,15 +80,21 @@ public class LazyQueuePool<T> implements Pool<T> {
 
 	public synchronized T acquire() {
 		Queue<T> queue = this.pool.delegate();
-		if (queue == null) { throw new IllegalStateException("Cannot aquire because the pool is not available"); }
+		if (queue == null) {
+			throw new IllegalStateException("Cannot aquire because the pool is not available"); //$NON-NLS-1$
+		}
 		T result = queue.poll();
-		if (result == null) { return this.factory.newInstance(); }
+		if (result == null) {
+			return this.factory.newInstance();
+		}
 		return result;
 	}
 
 	public synchronized boolean release(final T object) {
 		Queue<T> queue = this.pool.delegate();
-		if (queue == null) { throw new IllegalStateException("Cannot release because the pool is not available"); }
+		if (queue == null) {
+			throw new IllegalStateException("Cannot release because the pool is not available"); //$NON-NLS-1$
+		}
 		if (this.maxPoolSize > 0 && queue.size() < this.maxPoolSize) {
 			return this.pool.delegate().offer(object);
 		} else {

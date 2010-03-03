@@ -26,35 +26,34 @@ package org.jbasics.math.obsolete;
 
 import java.util.Arrays;
 
-
 public class BigEndianIntegerStore implements DataStorage<BigEndianIntegerStore> {
 	private static final long SUMMAND_MASK = 0xffffffffL;
 	private static final int[] ZERO = new int[0];
 	private static final byte[] ZERO_BYTES = new byte[0];
-	private int[] magnitude;
+	private final int[] magnitude;
 
 	public BigEndianIntegerStore() {
-		this(ZERO);
+		this(BigEndianIntegerStore.ZERO);
 	}
-	
-	public BigEndianIntegerStore(int value) {
+
+	public BigEndianIntegerStore(final int value) {
 		this(new int[] { value });
 	}
 
-	public BigEndianIntegerStore(long value) {
-		this(new int[] { (int) (value & SUMMAND_MASK), (int) (value >>> 32) });
+	public BigEndianIntegerStore(final long value) {
+		this(new int[] { (int) (value & BigEndianIntegerStore.SUMMAND_MASK), (int) (value >>> 32) });
 	}
 
-	public BigEndianIntegerStore(int[] magnitude) {
+	public BigEndianIntegerStore(final int[] magnitude) {
 		this.magnitude = magnitude;
 	}
 
-	public BigEndianIntegerStore(byte[] data) {
+	public BigEndianIntegerStore(final byte[] data) {
 		int byteLength = data.length;
 		int keep;
 		// Find first nonzero byte
 		for (keep = 0; (keep < data.length) && (data[keep] == 0); keep++) {
-			;
+			// We only scan thru using the for loop with nothing to do for each element
 		}
 		// Allocate new array and copy relevant part of input array
 		int intLength = ((byteLength - keep) + 3) / 4;
@@ -71,7 +70,7 @@ public class BigEndianIntegerStore implements DataStorage<BigEndianIntegerStore>
 		this.magnitude = result;
 	}
 
-	public BigEndianIntegerStore add(BigEndianIntegerStore summand) {
+	public BigEndianIntegerStore add(final BigEndianIntegerStore summand) {
 		// If x is shorter, swap the two arrays
 		int[] x = this.magnitude;
 		int[] y = summand.magnitude;
@@ -87,7 +86,7 @@ public class BigEndianIntegerStore implements DataStorage<BigEndianIntegerStore>
 
 		// Add common parts of both numbers
 		while (yIndex > 0) {
-			sum = (x[--xIndex] & SUMMAND_MASK) + (y[--yIndex] & SUMMAND_MASK) + (sum >>> 32);
+			sum = (x[--xIndex] & BigEndianIntegerStore.SUMMAND_MASK) + (y[--yIndex] & BigEndianIntegerStore.SUMMAND_MASK) + (sum >>> 32);
 			result[xIndex] = (int) sum;
 		}
 
@@ -116,9 +115,7 @@ public class BigEndianIntegerStore implements DataStorage<BigEndianIntegerStore>
 	}
 
 	public byte[] toByteArray() {
-		if (this.magnitude == null || this.magnitude.length == 0) {
-			return ZERO_BYTES;
-		}
+		if (this.magnitude == null || this.magnitude.length == 0) { return BigEndianIntegerStore.ZERO_BYTES; }
 		int bytes = (this.magnitude.length - 1) * 4;
 		int temp = this.magnitude[0];
 		if (temp < 0) {
@@ -158,11 +155,9 @@ public class BigEndianIntegerStore implements DataStorage<BigEndianIntegerStore>
 		return this.magnitude == null || this.magnitude.length == 0 || zeroscan(this.magnitude);
 	}
 
-	private boolean zeroscan(int[] in) {
+	private boolean zeroscan(final int[] in) {
 		for (int x : in) {
-			if (x != 0) {
-				return false;
-			}
+			if (x != 0) { return false; }
 		}
 		return true;
 	}
@@ -172,12 +167,12 @@ public class BigEndianIntegerStore implements DataStorage<BigEndianIntegerStore>
 		return 31 + Arrays.hashCode(this.magnitude);
 	}
 
-	public BigEndianIntegerStore multiply(BigEndianIntegerStore factor) {
+	public BigEndianIntegerStore multiply(final BigEndianIntegerStore factor) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public BigEndianIntegerStore subtract(BigEndianIntegerStore subtraction) {
+	public BigEndianIntegerStore subtract(final BigEndianIntegerStore subtraction) {
 		// TODO Auto-generated method stub
 		return null;
 	}

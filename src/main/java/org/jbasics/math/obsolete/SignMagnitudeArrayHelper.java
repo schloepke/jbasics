@@ -44,15 +44,14 @@ public class SignMagnitudeArrayHelper {
 	 * Convert a given byte array storing a two complements big number (radix 2<sup>8</sup>) to an
 	 * absolute magnitude stored in an int array (radix 2<sup>int bit length</sup>).
 	 * 
-	 * @param input The input in two's complement to convert (null or zero lenght array is
+	 * @param input
+	 *            The input in two's complement to convert (null or zero lenght array is
 	 *            considered to by zero and produces a zero length integer array)
 	 * @return The absolute magnitude as int array (radix 2<sup>int bit length</sup>)
 	 * @since 1.0
 	 */
-	public static int[] convertFromTwoComplement(byte[] input) {
-		if (input == null || input.length == 0) {
-			return ArrayConstants.ZERO_LENGTH_INT_ARRAY;
-		}
+	public static int[] convertFromTwoComplement(final byte[] input) {
+		if (input == null || input.length == 0) { return ArrayConstants.ZERO_LENGTH_INT_ARRAY; }
 		int startIndex = 0;
 		boolean sign = input[0] < 0;
 		if (sign) {
@@ -66,9 +65,7 @@ public class SignMagnitudeArrayHelper {
 		}
 		// now we know the exact location of the last byte used in the two's complement
 		int endIndex = input.length;
-		if (endIndex - startIndex == 0) {
-			return ArrayConstants.ZERO_LENGTH_INT_ARRAY;
-		}
+		if (endIndex - startIndex == 0) { return ArrayConstants.ZERO_LENGTH_INT_ARRAY; }
 		int len = ((endIndex - startIndex) + 3)
 				/ 4;
 		if (sign && (len * 4) == (endIndex - startIndex)) {
@@ -76,8 +73,9 @@ public class SignMagnitudeArrayHelper {
 			// propagation will be good so we check
 			// all bytes if they are zero. Than we will need one extra int
 			int i = startIndex;
-			while (i < endIndex && input[i++] == 0)
-				;
+			while (i < endIndex && input[i++] == 0) {
+				// Nothing to do here
+			}
 			if (i == endIndex) {
 				len++;
 			}
@@ -115,14 +113,14 @@ public class SignMagnitudeArrayHelper {
 	 * A zero length byte array is produced for a signum of zero indicating a zero value.
 	 * </p>
 	 * 
-	 * @param signum The signum of the number to produce (-1 negtiv, 0 zero, 1 positiv).
-	 * @param magnitude The absolute magnuted of the number (radix 2<sup>int bit length</sup>).
+	 * @param signum
+	 *            The signum of the number to produce (-1 negtiv, 0 zero, 1 positiv).
+	 * @param magnitude
+	 *            The absolute magnuted of the number (radix 2<sup>int bit length</sup>).
 	 * @return The two's complement byte array (radix 2<sup>8</sup>)
 	 */
-	public static byte[] convertToTwoComplement(int signum, int[] magnitude) {
-		if (signum == 0 || magnitude == null || magnitude.length == 0) {
-			return ArrayConstants.ZERO_LENGTH_BYTE_ARRAY;
-		}
+	public static byte[] convertToTwoComplement(final int signum, final int[] magnitude) {
+		if (signum == 0 || magnitude == null || magnitude.length == 0) { return ArrayConstants.ZERO_LENGTH_BYTE_ARRAY; }
 		throw new UnsupportedOperationException();
 	}
 

@@ -22,37 +22,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.pattern.delegation;
+package org.jbasics.persistence;
 
-/**
- * Interface offering the access to an element inside a delegated wrapper.
- * <p>
- * The contract of usage does not put any constraints on how the delegate is
- * received / lazy created or must be set. It is depending on the implementation
- * if the delegate always returns a value different from null. It is also up to
- * the implementor if the instance is created on demand or if the instance can
- * change in the life of the delegate.
- * </p>
- * <p>
- * It is however important that the user of the delegate should avoid saving the
- * instance inside the delegate for later use. It is by contract not allowed to
- * safe the instance. The access should always go thru the delegate method.
- * </p>
- *
- * @author Stephan Schloepke
- * @param <T>
- *            The type of the embedded instance which is delegated (can be
- *            null).
- * @since 1.0
- */
-public interface Delegate<T> {
+import java.util.Hashtable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-	/**
-	 * Returns the instance to which it is supposed to be delegated.
-	 *
-	 * @return The instance (can be null or lazy created. Even changing in every
-	 *         call).
-	 */
-	T delegate();
+import javax.naming.Context;
+import javax.naming.Name;
+import javax.naming.spi.ObjectFactory;
+
+import org.jbasics.pattern.factory.Factory;
+
+public class PersistenceManagerFactory implements ObjectFactory, Factory<PersistenceManager> {
+
+	public Object getObjectInstance(final Object obj, final Name name, final Context nameCtx, final Hashtable<?, ?> environment) throws Exception {
+		return newInstance();
+	}
+
+	public PersistenceManager newInstance() {
+		Logger logger = Logger.getLogger(PersistenceManagerFactory.class.getName());
+		if (logger.isLoggable(Level.FINE)) {
+			logger.fine("Creating new PersistenceManager"); //$NON-NLS-1$
+		}
+		return new PersistenceManager();
+	}
 
 }

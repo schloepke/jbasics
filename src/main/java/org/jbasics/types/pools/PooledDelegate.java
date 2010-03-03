@@ -28,6 +28,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 
 import org.jbasics.checker.ContractCheck;
+import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.pattern.delegation.MutableDelegate;
 import org.jbasics.pattern.delegation.ReleasableDelegate;
 import org.jbasics.pattern.pooling.Pool;
@@ -36,11 +37,13 @@ import org.jbasics.types.delegates.ModifiableDelegate;
 /**
  * A {@link MutableDelegate} implementation which acquires a delegated instance from a {@link Pool}.
  * <p>
- * The method getDelegate acquires the delegate from the pool or returns the delegate already active. Once the process is done the caller needs to
- * call the release method on this {@link PooledDelegate} in order to return the delegated instance back into the pool.
+ * The method getDelegate acquires the delegate from the pool or returns the delegate already active. Once the process
+ * is done the caller needs to call the release method on this {@link PooledDelegate} in order to return the delegated
+ * instance back into the pool.
  * </p>
  * 
- * @param <T> The type of the delegated and pool instance.
+ * @param <T>
+ *            The type of the delegated and pool instance.
  * @author Stephan Schloepke
  */
 public class PooledDelegate<T> implements ReleasableDelegate<T>, MutableDelegate<T> {
@@ -50,23 +53,27 @@ public class PooledDelegate<T> implements ReleasableDelegate<T>, MutableDelegate
 	private Reference<T> softlyKeepedDelegate;
 
 	/**
-	 * Creates a {@link PooledDelegate} for the supplied pool with keeping references softly if pool does not accept released instance.
+	 * Creates a {@link PooledDelegate} for the supplied pool with keeping references softly if pool does not accept
+	 * released instance.
 	 * 
-	 * @param pool The pool (must not be null).
+	 * @param pool
+	 *            The pool (must not be null).
 	 */
 	public PooledDelegate(final Pool<T> pool) {
-		this(new ModifiableDelegate<Pool<T>>(ContractCheck.mustNotBeNull(pool, "pool")), false);
+		this(new ModifiableDelegate<Pool<T>>(ContractCheck.mustNotBeNull(pool, "pool")), false); //$NON-NLS-1$
 	}
 
 	/**
 	 * Creates a {@link PooledDelegate} instance for the given pool delegate.
 	 * 
-	 * @param poolDelegate The pool delegate (must not be null).
-	 * @param keepSoftreferenceIfPoolIsFull True if the delegate should keep an instance softly reachable if the pool does not accept the released
+	 * @param poolDelegate
+	 *            The pool delegate (must not be null).
+	 * @param keepSoftreferenceIfPoolIsFull
+	 *            True if the delegate should keep an instance softly reachable if the pool does not accept the released
 	 *            instance.
 	 */
 	public PooledDelegate(final MutableDelegate<Pool<T>> poolDelegate, final boolean keepSoftreferenceIfPoolIsFull) {
-		this.pool = ContractCheck.mustNotBeNull(poolDelegate, "poolDelegate");
+		this.pool = ContractCheck.mustNotBeNull(poolDelegate, "poolDelegate"); //$NON-NLS-1$
 		this.keepSoftreferenceIfPoolIsFull = keepSoftreferenceIfPoolIsFull;
 	}
 
@@ -74,7 +81,7 @@ public class PooledDelegate<T> implements ReleasableDelegate<T>, MutableDelegate
 	 * Returns the delegated instance. Acquires it from the pool if not already active.
 	 * 
 	 * @return The delegated instance.
-	 * @see de.rms.foundation.patterns.delegation.Delegate#delegate()
+	 * @see Delegate#delegate()
 	 */
 	public T delegate() {
 		if (this.softlyKeepedDelegate != null) {
@@ -91,7 +98,7 @@ public class PooledDelegate<T> implements ReleasableDelegate<T>, MutableDelegate
 	 * Returns true if the delegate is set or not.
 	 * 
 	 * @return true if the delegate is already acquired from the pool.
-	 * @see de.rms.foundation.patterns.delegation.Delegate#isDelegateSet()
+	 * @see MutableDelegate#isDelegateSet()
 	 */
 	public boolean isDelegateSet() {
 		return this.delegate != null;
@@ -100,9 +107,10 @@ public class PooledDelegate<T> implements ReleasableDelegate<T>, MutableDelegate
 	/**
 	 * Set is not supported by this {@link MutableDelegate}. Always throws an {@link UnsupportedOperationException}.
 	 * 
-	 * @param delegate Unused since unsupported operation.
+	 * @param delegate
+	 *            Unused since unsupported operation.
 	 * @return Never returns since unsupported operation.
-	 * @see de.rms.foundation.patterns.delegation.Delegate#setDelegate(java.lang.Object)
+	 * @see MutableDelegate#setDelegate(Object)
 	 */
 	public T setDelegate(final T delegate) {
 		throw new UnsupportedOperationException("Set is not supported on a DelegatedPool");
@@ -111,10 +119,11 @@ public class PooledDelegate<T> implements ReleasableDelegate<T>, MutableDelegate
 	/**
 	 * Releases the delegated instance back to the pool.
 	 * <p>
-	 * If this method returns false the delegate could not be placed in the Pool because the pool does not accept any more instances. In such a case
-	 * the delegated instance is made softly available to this delegate. In further calls to get delegate the softly reference is reused if the
-	 * garbage collector did not finalize it yet. Once the softly reference is reused it becomes strong reachable again until the next release is
-	 * called. If the next release is called it is possible that the pool now accepts the delegated instance back. So we again first try to hand the
+	 * If this method returns false the delegate could not be placed in the Pool because the pool does not accept any
+	 * more instances. In such a case the delegated instance is made softly available to this delegate. In further calls
+	 * to get delegate the softly reference is reused if the garbage collector did not finalize it yet. Once the softly
+	 * reference is reused it becomes strong reachable again until the next release is called. If the next release is
+	 * called it is possible that the pool now accepts the delegated instance back. So we again first try to hand the
 	 * delegated instance back to the pool before we keep it softly reachable in case we can use it very soon again.
 	 * </p>
 	 * 
