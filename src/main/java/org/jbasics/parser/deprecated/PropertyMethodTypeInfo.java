@@ -45,7 +45,8 @@ public class PropertyMethodTypeInfo {
 		NONE, COLLECTION, LIST, SET, MAP;
 	}
 
-	private PropertyMethodTypeInfo(Method method, boolean getMethod, CollectionType collectionType, Type keyType, Type valueType) {
+	private PropertyMethodTypeInfo(final Method method, final boolean getMethod, final CollectionType collectionType, final Type keyType,
+			final Type valueType) {
 		if (method == null || collectionType == null || valueType == null) {
 			throw new IllegalArgumentException("Null parameter: method | collectionType | valueType");
 		}
@@ -61,7 +62,7 @@ public class PropertyMethodTypeInfo {
 		this.valueType = valueType;
 	}
 
-	public Object invokePut(Object instance, Object key, Object value) throws InvocationTargetException, IllegalAccessException {
+	public Object invokePut(final Object instance, final Object key, final Object value) throws InvocationTargetException, IllegalAccessException {
 		if (isGetMethod()) {
 			if (isMapType()) {
 				Map temp = (Map) this.method.invoke(instance);
@@ -79,7 +80,7 @@ public class PropertyMethodTypeInfo {
 		}
 	}
 
-	public Object invokeSetOrAdd(Object instance, Object value) throws InvocationTargetException, IllegalAccessException {
+	public Object invokeSetOrAdd(final Object instance, final Object value) throws InvocationTargetException, IllegalAccessException {
 		if (isMapType()) {
 			throw new UnsupportedOperationException("Trying to invoke set on a map type invoker. Use invokePut with the key instead.");
 		}
@@ -92,7 +93,7 @@ public class PropertyMethodTypeInfo {
 		}
 	}
 
-	public Object invokeGet(Object instance) throws InvocationTargetException, IllegalAccessException {
+	public Object invokeGet(final Object instance) throws InvocationTargetException, IllegalAccessException {
 		if (isGetMethod()) {
 			return this.method.invoke(instance);
 		} else if (this.counterpart != null) {
@@ -112,7 +113,7 @@ public class PropertyMethodTypeInfo {
 
 	public Type getKeyType() {
 		return this.keyType;
-	};
+	}
 
 	public Type getValueType() {
 		return this.valueType;
@@ -128,7 +129,7 @@ public class PropertyMethodTypeInfo {
 
 	public boolean isCollectionType() {
 		return this.collectionType == CollectionType.COLLECTION || this.collectionType == CollectionType.LIST
-		        || this.collectionType == CollectionType.SET;
+				|| this.collectionType == CollectionType.SET;
 	}
 
 	public boolean isListType() {
@@ -143,7 +144,7 @@ public class PropertyMethodTypeInfo {
 		return this.collectionType == CollectionType.MAP;
 	}
 
-	public boolean isCompatible(PropertyMethodTypeInfo checkWith) {
+	public boolean isCompatible(final PropertyMethodTypeInfo checkWith) {
 		if (checkWith != null) {
 			if (isMapType()) {
 				return checkWith.isMapType() && getKeyType().equals(checkWith.getKeyType()) && getValueType().equals(checkWith.getValueType());
@@ -156,8 +157,8 @@ public class PropertyMethodTypeInfo {
 		return true;
 	}
 
-	public static PropertyMethodTypeInfo createCompatibleCounterpart(Method method, PropertyMethodTypeInfo counterpart) {
-		PropertyMethodTypeInfo result = create(method);
+	public static PropertyMethodTypeInfo createCompatibleCounterpart(final Method method, final PropertyMethodTypeInfo counterpart) {
+		PropertyMethodTypeInfo result = PropertyMethodTypeInfo.create(method);
 		if (counterpart != null) {
 			if (!result.isCompatible(counterpart)) {
 				throw new RuntimeException("Cannot create compatible PropertyMethodTypeInfo due to incompatible types");
@@ -177,7 +178,7 @@ public class PropertyMethodTypeInfo {
 		return result;
 	}
 
-	public static PropertyMethodTypeInfo create(Method method) {
+	public static PropertyMethodTypeInfo create(final Method method) {
 		if (method == null) {
 			throw new IllegalArgumentException("Null parameter: method");
 		}
@@ -191,23 +192,23 @@ public class PropertyMethodTypeInfo {
 			paramTypes = null;
 		}
 		if (returnType != null && paramTypes == null) {
-			return resolveValueType(method, true, returnType);
+			return PropertyMethodTypeInfo.resolveValueType(method, true, returnType);
 		} else if (paramTypes != null && paramTypes.length <= 2) {
-			return resolveValueType(method, false, paramTypes);
+			return PropertyMethodTypeInfo.resolveValueType(method, false, paramTypes);
 		} else {
 			throw new RuntimeException(
-			        "Method signature does not match one of [T getT(), T/void setT(T), T/void putT(K, T)] where the name does not matters");
+					"Method signature does not match one of [T getT(), T/void setT(T), T/void putT(K, T)] where the name does not matters");
 		}
 	}
 
-	private static PropertyMethodTypeInfo resolveValueType(Method method, boolean getMethod, Class<?>... types) {
+	private static PropertyMethodTypeInfo resolveValueType(final Method method, final boolean getMethod, final Class<?>... types) {
 		if (types.length == 1) {
 			// Works for the case that we have a single set type or the return type
 			Class<?> type = types[0];
 			if (Collection.class.isAssignableFrom(type)) {
-				return resolveCollectionType(method, getMethod, (Class<? extends Collection<?>>) type);
+				return PropertyMethodTypeInfo.resolveCollectionType(method, getMethod, (Class<? extends Collection<?>>) type);
 			} else if (Map.class.isAssignableFrom(type)) {
-				return resolveMapType(method, getMethod, (Class<? extends Map<?, ?>>) type);
+				return PropertyMethodTypeInfo.resolveMapType(method, getMethod, (Class<? extends Map<?, ?>>) type);
 			} else {
 				return new PropertyMethodTypeInfo(method, getMethod, CollectionType.NONE, null, types[0]);
 			}
@@ -215,12 +216,13 @@ public class PropertyMethodTypeInfo {
 			return new PropertyMethodTypeInfo(method, getMethod, CollectionType.MAP, types[0], types[1]);
 		} else {
 			throw new RuntimeException(
-			        "Method signature does not match one of [T getT(), void setT(T), void putT(key, T)] where the name does not matters");
+					"Method signature does not match one of [T getT(), void setT(T), void putT(key, T)] where the name does not matters");
 		}
 	}
 
-	private static PropertyMethodTypeInfo resolveCollectionType(Method method, boolean getMethod, Class<? extends Collection<?>> collectionType) {
-		ParameterizedType temp = findGenericInterface(collectionType, Collection.class);
+	private static PropertyMethodTypeInfo resolveCollectionType(final Method method, final boolean getMethod,
+			final Class<? extends Collection<?>> collectionType) {
+		ParameterizedType temp = PropertyMethodTypeInfo.findGenericInterface(collectionType, Collection.class);
 		if (temp == null) {
 			throw new RuntimeException("Cannot introspec collection type");
 		}
@@ -237,8 +239,8 @@ public class PropertyMethodTypeInfo {
 		}
 	}
 
-	private static PropertyMethodTypeInfo resolveMapType(Method method, boolean getMethod, Class<? extends Map<?, ?>> mapType) {
-		ParameterizedType temp = findGenericInterface(mapType, Map.class);
+	private static PropertyMethodTypeInfo resolveMapType(final Method method, final boolean getMethod, final Class<? extends Map<?, ?>> mapType) {
+		ParameterizedType temp = PropertyMethodTypeInfo.findGenericInterface(mapType, Map.class);
 		if (temp == null) {
 			throw new RuntimeException("Cannot introspec map type");
 		}
@@ -249,7 +251,7 @@ public class PropertyMethodTypeInfo {
 		return new PropertyMethodTypeInfo(method, getMethod, CollectionType.MAP, types[0], types[1]);
 	}
 
-	private static <T> ParameterizedType findGenericInterface(Class<T> type, Class<?> interfaceType) {
+	private static <T> ParameterizedType findGenericInterface(final Class<T> type, final Class<?> interfaceType) {
 		if (type == null || interfaceType == null) {
 			throw new IllegalArgumentException("Null parameter: type | interfaceType");
 		}

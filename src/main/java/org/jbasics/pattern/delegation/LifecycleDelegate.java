@@ -25,34 +25,38 @@
 package org.jbasics.pattern.delegation;
 
 /**
- * Interface offering the access to an element inside a delegated wrapper.
+ * A {@link LifecycleDelegate} is a class delegating an object with the
+ * capability to handle the lifecycle inside.
  * <p>
- * The contract of usage does not put any constraints on how the delegate is
- * received / lazy created or must be set. It is depending on the implementation
- * if the delegate always returns a value different from null. It is also up to
- * the implementor if the instance is created on demand or if the instance can
- * change in the life of the delegate.
+ * Typically used in conjunction with pooling where we want to be able to inject
+ * handling into the case that we activate, passivate or release an instance.
  * </p>
  * <p>
- * It is however important that the user of the delegate should avoid saving the
- * instance inside the delegate for later use. It is by contract not allowed to
- * safe the instance. The access should always go thru the delegate method.
+ * The current lifecyle is defined:
+ * <ul>
+ * <li>Creating - No extra method since the factory must handle the creation.
+ * <li>Activating - Called when the owner activates the instance for use.
+ * <li>Passivate - Called when the owner passivates the instance after use.
+ * <li>Release - Called when the owner no long wants to keep the instance and
+ * the instance should be destroyed.
+ * </ul>
  * </p>
  *
  * @author Stephan Schloepke
  * @param <T>
- *            The type of the embedded instance which is delegated (can be
- *            null).
+ *            The type of the instance which get the lifecycle
  * @since 1.0
  */
-public interface Delegate<T> {
+public interface LifecycleDelegate<T> extends ReleasableDelegate<T> {
 
 	/**
-	 * Returns the instance to which it is supposed to be delegated.
-	 *
-	 * @return The instance (can be null or lazy created. Even changing in every
-	 *         call).
+	 * Activate the instance for use.
 	 */
-	T delegate();
+	void activate();
+
+	/**
+	 * Passivate the instance after use (put to sleep).
+	 */
+	void passivate();
 
 }

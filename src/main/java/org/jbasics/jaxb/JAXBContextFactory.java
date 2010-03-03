@@ -30,7 +30,6 @@ import javax.xml.bind.JAXBException;
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.factory.Factory;
 
-
 public class JAXBContextFactory implements Factory<JAXBContext> {
 	private final String contextPath;
 	private final Class<?>[] classes;
@@ -49,7 +48,6 @@ public class JAXBContextFactory implements Factory<JAXBContext> {
 		}
 		this.classes = classes;
 		this.contextPath = null;
-		;
 	}
 
 	public JAXBContext newInstance() {

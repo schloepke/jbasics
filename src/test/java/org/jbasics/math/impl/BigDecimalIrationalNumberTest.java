@@ -24,14 +24,13 @@
  */
 package org.jbasics.math.impl;
 
-import static org.junit.Assert.*;
-
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
-import org.jbasics.math.AlgorithmStrategy;
+import org.junit.Assert;
+import org.junit.Test;
+
 import org.jbasics.math.BigRational;
 import org.jbasics.math.IrationalNumber;
 import org.jbasics.math.arbitrary.ArbitraryFaculty;
@@ -39,14 +38,13 @@ import org.jbasics.math.arbitrary.ArbitraryInteger;
 import org.jbasics.math.arbitrary.ArbitraryRational;
 import org.jbasics.math.strategies.PiSeriesAlgorithmStrategy;
 import org.jbasics.testing.Java14LoggingTestCase;
-import org.junit.Test;
 
 public class BigDecimalIrationalNumberTest extends Java14LoggingTestCase {
 
 	@Test
 	public void compareSquareRoot() {
-		long time,used;
-		BigDecimal x = BigDecimal.valueOf(123445l*123445l);
+		long time, used;
+		BigDecimal x = BigDecimal.valueOf(123445l * 123445l);
 		IrationalNumber<BigDecimal> standard = SquareRootIrationalNumber.valueOf(x);
 		IrationalNumber<BigDecimal> reciprocal = SquareRootReciprocalIrationalNumber.valueOf(x);
 		MathContext mc = new MathContext(2000);
@@ -54,32 +52,32 @@ public class BigDecimalIrationalNumberTest extends Java14LoggingTestCase {
 		time = System.currentTimeMillis();
 		standard.valueToPrecision(mc);
 		used = System.currentTimeMillis() - time;
-		System.out.println("Standard "+used);
+		System.out.println("Standard " + used);
 
 		time = System.currentTimeMillis();
 		reciprocal.valueToPrecision(mc);
 		used = System.currentTimeMillis() - time;
-		System.out.println("Reciprocal "+used);
+		System.out.println("Reciprocal " + used);
 
-		System.out.println("S "+standard.valueToPrecision(mc));
-		System.out.println("R "+reciprocal.valueToPrecision(mc));
-		assertTrue(standard.valueToPrecision(mc).compareTo(BigDecimal.ONE.divide(reciprocal.valueToPrecision(mc), mc)) == 0);
+		System.out.println("S " + standard.valueToPrecision(mc));
+		System.out.println("R " + reciprocal.valueToPrecision(mc));
+		Assert.assertTrue(standard.valueToPrecision(mc).compareTo(BigDecimal.ONE.divide(reciprocal.valueToPrecision(mc), mc)) == 0);
 	}
-	
+
 	@Test
 	public void testSquareRoot() {
 		this.logger.entering(getClass().getName(), "testSquareRoot");
 		BigDecimal reference = BigDecimal.valueOf(Math.sqrt(2));
 		BigDecimal proband = SquareRootIrationalNumber.valueOf(BigDecimal.valueOf(2)).valueToPrecision(
 				MathContext.DECIMAL128);
-		this.logger.fine("SquareRoot Reference:  "+reference);
-		this.logger.fine("SquareRoot Calculated: "+proband);
-		assertEquals(reference.doubleValue(), proband.doubleValue(), 0.0d);
+		this.logger.fine("SquareRoot Reference:  " + reference);
+		this.logger.fine("SquareRoot Calculated: " + proband);
+		Assert.assertEquals(reference.doubleValue(), proband.doubleValue(), 0.0d);
 		reference = BigDecimal.ONE.divide(reference, MathContext.DECIMAL64);
 		proband = BigDecimal.ONE.divide(proband, MathContext.DECIMAL64);
-		this.logger.fine("1/SquareRoot Reference:  "+reference);
-		this.logger.fine("1/SquareRoot Calculated: "+proband);
-		assertEquals(reference.doubleValue(), proband.doubleValue(), 0.0d);
+		this.logger.fine("1/SquareRoot Reference:  " + reference);
+		this.logger.fine("1/SquareRoot Calculated: " + proband);
+		Assert.assertEquals(reference.doubleValue(), proband.doubleValue(), 0.0d);
 		this.logger.exiting(getClass().getName(), "testSquareRoot");
 	}
 
@@ -89,9 +87,9 @@ public class BigDecimalIrationalNumberTest extends Java14LoggingTestCase {
 		BigDecimal reference = BigDecimal.valueOf(Math.PI);
 		IrationalNumber<BigDecimal> proband = PiIrationalNumber.PI;
 		MathContext mc = new MathContext(100);
-		this.logger.fine("PI Reference:  "+reference);
-		this.logger.fine("PI Calculated: "+proband.valueToPrecision(mc));
-		assertEquals(reference.doubleValue(), proband.valueToPrecision(MathContext.DECIMAL128).doubleValue(), 0.1E-14d);
+		this.logger.fine("PI Reference:  " + reference);
+		this.logger.fine("PI Calculated: " + proband.valueToPrecision(mc));
+		Assert.assertEquals(reference.doubleValue(), proband.valueToPrecision(MathContext.DECIMAL128).doubleValue(), 0.1E-14d);
 		this.logger.exiting(getClass().getName(), "testPI");
 	}
 
@@ -108,9 +106,9 @@ public class BigDecimalIrationalNumberTest extends Java14LoggingTestCase {
 		piReference.valueToPrecision(mc);
 		used = System.currentTimeMillis() - time;
 		System.out.println(String.format("Refer (%4dms) = %s", used, piReference.valueToPrecision(mc)));
-		BigDecimal piDistance = piReference.valueToPrecision(mc).subtract(piResult);;
-		System.out.println("Dist: "+piDistance);
-		assertTrue(piReference.valueToPrecision(mc).compareTo(piResult) == 0);
+		BigDecimal piDistance = piReference.valueToPrecision(mc).subtract(piResult);
+		System.out.println("Dist: " + piDistance);
+		Assert.assertTrue(piReference.valueToPrecision(mc).compareTo(piResult) == 0);
 	}
 
 	@Test
@@ -125,9 +123,9 @@ public class BigDecimalIrationalNumberTest extends Java14LoggingTestCase {
 		ArbitraryFaculty k4 = new ArbitraryFaculty(4);
 		ArbitraryFaculty k = new ArbitraryFaculty();
 		ArbitraryInteger c2k = c2.negate();
-		for(int i = 0; i < 130; i++) {
+		for (int i = 0; i < 130; i++) {
 			ArbitraryInteger numerator = k4.next().multiply(c1.add(c2k = c2k.add(c2)));
-			ArbitraryInteger denominator = k.next().pow(4).multiply(c3.pow(4*i));
+			ArbitraryInteger denominator = k.next().pow(4).multiply(c3.pow(4 * i));
 			pi = pi.add(ArbitraryRational.valueOf(numerator, denominator));
 		}
 		BigRational t = new BigRational(pi.numerator().toNumber(), pi.denominator().toNumber()).reduce().reciprocal();
@@ -138,8 +136,8 @@ public class BigDecimalIrationalNumberTest extends Java14LoggingTestCase {
 		PiIrationalNumber.PI.valueToPrecision(mc);
 		used = System.currentTimeMillis() - time;
 		System.out.println(String.format("Refer (%4dms) = %s", used, PiIrationalNumber.PI.valueToPrecision(mc)));
-		BigDecimal piDistance = PiIrationalNumber.PI.valueToPrecision(mc).subtract(piResult);;
-		System.out.println("Dist: "+piDistance);
+		BigDecimal piDistance = PiIrationalNumber.PI.valueToPrecision(mc).subtract(piResult);
+		System.out.println("Dist: " + piDistance);
 	}
 
 }
