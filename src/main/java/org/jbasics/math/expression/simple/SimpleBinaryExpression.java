@@ -34,23 +34,24 @@ public abstract class SimpleBinaryExpression extends SimpleExpression {
 	protected final SimpleExpression lhs;
 	protected final SimpleExpression rhs;
 
-	public SimpleBinaryExpression(SimpleExpression lhs, SimpleExpression rhs) {
+	public SimpleBinaryExpression(final SimpleExpression lhs, final SimpleExpression rhs) {
 		this.lhs = ContractCheck.mustNotBeNull(lhs, "lhs");
 		this.rhs = ContractCheck.mustNotBeNull(rhs, "rhs");
 	}
 
 	@Override
-	public BigDecimal eval(SimpleSymbolResolver resolver, MathContext mc) {
+	public BigDecimal eval(final SimpleSymbolResolver resolver, MathContext mc) {
 		if (mc == null) {
 			mc = MathContext.DECIMAL64;
 		}
 		return evalOp(this.lhs.eval(resolver, mc), this.rhs.eval(resolver, mc), mc);
 	}
 
-	public <T extends Collection<String>> void collectSymbols(T collection) {
+	@Override
+	public <T extends Collection<String>> void collectSymbols(final T collection) {
 		this.lhs.collectSymbols(collection);
 		this.rhs.collectSymbols(collection);
-	};
+	}
 
 	protected abstract BigDecimal evalOp(BigDecimal left, BigDecimal right, MathContext mc);
 
