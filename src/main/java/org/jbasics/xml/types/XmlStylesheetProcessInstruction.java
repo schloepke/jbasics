@@ -26,11 +26,12 @@ package org.jbasics.xml.types;
 
 import java.net.URI;
 
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.xml.XmlSerializable;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
+
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.xml.XmlSerializable;
 
 public class XmlStylesheetProcessInstruction implements XmlSerializable {
 	private final String type;
@@ -41,11 +42,12 @@ public class XmlStylesheetProcessInstruction implements XmlSerializable {
 	private final String charset;
 	private final Boolean alternate;
 
-	public XmlStylesheetProcessInstruction(Object type, URI href) {
+	public XmlStylesheetProcessInstruction(final Object type, final URI href) {
 		this(type, href, null, null, null, null);
 	}
 
-	public XmlStylesheetProcessInstruction(Object type, URI href, String title, String media, String charset, Boolean alternate) {
+	public XmlStylesheetProcessInstruction(final Object type, final URI href, final String title, final String media, final String charset,
+			final Boolean alternate) {
 		this.type = ContractCheck.mustNotBeNull(type, "type").toString();
 		this.href = ContractCheck.mustNotBeNull(href, "href");
 		this.title = title;
@@ -82,7 +84,7 @@ public class XmlStylesheetProcessInstruction implements XmlSerializable {
 		return Boolean.TRUE.equals(this.alternate);
 	}
 
-	public void serialize(ContentHandler handler, AttributesImpl attributes) throws SAXException {
+	public void serialize(final ContentHandler handler, final AttributesImpl attributes) throws SAXException {
 		StringBuilder temp = new StringBuilder();
 		temp.append("type=\"").append(this.type).append("\" href=\"").append(this.href).append("\"");
 		if (this.title != null) {

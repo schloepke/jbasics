@@ -28,26 +28,29 @@ import java.io.UnsupportedEncodingException;
 
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.codec.RFC3548Base64Codec;
+import org.jbasics.exception.DelegatedException;
 import org.jbasics.types.tuples.Pair;
 
 public final class HttpHeaderCreator {
-	public static final String URL_ENCODE_CHARSET = "UTF-8";
+	public static final String URL_ENCODE_CHARSET = "UTF-8"; //$NON-NLS-1$
 	// This might have to be US-ASCII?
-	public static final String HEADER_VALUE_CHARSET = "ISO-8859-1";
+	public static final String HEADER_VALUE_CHARSET = "ISO-8859-1"; //$NON-NLS-1$
 
-	public static Pair<String, String> createBasicAuthorization(String username, String password) {
+	public static Pair<String, String> createBasicAuthorization(final String username, final String password) {
+		StringBuilder temp = new StringBuilder();
+		temp.append(ContractCheck.mustNotBeNullOrEmpty(username, "username")); //$NON-NLS-1$
+		if (password != null) {
+			temp.append(":").append(password); //$NON-NLS-1$
+		}
+		return HttpHeaderCreator.createBasicAuthorization(temp.toString());
+	}
+
+	public static Pair<String, String> createBasicAuthorization(final String uriUserInfo) {
 		try {
-			StringBuilder temp = new StringBuilder();
-			temp.append(ContractCheck.mustNotBeNullOrEmpty(username, "username"));
-			if (password != null) {
-				temp.append(":").append(password);
-			}
-			return new Pair<String, String>(HTTPHeaderConstants.AUTHORIZATION_HEADER, "Basic " + RFC3548Base64Codec.INSTANCE.encode(
-					temp.toString().getBytes(HEADER_VALUE_CHARSET)).toString());
+			return new Pair<String, String>(HTTPHeaderConstants.AUTHORIZATION_HEADER, "Basic " + RFC3548Base64Codec.INSTANCE.encode( //$NON-NLS-1$
+					ContractCheck.mustNotBeNull(uriUserInfo, "uriUserInfo").getBytes(HttpHeaderCreator.HEADER_VALUE_CHARSET)).toString()); //$NON-NLS-1$
 		} catch (UnsupportedEncodingException e) {
-			RuntimeException er = new RuntimeException("[" + e.getClass().getSimpleName() + "] " + e.getMessage());
-			er.setStackTrace(e.getStackTrace());
-			throw er;
+			throw DelegatedException.delegate(e);
 		}
 	}
 

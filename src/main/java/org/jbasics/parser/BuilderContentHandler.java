@@ -31,14 +31,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.xml.namespace.QName;
 
-import org.jbasics.parser.invoker.Invoker;
-import org.jbasics.types.tuples.Pair;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ext.DefaultHandler2;
+
+import org.jbasics.parser.invoker.Invoker;
+import org.jbasics.types.tuples.Pair;
 
 @SuppressWarnings("unchecked")
 public class BuilderContentHandler<T> extends DefaultHandler2 {
@@ -55,7 +56,7 @@ public class BuilderContentHandler<T> extends DefaultHandler2 {
 	private ContentHandler activeCustomParserContentHandler;
 	private int customParserDepth;
 
-	public BuilderContentHandler(BuilderParserContext<T> context) {
+	public BuilderContentHandler(final BuilderParserContext<T> context) {
 		this.context = context;
 		this.parsing = new AtomicBoolean(false);
 	}
@@ -73,7 +74,7 @@ public class BuilderContentHandler<T> extends DefaultHandler2 {
 			this.prefixes = new NamespacePrefixStack();
 			this.result = null;
 		} else {
-			throw new IllegalStateException("Start of document event occured while already parsing another document");
+			throw new IllegalStateException("Start of document event occured while already parsing another document"); //$NON-NLS-1$
 		}
 	}
 
@@ -89,87 +90,87 @@ public class BuilderContentHandler<T> extends DefaultHandler2 {
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-		if (this.parsing.get()) {
-			try {
-				if (this.activeCustomParserContentHandler != null) {
-					this.activeCustomParserContentHandler.startElement(uri, localName, qName, attributes);
-					this.customParserDepth++;
-				} else {
-					QName name = createQualifiedName(uri, localName, qName);
-					ParsingInfo parseInfo = null;
-					if (this.states.isEmpty()) {
-						// Root processing
-						parseInfo = this.context.getParsingInfo(name);
-						if (parseInfo == null) {
-							throw new SAXException("Unknown root element " + name);
-						}
-					} else {
-						BuildHandler current = this.states.peek();
-						if (this.characterBuffer.length() > 0) {
-							current.addText(this.characterBuffer.toString());
-							this.characterBuffer.setLength(0);
-						}
-						if (this.commentBuffer.length() > 0) {
-							current.addComment(this.commentBuffer.toString());
-							this.commentBuffer.setLength(0);
-						}
-						if (current instanceof CustomParserRegistry) {
-							// TODO: We need to handle the attributes here but ignoring this right now
-							Map<QName, String> attTemp = Collections.emptyMap();
-							CustomParser customParser = ((CustomParserRegistry) current).getCustomParser(name, attTemp);
-							if (customParser != null) {
-								this.activeCustomParser = customParser;
-								this.customParserDepth = 0;
-								this.activeCustomParserContentHandler = customParser.beginParsing();
-								this.activeCustomParserContentHandler.setDocumentLocator(this.locator);
-								this.activeCustomParserContentHandler.startDocument();
-								for (Pair<String, URI> prefix : this.prefixes) {
-									this.activeCustomParserContentHandler.startPrefixMapping(prefix.left(), prefix.right().toString());
-								}
-								this.activeCustomParserContentHandler.startElement(uri, localName, qName, attributes);
-								// here we need to end execution
-								return;
-							}
-						}
-						parseInfo = current.getParsingInfo();
-						if (parseInfo != null) {
-							Pair<ParsingInfo, Invoker<?, ?>> x = parseInfo.getElementInvoker(name);
-							if (x != null) {
-								parseInfo = x.first();
-							} else {
-								parseInfo = null;
-							}
-						}
-					}
-					if (parseInfo == null) {
-						StringBuilder message = new StringBuilder("Unrecognized element ").append(name);
-						if (this.locator != null) {
-							message.append(" (").append(this.locator.getLineNumber()).append("/").append(this.locator.getColumnNumber()).append(")");
-						}
-						throw new SAXParseException(message.toString(), this.locator);
-					}
-
-					// TODO: Here we need to discover if we have a content handler delegate set so we can delegate everything instead of the following
-
-					BuildHandler handler = new BuildHandlerImpl(name, parseInfo);
-					for (int i = 0; i < attributes.getLength(); i++) {
-						QName attrName = createQualifiedName(attributes.getURI(i), attributes.getLocalName(i), attributes.getQName(i));
-						String attrValue = attributes.getValue(i);
-						handler.setAttribute(attrName, attrValue);
-					}
-					this.states.push(handler);
-				}
-			} catch (RuntimeException eo) {
-				throw createParsingException(eo);
+	public void startElement(final String uri, final String localName, final String qName, final Attributes attributes) throws SAXException {
+		if (!this.parsing.get()) {
+			throw new IllegalStateException("Start of Element event occured while not parsing"); //$NON-NLS-1$
+		}
+		try {
+			if (this.activeCustomParserContentHandler != null) {
+				this.activeCustomParserContentHandler.startElement(uri, localName, qName, attributes);
+				this.customParserDepth++;
+				return;
 			}
-		} else {
-			throw new IllegalStateException("Start of Element event occured while not parsing");
+			QName name = createQualifiedName(uri, localName, qName);
+			ParsingInfo parseInfo = null;
+			if (this.states.isEmpty()) {
+				// Root processing
+				parseInfo = this.context.getParsingInfo(name);
+				if (parseInfo == null) {
+					throw new SAXException("Unknown root element " + name);
+				}
+			} else {
+				BuildHandler current = this.states.peek();
+				if (this.characterBuffer.length() > 0) {
+					current.addText(this.characterBuffer.toString());
+					this.characterBuffer.setLength(0);
+				}
+				if (this.commentBuffer.length() > 0) {
+					current.addComment(this.commentBuffer.toString());
+					this.commentBuffer.setLength(0);
+				}
+				if (current instanceof CustomParserRegistry) {
+					// TODO: We need to handle the attributes here but ignoring this right now
+					Map<QName, String> attTemp = Collections.emptyMap();
+					CustomParser customParser = ((CustomParserRegistry) current).getCustomParser(name, attTemp);
+					if (customParser != null) {
+						this.activeCustomParser = customParser;
+						this.customParserDepth = 0;
+						this.activeCustomParserContentHandler = customParser.beginParsing();
+						this.activeCustomParserContentHandler.setDocumentLocator(this.locator);
+						this.activeCustomParserContentHandler.startDocument();
+						for (Pair<String, URI> prefix : this.prefixes) {
+							this.activeCustomParserContentHandler.startPrefixMapping(prefix.left(), prefix.right().toString());
+						}
+						this.activeCustomParserContentHandler.startElement(uri, localName, qName, attributes);
+						// here we need to end execution
+						return;
+					}
+				}
+				parseInfo = current.getParsingInfo();
+				if (parseInfo != null) {
+					Pair<ParsingInfo, Invoker<?, ?>> x = parseInfo.getElementInvoker(name);
+					if (x != null) {
+						parseInfo = x.first();
+					} else {
+						parseInfo = null;
+					}
+				}
+			}
+			if (parseInfo == null) {
+				StringBuilder message = new StringBuilder("Unrecognized element ").append(name);
+				if (this.locator != null) {
+					message.append(" (").append(this.locator.getLineNumber()).append("/").append(this.locator.getColumnNumber()).append(")");
+				}
+				throw new SAXParseException(message.toString(), this.locator);
+			}
+
+			// TODO: Here we need to discover if we have a content handler delegate set so we can delegate
+			// everything instead of the following
+
+			BuildHandler handler = new BuildHandlerImpl(name, parseInfo);
+			for (int i = 0; i < attributes.getLength(); i++) {
+				QName attrName = createQualifiedName(attributes.getURI(i), attributes.getLocalName(i), attributes.getQName(i));
+				String attrValue = attributes.getValue(i);
+				handler.setAttribute(attrName, attrValue);
+			}
+			this.states.push(handler);
+		} catch (RuntimeException eo) {
+			throw createParsingException(eo);
 		}
 	}
 
 	@Override
-	public void endElement(String uri, String localName, String qName) throws SAXException {
+	public void endElement(final String uri, final String localName, final String qName) throws SAXException {
 		if (this.parsing.get()) {
 			try {
 				if (this.activeCustomParserContentHandler != null) {
@@ -209,7 +210,7 @@ public class BuilderContentHandler<T> extends DefaultHandler2 {
 	}
 
 	@Override
-	public void startPrefixMapping(String prefix, String uri) throws SAXException {
+	public void startPrefixMapping(final String prefix, final String uri) throws SAXException {
 		if (this.activeCustomParserContentHandler != null) {
 			this.activeCustomParserContentHandler.startPrefixMapping(prefix, uri);
 		} else {
@@ -218,7 +219,7 @@ public class BuilderContentHandler<T> extends DefaultHandler2 {
 	}
 
 	@Override
-	public void endPrefixMapping(String prefix) throws SAXException {
+	public void endPrefixMapping(final String prefix) throws SAXException {
 		if (this.activeCustomParserContentHandler != null) {
 			this.activeCustomParserContentHandler.endPrefixMapping(prefix);
 		} else {
@@ -227,7 +228,7 @@ public class BuilderContentHandler<T> extends DefaultHandler2 {
 	}
 
 	@Override
-	public void characters(char[] ch, int start, int length) throws SAXException {
+	public void characters(final char[] ch, final int start, final int length) throws SAXException {
 		if (this.activeCustomParserContentHandler != null) {
 			this.activeCustomParserContentHandler.characters(ch, start, length);
 		} else {
@@ -241,7 +242,7 @@ public class BuilderContentHandler<T> extends DefaultHandler2 {
 	}
 
 	@Override
-	public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
+	public void ignorableWhitespace(final char[] ch, final int start, final int length) throws SAXException {
 		if (this.activeCustomParserContentHandler != null) {
 			this.activeCustomParserContentHandler.ignorableWhitespace(ch, start, length);
 		} else {
@@ -250,12 +251,12 @@ public class BuilderContentHandler<T> extends DefaultHandler2 {
 	}
 
 	@Override
-	public void setDocumentLocator(Locator locator) {
+	public void setDocumentLocator(final Locator locator) {
 		super.setDocumentLocator(locator);
 		this.locator = locator;
 	}
 
-	private SAXParseException createParsingException(RuntimeException eo) {
+	private SAXParseException createParsingException(final RuntimeException eo) {
 		Throwable e = eo;
 		while (e.getCause() != null && e.getCause() != e) {
 			e = e.getCause();
@@ -270,7 +271,7 @@ public class BuilderContentHandler<T> extends DefaultHandler2 {
 		return en;
 	}
 
-	private QName createQualifiedName(String namespace, String localname, String qName) {
+	private QName createQualifiedName(String namespace, final String localname, final String qName) {
 		String prefix = null;
 		if (qName != null) {
 			int temp = qName.indexOf(':');
@@ -295,8 +296,10 @@ public class BuilderContentHandler<T> extends DefaultHandler2 {
 	 * (non-Javadoc)
 	 * @see org.xml.sax.ext.LexicalHandler#comment(char[], int, int)
 	 */
-	public void comment(char[] ch, int start, int length) throws SAXException {
-		// Ok we need to hand over the comment since in some cases we actually want to receive comments (JavaScript in HTML for example)
+	@Override
+	public void comment(final char[] ch, final int start, final int length) throws SAXException {
+		// Ok we need to hand over the comment since in some cases we actually want to receive comments (JavaScript in
+		// HTML for example)
 		if (this.characterBuffer.length() > 0) {
 			BuildHandler current = this.states.peek();
 			current.addText(this.characterBuffer.toString());

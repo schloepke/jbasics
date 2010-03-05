@@ -39,44 +39,48 @@ public class LogarithmAlgorithmStrategy implements AlgorithmStrategy<BigDecimal>
 		this(null);
 	}
 
-	public LogarithmAlgorithmStrategy(AlgorithmStrategy<BigDecimal> naturalLogarithm) {
+	public LogarithmAlgorithmStrategy(final AlgorithmStrategy<BigDecimal> naturalLogarithm) {
 		this.naturalLogrithm = naturalLogarithm != null ? naturalLogarithm : new NaturalLogarithmAlgorithmStrategy();
 	}
 
-	public BigDecimal calculate(MathContext mc, BigDecimal guess, BigDecimal... xn) {
+	public BigDecimal calculate(final MathContext mc, final BigDecimal guess, final BigDecimal... xn) {
 		if (xn == null || xn.length != 2) {
-			throw new IllegalArgumentException("Illegal amount of arguments supplied (required 2, got " + (xn == null ? 0 : xn.length) + ")");
+			throw new IllegalArgumentException("Illegal amount of arguments supplied (required 2, got " + (xn == null ? 0 : xn.length) + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		BigDecimal x = xn[0];
 		BigDecimal base = xn[1];
 		return this.naturalLogrithm.calculate(mc, null, x).divide(calculateBase(mc, base), mc);
 	}
 
-	private BigDecimal calculateBase(MathContext mc, BigDecimal base) {
+	private BigDecimal calculateBase(final MathContext mc, final BigDecimal base) {
 		try {
 			int temp = base.intValueExact() - 2;
 			if (temp >= 0 && temp < this.baseCache.length()) {
-				BigDecimal result = this.baseCache.get(temp);
-				if (result == null || result.precision() <= mc.getPrecision()) {
-					BigDecimal newResult = this.naturalLogrithm.calculate(mc, result, base);
-					if (!this.baseCache.compareAndSet(temp, result, newResult)) {
-						// here we know that we could not update the value so lets check the
-						// precision
-						result = this.baseCache.get(temp);
-						if (result == null || result.precision() < newResult.precision()) {
-							this.baseCache.set(temp, newResult);
-						} else {
-							return result;
-						}
-					}
-					return newResult;
-				}
-				return result;
+				return getOrCreateCached(mc, base, temp);
 			}
 		} catch (ArithmeticException e) {
 			// We do nothing but directly calculate the result
 		}
 		return this.naturalLogrithm.calculate(mc, null, base);
+	}
+
+	private BigDecimal getOrCreateCached(final MathContext mc, final BigDecimal base, int baseIndex) {
+		BigDecimal result = this.baseCache.get(baseIndex);
+		if (result == null || result.precision() <= mc.getPrecision()) {
+			BigDecimal newResult = this.naturalLogrithm.calculate(mc, result, base);
+			if (!this.baseCache.compareAndSet(baseIndex, result, newResult)) {
+				// here we know that we could not update the value so lets check the
+				// precision
+				result = this.baseCache.get(baseIndex);
+				if (result == null || result.precision() < newResult.precision()) {
+					this.baseCache.set(baseIndex, newResult);
+				} else {
+					return result;
+				}
+			}
+			return newResult;
+		}
+		return result;
 	}
 
 }

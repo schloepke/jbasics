@@ -148,16 +148,21 @@ public class ResponseMeta {
 	/**
 	 * Sets the media type of the response.
 	 * 
-	 * @param mediaType the mediaType to set
+	 * @param mediaType
+	 *            the mediaType to set
 	 */
 	protected void setMediaType(final MediaType mediaType) {
 		this.mediaType = mediaType;
+		if (mediaType != null) {
+			setCharset(mediaType.getParameter("charset")); //$NON-NLS-1$
+		}
 	}
 
 	/**
 	 * Sets the character set of the response.
 	 * 
-	 * @param charset the charset to set
+	 * @param charset
+	 *            the charset to set
 	 */
 	protected void setCharset(final String charset) {
 		this.charset = charset;
@@ -166,7 +171,8 @@ public class ResponseMeta {
 	/**
 	 * Set the encoding of the response.
 	 * 
-	 * @param encoding the encoding to set
+	 * @param encoding
+	 *            the encoding to set
 	 */
 	protected void setEncoding(final String encoding) {
 		this.encoding = encoding;
@@ -175,7 +181,8 @@ public class ResponseMeta {
 	/**
 	 * Set the language of the response.
 	 * 
-	 * @param language the language to set
+	 * @param language
+	 *            the language to set
 	 */
 	protected void setLanguage(final String language) {
 		this.language = language;
@@ -184,7 +191,8 @@ public class ResponseMeta {
 	/**
 	 * Set the ETAG of the response.
 	 * 
-	 * @param tag the eTag to set
+	 * @param tag
+	 *            the eTag to set
 	 */
 	protected void setETag(final String tag) {
 		this.eTag = tag;
@@ -193,7 +201,8 @@ public class ResponseMeta {
 	/**
 	 * Set the length of the content.
 	 * 
-	 * @param contentLength the contentLength to set
+	 * @param contentLength
+	 *            the contentLength to set
 	 */
 	protected void setContentLength(final long contentLength) {
 		this.contentLength = contentLength;
@@ -202,7 +211,8 @@ public class ResponseMeta {
 	/**
 	 * Set the content MD5 hash.
 	 * 
-	 * @param contentMD5 the contentMD5 to set
+	 * @param contentMD5
+	 *            the contentMD5 to set
 	 */
 	protected void setContentMD5(final String contentMD5) {
 		this.contentMD5 = contentMD5;
@@ -211,7 +221,8 @@ public class ResponseMeta {
 	/**
 	 * Set the from email.
 	 * 
-	 * @param fromEmail the fromEmail to set
+	 * @param fromEmail
+	 *            the fromEmail to set
 	 */
 	protected void setFromEmail(final String fromEmail) {
 		this.fromEmail = fromEmail;
@@ -220,7 +231,8 @@ public class ResponseMeta {
 	/**
 	 * Set the date of the response.
 	 * 
-	 * @param date the date to set
+	 * @param date
+	 *            the date to set
 	 */
 	protected void setDate(final Date date) {
 		this.date = date;
@@ -229,7 +241,8 @@ public class ResponseMeta {
 	/**
 	 * Set the last modified date.
 	 * 
-	 * @param lastModified the lastModified to set
+	 * @param lastModified
+	 *            the lastModified to set
 	 */
 	protected void setLastModified(final Date lastModified) {
 		this.lastModified = lastModified;
@@ -238,7 +251,8 @@ public class ResponseMeta {
 	/**
 	 * Set the expired date.
 	 * 
-	 * @param expires the expires to set
+	 * @param expires
+	 *            the expires to set
 	 */
 	protected void setExpires(final Date expires) {
 		this.expires = expires;

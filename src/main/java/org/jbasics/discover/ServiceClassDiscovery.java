@@ -37,34 +37,34 @@ import org.jbasics.checker.ContractCheck;
 import org.jbasics.configuration.properties.SystemProperty;
 
 /**
- * Listenbeschreibung
- * <p>
- * Detailierte Beschreibung
- * </p>
+ * Helper to discover an concrete class for an abstract one base on the java services concept.
  * 
- * @author stephan
+ * @author Stephan Schloepke
+ * @since 1.0
  */
 public class ServiceClassDiscovery {
-	public final static String RESOURCE_BASE = "META-INF/services/";
-	public static final String SERVICE_FILE_ENCODING = "UTF-8";
+	public final static String RESOURCE_BASE = "META-INF/services/"; //$NON-NLS-1$
+	public static final String SERVICE_FILE_ENCODING = "UTF-8"; //$NON-NLS-1$
 	public static final char COMMENT_CHARACTER = '#';
 
-	public static <T> Class<? extends T> discoverImplementation(Class<T> abstractClass) {
-		return discoverImplementation(abstractClass, null, getClassLoader(abstractClass));
+	public static <T> Class<? extends T> discoverImplementation(final Class<T> abstractClass) {
+		return ServiceClassDiscovery.discoverImplementation(abstractClass, null, ServiceClassDiscovery.getClassLoader(abstractClass));
 	}
 
-	public static <T> Class<? extends T> discoverImplementation(Class<T> abstractClass, Class<? extends T> defaultImplementation) {
-		return discoverImplementation(abstractClass, defaultImplementation, getClassLoader(abstractClass));
+	public static <T> Class<? extends T> discoverImplementation(final Class<T> abstractClass, final Class<? extends T> defaultImplementation) {
+		return ServiceClassDiscovery
+				.discoverImplementation(abstractClass, defaultImplementation, ServiceClassDiscovery.getClassLoader(abstractClass));
 	}
 
-	public static <T> Class<? extends T> discoverImplementation(Class<T> abstractClass, Class<? extends T> defaultImplementation, ClassLoader loader) {
-		Class<?> temp = SystemProperty.classProperty(ContractCheck.mustNotBeNull(abstractClass, "abstractClass").getName(), null).value();
+	public static <T> Class<? extends T> discoverImplementation(final Class<T> abstractClass, final Class<? extends T> defaultImplementation,
+			final ClassLoader loader) {
+		Class<?> temp = SystemProperty.classProperty(ContractCheck.mustNotBeNull(abstractClass, "abstractClass").getName(), null).value(); //$NON-NLS-1$
 		if (temp == null) {
-			String resourceName = RESOURCE_BASE + abstractClass.getName();
-			URL resource = ContractCheck.mustNotBeNull(loader, "loader").getResource(resourceName);
+			String resourceName = ServiceClassDiscovery.RESOURCE_BASE + abstractClass.getName();
+			URL resource = ContractCheck.mustNotBeNull(loader, "loader").getResource(resourceName); //$NON-NLS-1$
 			if (resource != null) {
 				try {
-					Set<String> found = parseURL(resource, new LinkedHashSet<String>());
+					Set<String> found = ServiceClassDiscovery.parseURL(resource, new LinkedHashSet<String>());
 					if (found.size() > 0) {
 						String clazzName = found.iterator().next();
 						temp = Class.forName(clazzName);
@@ -79,12 +79,13 @@ public class ServiceClassDiscovery {
 		return temp == null ? defaultImplementation : temp.asSubclass(abstractClass);
 	}
 
-	public static <T> Set<Class<? extends T>> discoverClasses(Class<T> abstractClass) throws IOException, ClassNotFoundException {
-		return discoverClasses(abstractClass, getClassLoader(abstractClass));
+	public static <T> Set<Class<? extends T>> discoverClasses(final Class<T> abstractClass) throws IOException, ClassNotFoundException {
+		return ServiceClassDiscovery.discoverClasses(abstractClass, ServiceClassDiscovery.getClassLoader(abstractClass));
 	}
 
-	public static <T> Set<Class<? extends T>> discoverClasses(Class<T> abstractClass, ClassLoader loader) throws IOException, ClassNotFoundException {
-		Set<String> classNames = discoverClassNames(abstractClass, loader);
+	public static <T> Set<Class<? extends T>> discoverClasses(final Class<T> abstractClass, final ClassLoader loader) throws IOException,
+			ClassNotFoundException {
+		Set<String> classNames = ServiceClassDiscovery.discoverClassNames(abstractClass, loader);
 		Set<Class<? extends T>> classes = new LinkedHashSet<Class<? extends T>>();
 		for (String className : classNames) {
 			classes.add(Class.forName(className, true, loader).asSubclass(abstractClass));
@@ -92,51 +93,39 @@ public class ServiceClassDiscovery {
 		return classes;
 	}
 
-	public static Set<String> discoverClassNames(Class<?> abstractClass) throws IOException {
-		return discoverClassNames(abstractClass, getClassLoader(abstractClass));
+	public static Set<String> discoverClassNames(final Class<?> abstractClass) throws IOException {
+		return ServiceClassDiscovery.discoverClassNames(abstractClass, ServiceClassDiscovery.getClassLoader(abstractClass));
 	}
 
-	public static Set<String> discoverClassNames(Class<?> abstractClass, ClassLoader loader) throws IOException {
-		String resourceName = RESOURCE_BASE + ContractCheck.mustNotBeNull(abstractClass, "abstractClass").getName();
-		Enumeration<URL> resources = ContractCheck.mustNotBeNull(loader, "loader").getResources(resourceName);
+	public static Set<String> discoverClassNames(final Class<?> abstractClass, final ClassLoader loader) throws IOException {
+		String resourceName = ServiceClassDiscovery.RESOURCE_BASE + ContractCheck.mustNotBeNull(abstractClass, "abstractClass").getName(); //$NON-NLS-1$
+		Enumeration<URL> resources = ContractCheck.mustNotBeNull(loader, "loader").getResources(resourceName); //$NON-NLS-1$
 		Set<String> classNames = new LinkedHashSet<String>();
 		while (resources.hasMoreElements()) {
-			parseURL(resources.nextElement(), classNames);
+			ServiceClassDiscovery.parseURL(resources.nextElement(), classNames);
 		}
 		return classNames;
 	}
 
-	private static Set<String> parseURL(URL url, Set<String> found) throws IOException {
-		if (found == null) {
-			found = new LinkedHashSet<String>();
-		}
+	private static Set<String> parseURL(final URL url, final Set<String> found) throws IOException {
+		assert found != null;
 		InputStream in = url.openStream();
 		InputStreamReader inputReader = null;
 		LineNumberReader reader = null;
 		try {
-			inputReader = new InputStreamReader(in, SERVICE_FILE_ENCODING);
+			inputReader = new InputStreamReader(in, ServiceClassDiscovery.SERVICE_FILE_ENCODING);
 			reader = new LineNumberReader(inputReader);
 			String line = null;
 			while ((line = reader.readLine()) != null) {
-				int commentStart = line.indexOf(COMMENT_CHARACTER);
-				if (commentStart == 0) {
-					continue;
-				}
-				if (commentStart > 0) {
-					line = line.substring(0, commentStart);
-				}
-				line = line.trim();
-				if (line.length() == 0) {
-					continue;
-				}
+				line = ServiceClassDiscovery.stripComment(line);
 				if (!Character.isJavaIdentifierStart(line.charAt(0))) {
-					throw new RuntimeException("Illegal class name found (" + line + ") at line " + reader.getLineNumber() + " in service file "
+					throw new RuntimeException("Illegal class name found (" + line + ") at line " + reader.getLineNumber() + " in service file " //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
 							+ url);
 				}
 				for (int i = 1; i < line.length(); i++) {
 					char c = line.charAt(i);
 					if (c != '.' && !Character.isJavaIdentifierPart(c)) {
-						throw new RuntimeException("Illegal class name found (" + line + ") at line " + reader.getLineNumber() + " in service file "
+						throw new RuntimeException("Illegal class name found (" + line + ") at line " + reader.getLineNumber() + " in service file " //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
 								+ url);
 					}
 				}
@@ -158,7 +147,21 @@ public class ServiceClassDiscovery {
 		return found;
 	}
 
-	private static ClassLoader getClassLoader(Class<?> abstractClass) {
+	private static String stripComment(String line) {
+		line = line.trim();
+		if (line.length() == 0) {
+			return ""; //$NON-NLS-1$
+		}
+		int commentStart = line.indexOf(ServiceClassDiscovery.COMMENT_CHARACTER);
+		if (commentStart == 0) {
+			return ""; //$NON-NLS-1$
+		} else if (commentStart > 0) {
+			line = line.substring(0, commentStart);
+		}
+		return line;
+	}
+
+	private static ClassLoader getClassLoader(final Class<?> abstractClass) {
 		try {
 			return Thread.currentThread().getContextClassLoader();
 		} catch (Throwable e) {

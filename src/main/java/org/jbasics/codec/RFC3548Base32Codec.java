@@ -29,7 +29,7 @@ import java.io.ByteArrayOutputStream;
 import org.jbasics.arrays.ArrayConstants;
 
 public class RFC3548Base32Codec {
-	public static final String BASE32_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567";
+	public static final String BASE32_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567"; //$NON-NLS-1$
 	public static final char PADDING_CHARACTER = '=';
 	private final boolean fillWithoutPadding;
 
@@ -37,7 +37,7 @@ public class RFC3548Base32Codec {
 		this(false);
 	}
 
-	public RFC3548Base32Codec(boolean fillWithoutPadding) {
+	public RFC3548Base32Codec(final boolean fillWithoutPadding) {
 		this.fillWithoutPadding = fillWithoutPadding;
 	}
 
@@ -48,56 +48,56 @@ public class RFC3548Base32Codec {
 	public int getOutputBlockSize() {
 		return 8;
 	}
-	
-	public CharSequence encode(byte[] input) {
+
+	public CharSequence encode(final byte[] input) {
 		if (input == null || input.length == 0) {
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 		int lastBlockSize = input.length % 5;
 		int fullBlocks = (input.length / 5);
 		StringBuilder builder = new StringBuilder();
-		for(int z = fullBlocks, i = 0; z > 0; z--, i+=5) {
-			long temp = (((long)(input[i] & 0xff)) << 32) |
-						((input[i+1] & 0xff) << 24) |
-						((input[i+2] & 0xff) << 16) |
-						((input[i+3] & 0xff) << 8) |
-						(input[i+4] & 0xff);
+		for (int z = fullBlocks, i = 0; z > 0; z--, i += 5) {
+			long temp = (((long) (input[i] & 0xff)) << 32) |
+						((input[i + 1] & 0xff) << 24) |
+						((input[i + 2] & 0xff) << 16) |
+						((input[i + 3] & 0xff) << 8) |
+						(input[i + 4] & 0xff);
 			int p = 35;
-			for(int j = 0; j < 8; j++) {
-				builder.append(BASE32_ALPHABET.charAt((int)((temp >>> p) & 0x1f)));
+			for (int j = 0; j < 8; j++) {
+				builder.append(RFC3548Base32Codec.BASE32_ALPHABET.charAt((int) ((temp >>> p) & 0x1f)));
 				p -= 5;
 			}
 		}
-		if(lastBlockSize > 0) {
+		if (lastBlockSize > 0) {
 			int j = 5;
 			long temp = 0;
-			for(int i = input.length - lastBlockSize; i < input.length; i++, j--) {
+			for (int i = input.length - lastBlockSize; i < input.length; i++, j--) {
 				temp = (temp << 8) | (input[i] & 0xff);
 			}
-			for(;j > 0; j--) {
+			for (; j > 0; j--) {
 				temp <<= 8;
 			}
 			if (this.fillWithoutPadding) {
 				int p = 35;
-				for(int i = 0; i < 8; i++) {
-					builder.append(BASE32_ALPHABET.charAt((int)((temp >>> p) & 0x1f)));
+				for (int i = 0; i < 8; i++) {
+					builder.append(RFC3548Base32Codec.BASE32_ALPHABET.charAt((int) ((temp >>> p) & 0x1f)));
 					p -= 5;
 				}
 			} else {
 				int p = 35;
 				for (int i = ((lastBlockSize * 8) + 4) / 5; i > 0; i--) {
-					builder.append(BASE32_ALPHABET.charAt((int)((temp >>> p) & 0x1f)));
+					builder.append(RFC3548Base32Codec.BASE32_ALPHABET.charAt((int) ((temp >>> p) & 0x1f)));
 					p -= 5;
 				}
-				for(int i = 8 - ((lastBlockSize * 8) + 4) / 5; i > 0; i--) {
-					builder.append(PADDING_CHARACTER);
+				for (int i = 8 - ((lastBlockSize * 8) + 4) / 5; i > 0; i--) {
+					builder.append(RFC3548Base32Codec.PADDING_CHARACTER);
 				}
 			}
 		}
 		return builder.toString();
 	}
 
-	public byte[] decode(CharSequence input) {
+	public byte[] decode(final CharSequence input) {
 		if (input == null || input.length() == 0) {
 			return ArrayConstants.ZERO_LENGTH_BYTE_ARRAY;
 		}
@@ -108,39 +108,43 @@ public class RFC3548Base32Codec {
 		for (int i = 0; i < input.length(); i++) {
 			char c = Character.toUpperCase(input.charAt(i));
 			int p = 0;
-			if (c == PADDING_CHARACTER) {
+			if (c == RFC3548Base32Codec.PADDING_CHARACTER) {
 				padding++;
 			} else {
-				p = BASE32_ALPHABET.indexOf(c);
-			} 
+				p = RFC3548Base32Codec.BASE32_ALPHABET.indexOf(c);
+			}
 			if (p < 0) {
 				continue;
 			}
 			value = (value << 5) | p;
-			pos = (pos+1) % 8;
+			pos = (pos + 1) % 8;
 			if (pos == 0) {
-				if (padding == 0) { 
-					data.write((byte)(value >>> 32));
-					data.write((byte)(value >>> 24));
-					data.write((byte)(value >>> 16));
-					data.write((byte)(value >>> 8));
-					data.write((byte)(value & 0xff));
-				} else {
-					data.write((byte)(value >>> 32));
-					if (padding < 5) {
-						data.write((byte)(value >>> 24));
-						if (padding < 4) {
-							data.write((byte)(value >>> 16));
-							if (padding < 2) {
-								data.write((byte)(value >>> 8));
-							}
-						}
-					}
-				}
+				writeDecoded(data, value, padding);
 			}
 		}
 		// Missing fail safe if the input is not a multiple of 8 (discarding all non part characters)
 		return data.toByteArray();
+	}
+
+	private void writeDecoded(final ByteArrayOutputStream data, final long value, final int padding) {
+		if (padding == 0) {
+			data.write((byte) (value >>> 32));
+			data.write((byte) (value >>> 24));
+			data.write((byte) (value >>> 16));
+			data.write((byte) (value >>> 8));
+			data.write((byte) (value & 0xff));
+		} else {
+			data.write((byte) (value >>> 32));
+			if (padding < 5) {
+				data.write((byte) (value >>> 24));
+				if (padding < 4) {
+					data.write((byte) (value >>> 16));
+					if (padding < 2) {
+						data.write((byte) (value >>> 8));
+					}
+				}
+			}
+		}
 	}
 
 }

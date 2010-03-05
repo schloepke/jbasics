@@ -37,6 +37,7 @@ import java.util.Map;
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.codec.RFC3548Base64Codec;
 import org.jbasics.net.mediatype.MediaType;
+import org.jbasics.types.tuples.Pair;
 
 /**
  * Implementation of {@link HttpAccessor} using the Java URI and URLs as well as Java supplied URLConnection.
@@ -44,6 +45,13 @@ import org.jbasics.net.mediatype.MediaType;
  * @author Stephan Schloepke
  */
 public class JavaURLHttpAccessor implements HttpAccessor {
+	private static final String HTTP_TRACE_VERB = "TRACE"; //$NON-NLS-1$
+	private static final String HTTP_OPTIONS_VERB = "OPTIONS"; //$NON-NLS-1$
+	private static final String HTTP_HEAD_VERB = "HEAD"; //$NON-NLS-1$
+	private static final String HTTP_DELETE_VERB = "DELETE"; //$NON-NLS-1$
+	private static final String HTTP_PUT_VERB = "PUT"; //$NON-NLS-1$
+	private static final String HTTP_POST_VERB = "POST"; //$NON-NLS-1$
+	private static final String HTTP_GET_VERB = "GET"; //$NON-NLS-1$
 	private String defaultUserInfo;
 	private URI baseURL;
 
@@ -57,23 +65,26 @@ public class JavaURLHttpAccessor implements HttpAccessor {
 	/**
 	 * Creates a JavaURLHttpAccessor with the default basic authentication information.
 	 * 
-	 * @param username The user name for basic authentication (must not be null).
-	 * @param password The password for basic authentication (can be null).
+	 * @param username
+	 *            The user name for basic authentication (must not be null).
+	 * @param password
+	 *            The password for basic authentication (can be null).
 	 */
 	public JavaURLHttpAccessor(final String username, final String password) {
-		ContractCheck.mustNotBeNull(username, "username");
-		this.defaultUserInfo = username + ":" + (password != null ? password : "");
+		ContractCheck.mustNotBeNull(username, "username"); //$NON-NLS-1$
+		this.defaultUserInfo = username + ":" + (password != null ? password : ""); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
 	 * Set the base URI any request relies on. If null all requests must be absolute requests.
 	 * 
-	 * @param uri The base URI for relative requests.
+	 * @param uri
+	 *            The base URI for relative requests.
 	 * @return The old base URI.
 	 */
 	public URI setBase(final URI uri) {
 		if (uri != null && !uri.isAbsolute()) {
-			throw new RuntimeException("Base URI must be absolute " + uri);
+			throw new RuntimeException("Base URI must be absolute " + uri); //$NON-NLS-1$
 		}
 		URI temp = this.baseURL;
 		this.baseURL = uri;
@@ -83,116 +94,148 @@ public class JavaURLHttpAccessor implements HttpAccessor {
 	/**
 	 * Executes a GET method against the given URI. If the URI is relative the base must be set already.
 	 * 
-	 * @param uri The URI to execute the method on (if relative the base must be set already).
-	 * @param meta The meta data for the request.
-	 * @param handler The handler to handle the request result.
+	 * @param uri
+	 *            The URI to execute the method on (if relative the base must be set already).
+	 * @param meta
+	 *            The meta data for the request.
+	 * @param handler
+	 *            The handler to handle the request result.
 	 * @return The HTTP status code of the request.
-	 * @throws IOException If an error reading or writing occurred.
+	 * @throws IOException
+	 *             If an error reading or writing occurred.
 	 */
 	public int get(final URI uri, final RequestHeaders meta, final RequestHandler handler) throws IOException {
-		return method("GET", uri, meta, handler);
+		return method(JavaURLHttpAccessor.HTTP_GET_VERB, uri, meta, handler);
 	}
 
 	/**
 	 * Executes a POST method against the given URI. If the URI is relative the base must be set already.
 	 * 
-	 * @param uri The URI to execute the method on (if relative the base must be set already).
-	 * @param meta The meta data for the request.
-	 * @param handler The handler to handle the request result.
+	 * @param uri
+	 *            The URI to execute the method on (if relative the base must be set already).
+	 * @param meta
+	 *            The meta data for the request.
+	 * @param handler
+	 *            The handler to handle the request result.
 	 * @return The HTTP status code of the request.
-	 * @throws IOException If an error reading or writing occurred.
+	 * @throws IOException
+	 *             If an error reading or writing occurred.
 	 */
 	public int post(final URI uri, final RequestEntity<?> meta, final RequestHandler handler) throws IOException {
-		return method("POST", uri, meta, handler);
+		return method(JavaURLHttpAccessor.HTTP_POST_VERB, uri, meta, handler);
 	}
 
 	/**
 	 * Executes a PUT method against the given URI. If the URI is relative the base must be set already.
 	 * 
-	 * @param uri The URI to execute the method on (if relative the base must be set already).
-	 * @param meta The meta data for the request.
-	 * @param handler The handler to handle the request result.
+	 * @param uri
+	 *            The URI to execute the method on (if relative the base must be set already).
+	 * @param meta
+	 *            The meta data for the request.
+	 * @param handler
+	 *            The handler to handle the request result.
 	 * @return The HTTP status code of the request.
-	 * @throws IOException If an error reading or writing occurred.
+	 * @throws IOException
+	 *             If an error reading or writing occurred.
 	 */
 	public int put(final URI uri, final RequestEntity<?> meta, final RequestHandler handler) throws IOException {
-		return method("PUT", uri, meta, handler);
+		return method(JavaURLHttpAccessor.HTTP_PUT_VERB, uri, meta, handler);
 	}
 
 	/**
 	 * Executes a DELETE method against the given URI. If the URI is relative the base must be set already.
 	 * 
-	 * @param uri The URI to execute the method on (if relative the base must be set already).
-	 * @param meta The meta data for the request.
-	 * @param handler The handler to handle the request result.
+	 * @param uri
+	 *            The URI to execute the method on (if relative the base must be set already).
+	 * @param meta
+	 *            The meta data for the request.
+	 * @param handler
+	 *            The handler to handle the request result.
 	 * @return The HTTP status code of the request.
-	 * @throws IOException If an error reading or writing occurred.
+	 * @throws IOException
+	 *             If an error reading or writing occurred.
 	 */
 	public int delete(final URI uri, final RequestHeaders meta, final RequestHandler handler) throws IOException {
-		return method("DELETE", uri, meta, handler);
+		return method(JavaURLHttpAccessor.HTTP_DELETE_VERB, uri, meta, handler);
 	}
 
 	/**
 	 * Executes a HEAD method against the given URI. If the URI is relative the base must be set already.
 	 * 
-	 * @param uri The URI to execute the method on (if relative the base must be set already).
-	 * @param meta The meta data for the request.
-	 * @param handler The handler to handle the request result.
+	 * @param uri
+	 *            The URI to execute the method on (if relative the base must be set already).
+	 * @param meta
+	 *            The meta data for the request.
+	 * @param handler
+	 *            The handler to handle the request result.
 	 * @return The HTTP status code of the request.
-	 * @throws IOException If an error reading or writing occurred.
+	 * @throws IOException
+	 *             If an error reading or writing occurred.
 	 */
 	public int head(final URI uri, final RequestHeaders meta, final RequestHandler handler) throws IOException {
-		return method("HEAD", uri, meta, handler);
+		return method(JavaURLHttpAccessor.HTTP_HEAD_VERB, uri, meta, handler);
 	}
 
 	/**
 	 * Executes a OPTIONS method against the given URI. If the URI is relative the base must be set already.
 	 * 
-	 * @param uri The URI to execute the method on (if relative the base must be set already).
-	 * @param meta The meta data for the request.
-	 * @param handler The handler to handle the request result.
+	 * @param uri
+	 *            The URI to execute the method on (if relative the base must be set already).
+	 * @param meta
+	 *            The meta data for the request.
+	 * @param handler
+	 *            The handler to handle the request result.
 	 * @return The HTTP status code of the request.
-	 * @throws IOException If an error reading or writing occurred.
+	 * @throws IOException
+	 *             If an error reading or writing occurred.
 	 */
 	public int options(final URI uri, final RequestHeaders meta, final RequestHandler handler) throws IOException {
-		return method("OPTIONS", uri, meta, handler);
+		return method(JavaURLHttpAccessor.HTTP_OPTIONS_VERB, uri, meta, handler);
 	}
 
 	/**
 	 * Executes a TRACE method against the given URI. If the URI is relative the base must be set already.
 	 * 
-	 * @param uri The URI to execute the method on (if relative the base must be set already).
-	 * @param meta The meta data for the request.
-	 * @param handler The handler to handle the request result.
+	 * @param uri
+	 *            The URI to execute the method on (if relative the base must be set already).
+	 * @param meta
+	 *            The meta data for the request.
+	 * @param handler
+	 *            The handler to handle the request result.
 	 * @return The HTTP status code of the request.
-	 * @throws IOException If an error reading or writing occurred.
+	 * @throws IOException
+	 *             If an error reading or writing occurred.
 	 */
 	public int trace(final URI uri, final RequestHeaders meta, final RequestHandler handler) throws IOException {
-		return method("TRACE", uri, meta, handler);
+		return method(JavaURLHttpAccessor.HTTP_TRACE_VERB, uri, meta, handler);
 	}
 
 	/**
 	 * Executes the given method against the given URI. If the URI is relative the base must be set already.
 	 * 
-	 * @param method The method to execute (Usually this is GET, PUT, POST or DELETE).
-	 * @param uri The URI to execute the method on (if relative the base must be set already).
-	 * @param meta The meta data for the request.
-	 * @param handler The handler to handle the request result.
+	 * @param method
+	 *            The method to execute (Usually this is GET, PUT, POST or DELETE).
+	 * @param uri
+	 *            The URI to execute the method on (if relative the base must be set already).
+	 * @param meta
+	 *            The meta data for the request.
+	 * @param handler
+	 *            The handler to handle the request result.
 	 * @return The HTTP status code of the request.
-	 * @throws IOException If an error reading or writing occurred.
+	 * @throws IOException
+	 *             If an error reading or writing occurred.
 	 */
-	// CHECKSTYLE:OFF (We split the method later)
 	private int method(final String method, final URI uri, final RequestHeaders meta, final RequestHandler handler) throws IOException {
-		// CHECKSTYLE:ON
-		ContractCheck.mustNotBeNullOrEmpty(method, "method");
-		ContractCheck.mustNotBeNull(uri, "uri");
-		ContractCheck.mustNotBeNull(meta, "meta");
-		ContractCheck.mustNotBeNull(handler, "handler");
+		ContractCheck.mustNotBeNullOrEmpty(method, "method"); //$NON-NLS-1$
+		ContractCheck.mustNotBeNull(uri, "uri"); //$NON-NLS-1$
+		ContractCheck.mustNotBeNull(meta, "meta"); //$NON-NLS-1$
+		ContractCheck.mustNotBeNull(handler, "handler"); //$NON-NLS-1$
 		HttpURLConnection connection = null;
 		RequestEntity<?> entity = null;
 		if (meta instanceof RequestEntity<?>) {
 			entity = (RequestEntity<?>) meta;
 		}
+		InputStream in = null;
 		try {
 			URL requestURL = resolveURL(uri);
 			connection = (HttpURLConnection) requestURL.openConnection();
@@ -208,43 +251,40 @@ public class JavaURLHttpAccessor implements HttpAccessor {
 				userInfo = this.defaultUserInfo;
 			}
 			if (userInfo != null) {
-				// FIXME: We need to figure out what the rule of encoding is behind the BASIC and when we need to change the standard
-				// ISO-8859-1 encoding. I believe it is subject to the content encoding (whereas the default is ISO-8859-1?)
-				connection.setRequestProperty("Authorization", "BASIC " + RFC3548Base64Codec.INSTANCE.encode(userInfo.getBytes("ISO-8859-1")));
+				Pair<String, String> authHeader = HttpHeaderCreator.createBasicAuthorization(userInfo);
+				connection.setRequestProperty(authHeader.left(), authHeader.right());
 			}
-			InputStream in = null;
-			try {
-				connection.connect();
-				if (entity != null) {
-					OutputStream out = null;
-					try {
-						out = connection.getOutputStream();
-						entity.serializeEntity(out);
-					} finally {
-						if (out != null) {
-							out.flush();
-							out.close();
-						}
+			connection.connect();
+			if (entity != null) {
+				OutputStream out = null;
+				try {
+					out = connection.getOutputStream();
+					entity.serializeEntity(out);
+				} finally {
+					if (out != null) {
+						out.flush();
+						out.close();
 					}
 				}
-				in = connection.getInputStream();
-				ResponseMeta responseMeta = new ResponseMeta();
-				responseMeta.setMediaType(MediaType.valueOf(connection.getContentType()));
-				responseMeta.setCharset(connection.getHeaderField("Content-Charset"));
-				responseMeta.setContentLength(connection.getContentLength());
-				responseMeta.setDate(new Date(connection.getDate()));
-				responseMeta.setLastModified(new Date(connection.getLastModified()));
-				responseMeta.setExpires(new Date(connection.getExpiration()));
-				handler.processInput(responseMeta, in);
-				return connection.getResponseCode();
-			} finally {
+			}
+			in = connection.getInputStream();
+			ResponseMeta responseMeta = new ResponseMeta();
+			responseMeta.setMediaType(MediaType.valueOf(connection.getContentType()));
+			responseMeta.setContentLength(connection.getContentLength());
+			responseMeta.setDate(new Date(connection.getDate()));
+			responseMeta.setLastModified(new Date(connection.getLastModified()));
+			responseMeta.setExpires(new Date(connection.getExpiration()));
+			handler.processInput(responseMeta, in);
+			return connection.getResponseCode();
+		} finally {
+			try {
 				if (in != null) {
 					in.close();
 				}
-			}
-		} finally {
-			if (connection != null) {
-				connection.disconnect();
+			} finally {
+				if (connection != null) {
+					connection.disconnect();
+				}
 			}
 		}
 	}
@@ -256,7 +296,7 @@ public class JavaURLHttpAccessor implements HttpAccessor {
 		addHeader(connection, HTTPHeaderConstants.ACCEPT_ENCODING_HEADER, false, (Object[]) headers.getAcceptEncodings());
 		addHeader(connection, HTTPHeaderConstants.ACCEPT_LANGUAGE_HEADER, false, (Object[]) headers.getAcceptLanguages());
 // TODO EntityTAG!
-//		addHeader(connection, HTTPHeaderConstants.IF_MATCH_HEADER, true, headers.getIfMatch());
+// addHeader(connection, HTTPHeaderConstants.IF_MATCH_HEADER, true, headers.getIfMatch());
 		if (headers.getIfModifiedSince() != null) {
 			connection.setIfModifiedSince(headers.getIfModifiedSince().getTime());
 		}
@@ -287,10 +327,10 @@ public class JavaURLHttpAccessor implements HttpAccessor {
 					continue;
 				}
 				if (headerBuilder.length() > 0) {
-					headerBuilder.append(", ");
+					headerBuilder.append(", "); //$NON-NLS-1$
 				}
 				if (quoted) {
-					headerBuilder.append("\"").append(header.toString()).append("\"");
+					headerBuilder.append("\"").append(header.toString()).append("\""); //$NON-NLS-1$ //$NON-NLS-2$
 				} else {
 					headerBuilder.append(header.toString());
 				}
@@ -308,7 +348,7 @@ public class JavaURLHttpAccessor implements HttpAccessor {
 		} else if (this.baseURL != null) {
 			return this.baseURL.resolve(uri).normalize().toURL();
 		} else {
-			throw new RelativeURIException("URI is relative but no base URI is set. Cannot resolve URL from given URI");
+			throw new RelativeURIException("URI is relative but no base URI is set. Cannot resolve URL from given URI"); //$NON-NLS-1$
 		}
 	}
 }
