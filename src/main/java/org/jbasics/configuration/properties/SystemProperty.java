@@ -36,43 +36,49 @@ import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.factory.ParameterFactory;
 
 public class SystemProperty<ValueType> {
+	private static final ParameterFactory<String, String> STRING_PASS_THRU = new PassThruValueTypeFactory<String>();
+
 	private final String name;
 	private final ValueType defaultValue;
 	private final ParameterFactory<ValueType, String> valueTypeFactory;
 
-	public static SystemProperty<Boolean> booleanProperty(String name, Boolean defaultValue) {
+	public static SystemProperty<String> stringProperty(final String name, final String defaultValue) {
+		return new SystemProperty<String>(name, SystemProperty.STRING_PASS_THRU, defaultValue);
+	}
+
+	public static SystemProperty<Boolean> booleanProperty(final String name, final Boolean defaultValue) {
 		return new SystemProperty<Boolean>(name, BooleanValueTypeFactory.SHARED_INSTANCE, defaultValue);
 	}
 
-	public static SystemProperty<BigInteger> integerProperty(String name, BigInteger defaultValue) {
+	public static SystemProperty<BigInteger> integerProperty(final String name, final BigInteger defaultValue) {
 		return new SystemProperty<BigInteger>(name, BigIntegerValueTypeFactory.SHARED_INSTANCE, defaultValue);
 	}
 
-	public static SystemProperty<BigDecimal> decimalProperty(String name, BigDecimal defaultValue) {
+	public static SystemProperty<BigDecimal> decimalProperty(final String name, final BigDecimal defaultValue) {
 		return new SystemProperty<BigDecimal>(name, BigDecimalValueTypeFactory.SHARED_INSTANCE, defaultValue);
 	}
 
-	public static SystemProperty<XMLGregorianCalendar> dateProperty(String name, XMLGregorianCalendar defaultValue) {
+	public static SystemProperty<XMLGregorianCalendar> dateProperty(final String name, final XMLGregorianCalendar defaultValue) {
 		return new SystemProperty<XMLGregorianCalendar>(name, DateValueTypeFactory.SHARED_INSTANCE, defaultValue);
 	}
 
-	public static SystemProperty<Duration> durationProperty(String name, Duration defaultValue) {
+	public static SystemProperty<Duration> durationProperty(final String name, final Duration defaultValue) {
 		return new SystemProperty<Duration>(name, DurationValueTypeFactory.SHARED_INSTANCE, defaultValue);
 	}
 
-	public static SystemProperty<URI> uriProperty(String name, URI defaultValue) {
+	public static SystemProperty<URI> uriProperty(final String name, final URI defaultValue) {
 		return new SystemProperty<URI>(name, URIValueTypeFactory.SHARED_INSTANCE, defaultValue);
 	}
 
-	public static SystemProperty<Locale> localeProperty(String name, Locale defaultValue) {
+	public static SystemProperty<Locale> localeProperty(final String name, final Locale defaultValue) {
 		return new SystemProperty<Locale>(name, LocaleValueTypeFactory.SHARED_INSTANCE, defaultValue);
 	}
-	
-	public static SystemProperty<Class<?>> classProperty(String name, Class<?> defaultValue) {
+
+	public static SystemProperty<Class<?>> classProperty(final String name, final Class<?> defaultValue) {
 		return new SystemProperty<Class<?>>(name, ClassValueTypeFactory.SHARED_INSTANCE, defaultValue);
 	}
-	
-	public SystemProperty(String name, ParameterFactory<ValueType, String> valueTypeFactory, ValueType defaultValue) {
+
+	public SystemProperty(final String name, final ParameterFactory<ValueType, String> valueTypeFactory, final ValueType defaultValue) {
 		this.name = ContractCheck.mustNotBeNull(name, "name");
 		this.valueTypeFactory = ContractCheck.mustNotBeNull(valueTypeFactory, "valueTypeFactory");
 		this.defaultValue = defaultValue;
@@ -105,24 +111,31 @@ public class SystemProperty<ValueType> {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		SystemProperty<?> other = (SystemProperty<?>) obj;
 		if (this.defaultValue == null) {
-			if (other.defaultValue != null)
+			if (other.defaultValue != null) {
 				return false;
-		} else if (!this.defaultValue.equals(other.defaultValue))
+			}
+		} else if (!this.defaultValue.equals(other.defaultValue)) {
 			return false;
+		}
 		if (this.name == null) {
-			if (other.name != null)
+			if (other.name != null) {
 				return false;
-		} else if (!this.name.equals(other.name))
+			}
+		} else if (!this.name.equals(other.name)) {
 			return false;
+		}
 		return true;
 	}
 
