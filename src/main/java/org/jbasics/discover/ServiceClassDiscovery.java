@@ -67,7 +67,7 @@ public class ServiceClassDiscovery {
 					Set<String> found = ServiceClassDiscovery.parseURL(resource, new LinkedHashSet<String>());
 					if (found.size() > 0) {
 						String clazzName = found.iterator().next();
-						temp = Class.forName(clazzName);
+						temp = Class.forName(clazzName, true, loader);
 					}
 				} catch (IOException e) {
 					throw new RuntimeException(e);
