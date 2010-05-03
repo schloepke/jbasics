@@ -31,6 +31,7 @@ import java.util.Locale;
 
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.factory.ParameterFactory;
+import org.jbasics.text.StringUtilities;
 
 /**
  * A simple factory to generate Tag URIs as outlined by the informal
@@ -40,47 +41,85 @@ import org.jbasics.pattern.factory.ParameterFactory;
  */
 public class TagURIFactory implements ParameterFactory<URI, String> {
 	public static final String TAG_SCHEME = "tag"; //$NON-NLS-1$
+	public static final String TAG_PARTS_DELIMITER = ":"; //$NON-NLS-1$
+	public static final String TAG_PATH_DELIMITER = "/"; //$NON-NLS-1$
 
 	private final String taggingEntityAuthorityName;
 	private final Date taggingEntityAuthorityDate;
-	private transient String taggingEntity;
+	private final String[] pathSegments;
+	private final String base;
 
-	public TagURIFactory(final String authorityName, final int year) {
-		this(authorityName, year, 1, 1);
+	public static TagURIFactory newInstance(final String authorityName, final int year) {
+		return TagURIFactory.newInstance(authorityName, year, 1, 1);
 	}
 
-	public TagURIFactory(final String authorityName, final int year, final int month) {
-		this(authorityName, year, month, 1);
+	public static TagURIFactory newInstance(final String authorityName, final int year, final int month) {
+		return TagURIFactory.newInstance(authorityName, year, month, 1);
 	}
 
-	public TagURIFactory(final String authorityName, final int year, final int month, final int dayOfMonth) {
+	public static TagURIFactory newInstance(final String authorityName, final int year, final int month, final int dayOfMonth) {
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.YEAR, year);
 		cal.set(Calendar.MONTH, month - 1);
 		cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-		this.taggingEntityAuthorityName = ContractCheck.mustNotBeNullOrTrimmedEmpty(authorityName, "authorityName"); //$NON-NLS-1$
-		this.taggingEntityAuthorityDate = cal.getTime();
+		return new TagURIFactory(authorityName, cal.getTime());
 	}
 
-	public TagURIFactory(final String authorityName, final Date taggingEntityDate) {
+	public static TagURIFactory newInstance(final String authorityName, final Date taggingEntityDate, final String... pathSegments) {
+		return new TagURIFactory(authorityName, taggingEntityDate, pathSegments);
+	}
+
+	public TagURIFactory(final String authorityName, final Date taggingEntityDate, final String... pathSegments) {
 		this.taggingEntityAuthorityName = ContractCheck.mustNotBeNullOrTrimmedEmpty(authorityName, "authorityName"); //$NON-NLS-1$
 		this.taggingEntityAuthorityDate = ContractCheck.mustNotBeNull(taggingEntityDate, "taggingEntityDate"); //$NON-NLS-1$
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(this.taggingEntityAuthorityDate);
+		int d = cal.get(Calendar.DAY_OF_MONTH);
+		int m = cal.get(Calendar.MONTH);
+		String taggingEntity;
+		if (d > 1) {
+			taggingEntity = String.format(Locale.US, "%1$s,%2$tY-%2$tm-%2$td", this.taggingEntityAuthorityName, cal); //$NON-NLS-1$
+		} else if (m > 0) {
+			taggingEntity = String.format(Locale.US, "%1$s,%2$tY-%2$tm", this.taggingEntityAuthorityName, cal); //$NON-NLS-1$
+		} else {
+			taggingEntity = String.format(Locale.US, "%1$s,%2$tY", this.taggingEntityAuthorityName, cal); //$NON-NLS-1$
+		}
+		if (pathSegments != null && pathSegments.length > 0) {
+			this.pathSegments = pathSegments;
+			this.base = StringUtilities.join(TagURIFactory.TAG_PARTS_DELIMITER, TagURIFactory.TAG_SCHEME, taggingEntity, StringUtilities.join(
+					TagURIFactory.TAG_PATH_DELIMITER, this.pathSegments));
+		} else {
+			this.pathSegments = null;
+			this.base = StringUtilities.join(TagURIFactory.TAG_PARTS_DELIMITER, TagURIFactory.TAG_SCHEME, taggingEntity);
+		}
+	}
+
+	public TagURIFactory extend(final String... additionalPathSegments) {
+		if (additionalPathSegments == null || additionalPathSegments.length == 0) {
+			throw new IllegalArgumentException("Null or zero length array parameter: pathSegment"); //$NON-NLS-1$
+		}
+		String[] temp = additionalPathSegments;
+		if (this.pathSegments != null && this.pathSegments.length > 0) {
+			temp = new String[this.pathSegments.length + additionalPathSegments.length];
+			System.arraycopy(this.pathSegments, 0, temp, 0, this.pathSegments.length);
+			System.arraycopy(additionalPathSegments, 0, temp, this.pathSegments.length, additionalPathSegments.length);
+		}
+		return new TagURIFactory(this.taggingEntityAuthorityName, this.taggingEntityAuthorityDate, temp);
+	}
+
+	@Override
+	public String toString() {
+		return this.base;
+	}
+
+	public URI toUri() {
+		return URI.create(this.base);
 	}
 
 	public URI create(final String specific) {
-		if (this.taggingEntity == null) {
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(this.taggingEntityAuthorityDate);
-			int d = cal.get(Calendar.DAY_OF_MONTH);
-			int m = cal.get(Calendar.MONTH);
-			if (d > 1) {
-				this.taggingEntity = String.format(Locale.US, "%1$s,%2$tY-%2$tm-%2$te", this.taggingEntityAuthorityName, cal); //$NON-NLS-1$
-			} else if (m > 0) {
-				this.taggingEntity = String.format(Locale.US, "%1$s,%2$tY-%2$tm", this.taggingEntityAuthorityName, cal); //$NON-NLS-1$
-			} else {
-				this.taggingEntity = String.format(Locale.US, "%1$s,%2$tY", this.taggingEntityAuthorityName, cal); //$NON-NLS-1$
-			}
-		}
-		return URI.create(TagURIFactory.TAG_SCHEME + ":" + this.taggingEntity + ":" + ContractCheck.mustNotBeNullOrTrimmedEmpty(specific, specific)); //$NON-NLS-1$
+		return URI.create(StringUtilities.join(this.pathSegments == null ? TagURIFactory.TAG_PARTS_DELIMITER : TagURIFactory.TAG_PATH_DELIMITER,
+				this.base, ContractCheck.mustNotBeNullOrTrimmedEmpty(specific,
+						specific)));
 	}
+
 }

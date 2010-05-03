@@ -28,6 +28,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.logging.Level;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
 
 import org.jbasics.testing.Java14LoggingTestCase;
@@ -35,8 +37,25 @@ import org.jbasics.testing.Java14LoggingTestCase;
 public class TagURIFactoryTest extends Java14LoggingTestCase {
 
 	@Test
+	public void testTagURICreate() {
+		TagURIFactory test = null;
+		test = TagURIFactory.newInstance("mark.mustermann@example.org", 2010, 2); //$NON-NLS-1$
+		Assert.assertEquals(URI.create("tag:mark.mustermann@example.org,2010-02"), test.toUri()); //$NON-NLS-1$
+		test = TagURIFactory.newInstance("mark.mustermann@example.org", 2010); //$NON-NLS-1$
+		Assert.assertEquals(URI.create("tag:mark.mustermann@example.org,2010"), test.toUri()); //$NON-NLS-1$
+		test = TagURIFactory.newInstance("mark.mustermann@example.org", 2010, 4, 8); //$NON-NLS-1$
+		Assert.assertEquals(URI.create("tag:mark.mustermann@example.org,2010-04-08"), test.toUri()); //$NON-NLS-1$
+		test = TagURIFactory.newInstance("mark.mustermann@example.org", 2010, 7, 1); //$NON-NLS-1$
+		Assert.assertEquals(URI.create("tag:mark.mustermann@example.org,2010-07"), test.toUri()); //$NON-NLS-1$
+		test = TagURIFactory.newInstance("mark.mustermann@example.org", 2010, 1, 1); //$NON-NLS-1$
+		Assert.assertEquals(URI.create("tag:mark.mustermann@example.org,2010"), test.toUri()); //$NON-NLS-1$
+		test = TagURIFactory.newInstance("mark.mustermann@example.org", 2010, 1, 7); //$NON-NLS-1$
+		Assert.assertEquals(URI.create("tag:mark.mustermann@example.org,2010-01-07"), test.toUri()); //$NON-NLS-1$
+	}
+
+	@Test
 	public void testTagUri() {
-		TagURIFactory fac = new TagURIFactory("mark.mustermann@example.org", 2010, 2);
+		TagURIFactory fac = TagURIFactory.newInstance("mark.mustermann@example.org", 2010, 2);
 		Level level = Level.INFO;
 		logUri(level, fac.create("web/example"));
 	}
