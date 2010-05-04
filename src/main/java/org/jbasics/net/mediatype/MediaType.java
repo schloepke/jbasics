@@ -39,11 +39,11 @@ public class MediaType extends MediaTypeRange {
 	/**
 	 * Regular expression string to check type and subtype validitiy.
 	 */
-	public static final String TYPE_SUBTYPE_REGEX = "^[a-zA-Z][a-zA-Z0-9+-]*$";
+	public static final String TYPE_SUBTYPE_REGEX = "^[a-zA-Z][a-zA-Z0-9+-.]*$";
 	/**
 	 * Pattern to validate the type / subtype value.
 	 */
-	public static final Pattern TYPE_SUBTYPE_MATCHER = Pattern.compile(TYPE_SUBTYPE_REGEX);
+	public static final Pattern TYPE_SUBTYPE_MATCHER = Pattern.compile(MediaType.TYPE_SUBTYPE_REGEX);
 
 	/**
 	 * Application XML media type constant.
@@ -94,7 +94,7 @@ public class MediaType extends MediaTypeRange {
 	 */
 	@Override
 	protected String processTypeString(final String typeString) {
-		return ContractCheck.mustMatchPattern(typeString, TYPE_SUBTYPE_MATCHER, "typeString");
+		return ContractCheck.mustMatchPattern(typeString, MediaType.TYPE_SUBTYPE_MATCHER, "typeString");
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class MediaType extends MediaTypeRange {
 	 */
 	@Override
 	protected String processSubtypeString(final String subTypeString) {
-		return ContractCheck.mustMatchPatternOrBeNull(subTypeString, TYPE_SUBTYPE_MATCHER, "subTypeString");
+		return ContractCheck.mustMatchPatternOrBeNull(subTypeString, MediaType.TYPE_SUBTYPE_MATCHER, "subTypeString");
 	}
 
 	/**
@@ -116,7 +116,7 @@ public class MediaType extends MediaTypeRange {
 	 * @return The derived media type.
 	 */
 	public MediaType deriveWithNewParameters(final Pair<String, String>... parameters) {
-		return new MediaType(this.getType(), this.getSubType(), parameters);
+		return new MediaType(getType(), getSubType(), parameters);
 	}
 
 }
