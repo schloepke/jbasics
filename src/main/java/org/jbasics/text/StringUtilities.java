@@ -33,11 +33,21 @@ public class StringUtilities {
 		if (texts == null || texts.length == 0) {
 			return null;
 		}
-		StringBuilder temp = new StringBuilder(texts[0]);
-		for (int i = 1; i < texts.length; i++) {
-			temp.append(delimiter).append(texts[i]);
+		int i = 0;
+		while (i < texts.length && (texts[i] == null || texts[i].length() == 0)) {
+			i++;
 		}
-		return temp.toString();
+		if (i < texts.length) {
+			StringBuilder temp = new StringBuilder(texts[i++]);
+			for (; i < texts.length; i++) {
+				CharSequence t = texts[i];
+				if (t != null && t.length() > 0) {
+					temp.append(delimiter).append(texts[i]);
+				}
+			}
+			return temp.toString();
+		} else {
+			return ""; //$NON-NLS-1$
+		}
 	}
-
 }
