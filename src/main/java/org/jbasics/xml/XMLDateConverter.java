@@ -29,20 +29,45 @@ import java.util.Date;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 public final class XMLDateConverter {
-	public static final XMLDateFactory XML_DATE_FACTORY = new XMLDateFactory(); 
-	
-	public static XMLGregorianCalendar convert(Date date) {
+	public static final XMLDateFactory XML_DATE_FACTORY = new XMLDateFactory();
+
+	public static XMLGregorianCalendar convert(final Date date) {
 		if (date == null) {
 			return null;
 		}
-		return XML_DATE_FACTORY.create(date);
+		return XMLDateConverter.XML_DATE_FACTORY.create(date);
 	}
-	
-	public static Date conver(XMLGregorianCalendar xmlDate) {
+
+	public static Date convert(final XMLGregorianCalendar xmlDate) {
 		if (xmlDate == null) {
 			return null;
 		}
 		return xmlDate.toGregorianCalendar().getTime();
+	}
+
+	public static XMLGregorianCalendar convertDate(final int year, final int month, final int dayOfMonth) {
+		return XMLDateConverter.XML_DATE_FACTORY.createGDate(year, month, dayOfMonth);
+	}
+
+	public static XMLGregorianCalendar convertYear(final int year) {
+		return XMLDateConverter.XML_DATE_FACTORY.createGYear(year);
+	}
+
+	public static XMLGregorianCalendar convertMonth(final int month) {
+		return XMLDateConverter.XML_DATE_FACTORY.createGMonth(month);
+	}
+
+	/**
+	 * Incorrectly written method name should be {@link #convert(XMLGregorianCalendar)} instead.
+	 * 
+	 * @param xmlDate
+	 *            The xml date
+	 * @return The converted date
+	 * @deprecated
+	 */
+	@Deprecated
+	public static Date conver(final XMLGregorianCalendar xmlDate) {
+		return XMLDateConverter.convert(xmlDate);
 	}
 
 }

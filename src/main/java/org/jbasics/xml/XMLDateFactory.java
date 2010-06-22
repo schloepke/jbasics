@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
@@ -58,6 +59,24 @@ public final class XMLDateFactory implements ParameterFactory<XMLGregorianCalend
 
 	public XMLGregorianCalendar newInstance() {
 		return create(null);
+	}
+
+	public XMLGregorianCalendar createGDate(final int year, final int month, final int dayOfMonth) {
+		return this.datatypeFactory.newXMLGregorianCalendar(year, month, dayOfMonth,
+				DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED,
+				DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED);
+	}
+
+	public XMLGregorianCalendar createGYear(final int year) {
+		return this.datatypeFactory.newXMLGregorianCalendar(year, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED,
+				DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED,
+				DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED);
+	}
+
+	public XMLGregorianCalendar createGMonth(final int month) {
+		return this.datatypeFactory.newXMLGregorianCalendar(DatatypeConstants.FIELD_UNDEFINED, month, DatatypeConstants.FIELD_UNDEFINED,
+				DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED,
+				DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED);
 	}
 
 }
