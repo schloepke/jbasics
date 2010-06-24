@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd ">
@@ -53,10 +53,10 @@
 	<developers>
 		<developer>
 			<id>schloepke</id>
-			<name>Stephan Schlöpke</name>
+			<name>Stephan SchlÃ¶pke</name>
 			<email>stephan@schloepke.de</email>
 			<url>http://www.schloepke.de</url>
-			<organization>IT Consulting Stephan Schlöpke</organization>
+			<organization>IT Consulting Stephan SchlÃ¶pke</organization>
 			<organizationUrl>http://www.schloepke.de</organizationUrl>
 			<timezone>+1</timezone>
 			<roles>
