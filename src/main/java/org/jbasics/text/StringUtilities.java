@@ -50,4 +50,29 @@ public class StringUtilities {
 			return ""; //$NON-NLS-1$
 		}
 	}
+
+	public static String defaultIfNull(final String instance, final String defaultValue) {
+		if (instance == null) {
+			return defaultValue;
+		} else {
+			return instance;
+		}
+	}
+
+	public static String defaultIfNullOrEmpty(final String instance, final String defaultValue) {
+		if (instance == null || instance.length() == 0) {
+			return defaultValue;
+		} else {
+			return instance;
+		}
+	}
+
+	public static String defaultIfNullOrTrimmedEmpty(final String instance, final String defaultValue) {
+		if (instance == null || instance.trim().length() == 0) {
+			return defaultValue;
+		} else {
+			return instance;
+		}
+	}
+
 }

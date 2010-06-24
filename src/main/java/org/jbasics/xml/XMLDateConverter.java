@@ -45,6 +45,11 @@ public final class XMLDateConverter {
 		return xmlDate.toGregorianCalendar().getTime();
 	}
 
+	public static XMLGregorianCalendar convertDateTime(final int year, final int month, final int dayOfMonth, final int hour, final int minute,
+			final int second, final int tz) {
+		return XMLDateConverter.XML_DATE_FACTORY.createDateTime(year, month, dayOfMonth, hour, minute, second, tz);
+	}
+
 	public static XMLGregorianCalendar convertDate(final int year, final int month, final int dayOfMonth) {
 		return XMLDateConverter.XML_DATE_FACTORY.createGDate(year, month, dayOfMonth);
 	}

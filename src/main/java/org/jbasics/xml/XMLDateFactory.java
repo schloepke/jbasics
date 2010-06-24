@@ -61,6 +61,12 @@ public final class XMLDateFactory implements ParameterFactory<XMLGregorianCalend
 		return create(null);
 	}
 
+	public XMLGregorianCalendar createDateTime(final int year, final int month, final int dayOfMonth, final int hour, final int minute,
+			final int second, final int tz) {
+		return this.datatypeFactory.newXMLGregorianCalendar(year, month, dayOfMonth,
+				hour, minute, second, DatatypeConstants.FIELD_UNDEFINED, tz);
+	}
+
 	public XMLGregorianCalendar createGDate(final int year, final int month, final int dayOfMonth) {
 		return this.datatypeFactory.newXMLGregorianCalendar(year, month, dayOfMonth,
 				DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED,
