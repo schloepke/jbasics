@@ -24,37 +24,47 @@
  */
 package org.jbasics.jaxb;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.URL;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
+import org.jbasics.checker.ContractCheck;
 import org.jbasics.exception.DelegatedException;
-
 
 public class JAXBSimpleTools {
 	private final JAXBPool pool;
 
-	public static <T> String marshallToString(T element) {
+	public static <T> String marshallToString(final T element) {
 		return new JAXBSimpleTools(element.getClass()).marshall(element);
 	}
 
-	public static <T> T unmarshallFromString(Class<? extends T> type, String content) {
+	public static <T> T unmarshallFromString(final Class<? extends T> type, final String content) {
 		return new JAXBSimpleTools(type).unmarshall(type, content);
 	}
 
-	public JAXBSimpleTools(String contextPath) {
+	public static <T> T unmarshallFromURL(final Class<? extends T> type, final URL content) {
+		return new JAXBSimpleTools(type).unmarshall(type, content);
+	}
+
+	public JAXBSimpleTools(final String contextPath) {
 		this.pool = new JAXBPool(contextPath);
 	}
 
-	public JAXBSimpleTools(Class<?>... classes) {
+	public JAXBSimpleTools(final Class<?>... classes) {
 		this.pool = new JAXBPool(classes);
 	}
 
-	public <T> String marshall(T element) {
+	public JAXBPool getPool() {
+		return this.pool;
+	}
+
+	public <T> String marshall(final T element) {
 		Marshaller marshaller = this.pool.aquireMarshaller();
 		try {
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -68,12 +78,29 @@ public class JAXBSimpleTools {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T> T unmarshall(Class<? extends T> type, String content) {
+	public <T> T unmarshall(final Class<? extends T> type, final String content) {
 		Unmarshaller unmarshaller = this.pool.aquireUnmarshaller();
 		try {
 			return unmarshaller.unmarshal(new StreamSource(new StringReader(content)), type).getValue();
 		} catch (JAXBException e) {
+			throw DelegatedException.delegate(e);
+		} finally {
+			this.pool.releaseUnmarshaller(unmarshaller);
+		}
+	}
+
+	public <T> T unmarshall(final Class<? extends T> type, final Class<?> resourceBase, final String resourceName) {
+		return unmarshall(type, ContractCheck.mustNotBeNull(resourceBase, "resourceBase").getResource( //$NON-NLS-1$
+				ContractCheck.mustNotBeNull(resourceName, "resourceName"))); //$NON-NLS-1$
+	}
+
+	public <T> T unmarshall(final Class<? extends T> type, final URL resource) {
+		Unmarshaller unmarshaller = this.pool.aquireUnmarshaller();
+		try {
+			return unmarshaller.unmarshal(new StreamSource(ContractCheck.mustNotBeNull(resource, "resource").openStream()), type).getValue(); //$NON-NLS-1$
+		} catch (JAXBException e) {
+			throw DelegatedException.delegate(e);
+		} catch (IOException e) {
 			throw DelegatedException.delegate(e);
 		} finally {
 			this.pool.releaseUnmarshaller(unmarshaller);
