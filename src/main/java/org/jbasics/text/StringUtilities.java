@@ -27,11 +27,12 @@ package org.jbasics.text;
 import org.jbasics.checker.ContractCheck;
 
 public class StringUtilities {
+	public static final String EMPTY_STRING = "".intern(); //$NON-NLS-1$
 
-	public static String join(final CharSequence delimiter, final CharSequence... texts) {
+	public static final String join(final CharSequence delimiter, final CharSequence... texts) {
 		ContractCheck.mustNotBeNullOrEmpty(delimiter, "delimiter"); //$NON-NLS-1$
 		if (texts == null || texts.length == 0) {
-			return null;
+			return StringUtilities.EMPTY_STRING;
 		}
 		int i = 0;
 		while (i < texts.length && (texts[i] == null || texts[i].length() == 0)) {
@@ -47,11 +48,38 @@ public class StringUtilities {
 			}
 			return temp.toString();
 		} else {
-			return ""; //$NON-NLS-1$
+			return StringUtilities.EMPTY_STRING;
 		}
 	}
 
-	public static String defaultIfNull(final String instance, final String defaultValue) {
+	public static final String joinToString(final CharSequence delimiter, final Object... texts) {
+		ContractCheck.mustNotBeNullOrEmpty(delimiter, "delimiter"); //$NON-NLS-1$
+		if (texts == null || texts.length == 0) {
+			return StringUtilities.EMPTY_STRING;
+		}
+
+		int i = 0;
+		while (i < texts.length && texts[i] == null) {
+			i++;
+		}
+		if (i < texts.length) {
+			StringBuilder temp = new StringBuilder(texts[i++].toString());
+			for (; i < texts.length; i++) {
+				Object t = texts[i];
+				if (t != null) {
+					CharSequence tt = t.toString();
+					if (tt.length() > 0) {
+						temp.append(delimiter).append(texts[i]);
+					}
+				}
+			}
+			return temp.toString();
+		} else {
+			return StringUtilities.EMPTY_STRING;
+		}
+	}
+
+	public static final String defaultIfNull(final String instance, final String defaultValue) {
 		if (instance == null) {
 			return defaultValue;
 		} else {
@@ -59,7 +87,7 @@ public class StringUtilities {
 		}
 	}
 
-	public static String defaultIfNullOrEmpty(final String instance, final String defaultValue) {
+	public static final String defaultIfNullOrEmpty(final String instance, final String defaultValue) {
 		if (instance == null || instance.length() == 0) {
 			return defaultValue;
 		} else {
@@ -67,11 +95,19 @@ public class StringUtilities {
 		}
 	}
 
-	public static String defaultIfNullOrTrimmedEmpty(final String instance, final String defaultValue) {
+	public static final String defaultIfNullOrTrimmedEmpty(final String instance, final String defaultValue) {
 		if (instance == null || instance.trim().length() == 0) {
 			return defaultValue;
 		} else {
 			return instance;
+		}
+	}
+
+	public static final String toStringOrDefaultIfNull(final Object instance, final String defaultValue) {
+		if (instance != null) {
+			return instance.toString();
+		} else {
+			return defaultValue;
 		}
 	}
 
