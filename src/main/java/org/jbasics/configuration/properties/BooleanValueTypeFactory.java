@@ -28,12 +28,12 @@ import org.jbasics.pattern.factory.ParameterFactory;
 
 public class BooleanValueTypeFactory implements ParameterFactory<Boolean, String> {
 	public static final BooleanValueTypeFactory SHARED_INSTANCE = new BooleanValueTypeFactory();
-	public static final String YES = "yes";
+	public static final String YES = "yes"; //$NON-NLS-1$
 
-	public Boolean create(String param) {
+	public Boolean create(final String param) {
 		if (param != null) {
 			String temp = param.trim();
-			if (YES.equalsIgnoreCase(temp)) {
+			if (BooleanValueTypeFactory.YES.equalsIgnoreCase(temp)) {
 				return Boolean.TRUE;
 			} else {
 				return Boolean.valueOf(temp);

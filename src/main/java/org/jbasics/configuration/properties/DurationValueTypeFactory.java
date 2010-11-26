@@ -38,11 +38,11 @@ public class DurationValueTypeFactory implements ParameterFactory<Duration, Stri
 		try {
 			this.durationFac = DatatypeFactory.newInstance();
 		} catch (DatatypeConfigurationException e) {
-			throw new RuntimeException("Could not create a new instance of the DatatypeFactory", e);
+			throw new RuntimeException("Could not create a new instance of the DatatypeFactory", e); //$NON-NLS-1$
 		}
 	}
 
-	public Duration create(String param) {
+	public Duration create(final String param) {
 		synchronized (this.durationFac) {
 			return param == null ? null : this.durationFac.newDuration(param.trim());
 		}

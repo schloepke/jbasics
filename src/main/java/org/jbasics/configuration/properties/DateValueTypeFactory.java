@@ -38,11 +38,11 @@ public class DateValueTypeFactory implements ParameterFactory<XMLGregorianCalend
 		try {
 			this.durationFac = DatatypeFactory.newInstance();
 		} catch (DatatypeConfigurationException e) {
-			throw new RuntimeException("Could not create a new instance of the DatatypeFactory", e);
+			throw new RuntimeException("Could not create a new instance of the DatatypeFactory", e); //$NON-NLS-1$
 		}
 	}
 
-	public XMLGregorianCalendar create(String param) {
+	public XMLGregorianCalendar create(final String param) {
 		synchronized (this.durationFac) {
 			return param == null ? null : this.durationFac.newXMLGregorianCalendar(param.trim());
 		}

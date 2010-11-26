@@ -1,5 +1,6 @@
 package org.jbasics.configuration.properties;
 
+import java.net.URI;
 import java.util.Properties;
 
 import junit.framework.Assert;
@@ -55,6 +56,20 @@ public class SystemPropertiesBundleTest {
 		Assert.assertEquals("3", bundle.getProperty(SystemPropertiesBundleTest.PROP_THREE));
 		Assert.assertEquals("-4-", bundle.getProperty(SystemPropertiesBundleTest.PROP_FOUR));
 		Assert.assertEquals("-5-", bundle.getProperty(SystemPropertiesBundleTest.PROP_FIVE));
+	}
+
+	@Test
+	public void testTypes() {
+		SystemPropertiesBundle bundle = new SystemPropertiesBundle(SystemPropertiesBundleTest.PREFIX);
+		bundle.setProperty("types.url", "http://www.google.de");
+		bundle.setProperty("types.int", "123");
+		bundle.setProperty("types.decimal", "10.56");
+		SystemProperty<Integer> intProp = bundle.getIntProperty("types.int");
+		Assert.assertEquals(Integer.valueOf("123"), intProp.value());
+		SystemProperty<Double> decProp = bundle.getDoubleProperty("types.decimal");
+		Assert.assertEquals(Double.valueOf("10.56"), decProp.value());
+		SystemProperty<URI> uriProp = bundle.getURIProperty("types.url");
+		Assert.assertEquals(URI.create("http://www.google.de"), uriProp.value());
 	}
 
 }

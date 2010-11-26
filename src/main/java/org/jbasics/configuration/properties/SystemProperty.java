@@ -79,8 +79,8 @@ public class SystemProperty<ValueType> {
 	}
 
 	public SystemProperty(final String name, final ParameterFactory<ValueType, String> valueTypeFactory, final ValueType defaultValue) {
-		this.name = ContractCheck.mustNotBeNull(name, "name");
-		this.valueTypeFactory = ContractCheck.mustNotBeNull(valueTypeFactory, "valueTypeFactory");
+		this.name = ContractCheck.mustNotBeNull(name, "name"); //$NON-NLS-1$
+		this.valueTypeFactory = ContractCheck.mustNotBeNull(valueTypeFactory, "valueTypeFactory"); //$NON-NLS-1$
 		this.defaultValue = defaultValue;
 	}
 

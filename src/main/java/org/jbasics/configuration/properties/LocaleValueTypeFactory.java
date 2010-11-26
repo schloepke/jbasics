@@ -31,24 +31,24 @@ import org.jbasics.pattern.factory.ParameterFactory;
 public class LocaleValueTypeFactory implements ParameterFactory<Locale, String> {
 	public static final LocaleValueTypeFactory SHARED_INSTANCE = new LocaleValueTypeFactory();
 
-	public Locale create(String param) {
+	public Locale create(final String param) {
 		if (param == null) {
 			return null;
 		} else if (param.length() > 2 && param.indexOf(2) == '_') {
-			String[] elements = param.split("_", 3);
+			String[] elements = param.split("_", 3); //$NON-NLS-1$
 			String lang = elements[0];
-			String country = elements.length > 1 ? elements[1] : "";
-			String variant = elements.length > 2 ? elements[2] : "";
+			String country = elements.length > 1 ? elements[1] : ""; //$NON-NLS-1$
+			String variant = elements.length > 2 ? elements[2] : ""; //$NON-NLS-1$
 			return new Locale(lang, country, variant);
 		} else {
-			String[] temp = param.split("-");
+			String[] temp = param.split("-"); //$NON-NLS-1$
 			String lang = temp[0].toLowerCase();
-			if (!lang.matches("[a-z]{2,2}")) {
-				throw new IllegalArgumentException("String is not a valid xml:lang string");
+			if (!lang.matches("[a-z]{2,2}")) { //$NON-NLS-1$
+				throw new IllegalArgumentException("String is not a valid xml:lang string"); //$NON-NLS-1$
 			}
-			String country = temp.length > 1 ? temp[1].toUpperCase() : "";
+			String country = temp.length > 1 ? temp[1].toUpperCase() : ""; //$NON-NLS-1$
 			if (country.length() > 0 && country.length() != 2) {
-				throw new IllegalArgumentException("String is not a valid xml:lang string");
+				throw new IllegalArgumentException("String is not a valid xml:lang string"); //$NON-NLS-1$
 			}
 			return new Locale(lang, country);
 		}
