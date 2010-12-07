@@ -68,8 +68,8 @@ public class SimpleExpressionParserTest extends Java14LoggingTestCase implements
     public void testParsing() {
         SimpleExpression temp = SimpleExpression.parse(this.expressionString);
         BigDecimal result = temp.eval(this, MC);
-        logger.log(Level.INFO, "Test Soll: {0} = {1}", new Object[] {this.expressionString, this.expected});
-        logger.log(Level.INFO, "  -> Ist:  {0} = {1}", new Object[] {temp, result});
+        this.logger.log(Level.INFO, "Test Soll: {0} = {1}", new Object[] {this.expressionString, this.expected});
+        this.logger.log(Level.INFO, "  -> Ist:  {0} = {1}", new Object[] {temp, result});
         assertTrue(this.expected.compareTo(result) == 0);
     }
 

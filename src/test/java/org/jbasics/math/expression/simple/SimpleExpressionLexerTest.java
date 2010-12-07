@@ -56,8 +56,8 @@ public class SimpleExpressionLexerTest extends Java14LoggingTestCase {
 	@Test
 	public void test() {
 		this.logger.info("------------");
-		this.logger.info("Expression: " + testExpression);
-		SimpleExpressionLexer temp = new SimpleExpressionLexer(testExpression);
+		this.logger.info("Expression: " + this.testExpression);
+		SimpleExpressionLexer temp = new SimpleExpressionLexer(this.testExpression);
 		while (temp.next().curentType() != SimpleExpressionLexer.TokenType.EOF) {
 			this.logger.info("Found: " + temp.curentType() + " {" + temp.currentContent() + "}");
 		}
