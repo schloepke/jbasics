@@ -78,9 +78,13 @@ public class SystemProperty<ValueType> {
 		return new SystemProperty<Class<?>>(name, ClassValueTypeFactory.SHARED_INSTANCE, defaultValue);
 	}
 
+	public static <E extends Enum<E>> SystemProperty<E> enumProperty(final Class<E> enumClazz, final String name, final E defaultValue) {
+		return new SystemProperty<E>(name, new EnumValueTypeFactory<E>(enumClazz), defaultValue);
+	}
+
 	public SystemProperty(final String name, final ParameterFactory<ValueType, String> valueTypeFactory, final ValueType defaultValue) {
 		this.name = ContractCheck.mustNotBeNull(name, "name"); //$NON-NLS-1$
-		this.valueTypeFactory = ContractCheck.mustNotBeNull(valueTypeFactory, "valueTypeFactory"); //$NON-NLS-1$
+		this.valueTypeFactory = ContractCheck.mustNotBeNull(valueTypeFactory, "valueTypeFactory");
 		this.defaultValue = defaultValue;
 	}
 

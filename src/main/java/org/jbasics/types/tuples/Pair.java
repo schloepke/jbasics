@@ -24,6 +24,10 @@
  */
 package org.jbasics.types.tuples;
 
+import java.io.IOException;
+
+import org.jbasics.checker.ContractCheck;
+
 /**
  * Immutable type to hold a pair of two values each having its own generic type.
  * 
@@ -33,7 +37,7 @@ package org.jbasics.types.tuples;
  * @param <RightType> The type of the right value of the pair (or second value).
  */
 public class Pair<LeftType, RightType> implements Tuple<LeftType, RightType> {
-	private static final String NULL_STRING_VALUE = "#null#";
+	private static final String NULL_STRING_VALUE = "#null#"; //$NON-NLS-1$
 
 	private final LeftType left;
 	private final RightType right;
@@ -45,7 +49,7 @@ public class Pair<LeftType, RightType> implements Tuple<LeftType, RightType> {
 	 * @param right The right (or second) value of the pair (can be null).
 	 * @since 1.0
 	 */
-	public Pair(LeftType left, RightType right) {
+	public Pair(final LeftType left, final RightType right) {
 		this.left = left;
 		this.right = right;
 	}
@@ -103,25 +107,42 @@ public class Pair<LeftType, RightType> implements Tuple<LeftType, RightType> {
 		return this.right;
 	}
 
+	/**
+	 * Append this pair in its string form to the given {@link Appendable}.
+	 * 
+	 * @param <A> The {@link Appendable} type
+	 * @param appendable The {@link Appendable} which must not be null
+	 * @return The {@link Appendable} given in the call.
+	 * @throws IOException Thrown if the {@link Appendable} throws an {@link IOException}
+	 */
+	public <A extends Appendable> A appendTo(final A appendable) throws IOException {
+		ContractCheck.mustNotBeNull(appendable, "appendable").append("("); //$NON-NLS-1$ //$NON-NLS-2$
+		if (this.left == null) {
+			appendable.append(Pair.NULL_STRING_VALUE);
+		} else {
+			appendable.append(this.left.toString());
+		}
+		appendable.append(", "); //$NON-NLS-1$
+		if (this.right == null) {
+			appendable.append(Pair.NULL_STRING_VALUE);
+		} else {
+			appendable.append(this.right.toString());
+		}
+		appendable.append(")"); //$NON-NLS-1$
+		return appendable;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		StringBuilder temp = new StringBuilder("PAIR(");
-		if (this.left == null) {
-			temp.append(NULL_STRING_VALUE);
-		} else {
-			temp.append(this.left.toString());
+		try {
+			return appendTo(new StringBuilder()).toString();
+		} catch (IOException e) {
+			return "#EXCEPTION " + e.getMessage() + "#"; //$NON-NLS-1$//$NON-NLS-2$
 		}
-		temp.append(", ");
-		if (this.right == null) {
-			temp.append(NULL_STRING_VALUE);
-		} else {
-			temp.append(this.right.toString());
-		}
-		return temp.append(")").toString();
 	}
 
 	/*
@@ -138,7 +159,7 @@ public class Pair<LeftType, RightType> implements Tuple<LeftType, RightType> {
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		} else if (obj == null || !(obj instanceof Pair<?, ?>)) {

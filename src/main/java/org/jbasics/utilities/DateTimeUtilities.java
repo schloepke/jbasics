@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import org.jbasics.checker.ContractCheck;
-import org.jbasics.types.tuples.Pair;
+import org.jbasics.types.tuples.Range;
 
 public class DateTimeUtilities {
 
@@ -63,11 +63,11 @@ public class DateTimeUtilities {
 		return result;
 	}
 
-	public static Pair<Date, Date> getCalendarWeekRange(final int year, final int week) {
+	public static Range<Date> getCalendarWeekRange(final int year, final int week) {
 		return DateTimeUtilities.getCalendarWeekRange(year, week, -5000, 5000);
 	}
 
-	public static Pair<Date, Date> getCalendarWeekRange(final int year, final int week, final int minYear, final int maxYear) {
+	public static Range<Date> getCalendarWeekRange(final int year, final int week, final int minYear, final int maxYear) {
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
@@ -82,7 +82,7 @@ public class DateTimeUtilities {
 		cal.set(Calendar.HOUR_OF_DAY, 23);
 		cal.set(Calendar.MINUTE, 59);
 		cal.set(Calendar.SECOND, 59);
-		return new Pair<Date, Date>(new Date(startMillis), new Date(cal.getTimeInMillis()));
+		return Range.create(new Date(startMillis), new Date(cal.getTimeInMillis()));
 	}
 
 }
