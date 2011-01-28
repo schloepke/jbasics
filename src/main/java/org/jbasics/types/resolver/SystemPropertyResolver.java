@@ -10,15 +10,20 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.configuration.properties.SystemProperty;
+import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.pattern.resolver.Resolver;
+import org.jbasics.types.delegates.UnmodifiableDelegate;
 
 public final class SystemPropertyResolver implements Resolver<String, String> {
+	public static final SystemPropertyResolver SHARED_INSTANCE = new SystemPropertyResolver();
+	public static final Delegate<SystemPropertyResolver> SHARED_INSTANCE_DELEGATE = new UnmodifiableDelegate<SystemPropertyResolver>(
+			SystemPropertyResolver.SHARED_INSTANCE);
 
 	public String resolve(final String request, final String defaultResult) {
 		return System.getProperty(ContractCheck.mustNotBeNullOrTrimmedEmpty(request, "request"), defaultResult); //$NON-NLS-1$
 	}
 
-	public static SystemProperty<String> resolveString(final String key, final String defaultValue) {
+	public SystemProperty<String> resolveString(final String key, final String defaultValue) {
 		return SystemProperty.stringProperty(key, defaultValue);
 	}
 
