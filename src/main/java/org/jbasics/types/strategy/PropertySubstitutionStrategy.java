@@ -41,9 +41,9 @@ import org.jbasics.types.resolver.SystemPropertyResolver;
 
 public class PropertySubstitutionStrategy implements SubstitutionStrategy<CharSequence, CharSequence>,
 		ContextualSubstitutionStrategy<CharSequence, CharSequence, Properties> {
-	public static final PropertySubstitutionStrategy SHARED_SYSTEM_PROPERTY = new PropertySubstitutionStrategy();
+	public static final Pattern STANDARD_SUBSTITUTION_PATTERN;
+	public static final PropertySubstitutionStrategy SHARED_SYSTEM_PROPERTY;
 
-	public static final Pattern STANDARD_SUBSTITUTION_PATTERN = Pattern.compile("\\$\\{(.*?)(:(.*?))?\\}"); //$NON-NLS-1$
 	public static final int STANDARD_KEY_GROUP_NUMBER = 1;
 	public static final int STANDARD_DEFAULT_GROUP_NUMBER = 3;
 
@@ -51,6 +51,14 @@ public class PropertySubstitutionStrategy implements SubstitutionStrategy<CharSe
 	private final Pattern pattern;
 	private final int keyGroupNumber;
 	private final int defaultGroupNumber;
+	
+	static {
+		// It is critical that the pattern is initialized first because it is already used in the constructor!
+		// Using the initializer allows us to make sure we are always initialized in the right order.
+		// Since it can differ on JVM if already initialized on attribute definition
+		STANDARD_SUBSTITUTION_PATTERN = Pattern.compile("\\$\\{(.*?)(:(.*?))?\\}"); //$NON-NLS-1$
+		SHARED_SYSTEM_PROPERTY = new PropertySubstitutionStrategy();
+	}
 
 	public PropertySubstitutionStrategy() {
 		this(SystemPropertyResolver.SHARED_INSTANCE_DELEGATE);
