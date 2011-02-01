@@ -26,6 +26,7 @@ package org.jbasics.utilities;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import org.jbasics.checker.ContractCheck;
@@ -64,11 +65,24 @@ public class DateTimeUtilities {
 	}
 
 	public static Range<Date> getCalendarWeekRange(final int year, final int week) {
-		return DateTimeUtilities.getCalendarWeekRange(year, week, -5000, 5000);
+		return DateTimeUtilities.getCalendarWeekRange(year, week, -5000, 5000, null);
+	}
+
+	public static Range<Date> getCalendarWeekRange(final int year, final int week, final Locale locale) {
+		return DateTimeUtilities.getCalendarWeekRange(year, week, -5000, 5000, locale);
 	}
 
 	public static Range<Date> getCalendarWeekRange(final int year, final int week, final int minYear, final int maxYear) {
-		Calendar cal = Calendar.getInstance();
+		return DateTimeUtilities.getCalendarWeekRange(maxYear, week, minYear, maxYear, null);
+	}
+
+	public static Range<Date> getCalendarWeekRange(final int year, final int week, final int minYear, final int maxYear, final Locale locale) {
+		Calendar cal = null;
+		if (locale != null) {
+			cal = Calendar.getInstance(locale);
+		} else {
+			cal = Calendar.getInstance();
+		}
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
