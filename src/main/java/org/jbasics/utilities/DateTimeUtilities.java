@@ -73,7 +73,7 @@ public class DateTimeUtilities {
 	}
 
 	public static Range<Date> getCalendarWeekRange(final int year, final int week, final int minYear, final int maxYear) {
-		return DateTimeUtilities.getCalendarWeekRange(maxYear, week, minYear, maxYear, null);
+		return DateTimeUtilities.getCalendarWeekRange(year, week, minYear, maxYear, null);
 	}
 
 	public static Range<Date> getCalendarWeekRange(final int year, final int week, final int minYear, final int maxYear, final Locale locale) {
