@@ -99,4 +99,53 @@ public class DateTimeUtilities {
 		return Range.create(new Date(startMillis), new Date(cal.getTimeInMillis()));
 	}
 
+	public static Range<Integer> getMonthRangeOf(final Range<Date> dateRange) {
+		return DateTimeUtilities.getMonthRangeOf(dateRange, null);
+	}
+
+	public static Range<Integer> getMonthRangeOf(final Range<Date> dateRange, final Locale locale) {
+		ContractCheck.mustNotBeNull(dateRange, "dateRange"); //$NON-NLS-1$
+		Calendar cal = null;
+		if (locale != null) {
+			cal = Calendar.getInstance(locale);
+		} else {
+			cal = Calendar.getInstance();
+		}
+		Integer from = null;
+		if (dateRange.from() != null) {
+			cal.setTime(dateRange.from());
+			from = Integer.valueOf(cal.get(Calendar.MONTH));
+		}
+		Integer to = null;
+		if (dateRange.to() != null) {
+			cal.setTime(dateRange.to());
+			to = Integer.valueOf(cal.get(Calendar.MONTH));
+		}
+		return new Range<Integer>(from, to);
+	}
+
+	public static int getMonthOf(final Date date) {
+		return DateTimeUtilities.getFieldOf(date, Calendar.MONTH, null);
+	}
+
+	public static int getMonthOf(final Date date, final Locale locale) {
+		return DateTimeUtilities.getFieldOf(date, Calendar.MONTH, locale);
+	}
+
+	public static int getFieldOf(final Date date, final int field) {
+		return DateTimeUtilities.getFieldOf(date, field, null);
+	}
+
+	public static int getFieldOf(final Date date, final int field, final Locale locale) {
+		Calendar cal = null;
+		if (locale != null) {
+			cal = Calendar.getInstance(locale);
+		} else {
+			cal = Calendar.getInstance();
+		}
+		if (date != null) {
+			cal.setTime(date);
+		}
+		return cal.get(field);
+	}
 }
