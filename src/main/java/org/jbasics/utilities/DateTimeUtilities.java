@@ -124,6 +124,39 @@ public class DateTimeUtilities {
 		return new Range<Integer>(from, to);
 	}
 
+	public static int getMonthOf(final int year, final int week) {
+		return DateTimeUtilities.getMonthOf(year, week, null);
+	}
+
+	public static int getMonthOf(final int year, final int week, final Locale locale) {
+		return DateTimeUtilities.getMonthOf(year, week, false, null);
+	}
+
+	public static int getMonthOf(final int year, final int week, final boolean endMonth) {
+		return DateTimeUtilities.getMonthOf(year, week, endMonth, null);
+	}
+
+	public static int getMonthOf(final int year, final int week, final boolean endMonth, final Locale locale) {
+		Calendar cal = null;
+		if (locale != null) {
+			cal = Calendar.getInstance(locale);
+		} else {
+			cal = Calendar.getInstance();
+		}
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		cal.set(Calendar.YEAR, year);
+		cal.set(Calendar.WEEK_OF_YEAR, ContractCheck.mustBeInRange(week, cal.getMinimum(Calendar.WEEK_OF_YEAR),
+				cal.getMaximum(Calendar.WEEK_OF_YEAR), "week")); //$NON-NLS-1$
+		cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
+		if (endMonth) {
+			cal.add(Calendar.DAY_OF_MONTH, 6);
+		}
+		return cal.get(Calendar.MONTH);
+	}
+
 	public static int getMonthOf(final Date date) {
 		return DateTimeUtilities.getFieldOf(date, Calendar.MONTH, null);
 	}

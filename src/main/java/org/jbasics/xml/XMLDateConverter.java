@@ -62,6 +62,10 @@ public final class XMLDateConverter {
 		return XMLDateConverter.XML_DATE_FACTORY.createGMonth(month);
 	}
 
+	public static XMLGregorianCalendar convertYearMonth(final int year, final int month) {
+		return XMLDateConverter.XML_DATE_FACTORY.createGYearMonth(year, month);
+	}
+
 	/**
 	 * Incorrectly written method name should be {@link #convert(XMLGregorianCalendar)} instead.
 	 * 

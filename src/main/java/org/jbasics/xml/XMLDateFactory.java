@@ -85,4 +85,10 @@ public final class XMLDateFactory implements ParameterFactory<XMLGregorianCalend
 				DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED);
 	}
 
+	public XMLGregorianCalendar createGYearMonth(final int year, final int month) {
+		return this.datatypeFactory.newXMLGregorianCalendar(year, month, DatatypeConstants.FIELD_UNDEFINED,
+				DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED,
+				DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED);
+	}
+
 }
