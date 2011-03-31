@@ -33,9 +33,10 @@ import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.jbasics.checker.ContractCheck;
+import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.pattern.factory.ParameterFactory;
 
-public class SystemProperty<ValueType> {
+public class SystemProperty<ValueType> implements Delegate<ValueType> {
 	private static final ParameterFactory<String, String> STRING_PASS_THRU = new PassThruValueTypeFactory<String>();
 
 	private final String name;
@@ -103,6 +104,10 @@ public class SystemProperty<ValueType> {
 		} else {
 			return this.valueTypeFactory.create(temp);
 		}
+	}
+
+	public ValueType delegate() {
+		return value();
 	}
 
 	@Override

@@ -25,9 +25,15 @@
 package org.jbasics.text;
 
 import org.jbasics.checker.ContractCheck;
+import org.jbasics.pattern.transpose.Transposer;
 
 public class StringUtilities {
 	public static final String EMPTY_STRING = "".intern(); //$NON-NLS-1$
+	public static final Transposer<String, Object> JAVA_TO_STRING_TRANSPOSER = new Transposer<String, Object>() {
+		public String transpose(final Object input) {
+			return String.valueOf(input);
+		}
+	};
 
 	public static final String join(final CharSequence delimiter, final CharSequence... texts) {
 		ContractCheck.mustNotBeNullOrEmpty(delimiter, "delimiter"); //$NON-NLS-1$
@@ -52,24 +58,31 @@ public class StringUtilities {
 		}
 	}
 
-	public static final String joinToString(final CharSequence delimiter, final Object... texts) {
+	public static final <T> String joinToString(final CharSequence delimiter, final T... texts) {
+		return StringUtilities.joinToString(delimiter, null, texts);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static final <T> String joinToString(final CharSequence delimiter, Transposer<String, T> transposer, final T... texts) {
 		ContractCheck.mustNotBeNullOrEmpty(delimiter, "delimiter"); //$NON-NLS-1$
 		if (texts == null || texts.length == 0) {
 			return StringUtilities.EMPTY_STRING;
 		}
-
+		if (transposer == null) {
+			transposer = (Transposer<String, T>) StringUtilities.JAVA_TO_STRING_TRANSPOSER;
+		}
 		int i = 0;
 		while (i < texts.length && texts[i] == null) {
 			i++;
 		}
 		if (i < texts.length) {
-			StringBuilder temp = new StringBuilder(texts[i++].toString());
+			StringBuilder temp = new StringBuilder(transposer.transpose(texts[i++]));
 			for (; i < texts.length; i++) {
-				Object t = texts[i];
+				T t = texts[i];
 				if (t != null) {
-					CharSequence tt = t.toString();
+					CharSequence tt = transposer.transpose(t);
 					if (tt.length() > 0) {
-						temp.append(delimiter).append(texts[i]);
+						temp.append(delimiter).append(tt);
 					}
 				}
 			}
@@ -108,6 +121,32 @@ public class StringUtilities {
 			return instance.toString();
 		} else {
 			return defaultValue;
+		}
+	}
+
+	public static final String padWithCharRightJustified(final String input, final int length, final char padCharacter) {
+		if (ContractCheck.mustNotBeNull(input, "input").length() >= length) { //$NON-NLS-1$
+			return input;
+		} else {
+			StringBuilder temp = new StringBuilder(length);
+			for (int i = length - input.length(); i > 0; i--) {
+				temp.append(padCharacter);
+			}
+			temp.append(input);
+			return temp.toString();
+		}
+	}
+
+	public static final String padWithCharLeftJustified(final String input, final int length, final char padCharacter) {
+		if (ContractCheck.mustNotBeNull(input, "input").length() >= length) { //$NON-NLS-1$
+			return input;
+		} else {
+			StringBuilder temp = new StringBuilder(length);
+			temp.append(input);
+			for (int i = length - input.length(); i > 0; i--) {
+				temp.append(padCharacter);
+			}
+			return temp.toString();
 		}
 	}
 
