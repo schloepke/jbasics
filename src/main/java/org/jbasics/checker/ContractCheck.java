@@ -24,14 +24,15 @@
  */
 package org.jbasics.checker;
 
+import java.util.Collection;
 import java.util.regex.Pattern;
 
 /**
  * Simple class offering methods to check if a call contract is broken or not.
  * <p>
- * Usually one makes a check of null and throws an {@link IllegalAccessException} or a
- * {@link NullPointerException}. This is a line of code written constantly. This helper is supposed
- * to limit the code to write especially in constructors or setter methods.
+ * Usually one makes a check of null and throws an {@link IllegalAccessException} or a {@link NullPointerException}.
+ * This is a line of code written constantly. This helper is supposed to limit the code to write especially in
+ * constructors or setter methods.
  * </p>
  * <p>
  * Example:
@@ -60,6 +61,7 @@ import java.util.regex.Pattern;
  * @author Stephan Schloepke
  * @since 1.0
  */
+@SuppressWarnings("nls")
 public final class ContractCheck {
 	private static final String UNKNOWN = "?";
 
@@ -73,9 +75,9 @@ public final class ContractCheck {
 	 * @throws ContractViolationException If the instance to check is null.
 	 * @since 1.0
 	 */
-	public static <T> T mustNotBeNull(T instance, String instanceName) {
+	public static <T> T mustNotBeNull(final T instance, final String instanceName) {
 		if (instance == null) {
-			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : UNKNOWN);
+			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
 		}
 		return instance;
 	}
@@ -91,12 +93,12 @@ public final class ContractCheck {
 	 * @throws ContractViolationException If the array instance to check is null or zero length.
 	 * @since 1.0
 	 */
-	public static <T> T[] mustNotBeNullOrEmpty(T[] array, String instanceName) {
+	public static <T> T[] mustNotBeNullOrEmpty(final T[] array, final String instanceName) {
 		if (array == null) {
-			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : UNKNOWN);
+			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
 		}
 		if (array.length == 0) {
-			throw new ContractViolationException("mustNotBeEmpty", instanceName != null ? instanceName : UNKNOWN);
+			throw new ContractViolationException("mustNotBeEmpty", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
 		}
 		return array;
 	}
@@ -112,12 +114,12 @@ public final class ContractCheck {
 	 * @throws ContractViolationException If the array instance to check is null or zero length.
 	 * @since 1.0
 	 */
-	public static <T extends CharSequence> T mustNotBeNullOrEmpty(T charSequence, String instanceName) {
+	public static <T extends CharSequence> T mustNotBeNullOrEmpty(final T charSequence, final String instanceName) {
 		if (charSequence == null) {
-			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : UNKNOWN);
+			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
 		}
 		if (charSequence.length() == 0) {
-			throw new ContractViolationException("mustNotBeEmpty", instanceName != null ? instanceName : UNKNOWN);
+			throw new ContractViolationException("mustNotBeEmpty", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
 		}
 		return charSequence;
 	}
@@ -133,13 +135,13 @@ public final class ContractCheck {
 	 * @throws ContractViolationException If the array instance to check is null or zero length.
 	 * @since 1.0
 	 */
-	public static String mustNotBeNullOrTrimmedEmpty(CharSequence charSequence, String instanceName) {
+	public static String mustNotBeNullOrTrimmedEmpty(final CharSequence charSequence, final String instanceName) {
 		if (charSequence == null) {
-			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : UNKNOWN);
+			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
 		}
 		String temp = charSequence.toString().trim();
 		if (temp.length() == 0) {
-			throw new ContractViolationException("mustNotBeEmpty", instanceName != null ? instanceName : UNKNOWN);
+			throw new ContractViolationException("mustNotBeEmpty", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
 		}
 		return temp;
 	}
@@ -154,12 +156,12 @@ public final class ContractCheck {
 	 * @throws ContractViolationException If the array instance to check is null or zero length.
 	 * @since 1.0
 	 */
-	public static byte[] mustNotBeNullOrEmpty(byte[] byteArray, String instanceName) {
+	public static byte[] mustNotBeNullOrEmpty(final byte[] byteArray, final String instanceName) {
 		if (byteArray == null) {
-			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : UNKNOWN);
+			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
 		}
 		if (byteArray.length == 0) {
-			throw new ContractViolationException("mustNotBeEmpty", instanceName != null ? instanceName : UNKNOWN);
+			throw new ContractViolationException("mustNotBeEmpty", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
 		}
 		return byteArray;
 	}
@@ -175,10 +177,11 @@ public final class ContractCheck {
 	 * @throws ContractViolationException If the value is not in the range [low, high].
 	 * @since 1.0
 	 */
-	public static int mustBeInRange(int intValue, int low, int high, String instanceName) {
+	public static int mustBeInRange(final int intValue, final int low, final int high, final String instanceName) {
 		if (intValue < low || intValue > high) {
-			throw new ContractViolationException("mustBeInRange", instanceName != null ? instanceName : UNKNOWN, Integer.valueOf(low), Integer
-					.valueOf(high));
+			throw new ContractViolationException("mustBeInRange", instanceName != null ? instanceName : ContractCheck.UNKNOWN, Integer.valueOf(low),
+					Integer
+							.valueOf(high));
 		}
 		return intValue;
 	}
@@ -194,10 +197,11 @@ public final class ContractCheck {
 	 * @throws ContractViolationException If the value is not in the range [low, high].
 	 * @since 1.0
 	 */
-	public static long mustBeInRange(long longValue, long low, long high, String instanceName) {
+	public static long mustBeInRange(final long longValue, final long low, final long high, final String instanceName) {
 		if (longValue < low || longValue > high) {
-			throw new ContractViolationException("mustBeInRange", instanceName != null ? instanceName : UNKNOWN, Long.valueOf(low), Long
-					.valueOf(high));
+			throw new ContractViolationException("mustBeInRange", instanceName != null ? instanceName : ContractCheck.UNKNOWN, Long.valueOf(low),
+					Long
+							.valueOf(high));
 		}
 		return longValue;
 	}
@@ -213,10 +217,11 @@ public final class ContractCheck {
 	 * @throws ContractViolationException If the value is not in the range [low, high].
 	 * @since 1.0
 	 */
-	public static double mustBeInRange(double doubleValue, double low, double high, String instanceName) {
+	public static double mustBeInRange(final double doubleValue, final double low, final double high, final String instanceName) {
 		if (doubleValue < low || doubleValue > high) {
-			throw new ContractViolationException("mustBeInRange", instanceName != null ? instanceName : UNKNOWN, Double.valueOf(low), Double
-					.valueOf(high));
+			throw new ContractViolationException("mustBeInRange", instanceName != null ? instanceName : ContractCheck.UNKNOWN, Double.valueOf(low),
+					Double
+							.valueOf(high));
 		}
 		return doubleValue;
 	}
@@ -234,12 +239,13 @@ public final class ContractCheck {
 	 * @throws ContractViolationException If the value is not in the range [low, high].
 	 * @since 1.0
 	 */
-	public static <T extends Number, C extends Comparable<T>> T mustBeInRange(T numberValue, C low, C high, String instanceName) {
+	public static <T extends Number, C extends Comparable<T>> T mustBeInRange(final T numberValue, final C low, final C high,
+			final String instanceName) {
 		if (numberValue == null) {
-			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : UNKNOWN);
+			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
 		}
 		if ((low != null && low.compareTo(numberValue) > 0) || (high != null && high.compareTo(numberValue) < 0)) {
-			throw new ContractViolationException("mustBeInRange", instanceName != null ? instanceName : UNKNOWN, low, high);
+			throw new ContractViolationException("mustBeInRange", instanceName != null ? instanceName : ContractCheck.UNKNOWN, low, high);
 		}
 		return numberValue;
 	}
@@ -257,12 +263,13 @@ public final class ContractCheck {
 	 * @throws ContractViolationException If the value is not in the range [low, high].
 	 * @since 1.0
 	 */
-	public static <T extends Number, C extends Comparable<T>> T mustBeInRangeOrNull(T numberValue, C low, C high, String instanceName) {
+	public static <T extends Number, C extends Comparable<T>> T mustBeInRangeOrNull(final T numberValue, final C low, final C high,
+			final String instanceName) {
 		if (numberValue == null) {
 			return numberValue;
 		}
 		if ((low != null && low.compareTo(numberValue) > 0) || (high != null && high.compareTo(numberValue) < 0)) {
-			throw new ContractViolationException("mustBeInRange", instanceName != null ? instanceName : UNKNOWN, low, high);
+			throw new ContractViolationException("mustBeInRange", instanceName != null ? instanceName : ContractCheck.UNKNOWN, low, high);
 		}
 		return numberValue;
 	}
@@ -281,12 +288,12 @@ public final class ContractCheck {
 	 * @return The {@link CharSequence} guaranteed to be either null or complies to the given
 	 *         pattern
 	 */
-	public static <T extends CharSequence> T mustMatchPatternOrBeNull(T charSequence, Pattern pattern, String instanceName) {
+	public static <T extends CharSequence> T mustMatchPatternOrBeNull(final T charSequence, final Pattern pattern, final String instanceName) {
 		if (charSequence == null) {
 			return null;
 		}
 		if (pattern != null && !pattern.matcher(charSequence).matches()) {
-			throw new ContractViolationException("mustMatchPattern", instanceName != null ? instanceName : UNKNOWN, pattern.pattern());
+			throw new ContractViolationException("mustMatchPattern", instanceName != null ? instanceName : ContractCheck.UNKNOWN, pattern.pattern());
 		}
 		return charSequence;
 	}
@@ -305,12 +312,12 @@ public final class ContractCheck {
 	 *             pattern
 	 * @since 1.0
 	 */
-	public static <T extends CharSequence> T mustMatchPattern(T charSequence, Pattern pattern, String instanceName) {
+	public static <T extends CharSequence> T mustMatchPattern(final T charSequence, final Pattern pattern, final String instanceName) {
 		if (charSequence == null) {
-			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : UNKNOWN);
+			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
 		}
 		if (pattern != null && !pattern.matcher(charSequence).matches()) {
-			throw new ContractViolationException("mustMatchPattern", instanceName != null ? instanceName : UNKNOWN, pattern.pattern());
+			throw new ContractViolationException("mustMatchPattern", instanceName != null ? instanceName : ContractCheck.UNKNOWN, pattern.pattern());
 		}
 		return charSequence;
 	}
@@ -329,15 +336,89 @@ public final class ContractCheck {
 	 * @throws ContractViolationException If the instance is not equal to the check.
 	 * @since 1.0
 	 */
-	public static <T> T mustBeEqual(T instance, T check, String instanceName) {
+	public static <T> T mustBeEqual(final T instance, final T check, final String instanceName) {
 		if (instance == null) {
 			if (check != null) {
-				throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : UNKNOWN);
+				throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
 			}
 		} else if (check == null) {
-			throw new ContractViolationException("mustBeNull", instanceName != null ? instanceName : UNKNOWN);
+			throw new ContractViolationException("mustBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
 		} else if (!check.equals(instance)) {
-			throw new ContractViolationException("mustBeEqualTo", instanceName != null ? instanceName : UNKNOWN, check);
+			throw new ContractViolationException("mustBeEqualTo", instanceName != null ? instanceName : ContractCheck.UNKNOWN, check);
+		}
+		return instance;
+	}
+
+	/**
+	 * Checks if the two given arrays are of same size or both null.
+	 * If the check is null than instance must be null. If the check is not null than instance must
+	 * not be null and be the same size as check. Returns the instance array if all checks are valid
+	 * and the caller has the guarantee that the size is equal.
+	 * 
+	 * @param <T> The type of the array instance
+	 * @param instance The array instance to check
+	 * @param check The array instance to compare the size with
+	 * @param instanceName The name of the array instance for the exception.
+	 * @return The array instance as given
+	 * @throws ContractViolationException If the array instance is not the same size as the check instance or both null.
+	 * @since 1.0
+	 */
+	@SuppressWarnings("boxing")
+	public static <T> T[] mustMatchSizeOrBothBeNull(final T[] instance, final Object[] check, final String instanceName) {
+		if (instance == null) {
+			if (check != null) {
+				throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+			}
+		} else if (check == null) {
+			throw new ContractViolationException("mustBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+		} else if (instance.length != check.length) {
+			throw new ContractViolationException("mustBeOfSize", instanceName != null ? instanceName : ContractCheck.UNKNOWN, check.length,
+					instance.length);
+		}
+		return instance;
+	}
+
+	/**
+	 * Checks if the given array is not null and of the given check size. If the instance array is not null and also
+	 * the length of the array is of the cheked size the given array is returned and guaranteed to match the check.
+	 * 
+	 * @param <T> The type of the array instance
+	 * @param instance The array instance to check
+	 * @param check The size the array needs to have
+	 * @param instanceName The name of the array instance for the exception.
+	 * @return The array instance as given
+	 * @throws ContractViolationException If the array instance is null or not the same size as the check size.
+	 * @since 1.0
+	 */
+	@SuppressWarnings("boxing")
+	public static <T> T[] mustMatchSizeAndNotBeNull(final T[] instance, final int check, final String instanceName) {
+		if (instance == null) {
+			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+		} else if (instance.length != check) {
+			throw new ContractViolationException("mustBeOfSize", instanceName != null ? instanceName : ContractCheck.UNKNOWN, check, instance.length);
+		}
+		return instance;
+	}
+
+	/**
+	 * Checks if the given collection is not null and of the given check size. If the instance collection is not null
+	 * and also the size of the collection is of the checked size the given collection is returned and guaranteed to
+	 * match the check.
+	 * 
+	 * @param <T> The type of the collection instance
+	 * @param instance The collection instance to check
+	 * @param check The size the collection needs to have
+	 * @param instanceName The name of the collection instance for the exception.
+	 * @return The collection instance as given
+	 * @throws ContractViolationException If the collection instance is null or not the same size as the check size.
+	 * @since 1.0
+	 */
+	@SuppressWarnings("boxing")
+	public static <T extends Collection<?>> T mustMatchSizeAndNotBeNull(final T instance, final int check, final String instanceName) {
+		if (instance == null) {
+			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+		} else if (instance.size() != check) {
+			throw new ContractViolationException("mustBeOfSize", instanceName != null ? instanceName : ContractCheck.UNKNOWN, check, instance.size());
 		}
 		return instance;
 	}
