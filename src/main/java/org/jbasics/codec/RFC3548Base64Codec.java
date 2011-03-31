@@ -27,15 +27,16 @@ package org.jbasics.codec;
 import java.io.ByteArrayOutputStream;
 
 import org.jbasics.arrays.ArrayConstants;
+import org.jbasics.pattern.coder.Coder;
 
-public class RFC3548Base64Codec {
+public class RFC3548Base64Codec implements Coder<byte[], CharSequence> {
 	public static final String BASE64_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 	public static final String BASE64_ALPHABET_ALT = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 	public static final char PADDING_CHARACTER = '=';
 
 	public static final RFC3548Base64Codec INSTANCE = new RFC3548Base64Codec();
 	public static final RFC3548Base64Codec INSTANCE_ALT = new RFC3548Base64Codec(true);
-	
+
 	private final String alphabet;
 	private final boolean fillWithoutPadding;
 
@@ -43,12 +44,12 @@ public class RFC3548Base64Codec {
 		this(false, false);
 	}
 
-	public RFC3548Base64Codec(boolean alternate) {
+	public RFC3548Base64Codec(final boolean alternate) {
 		this(alternate, false);
 	}
 
-	public RFC3548Base64Codec(boolean alternate, boolean fillWithoutPadding) {
-		this.alphabet = alternate ? BASE64_ALPHABET_ALT : BASE64_ALPHABET;
+	public RFC3548Base64Codec(final boolean alternate, final boolean fillWithoutPadding) {
+		this.alphabet = alternate ? RFC3548Base64Codec.BASE64_ALPHABET_ALT : RFC3548Base64Codec.BASE64_ALPHABET;
 		this.fillWithoutPadding = fillWithoutPadding;
 	}
 
@@ -60,7 +61,7 @@ public class RFC3548Base64Codec {
 		return 4;
 	}
 
-	public CharSequence encode(byte[] input) {
+	public CharSequence encode(final byte[] input) {
 		if (input == null || input.length == 0) {
 			return "";
 		}
@@ -71,7 +72,7 @@ public class RFC3548Base64Codec {
 			int temp = ((input[i] & 0xff) << 16) | ((input[i + 1] & 0xff) << 8) | (input[i + 2] & 0xff);
 			int p = 18;
 			for (int j = 0; j < 4; j++) {
-				builder.append(this.alphabet.charAt((int) ((temp >>> p) & 0x3f)));
+				builder.append(this.alphabet.charAt(((temp >>> p) & 0x3f)));
 				p -= 6;
 			}
 		}
@@ -97,14 +98,14 @@ public class RFC3548Base64Codec {
 					p -= 6;
 				}
 				for (int i = 4 - ((lastBlockSize * 8) + 5) / 6; i > 0; i--) {
-					builder.append(PADDING_CHARACTER);
+					builder.append(RFC3548Base64Codec.PADDING_CHARACTER);
 				}
 			}
 		}
 		return builder.toString();
 	}
 
-	public byte[] decode(CharSequence input) {
+	public byte[] decode(final CharSequence input) {
 		if (input == null || input.length() == 0) {
 			return ArrayConstants.ZERO_LENGTH_BYTE_ARRAY;
 		}
@@ -115,7 +116,7 @@ public class RFC3548Base64Codec {
 		for (int i = 0; i < input.length(); i++) {
 			char c = input.charAt(i);
 			int p = 0;
-			if (c == PADDING_CHARACTER) {
+			if (c == RFC3548Base64Codec.PADDING_CHARACTER) {
 				padding++;
 			} else {
 				p = this.alphabet.indexOf(c);

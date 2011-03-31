@@ -27,8 +27,9 @@ package org.jbasics.codec;
 import java.io.ByteArrayOutputStream;
 
 import org.jbasics.arrays.ArrayConstants;
+import org.jbasics.pattern.coder.Coder;
 
-public class RFC3548Base32Codec {
+public class RFC3548Base32Codec implements Coder<byte[], CharSequence> {
 	public static final String BASE32_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567"; //$NON-NLS-1$
 	public static final char PADDING_CHARACTER = '=';
 	private final boolean fillWithoutPadding;

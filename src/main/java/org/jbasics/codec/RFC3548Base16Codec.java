@@ -27,9 +27,10 @@ package org.jbasics.codec;
 import java.io.ByteArrayOutputStream;
 
 import org.jbasics.arrays.ArrayConstants;
+import org.jbasics.pattern.coder.Coder;
 import org.jbasics.types.sequences.ArrayCharacterSequence;
 
-public class RFC3548Base16Codec {
+public class RFC3548Base16Codec implements Coder<byte[], CharSequence> {
 
 	public static final String BASE16_ALPHABET = "0123456789ABCDEF";
 
@@ -41,19 +42,19 @@ public class RFC3548Base16Codec {
 		return 2;
 	}
 
-	public CharSequence encode(byte[] input) {
+	public CharSequence encode(final byte[] input) {
 		if (input == null || input.length == 0) {
 			return "";
 		}
 		char[] result = new char[input.length * 2];
 		for (int i = 0, j = 0; i < input.length; i++, j += 2) {
-			result[j] = BASE16_ALPHABET.charAt(input[i] >> 4 & 0x0f);
-			result[j + 1] = BASE16_ALPHABET.charAt(input[i] & 0x0f);
+			result[j] = RFC3548Base16Codec.BASE16_ALPHABET.charAt(input[i] >> 4 & 0x0f);
+			result[j + 1] = RFC3548Base16Codec.BASE16_ALPHABET.charAt(input[i] & 0x0f);
 		}
 		return new ArrayCharacterSequence(result);
 	}
 
-	public byte[] decode(CharSequence input) {
+	public byte[] decode(final CharSequence input) {
 		if (input == null || input.length() == 0) {
 			return ArrayConstants.ZERO_LENGTH_BYTE_ARRAY;
 		}
@@ -61,7 +62,7 @@ public class RFC3548Base16Codec {
 		boolean flip = false;
 		byte value = 0;
 		for (int i = 0; i < input.length(); i++) {
-			int current = BASE16_ALPHABET.indexOf(Character.toUpperCase(input.charAt(i)));
+			int current = RFC3548Base16Codec.BASE16_ALPHABET.indexOf(Character.toUpperCase(input.charAt(i)));
 			if (current < 0) {
 				continue;
 			}
