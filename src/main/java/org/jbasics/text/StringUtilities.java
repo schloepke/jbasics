@@ -92,6 +92,34 @@ public class StringUtilities {
 		}
 	}
 
+	public static final <T> String joinToString(final CharSequence delimiter, final Iterable<T> texts) {
+		return StringUtilities.joinToString(delimiter, null, texts);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static final <T> String joinToString(final CharSequence delimiter, Transposer<String, T> transposer, final Iterable<T> texts) {
+		ContractCheck.mustNotBeNullOrEmpty(delimiter, "delimiter"); //$NON-NLS-1$
+		if (texts == null) {
+			return StringUtilities.EMPTY_STRING;
+		}
+		if (transposer == null) {
+			transposer = (Transposer<String, T>) StringUtilities.JAVA_TO_STRING_TRANSPOSER;
+		}
+		StringBuilder temp = new StringBuilder();
+		for (T t : texts) {
+			if (t != null) {
+				CharSequence tt = transposer.transpose(t);
+				if (tt.length() > 0) {
+					if (temp.length() > 0) {
+						temp.append(delimiter);
+					}
+					temp.append(tt);
+				}
+			}
+		}
+		return temp.length() > 0 ? temp.toString() : StringUtilities.EMPTY_STRING;
+	}
+
 	public static final String defaultIfNull(final String instance, final String defaultValue) {
 		if (instance == null) {
 			return defaultValue;

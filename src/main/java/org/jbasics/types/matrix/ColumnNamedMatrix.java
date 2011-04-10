@@ -36,9 +36,9 @@ import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.transpose.Transposer;
 import org.jbasics.text.StringUtilities;
 
-public class ColumnNamedMatrix<T> implements Iterable<T[]> {
+public class ColumnNamedMatrix<T> implements Iterable<List<T>> {
 	private final String[] columns;
-	private final List<T[]> rows;
+	private final List<List<T>> rows;
 	private transient List<String> columnsList;
 	private transient int currentRow = 0;
 	private transient Transposer<String, T> valueToStringTransposer;
@@ -52,7 +52,7 @@ public class ColumnNamedMatrix<T> implements Iterable<T[]> {
 		for (int i = 0; i < this.columns.length; i++) {
 			this.columns[i] = ContractCheck.mustNotBeNullOrEmpty(columns[i], "columns[" + i + "]").intern();
 		}
-		this.rows = new ArrayList<T[]>();
+		this.rows = new ArrayList<List<T>>();
 	}
 
 	public int columnSize() {
@@ -80,25 +80,25 @@ public class ColumnNamedMatrix<T> implements Iterable<T[]> {
 		return -1;
 	}
 
-	public Iterator<T[]> iterator() {
+	public Iterator<List<T>> iterator() {
 		return this.rows.iterator();
 	}
 
 	public ColumnNamedMatrix<T> appendRow(final T... data) {
-		this.rows.add(ContractCheck.mustMatchSizeAndNotBeNull(data, this.columns.length, "data"));
+		this.rows.add(Arrays.asList(ContractCheck.mustMatchSizeAndNotBeNull(data, this.columns.length, "data")));
 		this.currentRow = this.rows.size() - 1;
 		return this;
 	}
 
 	public ColumnNamedMatrix<T> appendRow(final List<T> data) {
-		this.rows.add((T[]) ContractCheck.mustMatchSizeAndNotBeNull(data, this.columns.length, "data").toArray());
+		this.rows.add(new ArrayList<T>(ContractCheck.mustMatchSizeAndNotBeNull(data, this.columns.length, "data")));
 		this.currentRow = this.rows.size() - 1;
 		return this;
 	}
 
 	@SuppressWarnings("unchecked")
 	public ColumnNamedMatrix<T> appendEmptyRow() {
-		this.rows.add((T[]) new Object[this.columns.length]);
+		this.rows.add(new ArrayList<T>(this.columns.length));
 		this.currentRow = this.rows.size() - 1;
 		return this;
 	}
@@ -140,32 +140,40 @@ public class ColumnNamedMatrix<T> implements Iterable<T[]> {
 		return this;
 	}
 
-	public ColumnNamedMatrix<T> setCellInCurrentRow(final int column, final int row, final T value) {
+	public ColumnNamedMatrix<T> setCell(final int column, final int row, final T value) {
 		if (row < 0 || column < 0 || column >= this.columns.length || row >= this.rows.size()) {
 			throw new NoSuchElementException();
 		}
-		this.rows.get(row)[column] = value;
+		this.rows.get(row).set(column, value);
 		return this;
 	}
 
-	public ColumnNamedMatrix<T> setCellInCurrentRow(final String column, final int row, final T value) {
-		return setCellInCurrentRow(getColumnIndex(column), row, value);
+	public ColumnNamedMatrix<T> setCell(final String column, final int row, final T value) {
+		return setCell(getColumnIndex(column), row, value);
 	}
 
 	public ColumnNamedMatrix<T> setCellInCurrentRow(final int column, final T value) {
-		return setCellInCurrentRow(column, this.currentRow, value);
+		return setCell(column, this.currentRow, value);
 	}
 
 	public ColumnNamedMatrix<T> setCellInCurrentRow(final String column, final T value) {
-		return setCellInCurrentRow(getColumnIndex(column), this.currentRow, value);
+		return setCell(getColumnIndex(column), this.currentRow, value);
 	}
 
 	public T getCell(final int column, final int row) {
-		return this.rows.get(row)[column];
+		return this.rows.get(row).get(column);
 	}
 
 	public T getCell(final String column, final int row) {
 		return getCell(getColumnIndex(column), row);
+	}
+
+	public T getCellInCurrentRow(final int column) {
+		return getCell(column, this.currentRow);
+	}
+
+	public T getCellInCurrentRow(final String column) {
+		return getCell(getColumnIndex(column), this.currentRow);
 	}
 
 	public void setValueToStringTransposer(final Transposer<String, T> valueToStringTransposer) {
@@ -180,7 +188,7 @@ public class ColumnNamedMatrix<T> implements Iterable<T[]> {
 	public String toString() {
 		StringBuilder temp = new StringBuilder();
 		temp.append(StringUtilities.join(", ", this.columns)).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
-		for (T[] row : this.rows) {
+		for (List<T> row : this.rows) {
 			temp.append(StringUtilities.joinToString(", ", this.valueToStringTransposer, row)).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return temp.toString();

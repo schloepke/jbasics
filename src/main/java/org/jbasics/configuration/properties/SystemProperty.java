@@ -111,6 +111,12 @@ public class SystemProperty<ValueType> implements Delegate<ValueType> {
 	}
 
 	@Override
+	public String toString() {
+		ValueType temp = value();
+		return temp != null ? temp.toString() : "#NULL#"; //$NON-NLS-1$
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
