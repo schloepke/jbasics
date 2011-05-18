@@ -209,6 +209,42 @@ public class Range<T extends Comparable<T>> extends Pair<T, T> {
 	}
 
 	/**
+	 * Returns true if the given check is left or before the range starts.
+	 * 
+	 * @param check The check value. Null means 'negative infinity' and will result in true only if the range is left
+	 *            open.
+	 * @return True if the given value lays left or before the range starts.
+	 */
+	public boolean isLeftOuterRange(final T check) {
+		T temp = left();
+		if (check == null) {
+			return temp != null;
+		} else if (temp == null) {
+			return false;
+		} else {
+			return this.includeFrom ? temp.compareTo(check) >= 0 : temp.compareTo(check) > 0;
+		}
+	}
+
+	/**
+	 * Returns true if the given check is right or after the range ends.
+	 * 
+	 * @param check The check value. Null means 'positive infinity' and will result in true only if the range is right
+	 *            open.
+	 * @return True if the given value lays right or after the range ends.
+	 */
+	public boolean isRightOuterRange(final T check) {
+		T temp = right();
+		if (check == null) {
+			return temp != null;
+		} else if (temp == null) {
+			return false;
+		} else {
+			return this.includeTo ? temp.compareTo(check) <= 0 : temp.compareTo(check) < 0;
+		}
+	}
+
+	/**
 	 * Append this range in its string form to the given {@link Appendable}.
 	 * 
 	 * @param <A> The {@link Appendable} type

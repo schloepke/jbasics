@@ -40,12 +40,12 @@ public final class JVMEnviroment {
 		}
 	}
 
-	public static URL getResource(String resourceName) {
-		return getContextClassLoader().getResource(ContractCheck.mustNotBeNullOrTrimmedEmpty(resourceName, "resourceName"));
+	public static URL getResource(final String resourceName) {
+		return JVMEnviroment.getContextClassLoader().getResource(ContractCheck.mustNotBeNullOrTrimmedEmpty(resourceName, "resourceName")); //$NON-NLS-1$
 	}
 
-	public static URL getNotNullResource(String resourceName) {
-		URL temp = getResource(resourceName);
+	public static URL getNotNullResource(final String resourceName) {
+		URL temp = JVMEnviroment.getResource(resourceName);
 		if (temp == null) {
 			throw new ResourceNotFoundException(resourceName);
 		}

@@ -24,6 +24,7 @@
  */
 package org.jbasics.jaxb;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -42,6 +43,10 @@ public class JAXBSimpleTools {
 
 	public static <T> String marshallToString(final T element) {
 		return new JAXBSimpleTools(element.getClass()).marshall(element);
+	}
+
+	public static <T> void marshallToFile(final T element, final File file) {
+		new JAXBSimpleTools(element.getClass()).marshall(element, file);
 	}
 
 	public static <T> T unmarshallFromString(final Class<? extends T> type, final String content) {
@@ -71,6 +76,18 @@ public class JAXBSimpleTools {
 			StringWriter writer = new StringWriter();
 			marshaller.marshal(element, writer);
 			return writer.toString();
+		} catch (JAXBException e) {
+			throw DelegatedException.delegate(e);
+		} finally {
+			this.pool.releaseMarshaller(marshaller);
+		}
+	}
+
+	public <T> void marshall(final T element, final File file) {
+		Marshaller marshaller = this.pool.aquireMarshaller();
+		try {
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			marshaller.marshal(element, file);
 		} catch (JAXBException e) {
 			throw DelegatedException.delegate(e);
 		} finally {

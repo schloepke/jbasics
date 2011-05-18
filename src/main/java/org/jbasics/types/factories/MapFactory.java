@@ -32,37 +32,44 @@ import java.util.Set;
 import org.jbasics.pattern.factory.Factory;
 
 /**
- * A factory creating a {@link Map} implementation offering the option to created an ordered
- * {@link Map}.
+ * A factory creating a {@link Map} implementation offering the option to
+ * created an ordered {@link Map}.
  * <p>
- * Creating an ordered {@link Map} means that the {@link Map} remains the order in which the
- * elements are were put when iterated. Normally a {@link Map} does not say anything about the order
- * in which an iterator returns its elements. If however ordered is true this factory returns a
- * {@link LinkedHashMap} rather than a {@link HashMap} as instance providing the order as the
- * elements are added.
+ * Creating an ordered {@link Map} means that the {@link Map} remains the order
+ * in which the elements are were put when iterated. Normally a {@link Map} does
+ * not say anything about the order in which an iterator returns its elements.
+ * If however ordered is true this factory returns a {@link LinkedHashMap}
+ * rather than a {@link HashMap} as instance providing the order as the elements
+ * are added.
  * </p>
- * 
+ *
  * @see Map
  * @see LinkedHashMap
  * @author Stephan Schloepke
  * @since 1.0.0
- * @param <E> The type of the elements stored in the set.
+ * @param <E>
+ *            The type of the elements stored in the set.
  */
 public class MapFactory<K, V> implements Factory<Map<K, V>> {
+	private final static MapFactory<?, ?> MAP_FACTORY = new MapFactory<Object, Object>(false);
+	private final static MapFactory<?, ?> ORDERED_MAP_FACTORY = new MapFactory<Object, Object>(true);
 	private final boolean ordered;
 
 	/**
-	 * Create a normal {@link SetFactory} using a {@link Set} not guaranteeing to be ordered.
+	 * Create a normal {@link SetFactory} using a {@link Set} not guaranteeing
+	 * to be ordered.
 	 */
 	public MapFactory() {
 		this(false);
 	}
 
 	/**
-	 * Create a {@link SetFactory} which is either ordered (true) or undefined ordering (false).
-	 * 
-	 * @param ordered True and the factory creates a {@link Set} implementation remaining the order
-	 *            of the elements added.
+	 * Create a {@link SetFactory} which is either ordered (true) or undefined
+	 * ordering (false).
+	 *
+	 * @param ordered
+	 *            True and the factory creates a {@link Set} implementation
+	 *            remaining the order of the elements added.
 	 */
 	public MapFactory(boolean ordered) {
 		this.ordered = ordered;
@@ -74,6 +81,16 @@ public class MapFactory<K, V> implements Factory<Map<K, V>> {
 		} else {
 			return CollectionsFactory.instance().newMapInstance();
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <K, V> MapFactory<K, V> unorderedMapFactory() {
+		return (MapFactory<K, V>) MAP_FACTORY;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <K, V> MapFactory<K, V> orderedMapFactory() {
+		return (MapFactory<K, V>) ORDERED_MAP_FACTORY;
 	}
 
 }

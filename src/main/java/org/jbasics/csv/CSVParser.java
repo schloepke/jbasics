@@ -22,11 +22,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.pattern.coder;
+package org.jbasics.csv;
 
-public interface Coder<In, Out> {
+public class CSVParser {
+// private final char delimiter;
 
-	Out encode(In in);
-
-	In decode(Out out);
 }

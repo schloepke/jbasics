@@ -29,27 +29,23 @@ import java.util.EventListener;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.jbasics.checker.ContractCheck;
+
 @SuppressWarnings("unchecked")
 public class SynchronizedEventListenerSet<T extends EventListener> {
 	private Set<T> eventListeners = Collections.EMPTY_SET;
 
 	public synchronized void addListener(final T listener) {
-		if (listener == null) {
-			throw new IllegalArgumentException("Null parameter: listener");
-		}
 		if (this.eventListeners == Collections.EMPTY_SET) {
 			this.eventListeners = new HashSet<T>();
 		}
-		if (!this.eventListeners.contains(listener)) {
+		if (!this.eventListeners.contains(ContractCheck.mustNotBeNull(listener, "listener"))) { //$NON-NLS-1$
 			this.eventListeners.add(listener);
 		}
 	}
 
 	public synchronized void removeListener(final T listener) {
-		if (listener == null) {
-			throw new IllegalArgumentException("Null parameter: listener");
-		}
-		this.eventListeners.remove(listener);
+		this.eventListeners.remove(ContractCheck.mustNotBeNull(listener, "listener")); //$NON-NLS-1$
 		if (this.eventListeners.size() == 0) {
 			this.eventListeners = Collections.EMPTY_SET;
 		}

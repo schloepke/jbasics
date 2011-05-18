@@ -44,7 +44,7 @@ public final class ArrayConstants {
 	public static final boolean[] ZERO_LENGTH_BOOLEAN_ARRAY = new boolean[0];
 
 	/**
-	 * A zero length boolean array constant.
+	 * A zero length {@link Boolean} array constant.
 	 * 
 	 * @since 1.0
 	 */
@@ -58,7 +58,7 @@ public final class ArrayConstants {
 	public static final byte[] ZERO_LENGTH_BYTE_ARRAY = new byte[0];
 
 	/**
-	 * A zero length byte array constant.
+	 * A zero length {@link Byte} array constant.
 	 * 
 	 * @since 1.0
 	 */
@@ -72,21 +72,21 @@ public final class ArrayConstants {
 	public static final short[] ZERO_LENGTH_SHORT_ARRAY = new short[0];
 
 	/**
-	 * A zero length short array constant.
+	 * A zero length {@link Short} array constant.
 	 * 
 	 * @since 1.0
 	 */
 	public static final Short[] ZERO_LENGTH_SHORT_TYPE_ARRAY = new Short[0];
 
 	/**
-	 * A zero length integer array constant.
+	 * A zero length int array constant.
 	 * 
 	 * @since 1.0
 	 */
 	public static final int[] ZERO_LENGTH_INT_ARRAY = new int[0];
 
 	/**
-	 * A zero length integer array constant.
+	 * A zero length {@link Integer} array constant.
 	 * 
 	 * @since 1.0
 	 */
@@ -100,11 +100,39 @@ public final class ArrayConstants {
 	public static final long[] ZERO_LENGTH_LONG_ARRAY = new long[0];
 
 	/**
-	 * A zero length long array constant.
+	 * A zero length {@link Long} array constant.
 	 * 
 	 * @since 1.0
 	 */
 	public static final Long[] ZERO_LENGTH_LONG_TYPE_ARRAY = new Long[0];
+
+	/**
+	 * A zero length float array constant.
+	 * 
+	 * @since 1.0
+	 */
+	public static final float[] ZERO_LENGTH_FLOAT_ARRAY = new float[0];
+
+	/**
+	 * A zero length {@link Float} array constant.
+	 * 
+	 * @since 1.0
+	 */
+	public static final Float[] ZERO_LENGTH_FLOAT_TYPE_ARRAY = new Float[0];
+
+	/**
+	 * A zero length double array constant.
+	 * 
+	 * @since 1.0
+	 */
+	public static final double[] ZERO_LENGTH_DOUBLE_ARRAY = new double[0];
+
+	/**
+	 * A zero length {@link Double} array constant.
+	 * 
+	 * @since 1.0
+	 */
+	public static final Double[] ZERO_LENGTH_DOUBLE_TYPE_ARRAY = new Double[0];
 
 	/**
 	 * A zero length {@link Number} array constant.

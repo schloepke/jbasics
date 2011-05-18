@@ -34,15 +34,15 @@ public class DiscoverableImplementationDelegate<T> implements ReleasableDelegate
 	private final Class<? extends T> defaultImpl;
 	private transient T instance;
 
-	public static <T> DiscoverableImplementationDelegate<T> newInstance(Class<T> abstractClass) {
+	public static <T> DiscoverableImplementationDelegate<T> newInstance(final Class<T> abstractClass) {
 		return new DiscoverableImplementationDelegate<T>(abstractClass, null);
 	}
 
-	public static <T> DiscoverableImplementationDelegate<T> newInstance(Class<T> abstractClass, Class<? extends T> defaultImpl) {
+	public static <T> DiscoverableImplementationDelegate<T> newInstance(final Class<T> abstractClass, final Class<? extends T> defaultImpl) {
 		return new DiscoverableImplementationDelegate<T>(abstractClass, defaultImpl);
 	}
-	
-	protected DiscoverableImplementationDelegate(Class<T> abstractClass, Class<? extends T> defaultImpl) {
+
+	protected DiscoverableImplementationDelegate(final Class<T> abstractClass, final Class<? extends T> defaultImpl) {
 		this.abstractClass = ContractCheck.mustNotBeNull(abstractClass, "abstractClass");
 		this.defaultImpl = defaultImpl;
 	}
@@ -51,14 +51,14 @@ public class DiscoverableImplementationDelegate<T> implements ReleasableDelegate
 		if (this.instance == null) {
 			Class<? extends T> temp = ServiceClassDiscovery.discoverImplementation(this.abstractClass, this.defaultImpl);
 			if (temp == null) {
-				throw new RuntimeException("Cannot find an implementation for the abstract class " + this.abstractClass.getName());
+				throw new RuntimeException("Cannot find an implementation for the abstract class " + this.abstractClass.getName()); //$NON-NLS-1$
 			}
 			try {
 				this.instance = temp.newInstance();
 			} catch (InstantiationException e) {
-				throw new RuntimeException("Cannot instantiate implmentation " + temp.getName(), e);
+				throw new RuntimeException("Cannot instantiate implmentation " + temp.getName(), e); //$NON-NLS-1$
 			} catch (IllegalAccessException e) {
-				throw new RuntimeException("Cannot instantiate implmentation " + temp.getName(), e);
+				throw new RuntimeException("Cannot instantiate implmentation " + temp.getName(), e); //$NON-NLS-1$
 			}
 		}
 		return this.instance;

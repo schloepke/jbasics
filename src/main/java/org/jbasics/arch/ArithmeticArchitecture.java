@@ -27,34 +27,35 @@ package org.jbasics.arch;
 /**
  * A simple helper to try and determine if the underlying JVM is a 32 bit or a 64 bit one.
  * <p>
- * It is wise to never depend on the underlying JVM architecture. However in some cases it is
- * easier to have an algorithm written based on Integers rather than using Longs when you are 
- * running on a 32 bit JVM. For such cases this is a way to determine what JVM we are running
- * on.
+ * It is wise to never depend on the underlying JVM architecture. However in some cases it is easier to have an
+ * algorithm written based on Integers rather than using Longs when you are running on a 32 bit JVM. For such cases this
+ * is a way to determine what JVM we are running on.
  * </p>
  * <p>
- * It should be noted however that currently the detection is not quite perfect. It will work
- * fine on all SUN JVMs or derived ones (Mac OS X JVM for example). In cases that the system
- * property "sun.arch.data.model" is not set we look at the JVM Name and only consider the
- * JVM as beeing 64 bit if a 64 is contained in the name somewhere.
+ * It should be noted however that currently the detection is not quite perfect. It will work fine on all SUN JVMs or
+ * derived ones (Mac OS X JVM for example). In cases that the system property "sun.arch.data.model" is not set we look
+ * at the JVM Name and only consider the JVM as beeing 64 bit if a 64 is contained in the name somewhere.
  * </p>
  * 
  * @author Stephan Schloepke
  * @since 1.0
  */
 public final class ArithmeticArchitecture {
-	public final static boolean JVM64BIT;
+	public static final String NUMBER_64 = "64"; //$NON-NLS-1$
+	public static final String JAVA_VM_NAME_PROPERTY = "java.vm.name"; //$NON-NLS-1$
+	public static final String SUN_ARCH_DATA_MODEL_PROPERTY = "sun.arch.data.model"; //$NON-NLS-1$
+	public static final boolean JVM64BIT;
 
 	static {
 		boolean env64bit = false;
-		String dataModel = System.getProperty("sun.arch.data.model");
+		String dataModel = System.getProperty(ArithmeticArchitecture.SUN_ARCH_DATA_MODEL_PROPERTY);
 		if (dataModel != null) {
-			env64bit = "64".equals(dataModel);
+			env64bit = ArithmeticArchitecture.NUMBER_64.equals(dataModel);
 		} else {
 			// Ok we need to figure out maybe based on the name
-			String jvmName = System.getProperty("java.vm.name");
+			String jvmName = System.getProperty(ArithmeticArchitecture.JAVA_VM_NAME_PROPERTY);
 			if (jvmName != null) {
-				env64bit = jvmName.contains("64");
+				env64bit = jvmName.contains(ArithmeticArchitecture.NUMBER_64);
 			}
 		}
 		JVM64BIT = env64bit;
@@ -67,7 +68,7 @@ public final class ArithmeticArchitecture {
 	 * @since 1.0
 	 */
 	public static boolean is32Bit() {
-		return !JVM64BIT;
+		return !ArithmeticArchitecture.JVM64BIT;
 	}
 
 	/**
@@ -77,7 +78,7 @@ public final class ArithmeticArchitecture {
 	 * @since 1.0
 	 */
 	public static boolean is64Bit() {
-		return JVM64BIT;
+		return ArithmeticArchitecture.JVM64BIT;
 	}
 
 }

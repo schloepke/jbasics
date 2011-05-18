@@ -27,12 +27,13 @@ package org.jbasics.codec;
 import java.io.ByteArrayOutputStream;
 
 import org.jbasics.arrays.ArrayConstants;
-import org.jbasics.pattern.coder.Coder;
+import org.jbasics.pattern.coder.Codec;
+import org.jbasics.text.StringUtilities;
 import org.jbasics.types.sequences.ArrayCharacterSequence;
 
-public class RFC3548Base16Codec implements Coder<byte[], CharSequence> {
-
-	public static final String BASE16_ALPHABET = "0123456789ABCDEF";
+public class RFC3548Base16Codec implements Codec<byte[], CharSequence> {
+	public static final String BASE16_ALPHABET = "0123456789ABCDEF"; //$NON-NLS-1$
+	public static final RFC3548Base16Codec INSTANCE = new RFC3548Base16Codec();
 
 	public int getInputBlockSize() {
 		return 1;
@@ -44,7 +45,7 @@ public class RFC3548Base16Codec implements Coder<byte[], CharSequence> {
 
 	public CharSequence encode(final byte[] input) {
 		if (input == null || input.length == 0) {
-			return "";
+			return StringUtilities.EMPTY_STRING;
 		}
 		char[] result = new char[input.length * 2];
 		for (int i = 0, j = 0; i < input.length; i++, j += 2) {

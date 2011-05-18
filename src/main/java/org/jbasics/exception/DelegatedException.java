@@ -32,31 +32,30 @@ import org.jbasics.pattern.delegation.Delegate;
  * exception stack trace is taken and used rather than creating the one for the
  * delegated.
  * <p>
- * A {@link DelegatedException} is always a {@link RuntimeException} since the
- * main case is to rethrow an exception as {@link RuntimeException} which was a
- * checked exception before.
+ * A {@link DelegatedException} is always a {@link RuntimeException} since the main case is to rethrow an exception as
+ * {@link RuntimeException} which was a checked exception before.
  * </p>
- *
+ * 
  * @author Stephan Schloepke
  * @since 1.0
  */
 public final class DelegatedException extends RuntimeException implements Delegate<Throwable> {
 	private static final long serialVersionUID = 8127831096870654601L;
 
-	public static DelegatedException delegate(Throwable t) {
+	public static DelegatedException delegate(final Throwable t) {
 		if (t instanceof DelegatedException) {
 			return (DelegatedException) t;
 		}
 		return new DelegatedException(t);
 	}
 
-	private DelegatedException(Throwable t) {
-		super(ContractCheck.mustNotBeNull(t, "t").getMessage(), t);
+	private DelegatedException(final Throwable t) {
+		super(ContractCheck.mustNotBeNull(t, "t").getMessage(), t); //$NON-NLS-1$
 		setStackTrace(t.getStackTrace());
 	}
 
 	public Throwable delegate() {
-		return this.getCause();
+		return getCause();
 	}
 
 	@Override
@@ -65,7 +64,7 @@ public final class DelegatedException extends RuntimeException implements Delega
 		temp.append(getCause().getClass().getName());
 		String message = getLocalizedMessage();
 		if (message != null) {
-			temp.append(": ").append(message);
+			temp.append(": ").append(message); //$NON-NLS-1$
 		}
 		return temp.toString();
 	}

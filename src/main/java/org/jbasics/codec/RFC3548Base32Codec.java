@@ -27,12 +27,15 @@ package org.jbasics.codec;
 import java.io.ByteArrayOutputStream;
 
 import org.jbasics.arrays.ArrayConstants;
-import org.jbasics.pattern.coder.Coder;
+import org.jbasics.pattern.coder.Codec;
+import org.jbasics.text.StringUtilities;
 
-public class RFC3548Base32Codec implements Coder<byte[], CharSequence> {
+public class RFC3548Base32Codec implements Codec<byte[], CharSequence> {
 	public static final String BASE32_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567"; //$NON-NLS-1$
 	public static final char PADDING_CHARACTER = '=';
 	private final boolean fillWithoutPadding;
+
+	public static final RFC3548Base32Codec INSTANCE = new RFC3548Base32Codec();
 
 	public RFC3548Base32Codec() {
 		this(false);
@@ -52,7 +55,7 @@ public class RFC3548Base32Codec implements Coder<byte[], CharSequence> {
 
 	public CharSequence encode(final byte[] input) {
 		if (input == null || input.length == 0) {
-			return ""; //$NON-NLS-1$
+			return StringUtilities.EMPTY_STRING;
 		}
 		int lastBlockSize = input.length % 5;
 		int fullBlocks = (input.length / 5);

@@ -27,11 +27,12 @@ package org.jbasics.codec;
 import java.io.ByteArrayOutputStream;
 
 import org.jbasics.arrays.ArrayConstants;
-import org.jbasics.pattern.coder.Coder;
+import org.jbasics.pattern.coder.Codec;
+import org.jbasics.text.StringUtilities;
 
-public class RFC3548Base64Codec implements Coder<byte[], CharSequence> {
-	public static final String BASE64_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-	public static final String BASE64_ALPHABET_ALT = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+public class RFC3548Base64Codec implements Codec<byte[], CharSequence> {
+	public static final String BASE64_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"; //$NON-NLS-1$
+	public static final String BASE64_ALPHABET_ALT = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"; //$NON-NLS-1$
 	public static final char PADDING_CHARACTER = '=';
 
 	public static final RFC3548Base64Codec INSTANCE = new RFC3548Base64Codec();
@@ -63,7 +64,7 @@ public class RFC3548Base64Codec implements Coder<byte[], CharSequence> {
 
 	public CharSequence encode(final byte[] input) {
 		if (input == null || input.length == 0) {
-			return "";
+			return StringUtilities.EMPTY_STRING;
 		}
 		int lastBlockSize = input.length % 3;
 		int fullBlocks = (input.length / 3);
