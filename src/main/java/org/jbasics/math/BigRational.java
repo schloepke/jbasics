@@ -32,9 +32,8 @@ import java.math.MathContext;
  * An Immutable representation of ratio based on two {@link BigInteger} for numerator and
  * denominator.
  * <p>
- * {@link BigRational} is the extension to the {@link BigDecimal} and {@link BigInteger} classes
- * found in Java. Since Java does not have any support for real ratios this class is supposed to
- * fill this gap.
+ * {@link BigRational} is the extension to the {@link BigDecimal} and {@link BigInteger} classes found in Java. Since
+ * Java does not have any support for real ratios this class is supposed to fill this gap.
  * </p>
  * 
  * @author Stephan Schloepke
@@ -57,20 +56,19 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	 * Create a {@link BigRational} with the given numerator and denominator
 	 * (numerator/denominator).
 	 * <p>
-	 * The create {@link BigRational} is not reduced but the sign is correct in the manner that if
-	 * both numbers are negative that non becomes negative and if the denominator is negative than
-	 * the numerator becomes negative and the denominator positive. The result is always a Ratio in
-	 * the form <code>[-]numerator/denominator</code>.
+	 * The create {@link BigRational} is not reduced but the sign is correct in the manner that if both numbers are
+	 * negative that non becomes negative and if the denominator is negative than the numerator becomes negative and the
+	 * denominator positive. The result is always a Ratio in the form <code>[-]numerator/denominator</code>.
 	 * </p>
 	 * <p>
-	 * Since a division by zero is undefined the denominator must not be zero and neither parts can
-	 * be null or an {@link IllegalArgumentException} is raised.
+	 * Since a division by zero is undefined the denominator must not be zero and neither parts can be null or an
+	 * {@link IllegalArgumentException} is raised.
 	 * </p>
 	 * 
 	 * @param numerator The numerator (must not be null)
 	 * @param denominator The denominator (must not be null or zero).
 	 */
-	public BigRational(BigInteger numerator, BigInteger denominator) {
+	public BigRational(final BigInteger numerator, final BigInteger denominator) {
 		if (numerator == null || denominator == null) {
 			throw new IllegalArgumentException("Null parameter: numerator and denominator must not be null");
 		}
@@ -92,7 +90,7 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	 * @param numerator The numerator
 	 * @param denominator The denominator
 	 */
-	public BigRational(long numerator, long denominator) {
+	public BigRational(final long numerator, final long denominator) {
 		this(BigInteger.valueOf(numerator), BigInteger.valueOf(denominator));
 	}
 
@@ -127,14 +125,12 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	}
 
 	/**
-	 * Calculates the least common multiple of the denominator and the denominator of the given
-	 * {@link BigRational}.
+	 * Calculates the least common multiple of the denominator and the denominator of the given {@link BigRational}.
 	 * 
 	 * @param x The {@link BigRational} to get the least common multiple of.
-	 * @return The least common multiple of this {@link BigRational} and the given
-	 *         {@link BigRational}s denominator.
+	 * @return The least common multiple of this {@link BigRational} and the given {@link BigRational}s denominator.
 	 */
-	public BigInteger lcm(BigRational x) {
+	public BigInteger lcm(final BigRational x) {
 		if (x == null) {
 			throw new IllegalArgumentException("Null parameter: x");
 		}
@@ -147,7 +143,7 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	 * @param value The long value
 	 * @return The {@link BigRational} representation.
 	 */
-	public static BigRational valueOf(long value) {
+	public static BigRational valueOf(final long value) {
 		return new BigRational(BigInteger.valueOf(value), BigInteger.ONE);
 	}
 
@@ -157,8 +153,8 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	 * @param value The double value
 	 * @return The {@link BigRational} representation.
 	 */
-	public static BigRational valueOf(double value) {
-		return valueOf(BigDecimal.valueOf(value));
+	public static BigRational valueOf(final double value) {
+		return BigRational.valueOf(BigDecimal.valueOf(value));
 	}
 
 	/**
@@ -168,7 +164,7 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	 * @return The {@link BigRational} representation.
 	 * @throws IllegalArgumentException If the given value is null.
 	 */
-	public static BigRational valueOf(BigDecimal value) {
+	public static BigRational valueOf(final BigDecimal value) {
 		if (value == null) {
 			throw new IllegalArgumentException("Null parameter: value");
 		}
@@ -186,8 +182,8 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	/**
 	 * Parses the given String and returns a {@link BigRational} representation.
 	 * <p>
-	 * The value is parsed according to the pattern "<em><code>^-?[0-9]+(/-?[0-9]+)?$</code></em>".
-	 * If String does not apply to the pattern an {@link IllegalArgumentException} is thrown.
+	 * The value is parsed according to the pattern "<em><code>^-?[0-9]+(/-?[0-9]+)?$</code></em>". If String does not
+	 * apply to the pattern an {@link IllegalArgumentException} is thrown.
 	 * </p>
 	 * 
 	 * @param value The String to parse (must not be null or zero length)
@@ -195,14 +191,18 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	 * @throws IllegalArgumentException Thrown if the String does not comply to the pattern (see
 	 *             above).
 	 */
-	public static BigRational valueOf(String value) {
+	public static BigRational valueOf(final String value) {
 		if (value == null || value.length() == 0) {
 			throw new IllegalArgumentException("Zero length (or null) BigRatio");
 		}
 		String[] parts = value.split("/");
 		switch (parts.length) {
 			case 1:
-				return new BigRational(new BigInteger(parts[0]), BigInteger.ONE);
+				if (parts[0].indexOf('.') >= 0) {
+					return BigRational.valueOf(new BigDecimal(parts[0]));
+				} else {
+					return new BigRational(new BigInteger(parts[0]), BigInteger.ONE);
+				}
 			case 2:
 				return new BigRational(new BigInteger(parts[0]), new BigInteger(parts[1]));
 			default:
@@ -211,11 +211,34 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	}
 
 	/**
+	 * Returns a {@link BigRational} representation for the given {@link Number} value.
+	 * 
+	 * @param value The {@link Number} value (if null BigRational.ZERO will be returned).
+	 * @return The {@link BigRational} representation.
+	 * @throws IllegalArgumentException If the given value is null.
+	 */
+	public static BigRational valueOf(final Number value) {
+		if (value == null) {
+			return BigRational.ZERO;
+		} else if (value instanceof BigRational) {
+			return (BigRational) value;
+		} else if (value instanceof BigInteger) {
+			return new BigRational((BigInteger) value, BigInteger.ONE);
+		} else if (value instanceof BigDecimal) {
+			return BigRational.valueOf((BigDecimal) value);
+		} else if (value instanceof Integer || value instanceof Long || value instanceof Short || value instanceof Byte) {
+			return new BigRational(value.longValue(), 1L);
+		} else {
+			return BigRational.valueOf(value.doubleValue());
+		}
+	}
+
+	/**
 	 * Reduces this {@link BigRational} to a more simple fraction.
 	 * <p>
-	 * Returns a new {@link BigRational} with the numerator and denominator divided by the greatest
-	 * common divider. In case that the GCD is one the {@link BigRational} cannot be reduced and
-	 * this is returned instead of a new {@link BigRational}.
+	 * Returns a new {@link BigRational} with the numerator and denominator divided by the greatest common divider. In
+	 * case that the GCD is one the {@link BigRational} cannot be reduced and this is returned instead of a new
+	 * {@link BigRational}.
 	 * </p>
 	 * 
 	 * @return The {@link BigRational} with the numerator and denominator reduced by the greatest
@@ -232,10 +255,10 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	/**
 	 * Extend this {@link BigRational} by a given factor.
 	 * <p>
-	 * The result is a {@link BigRational} with its numerator and denominator multiplied by the
-	 * factor. If the given factor is one than this is returned (no extension when multiplying
-	 * numerator and denominator with one). Howere the factor of zero is not allowed and yields an
-	 * {@link ArithmeticException} since it would lead to a division by zero (x*0/y*0 = 0/0).
+	 * The result is a {@link BigRational} with its numerator and denominator multiplied by the factor. If the given
+	 * factor is one than this is returned (no extension when multiplying numerator and denominator with one). Howere
+	 * the factor of zero is not allowed and yields an {@link ArithmeticException} since it would lead to a division by
+	 * zero (x*0/y*0 = 0/0).
 	 * <p>
 	 * 
 	 * @param factor The factor to multiply numerator and denominator with (must not be null or
@@ -245,7 +268,7 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	 * @throws IllegalArgumentException If the given factor is null.
 	 * @throws ArithmeticException if the given factor is zero.
 	 */
-	public BigRational extend(BigInteger factor) {
+	public BigRational extend(final BigInteger factor) {
 		if (factor == null) {
 			throw new IllegalArgumentException("Null parameter: factor");
 		}
@@ -262,8 +285,8 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	/**
 	 * Extend this {@link BigRational} by a given factor.
 	 * <p>
-	 * This method is a convenient wrapper for {@link BigRational#extend(BigInteger)} and calls it
-	 * with {@link BigInteger#valueOf(long)}.
+	 * This method is a convenient wrapper for {@link BigRational#extend(BigInteger)} and calls it with
+	 * {@link BigInteger#valueOf(long)}.
 	 * <p>
 	 * 
 	 * @param factor The factor to multiply numerator and denominator with (must not be null or
@@ -273,7 +296,7 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	 * @throws ArithmeticException if the given factor is zero.
 	 * @see BigRational#extend(BigInteger)
 	 */
-	public BigRational extend(long factor) {
+	public BigRational extend(final long factor) {
 		return extend(BigInteger.valueOf(factor));
 	}
 
@@ -281,15 +304,13 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	 * Extends this BigRational to a new BigRational where the denominator is equal to the given
 	 * multiple.
 	 * <p>
-	 * In order to extend this {@link BigRational} so that the denominator is equal to the multiple
-	 * it is required that the multiple really is a multiple of the denominator. In case that the
-	 * given multiple is not a multiple of the denominator an {@link ArithmeticException} is raised.
-	 * The multiple must be greater than one since {@link BigRational} guarantees that the
-	 * denominator is never negative and a negative multiple would lead to a negative denominator
-	 * and change the value rather than extending the representation (1/2 is 2/4 so still the same
-	 * value if extended to a multiple of 4. However 1/2 to 2/-4 would be a different value and
-	 * therefore not an extension. If such a case is required than multiply the with -2/2 or use
-	 * negate().extendToMultiple(4) instead).
+	 * In order to extend this {@link BigRational} so that the denominator is equal to the multiple it is required that
+	 * the multiple really is a multiple of the denominator. In case that the given multiple is not a multiple of the
+	 * denominator an {@link ArithmeticException} is raised. The multiple must be greater than one since
+	 * {@link BigRational} guarantees that the denominator is never negative and a negative multiple would lead to a
+	 * negative denominator and change the value rather than extending the representation (1/2 is 2/4 so still the same
+	 * value if extended to a multiple of 4. However 1/2 to 2/-4 would be a different value and therefore not an
+	 * extension. If such a case is required than multiply the with -2/2 or use negate().extendToMultiple(4) instead).
 	 * </p>
 	 * 
 	 * @param multiple The multiple to extend this {@link BigRational} to.
@@ -297,7 +318,7 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	 * @throws IllegalArgumentException If the multiple is less than or equal to one.
 	 * @throws ArithmeticException If the multiple is not a m multiple of the denominator.
 	 */
-	public BigRational extendToMultiple(BigInteger multiple) {
+	public BigRational extendToMultiple(final BigInteger multiple) {
 		if (multiple == null) {
 			throw new IllegalArgumentException("Null parameter: multiple");
 		}
@@ -331,8 +352,8 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	}
 
 	/**
-	 * Returns the absolute value of this BigRational ( |-x/y| => x/y ). If this {@link BigRational}
-	 * is already positive this is returned.
+	 * Returns the absolute value of this BigRational ( |-x/y| => x/y ). If this {@link BigRational} is already positive
+	 * this is returned.
 	 * 
 	 * @return The absolute {@link BigRational}.
 	 */
@@ -346,10 +367,9 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	/**
 	 * Adds a value to the numerator and returns a new BigRational with the value added.
 	 * <p>
-	 * This is a useful method especially for programming certain algorithms more effectively.
-	 * Consider the constant E which can be represented by the Taylor series
-	 * <code>E = 1/0! + 1/1! + 1/2! + 1/3! + 1/4! + ... + 1/n!</code>. Now the algorithm could do an
-	 * extend and addNumerator in the following way:
+	 * This is a useful method especially for programming certain algorithms more effectively. Consider the constant E
+	 * which can be represented by the Taylor series <code>E = 1/0! + 1/1! + 1/2! + 1/3! + 1/4! + ... + 1/n!</code>. Now
+	 * the algorithm could do an extend and addNumerator in the following way:
 	 * 
 	 * <pre>
 	 * BigRational[] results = new BigRational[100];
@@ -359,37 +379,35 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	 * }
 	 * </pre>
 	 * 
-	 * as you see it would be faster due to the fact that the denominator extends by the iteration
-	 * step each time. So the current numerator must advance in the same way. Those the effect is
-	 * that we have two multiplications and one addition. If we would always add 1/(n+1)! there is
-	 * the multiplication to extend the faculty to the next step and two multiplications to bring
-	 * the rational numbers to match the same denominator. The number would raise very quickly as
-	 * long as you do not reduce the fraction each step. If you reduce the fraction each step an
-	 * additional amount of calculating the GCD is added as overhead. The result still would be
-	 * quite close to the algorithm outlined above. With other words the algorithm above is quite a
-	 * bit faster (even not linear to n because the multiplication is quadric). However it only works
-	 * if you do not reduce in each step so the number raises quite a bit. In the typical exp function
-	 * this does not matter a lot though since the reduction dosn't save much.
+	 * as you see it would be faster due to the fact that the denominator extends by the iteration step each time. So
+	 * the current numerator must advance in the same way. Those the effect is that we have two multiplications and one
+	 * addition. If we would always add 1/(n+1)! there is the multiplication to extend the faculty to the next step and
+	 * two multiplications to bring the rational numbers to match the same denominator. The number would raise very
+	 * quickly as long as you do not reduce the fraction each step. If you reduce the fraction each step an additional
+	 * amount of calculating the GCD is added as overhead. The result still would be quite close to the algorithm
+	 * outlined above. With other words the algorithm above is quite a bit faster (even not linear to n because the
+	 * multiplication is quadric). However it only works if you do not reduce in each step so the number raises quite a
+	 * bit. In the typical exp function this does not matter a lot though since the reduction dosn't save much.
 	 * </p>
 	 * 
 	 * @param x The value to add to the numerator of this {@link BigRational}
 	 * @return The new {@link BigRational} with its numerator advanced by x.
 	 */
-	public BigRational addNumerator(BigInteger x) {
+	public BigRational addNumerator(final BigInteger x) {
 		if (x == null) {
 			throw new IllegalArgumentException("Null parameter: x");
 		}
 		return new BigRational(this.numerator.add(x), this.denomintar);
 	}
 
-	public BigRational subtractNumerator(BigInteger x) {
+	public BigRational subtractNumerator(final BigInteger x) {
 		if (x == null) {
 			throw new IllegalArgumentException("Null parameter: x");
 		}
 		return new BigRational(this.numerator.subtract(x), this.denomintar);
 	}
 
-	public BigRational add(BigRational x) {
+	public BigRational add(final BigRational x) {
 		if (x == null) {
 			throw new IllegalArgumentException("Null parameter: x");
 		}
@@ -402,18 +420,18 @@ public final class BigRational extends Number implements Comparable<BigRational>
 		return new BigRational(this.numerator.multiply(thisFactor).add(x.numerator.multiply(thatFactor)), lcm);
 	}
 
-	public BigRational add(BigInteger x) {
+	public BigRational add(final BigInteger x) {
 		if (x == null) {
 			throw new IllegalArgumentException("Null parameter: x");
 		}
 		return new BigRational(this.numerator.add(x.multiply(this.denomintar)), this.denomintar);
 	}
 
-	public BigRational add(BigDecimal x) {
-		return add(valueOf(x));
+	public BigRational add(final BigDecimal x) {
+		return add(BigRational.valueOf(x));
 	}
 
-	public BigRational subtract(BigRational x) {
+	public BigRational subtract(final BigRational x) {
 		if (x == null) {
 			throw new IllegalArgumentException("Null parameter: x");
 		}
@@ -426,54 +444,54 @@ public final class BigRational extends Number implements Comparable<BigRational>
 		return new BigRational(this.numerator.multiply(thisFactor).subtract(x.numerator.multiply(thatFactor)), lcm);
 	}
 
-	public BigRational subtract(BigInteger x) {
+	public BigRational subtract(final BigInteger x) {
 		if (x == null) {
 			throw new IllegalArgumentException("Null parameter: x");
 		}
 		return new BigRational(this.numerator.subtract(x.multiply(this.denomintar)), this.denomintar);
 	}
 
-	public BigRational subtract(BigDecimal x) {
-		return subtract(valueOf(x));
+	public BigRational subtract(final BigDecimal x) {
+		return subtract(BigRational.valueOf(x));
 	}
 
-	public BigRational multiply(BigRational x) {
+	public BigRational multiply(final BigRational x) {
 		if (x == null) {
 			throw new IllegalArgumentException("Null parameter: x");
 		}
 		return new BigRational(this.numerator.multiply(x.numerator), this.denomintar.multiply(x.denomintar));
 	}
 
-	public BigRational multiply(BigInteger x) {
+	public BigRational multiply(final BigInteger x) {
 		if (x == null) {
 			throw new IllegalArgumentException("Null parameter: x");
 		}
 		return new BigRational(this.numerator.multiply(x), this.denomintar);
 	}
 
-	public BigRational multiply(BigDecimal x) {
-		return multiply(valueOf(x));
+	public BigRational multiply(final BigDecimal x) {
+		return multiply(BigRational.valueOf(x));
 	}
 
-	public BigRational divide(BigRational x) {
+	public BigRational divide(final BigRational x) {
 		if (x == null) {
 			throw new IllegalArgumentException("Null parameter: x");
 		}
 		return new BigRational(this.numerator.multiply(x.denomintar), this.denomintar.multiply(x.numerator));
 	}
 
-	public BigRational divide(BigInteger x) {
+	public BigRational divide(final BigInteger x) {
 		if (x == null) {
 			throw new IllegalArgumentException("Null parameter: x");
 		}
 		return new BigRational(this.numerator, this.denomintar.multiply(x));
 	}
 
-	public BigRational divide(BigDecimal x) {
-		return divide(valueOf(x));
+	public BigRational divide(final BigDecimal x) {
+		return divide(BigRational.valueOf(x));
 	}
 
-	public BigRational pow(int x) {
+	public BigRational pow(final int x) {
 		if (x == 0 || this.numerator.signum() == 0) {
 			return BigRational.ONE;
 		}
@@ -486,7 +504,7 @@ public final class BigRational extends Number implements Comparable<BigRational>
 		return decimalValue(MathContext.UNLIMITED);
 	}
 
-	public BigDecimal decimalValue(MathContext mc) {
+	public BigDecimal decimalValue(final MathContext mc) {
 		if (mc == null) {
 			throw new IllegalArgumentException("Null parameter: mc");
 		}
@@ -498,17 +516,17 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	}
 
 	/**
-	 * Returns an exact {@link BigInteger} value of this {@link BigRational} or throws an
-	 * {@link ArithmeticException} if the integer division has a remainder.
+	 * Returns an exact {@link BigInteger} value of this {@link BigRational} or throws an {@link ArithmeticException} if
+	 * the integer division has a remainder.
 	 * 
 	 * @return The exact BigInteger value of this BigRatio.
 	 * @throws ArithmeticException If the division has a remainder.
 	 */
 	public BigInteger toBigIntegerExact() {
-		if (this.remainder().signum() != 0) {
+		if (remainder().signum() != 0) {
 			throw new ArithmeticException("Ratio has a remainder");
 		}
-		return this.toBigInteger();
+		return toBigInteger();
 	}
 
 	/**
@@ -524,6 +542,7 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	public int signum() {
 		return this.numerator.signum();
 	}
+
 	// --- Number implementation
 
 	@Override
@@ -552,7 +571,11 @@ public final class BigRational extends Number implements Comparable<BigRational>
 
 	@Override
 	public String toString() {
-		return new StringBuilder().append(this.numerator).append("/").append(this.denomintar).toString();
+		StringBuilder temp = new StringBuilder().append(this.numerator);
+		if (!BigInteger.ONE.equals(this.denomintar)) {
+			temp.append("/").append(this.denomintar); //$NON-NLS-1$
+		}
+		return temp.toString();
 	}
 
 	@Override
@@ -565,7 +588,7 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
 		} else if (obj == null || !(obj instanceof BigRational)) {
@@ -582,7 +605,7 @@ public final class BigRational extends Number implements Comparable<BigRational>
 
 	// --- Comparable interface
 
-	public int compareTo(BigRational that) {
+	public int compareTo(final BigRational that) {
 		if (that == null) {
 			throw new IllegalArgumentException("Null parameter: that");
 		}

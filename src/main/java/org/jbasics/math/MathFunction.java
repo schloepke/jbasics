@@ -22,32 +22,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.csv;
+package org.jbasics.math;
 
-import java.text.DecimalFormatSymbols;
-import java.util.Locale;
+import java.math.MathContext;
 
-public final class CSVParsingConfiguration {
-	public static final CSVParsingConfiguration COMMA = new CSVParsingConfiguration(',', true);
-	public static final CSVParsingConfiguration SEMICOLON = new CSVParsingConfiguration(';', true);
-	public static final CSVParsingConfiguration TAB = new CSVParsingConfiguration('\t', true);
+/**
+ * Represents the most simple function f(x).
+ * 
+ * @author Stephan Schloepke
+ * @param <T> The type of the {@link Number} to use
+ */
+public interface MathFunction {
 
-	public final char delimiterChar;
-	public final boolean skipEmptyLines;
+	/**
+	 * Calculate f(x) for the given x to the {@link Number} type. The {@link MathContext} used is
+	 * {@link MathContext#UNLIMITED} and can lead to an Exception if the function contains a non terminating
+	 * calculation.
+	 * 
+	 * @param x The x input value
+	 * @return The value of f(x)
+	 */
+	Number calculate(Number x);
 
-	public static CSVParsingConfiguration getStandardForLocal(Locale l, final boolean windows) {
-		if (l == null) {
-			l = Locale.getDefault();
-		}
-		if (DecimalFormatSymbols.getInstance(l).getDecimalSeparator() == ',') {
-			return CSVParsingConfiguration.SEMICOLON;
-		} else {
-			return CSVParsingConfiguration.COMMA;
-		}
-	}
+	/**
+	 * Calculate f(x) for the given x to the {@link Number} type.
+	 * 
+	 * @param x The x input value
+	 * @param mc The math context to use internally (Null must be using {@link MathContext#UNLIMITED}).
+	 * @return The value of f(x)
+	 */
+	Number calculate(Number x, MathContext mc);
 
-	public CSVParsingConfiguration(final char delimiterChar, final boolean skipEmptyLines) {
-		this.delimiterChar = delimiterChar;
-		this.skipEmptyLines = skipEmptyLines;
-	}
+	/**
+	 * Calculate f(x) for the given x in double type.
+	 * 
+	 * @param x The x input value
+	 * @return The value of f(x)
+	 */
+	double calculate(double x);
+
 }

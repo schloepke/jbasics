@@ -24,30 +24,40 @@
  */
 package org.jbasics.csv;
 
+import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
-public final class CSVParsingConfiguration {
-	public static final CSVParsingConfiguration COMMA = new CSVParsingConfiguration(',', true);
-	public static final CSVParsingConfiguration SEMICOLON = new CSVParsingConfiguration(';', true);
-	public static final CSVParsingConfiguration TAB = new CSVParsingConfiguration('\t', true);
+public class CSVField {
+	private final Object value;
 
-	public final char delimiterChar;
-	public final boolean skipEmptyLines;
+	public CSVField(final Object value) {
+		this.value = value;
+	}
 
-	public static CSVParsingConfiguration getStandardForLocal(Locale l, final boolean windows) {
-		if (l == null) {
-			l = Locale.getDefault();
+	public Appendable append(final Appendable appendable, final CSVParsingConfiguration configuration) throws IOException {
+		if (this.value != null) {
+			if (this.value instanceof Number) {
+				if (configuration.delimiterChar == ';') {
+					appendable.append(new DecimalFormat("0.0", DecimalFormatSymbols.getInstance(Locale.GERMANY)).format(this.value));
+				} else {
+					appendable.append(new DecimalFormat("0.0", DecimalFormatSymbols.getInstance(Locale.US)).format(this.value));
+				}
+			} else {
+				appendable.append(this.value.toString());
+			}
 		}
-		if (DecimalFormatSymbols.getInstance(l).getDecimalSeparator() == ',') {
-			return CSVParsingConfiguration.SEMICOLON;
-		} else {
-			return CSVParsingConfiguration.COMMA;
+		return appendable;
+	}
+
+	@Override
+	public String toString() {
+		try {
+			return append(new StringBuilder(), CSVParsingConfiguration.COMMA).toString();
+		} catch (IOException e) {
+			return "IOException caused trying to append to string builder: " + e.getMessage(); //$NON-NLS-1$
 		}
 	}
 
-	public CSVParsingConfiguration(final char delimiterChar, final boolean skipEmptyLines) {
-		this.delimiterChar = delimiterChar;
-		this.skipEmptyLines = skipEmptyLines;
-	}
 }

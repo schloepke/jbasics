@@ -22,32 +22,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.csv;
+package org.jbasics.math;
 
-import java.text.DecimalFormatSymbols;
-import java.util.Locale;
+import org.junit.Test;
 
-public final class CSVParsingConfiguration {
-	public static final CSVParsingConfiguration COMMA = new CSVParsingConfiguration(',', true);
-	public static final CSVParsingConfiguration SEMICOLON = new CSVParsingConfiguration(';', true);
-	public static final CSVParsingConfiguration TAB = new CSVParsingConfiguration('\t', true);
+public class BigRationalPolynomTest {
 
-	public final char delimiterChar;
-	public final boolean skipEmptyLines;
-
-	public static CSVParsingConfiguration getStandardForLocal(Locale l, final boolean windows) {
-		if (l == null) {
-			l = Locale.getDefault();
-		}
-		if (DecimalFormatSymbols.getInstance(l).getDecimalSeparator() == ',') {
-			return CSVParsingConfiguration.SEMICOLON;
-		} else {
-			return CSVParsingConfiguration.COMMA;
-		}
+	@Test
+	public void test() {
+		MathFunction polynom = new BigRationalPolynom(3, 2, 17);
+		System.out.println(polynom);
+		System.out.println(polynom.calculate(BigRational.valueOf("7")));
+		System.out.println(polynom.calculate(BigRational.valueOf("5.5")));
+		System.out.println(polynom.calculate(BigRational.valueOf("3/4563")));
 	}
 
-	public CSVParsingConfiguration(final char delimiterChar, final boolean skipEmptyLines) {
-		this.delimiterChar = delimiterChar;
-		this.skipEmptyLines = skipEmptyLines;
-	}
 }
