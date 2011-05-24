@@ -38,6 +38,7 @@ public class PropertySubstitutionStrategyTest {
 		PropertySubstitutionStrategy temp = new PropertySubstitutionStrategy();
 		System.setProperty("jbasics.hello", "Hello");
 		System.setProperty("jbasics.helloWorld", "${jbasics.hello} World!");
+		System.getProperties().remove("jbasics.test"); // seems another test uses this too!
 		String result = temp.substitute("-- ${jbasics.helloWorld} -- ${jbasics.test:Yo!} --").toString();
 		Assert.assertEquals("-- Hello World! -- Yo! --", result);
 		Properties props = new Properties();

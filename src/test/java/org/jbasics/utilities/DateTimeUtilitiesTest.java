@@ -58,6 +58,7 @@ public class DateTimeUtilitiesTest extends Java14LoggingTestCase {
 		this.logger.log(Level.INFO, "CET created {0} in CET and {1} in GMT", new Object[] { cet, cet.toGMTString() });
 		this.logger.log(Level.INFO, "GMT created {0} in CET and {1} in GMT", new Object[] { gmt, gmt.toGMTString() });
 
+		// FIXME: it seems that if CET and GMT have different days we get an assertion failed
 		Assert.assertEquals(cet, gmt);
 	}
 
