@@ -24,7 +24,10 @@
  */
 package org.jbasics.text;
 
+import java.io.IOException;
+
 import org.jbasics.checker.ContractCheck;
+import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.transpose.Transposer;
 
 public class StringUtilities {
@@ -175,6 +178,28 @@ public class StringUtilities {
 				temp.append(padCharacter);
 			}
 			return temp.toString();
+		}
+	}
+
+	public static final <T extends Appendable> T appendMultipleTimesWithDelimiter(final T appendable, final int amount, final CharSequence element,
+			final CharSequence delimiter, final CharSequence prefix, final CharSequence suffix) {
+		try {
+			ContractCheck.mustNotBeNull(appendable, "appendable"); //$NON-NLS-1$
+			if (prefix != null) {
+				appendable.append(prefix);
+			}
+			if (amount > 0) {
+				appendable.append(element);
+				for (int i = 1; i < amount; i++) {
+					appendable.append(delimiter).append(element);
+				}
+			}
+			if (suffix != null) {
+				appendable.append(suffix);
+			}
+			return appendable;
+		} catch (IOException e) {
+			throw DelegatedException.delegate(e);
 		}
 	}
 
