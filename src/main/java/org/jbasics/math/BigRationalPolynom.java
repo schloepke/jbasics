@@ -68,7 +68,7 @@ public class BigRationalPolynom implements MathFunction {
 		return calculate(BigRational.valueOf(x));
 	}
 
-	public BigRational calculate(final Number x, final MathContext mc) {
+	public BigRational calculate(final MathContext mc, final Number x) {
 		return calculate(BigRational.valueOf(x));
 	}
 

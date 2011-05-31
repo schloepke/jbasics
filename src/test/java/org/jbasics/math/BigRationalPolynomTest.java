@@ -24,17 +24,35 @@
  */
 package org.jbasics.math;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
 
-public class BigRationalPolynomTest {
+import org.jbasics.testing.Java14LoggingTestCase;
+
+@SuppressWarnings("nls")
+public class BigRationalPolynomTest extends Java14LoggingTestCase {
 
 	@Test
 	public void test() {
 		MathFunction polynom = new BigRationalPolynom(3, 2, 17);
-		System.out.println(polynom);
-		System.out.println(polynom.calculate(BigRational.valueOf("7")));
-		System.out.println(polynom.calculate(BigRational.valueOf("5.5")));
-		System.out.println(polynom.calculate(BigRational.valueOf("3/4563")));
+		this.logger.info("The polynom is f(x) = " + polynom);
+
+		Number input = BigRational.valueOf("7");
+		Number actual = polynom.calculate(input);
+		this.logger.info("Result f(" + input + ") = " + actual);
+		Assert.assertEquals(BigRational.valueOf("178"), actual);
+
+		input = BigRational.valueOf("5.5");
+		actual = polynom.calculate(input);
+		this.logger.info("Result f(" + input + ") = " + actual);
+		Assert.assertEquals(BigRational.valueOf("475/4"), actual);
+
+		input = BigRational.valueOf("3/4563");
+		actual = polynom.calculate(input);
+		this.logger.info("Result f(" + input + ") = " + actual);
+		Assert.assertEquals(BigRational.valueOf("13110514/771147"), actual);
+
 	}
 
 }

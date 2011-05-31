@@ -51,7 +51,7 @@ public interface MathFunction {
 	 * @param mc The math context to use internally (Null must be using {@link MathContext#UNLIMITED}).
 	 * @return The value of f(x)
 	 */
-	Number calculate(Number x, MathContext mc);
+	Number calculate(MathContext mc, Number x);
 
 	/**
 	 * Calculate f(x) for the given x in double type.
