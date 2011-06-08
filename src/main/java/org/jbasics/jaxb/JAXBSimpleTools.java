@@ -30,6 +30,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -40,6 +41,10 @@ import org.jbasics.exception.DelegatedException;
 
 public class JAXBSimpleTools {
 	private final JAXBPool pool;
+
+	public static <T> String marshallToString(final JAXBElement<T> element) {
+		return new JAXBSimpleTools(element.getDeclaredType()).marshall(element);
+	}
 
 	public static <T> String marshallToString(final T element) {
 		return new JAXBSimpleTools(element.getClass()).marshall(element);
