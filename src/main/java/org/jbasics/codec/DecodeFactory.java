@@ -22,47 +22,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.math;
+package org.jbasics.codec;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.pattern.coder.Codec;
+import org.jbasics.pattern.factory.ParameterFactory;
 
-public class GaussianDistribution implements MathFunction {
-	public static final GaussianDistribution STANDARD_NORMAL_DISTRIBUTION = new GaussianDistribution(BigDecimal.ZERO, BigDecimal.ONE);
+public class DecodeFactory<In, Out> implements ParameterFactory<In, Out> {
+	private final Codec<In, Out> codec;
 
-	private final BigDecimal mean;
-	private final BigDecimal variance;
-
-	public GaussianDistribution(final BigDecimal mean, final BigDecimal variance) {
-		this.mean = mean == null ? BigDecimal.ZERO : mean;
-		this.variance = variance == null ? BigDecimal.ONE : variance;
+	public DecodeFactory(final Codec<In, Out> codec) {
+		this.codec = ContractCheck.mustNotBeNull(codec, "codec"); //$NON-NLS-1$
 	}
 
-	public BigDecimal getMean() {
-		return this.mean;
-	}
-
-	public BigDecimal getVariance() {
-		return this.variance;
-	}
-
-	public Number calculate(final Number x) {
-// BigDecimalMathLibrary.sqrt(BigDecimalMathLibrary.PI2)
-// BigDecimal.ONE
-//
-// 1 / sqrt(2)
-//
-		return null;
-	}
-
-	public Number calculate(final MathContext mc, final Number x) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public double calculate(final double x) {
-		// TODO Auto-generated method stub
-		return 0;
+	public In create(final Out param) {
+		return this.codec.decode(param);
 	}
 
 }
