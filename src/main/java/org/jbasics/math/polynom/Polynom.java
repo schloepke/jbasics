@@ -29,6 +29,10 @@ public class Polynom implements MathFunction {
 		}
 	}
 
+	public int grade() {
+		return this.coefficients.length - 1;
+	}
+
 	public BigRational calculate(final BigRational x) {
 		if (this.coefficients.length == 0) {
 			return BigRational.ZERO;
@@ -54,7 +58,7 @@ public class Polynom implements MathFunction {
 	public double calculate(final double x) {
 		return calculate(BigRational.valueOf(x)).doubleValue();
 	}
-	
+
 	public Polynom add(Polynom q) {
 		BigRational[] a = this.coefficients;
 		BigRational[] b = q.coefficients;
@@ -64,12 +68,12 @@ public class Polynom implements MathFunction {
 		}
 		BigRational[] result = new BigRational[a.length];
 		System.arraycopy(a, 0, result, 0, a.length);
-		for(int i = 0; i < b.length; i++) {
+		for (int i = 0; i < b.length; i++) {
 			result[i] = result[i].add(b[i]);
 		}
 		return new Polynom(result);
 	}
-	
+
 	public Polynom subtract(Polynom q) {
 		BigRational[] a = this.coefficients;
 		BigRational[] b = q.coefficients;
@@ -79,16 +83,16 @@ public class Polynom implements MathFunction {
 		}
 		BigRational[] result = new BigRational[a.length];
 		System.arraycopy(a, 0, result, 0, a.length);
-		for(int i = 0; i < b.length; i++) {
+		for (int i = 0; i < b.length; i++) {
 			result[i] = result[i].subtract(b[i]);
 		}
 		return new Polynom(result);
 	}
-	
+
 	public Polynom multiply(Polynom q) {
 		throw new UnsupportedOperationException("Multiply is not yet implemented");
 	}
-	
+
 	public RationalFunction divide(Polynom q) {
 		return new RationalFunction(this, q);
 	}

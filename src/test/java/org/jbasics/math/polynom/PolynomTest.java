@@ -22,20 +22,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.math;
+package org.jbasics.math.polynom;
 
 import junit.framework.Assert;
 
+import org.jbasics.math.BigRational;
+import org.jbasics.math.MathFunction;
+import org.jbasics.testing.Java14LoggingTestCase;
 import org.junit.Test;
 
-import org.jbasics.testing.Java14LoggingTestCase;
-
 @SuppressWarnings("nls")
-public class BigRationalPolynomTest extends Java14LoggingTestCase {
+public class PolynomTest extends Java14LoggingTestCase {
 
 	@Test
 	public void test() {
-		MathFunction polynom = new BigRationalPolynom(3, 2, 17);
+		MathFunction polynom = new Polynom(3, 2, 17);
 		this.logger.info("The polynom is f(x) = " + polynom);
 
 		Number input = BigRational.valueOf("7");
