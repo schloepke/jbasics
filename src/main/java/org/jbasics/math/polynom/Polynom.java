@@ -25,11 +25,12 @@
 package org.jbasics.math.polynom;
 
 import java.math.MathContext;
+import java.util.Arrays;
 
 import org.jbasics.math.BigRational;
 import org.jbasics.math.MathFunction;
 
-public class Polynom implements MathFunction {
+public class Polynom implements MathFunction, Comparable<Polynom> {
 	private final BigRational[] coefficients;
 
 	public Polynom(final BigRational... coefficients) {
@@ -114,7 +115,19 @@ public class Polynom implements MathFunction {
 	}
 
 	public Polynom multiply(Polynom q) {
-		throw new UnsupportedOperationException("Multiply is not yet implemented");
+		BigRational[] a = this.coefficients;
+		BigRational[] b = q.coefficients;
+		BigRational[] result = new BigRational[a.length + b.length - 1];
+		for (int i = 0; i < a.length; i++) {
+			for (int j = 0; j < b.length; j++) {
+				if (result[i + j] == null) {
+					result[i + j] = a[i].multiply(b[j]);
+				} else {
+					result[i + j] = result[i + j].add(a[i].multiply(b[j]));
+				}
+			}
+		}
+		return new Polynom(result);
 	}
 
 	public RationalFunction divide(Polynom q) {
@@ -123,9 +136,9 @@ public class Polynom implements MathFunction {
 
 	@Override
 	public String toString() {
-		int exp = this.coefficients.length - 1;
 		StringBuilder temp = new StringBuilder();
-		for (BigRational ax : this.coefficients) {
+		for (int i = this.coefficients.length - 1; i >= 0; i--) {
+			BigRational ax = this.coefficients[i];
 			if (ax.signum() != 0) {
 				if (temp.length() > 0) {
 					if (ax.signum() >= 0) {
@@ -133,13 +146,46 @@ public class Polynom implements MathFunction {
 					}
 				}
 				temp.append(ax);
-				if (exp > 0) {
-					temp.append("x^").append(exp); //$NON-NLS-1$
+				if (i > 1) {
+					temp.append("x^").append(i); //$NON-NLS-1$
+				} else if (i == 1) {
+					temp.append("x"); //$NON-NLS-1$
 				}
 			}
-			exp--;
 		}
 		return temp.toString();
+	}
+
+	public int compareTo(Polynom o) {
+		if (o == null) {
+			return -1;
+		} else if (this.coefficients.length != o.coefficients.length) {
+			return this.coefficients.length - o.coefficients.length;
+		} else {
+			for(int i = this.coefficients.length - 1; i >= 0; i--) {
+				int temp = this.coefficients[i].compareTo(o.coefficients[i]);
+				if (temp != 0) {
+					return temp;
+				}
+			}
+		}
+		return 0;
+	}
+
+	@Override
+	public int hashCode() {
+		return 31 + Arrays.hashCode(this.coefficients);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (obj == null || !(obj instanceof Polynom)) {
+			return false;
+		} else {
+			return Arrays.equals(this.coefficients, ((Polynom) obj).coefficients);
+		}
 	}
 
 }

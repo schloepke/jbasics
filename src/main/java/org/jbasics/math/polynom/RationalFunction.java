@@ -56,5 +56,10 @@ public class RationalFunction implements MathFunction {
 		double qx = this.denominator.calculate(x);
 		return px / qx;
 	}
+	
+	@Override
+	public String toString() {
+		return this.nominator + "/" + this.denominator;
+	}
 
 }
