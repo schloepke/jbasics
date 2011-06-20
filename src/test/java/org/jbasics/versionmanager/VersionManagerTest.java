@@ -34,8 +34,8 @@ public class VersionManagerTest {
 	@Test
 	public void testVersion() {
 		VersionInformation info = VersionManager.instance().getVersion(new VersionIdentifier("org.jbasics", "jbasics-test"));
-		Assert.assertNotNull(info);
-		Assert.assertFalse(info.isUnknown());
-		Assert.assertEquals("0.2.11", info.getVersion());
+		Assert.assertNotNull("Version info object should not be null", info);
+		Assert.assertFalse("Version should not be unknown", info.isUnknown());
+		Assert.assertEquals("Version is not correct", "0.2.11", info.getVersion());
 	}
 }
