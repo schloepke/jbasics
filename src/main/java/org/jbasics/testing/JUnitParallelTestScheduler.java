@@ -24,14 +24,16 @@
  */
 package org.jbasics.testing;
 
-import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.runners.model.RunnerScheduler;
 
-import org.jbasics.configuration.properties.SystemProperty;
 import org.jbasics.exception.DelegatedException;
 
 /**
@@ -42,25 +44,44 @@ import org.jbasics.exception.DelegatedException;
  * @author Stephan Schloepke
  */
 public class JUnitParallelTestScheduler implements RunnerScheduler {
-	public static final SystemProperty<BigInteger> THREAD_COUNT = SystemProperty.integerProperty("junit.thread.count", BigInteger.valueOf(10L)); //$NON-NLS-1$
+	private final long timeoutMinutes;
 
 	private final ExecutorService runService;
+	private final Collection<Future<?>> openTasks = new ArrayList<Future<?>>();
 
 	public JUnitParallelTestScheduler() {
-		this.runService = Executors.newFixedThreadPool(Math.max(1, JUnitParallelTestScheduler.THREAD_COUNT.value().intValue()));
+		this(10, 15L);
+	}
+
+	public JUnitParallelTestScheduler(final int threads, final long timeoutMinutes) {
+		this.runService = Executors.newFixedThreadPool(threads <= 1 ? 1 : threads);
+		this.timeoutMinutes = timeoutMinutes <= 1 ? 1 : timeoutMinutes;
 	}
 
 	public void schedule(final Runnable testRun) {
-		this.runService.submit(testRun);
+		this.openTasks.add(this.runService.submit(testRun));
 	}
 
 	public void finished() {
 		this.runService.shutdown();
 		try {
-			this.runService.awaitTermination(10, TimeUnit.MINUTES);
+			boolean done = false;
+			do {
+				done = this.runService.awaitTermination(this.timeoutMinutes, TimeUnit.MINUTES);
+				if (!done) {
+					int countBefore = this.openTasks.size();
+					Iterator<Future<?>> i = this.openTasks.iterator();
+					while (i.hasNext()) {
+						Future<?> temp = i.next();
+						if (temp.isDone() || temp.isCancelled()) {
+							i.remove();
+						}
+					}
+					done = this.openTasks.size() == countBefore;
+				}
+			} while (!done);
 		} catch (InterruptedException e) {
 			throw DelegatedException.delegate(e);
 		}
 	}
-
 }

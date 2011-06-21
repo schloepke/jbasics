@@ -24,12 +24,64 @@
  */
 package org.jbasics.testing;
 
-import org.junit.runners.Parameterized;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ParallelizedParameterized extends Parameterized {
+import org.junit.runner.Runner;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Suite;
+import org.junit.runners.model.FrameworkMethod;
+import org.junit.runners.model.InitializationError;
+import org.junit.runners.model.TestClass;
+
+public class ParallelizedParameterized extends Suite {
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.TYPE)
+	public @interface ParallelizedConfig {
+		int threads() default 10;
+
+		long timeout() default 15;
+	}
 
 	public ParallelizedParameterized(final Class<?> type) throws Throwable {
-		super(type);
-		setScheduler(new JUnitParallelTestScheduler());
+		super(type, new ArrayList<Runner>());
+		ParallelizedConfig cfg = getTestClass().getJavaClass().getAnnotation(ParallelizedConfig.class);
+		if (cfg != null) {
+			setScheduler(new JUnitParallelTestScheduler(cfg.threads(), cfg.timeout()));
+		} else {
+			setScheduler(new JUnitParallelTestScheduler());
+		}
+		buildTestRunners();
 	}
+
+	protected void buildTestRunners() throws Throwable, InitializationError {
+		TestClass testClass = getTestClass();
+		List<Runner> runners = getChildren();
+		List<Object[]> tests = getListOfParameters(testClass);
+		for (int i = 0; i < tests.size(); i++) {
+			runners.add(createTestRunner(testClass, tests, i));
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	protected List<Object[]> getListOfParameters(final TestClass testClass) throws Throwable {
+		for (FrameworkMethod fm : testClass.getAnnotatedMethods(Parameters.class)) {
+			int modifiers = fm.getMethod().getModifiers();
+			if (Modifier.isStatic(modifiers) && Modifier.isPublic(modifiers)) {
+				return (List<Object[]>) fm.invokeExplosively(null);
+			}
+		}
+		throw new Exception("Could not find a method annotaded with @Parameters and which is static and public for " + testClass.getName()); //$NON-NLS-1$
+	}
+
+	protected ParameterizedTestRunner createTestRunner(final TestClass testClass, final List<Object[]> tests, final int i) throws InitializationError {
+		return new ParameterizedTestRunner(testClass.getJavaClass(), tests.get(i), i);
+	}
+
 }
