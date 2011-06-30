@@ -69,6 +69,28 @@ public class DateTimeUtilitiesTest extends Java14LoggingTestCase {
 				new Object[] { temp.left(), temp.right() });
 	}
 
+	@Test
+	public void testConvertWindowsFiletime() {
+		long test = 129698496000000000L;
+		Date current = DateTimeUtilities.convertWindowsFiletime(test);
+		Assert.assertEquals(DateTimeUtilities.createDate(2012, 01, 01), current);
+		test = 127805472000000000l;
+		current = DateTimeUtilities.convertWindowsFiletime(test);
+		Assert.assertEquals(DateTimeUtilities.createDate(2006, 01, 01), current);
+		test = 127805472000000000l;
+		current = DateTimeUtilities.convertWindowsFiletime(test);
+		Assert.assertEquals(DateTimeUtilities.createDate(2006, 01, 01), current);
+		test = 129530520543204718l;
+		current = DateTimeUtilities.convertWindowsFiletime(test);
+		Assert.assertEquals(DateTimeUtilities.createDateTime(2011, 6, 20, 14, 0, 54, 320), current);
+		test = 129532289547157823l;
+		current = DateTimeUtilities.convertWindowsFiletime(test);
+		Assert.assertEquals(DateTimeUtilities.createDateTime(2011, 6, 22, 15, 9, 14, 715), current);
+		test = 129497361571394245l;
+		current = DateTimeUtilities.convertWindowsFiletime(test);
+		Assert.assertEquals(DateTimeUtilities.createDateTime(2011, 5, 13, 4, 55, 57, 139), current);
+	}
+
 	private Date createTestDateTime(final Calendar cal, final int addDays) {
 		cal.set(Calendar.YEAR, 1977);
 		cal.set(Calendar.MONTH, Calendar.MARCH);
