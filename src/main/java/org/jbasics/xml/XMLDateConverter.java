@@ -28,8 +28,22 @@ import java.util.Date;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.jbasics.pattern.factory.ParameterFactory;
+
 public final class XMLDateConverter {
 	public static final XMLDateFactory XML_DATE_FACTORY = new XMLDateFactory();
+
+	public static final ParameterFactory<XMLGregorianCalendar, Date> TO_XML_DATE_FACTORY = new ParameterFactory<XMLGregorianCalendar, Date>() {
+		public XMLGregorianCalendar create(Date param) {
+			return convert(param);
+		}
+	};
+
+	public static final ParameterFactory<Date, XMLGregorianCalendar> FROM_XML_DATE_FACTORY = new ParameterFactory<Date, XMLGregorianCalendar>() {
+		public Date create(XMLGregorianCalendar param) {
+			return convert(param);
+		}
+	};
 
 	public static XMLGregorianCalendar convert(final Date date) {
 		if (date == null) {
@@ -68,7 +82,7 @@ public final class XMLDateConverter {
 
 	/**
 	 * Incorrectly written method name should be {@link #convert(XMLGregorianCalendar)} instead.
-	 * 
+	 *
 	 * @param xmlDate
 	 *            The xml date
 	 * @return The converted date
