@@ -27,35 +27,37 @@ package org.jbasics.jaxb;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.validation.Schema;
+
+import org.jbasics.checker.ContractCheck;
 
 public class JAXBPool {
 	private final JAXBMarshallerPool marshallerPoolDelegate;
 	private final JAXBUnmarshallerPool unmarshallerPoolDelegate;
 
 	public JAXBPool(final Class<?>... classes) {
-		if (classes == null || classes.length == 0) {
-			throw new IllegalArgumentException("Null or empty parameter: classes");
-		}
-		final JAXBContextFactory temp = new JAXBContextFactory(classes);
+		final JAXBContextFactory temp = new JAXBContextFactory(ContractCheck.mustNotBeNullOrEmpty(classes, "classes")); //$NON-NLS-1$
 		this.marshallerPoolDelegate = new JAXBMarshallerPool(temp);
+		this.unmarshallerPoolDelegate = new JAXBUnmarshallerPool(temp);
+	}
+
+	public JAXBPool(final String contextPath, final Schema schema) {
+		JAXBContextFactory temp = new JAXBContextFactory(ContractCheck.mustNotBeNullOrTrimmedEmpty(contextPath, "contextPath")); //$NON-NLS-1$
+		this.marshallerPoolDelegate = new JAXBMarshallerPool(temp, schema);
 		this.unmarshallerPoolDelegate = new JAXBUnmarshallerPool(temp);
 	}
 
 	public JAXBPool(final String contextPath) {
-		if (contextPath == null) {
-			throw new IllegalArgumentException("Null or parameter: contextPath");
-		}
-		JAXBContextFactory temp = new JAXBContextFactory(contextPath);
-		this.marshallerPoolDelegate = new JAXBMarshallerPool(temp);
-		this.unmarshallerPoolDelegate = new JAXBUnmarshallerPool(temp);
+		this(contextPath, null);
+	}
+
+	public JAXBPool(final JAXBContext context, final Schema schema) {
+		this.marshallerPoolDelegate = new JAXBMarshallerPool(ContractCheck.mustNotBeNull(context, "context"), schema); //$NON-NLS-1$
+		this.unmarshallerPoolDelegate = new JAXBUnmarshallerPool(context);
 	}
 
 	public JAXBPool(final JAXBContext context) {
-		if (context == null) {
-			throw new IllegalArgumentException("Null or parameter: context");
-		}
-		this.marshallerPoolDelegate = new JAXBMarshallerPool(context);
-		this.unmarshallerPoolDelegate = new JAXBUnmarshallerPool(context);
+		this(context, null);
 	}
 
 	public Marshaller aquireMarshaller() {

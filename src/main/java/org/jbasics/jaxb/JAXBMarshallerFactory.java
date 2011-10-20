@@ -27,28 +27,33 @@ package org.jbasics.jaxb;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.validation.Schema;
 
+import org.jbasics.checker.ContractCheck;
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.types.delegates.LazySoftReferenceDelegate;
 
-
 public class JAXBMarshallerFactory implements Factory<Marshaller> {
 	private final Delegate<JAXBContext> jaxbContextDelegate;
+	private final Schema schema;
+
+	public JAXBMarshallerFactory(final Delegate<JAXBContext> contextDelegate, final Schema schema) {
+		this.jaxbContextDelegate = ContractCheck.mustNotBeNull(contextDelegate, "contextDelegate"); //$NON-NLS-1$
+		this.schema = schema;
+	}
 
 	public JAXBMarshallerFactory(final Delegate<JAXBContext> contextDelegate) {
-		if (contextDelegate == null) {
-			throw new IllegalArgumentException("Null parameter: contextDelegate");
-		}
-		this.jaxbContextDelegate = contextDelegate;
+		this(contextDelegate, null);
+	}
+
+	public JAXBMarshallerFactory(final Factory<JAXBContext> contextFactory, final Schema schema) {
+		this(new LazySoftReferenceDelegate<JAXBContext>(ContractCheck.mustNotBeNull(contextFactory, "contextFactory")), schema); //$NON-NLS-1$
 	}
 
 	public JAXBMarshallerFactory(final Factory<JAXBContext> contextFactory) {
-		if (contextFactory == null) {
-			throw new IllegalArgumentException("Null parameter: contextFactory");
-		}
-		this.jaxbContextDelegate = new LazySoftReferenceDelegate<JAXBContext>(contextFactory);
+		this(contextFactory, null);
 	}
 
 	public Marshaller newInstance() {
@@ -57,10 +62,13 @@ public class JAXBMarshallerFactory implements Factory<Marshaller> {
 			throw new IllegalStateException("Cannot create unmarshaller since jaxb context delegate returns null");
 		}
 		try {
-			return ctx.createMarshaller();
+			Marshaller m = ctx.createMarshaller();
+			if (this.schema != null) {
+				m.setSchema(this.schema);
+			}
+			return m;
 		} catch (JAXBException e) {
 			throw DelegatedException.delegate(e);
 		}
 	}
-
 }

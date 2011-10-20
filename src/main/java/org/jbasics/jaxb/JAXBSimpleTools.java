@@ -30,13 +30,17 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
 import org.jbasics.checker.ContractCheck;
+import org.jbasics.enviroment.JVMEnviroment;
 import org.jbasics.exception.DelegatedException;
 
 public class JAXBSimpleTools {
@@ -64,6 +68,24 @@ public class JAXBSimpleTools {
 
 	public JAXBSimpleTools(final String contextPath) {
 		this.pool = new JAXBPool(contextPath);
+	}
+
+	public JAXBSimpleTools(final String contextPath, final String schemaResource) {
+		if (schemaResource != null) {
+			try {
+				SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+				Schema schema = factory.newSchema(JVMEnviroment.getNotNullResource(schemaResource));
+				this.pool = new JAXBPool(contextPath, schema);
+			} catch (Exception e) {
+				throw DelegatedException.delegate(e);
+			}
+		} else {
+			this.pool = new JAXBPool(contextPath);
+		}
+	}
+
+	public JAXBSimpleTools(final String contextPath, final Schema schema) {
+		this.pool = new JAXBPool(contextPath, schema);
 	}
 
 	public JAXBSimpleTools(final Class<?>... classes) {

@@ -28,10 +28,21 @@ import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.delegation.Delegate;
 
 public final class UnmodifiableDelegate<T> implements Delegate<T> {
+	public static final Delegate<?> NULL_DELEGATE = new UnmodifiableDelegate<Object>();
+
+	@SuppressWarnings("unchecked")
+	public static final <T> Delegate<T> nullDelegate() {
+		return (Delegate<T>) UnmodifiableDelegate.NULL_DELEGATE;
+	}
+
 	private final T delegate;
 
+	private UnmodifiableDelegate() {
+		this.delegate = null;
+	}
+
 	public UnmodifiableDelegate(final T delegate) {
-		this.delegate = ContractCheck.mustNotBeNull(delegate, "delegate");
+		this.delegate = ContractCheck.mustNotBeNull(delegate, "delegate"); //$NON-NLS-1$
 	}
 
 	public T delegate() {

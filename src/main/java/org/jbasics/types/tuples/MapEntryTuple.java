@@ -29,6 +29,10 @@ import java.util.Map.Entry;
 public class MapEntryTuple<K, V> implements Tuple<K, V> {
 	private final Entry<K, V> entry;
 
+	public static <K, V> MapEntryTuple<K, V> create(final Entry<K, V> entry) {
+		return new MapEntryTuple<K, V>(entry);
+	}
+
 	public MapEntryTuple(final Entry<K, V> entry) {
 		this.entry = entry;
 	}

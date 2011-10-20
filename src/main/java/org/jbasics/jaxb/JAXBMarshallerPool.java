@@ -26,12 +26,12 @@ package org.jbasics.jaxb;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
+import javax.xml.validation.Schema;
 
-import org.jbasics.pattern.pooling.Pool;
 import org.jbasics.types.delegates.UnmodifiableDelegate;
 import org.jbasics.types.pools.LazyQueuePool;
 
-public class JAXBMarshallerPool extends LazyQueuePool<Marshaller> implements Pool<Marshaller> {
+public class JAXBMarshallerPool extends LazyQueuePool<Marshaller> {
 
 	public JAXBMarshallerPool(final Class<?>... classes) {
 		super(new JAXBMarshallerFactory(new JAXBContextFactory(classes)));
@@ -41,12 +41,24 @@ public class JAXBMarshallerPool extends LazyQueuePool<Marshaller> implements Poo
 		super(new JAXBMarshallerFactory(new JAXBContextFactory(contextPath)));
 	}
 
+	public JAXBMarshallerPool(final String contextPath, final Schema schema) {
+		super(new JAXBMarshallerFactory(new JAXBContextFactory(contextPath), schema));
+	}
+
 	public JAXBMarshallerPool(final JAXBContext context) {
 		super(new JAXBMarshallerFactory(new UnmodifiableDelegate<JAXBContext>(context)));
 	}
 
+	public JAXBMarshallerPool(final JAXBContext context, final Schema schema) {
+		super(new JAXBMarshallerFactory(new UnmodifiableDelegate<JAXBContext>(context), schema));
+	}
+
 	public JAXBMarshallerPool(final JAXBContextFactory contextFactory) {
 		super(new JAXBMarshallerFactory(contextFactory));
+	}
+
+	public JAXBMarshallerPool(final JAXBContextFactory contextFactory, final Schema schema) {
+		super(new JAXBMarshallerFactory(contextFactory, schema));
 	}
 
 }
