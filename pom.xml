@@ -40,6 +40,7 @@
 	</issueManagement>
 
 	<distributionManagement>
+		<!--
 		<repository>
 			<id>step-h</id>
 			<url>sftp://step-h.com:47922/httpdocs/release</url>
@@ -48,6 +49,25 @@
 			<id>step-h</id>
 			<url>sftp://step-h.com:47922/httpdocs/snapshot</url>
 		</snapshotRepository>
+		-->
+		<repository>
+			<id>github-pages</id>
+			<url>file:///${basedir}/_gh-pages/repository/</url>
+		</repository>
+		<snapshotRepository>
+			<id>step-h</id>
+			<url>sftp://step-h.com:47922/httpdocs/snapshot</url>
+		</snapshotRepository>
+		<!--
+		<repository>
+			<id>github-pages</id>
+			<url>file:///${basedir}/_gh-pages/repository/</url>
+		</repository>
+		<snapshotRepository>
+			<id>github-pages</id>
+			<url>file:///${basedir}/_gh-pages/repository/</url>
+		</snapshotRepository>
+		-->
 	</distributionManagement>
 
 	<developers>
