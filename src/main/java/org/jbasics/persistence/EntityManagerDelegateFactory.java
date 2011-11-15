@@ -35,14 +35,22 @@ import org.jbasics.pattern.delegation.LifecycleDelegate;
 import org.jbasics.pattern.factory.ClosableFactory;
 
 public class EntityManagerDelegateFactory implements ClosableFactory<LifecycleDelegate<EntityManager>> {
+	private final boolean externalManaged;
 	private final EntityManagerFactory factory;
 
 	public EntityManagerDelegateFactory(final String persistenceUnitName) {
 		this.factory = Persistence.createEntityManagerFactory(ContractCheck.mustNotBeNull(persistenceUnitName, "persistenceUnitName")); //$NON-NLS-1$
+		this.externalManaged = false;
 	}
 
 	public EntityManagerDelegateFactory(final String persistenceUnitName, final Map<?, ?> properties) {
 		this.factory = Persistence.createEntityManagerFactory(ContractCheck.mustNotBeNull(persistenceUnitName, "persistenceUnitName"), properties); //$NON-NLS-1$
+		this.externalManaged = false;
+	}
+
+	public EntityManagerDelegateFactory(final EntityManagerFactory factory) {
+		this.factory = ContractCheck.mustNotBeNull(factory, "factory"); //$NON-NLS-1$
+		this.externalManaged = true;
 	}
 
 	public LifecycleDelegate<EntityManager> newInstance() {
@@ -53,8 +61,10 @@ public class EntityManagerDelegateFactory implements ClosableFactory<LifecycleDe
 	}
 
 	public void close() {
-		if (this.factory.isOpen()) {
-			this.factory.close();
+		if (!this.externalManaged) {
+			if (this.factory.isOpen()) {
+				this.factory.close();
+			}
 		}
 	}
 
