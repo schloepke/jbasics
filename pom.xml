@@ -221,6 +221,13 @@
 					</archive>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<pushChanges>false</pushChanges>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
