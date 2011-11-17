@@ -50,8 +50,8 @@
 		</snapshotRepository>
 		-->
 		<repository>
-			<id>github-pages</id>
-			<url>file:///${basedir}/_gh-pages/repository/</url>
+			<id>step-h</id>
+			<url>sftp://step-h.com:47922/httpdocs/release</url>
 		</repository>
 		<snapshotRepository>
 			<id>step-h</id>
