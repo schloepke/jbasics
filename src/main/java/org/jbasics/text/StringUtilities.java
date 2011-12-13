@@ -30,7 +30,7 @@ import org.jbasics.checker.ContractCheck;
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.transpose.Transposer;
 
-public class StringUtilities {
+public final class StringUtilities {
 	public static final String EMPTY_STRING = "".intern(); //$NON-NLS-1$
 	public static final Transposer<String, Object> JAVA_TO_STRING_TRANSPOSER = new Transposer<String, Object>() {
 		public String transpose(final Object input) {
@@ -201,6 +201,24 @@ public class StringUtilities {
 		} catch (IOException e) {
 			throw DelegatedException.delegate(e);
 		}
+	}
+
+	public static boolean isAllNotNullAndNotTrimmedEmpty(final String... strings) {
+		for (String test : strings) {
+			if (test == null || test.trim().length() == 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static boolean isAtLeastOneNotNullAndNotTrimmedEmpty(final String... strings) {
+		for (String test : strings) {
+			if (test != null && test.trim().length() > 0) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

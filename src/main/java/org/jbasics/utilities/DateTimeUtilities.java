@@ -36,25 +36,17 @@ public class DateTimeUtilities {
 
 	@SuppressWarnings("unchecked")
 	public static <T extends Date> T stripTimepart(final T dateTime) {
-		// we want to clone the original input in order to not modify the mutable input
-		T result = (T) ContractCheck.mustNotBeNull(dateTime, "dateTime").clone(); //$NON-NLS-1$
-		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(result.getTime());
-		cal.set(Calendar.MILLISECOND, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.ZONE_OFFSET, 0);
-		result.setTime(cal.getTimeInMillis());
-		return result;
+		return DateTimeUtilities.stripTimepart(dateTime, null);
 	}
 
-	@SuppressWarnings({ "unchecked", "nls" })
-	public static <T extends Date> T stripTimepartWithTimezone(final T dateTime, TimeZone zone) {
+	@SuppressWarnings({ "unchecked" })
+	public static <T extends Date> T stripTimepart(final T dateTime, TimeZone zone) {
 		// we want to clone the original input in order to not modify the mutable input
 		T result = (T) ContractCheck.mustNotBeNull(dateTime, "dateTime").clone(); //$NON-NLS-1$
-		zone = TimeZone.getTimeZone("GMT");
-		Calendar cal = Calendar.getInstance();
+		if (zone == null) {
+			zone = TimeZone.getDefault();
+		}
+		Calendar cal = Calendar.getInstance(zone);
 		cal.setTimeInMillis(result.getTime());
 		cal.set(Calendar.MILLISECOND, 0);
 		cal.set(Calendar.SECOND, 0);
