@@ -100,7 +100,13 @@ public final class StringUtilities {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static final <T> String joinToString(final CharSequence delimiter, Transposer<String, T> transposer, final Iterable<T> texts) {
+	public static final <T> String joinToString(final CharSequence delimiter, final Transposer<String, T> transposer, final Iterable<T> texts) {
+		return StringUtilities.joinToString(delimiter, transposer, texts, false);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static final <T> String joinToString(final CharSequence delimiter, Transposer<String, T> transposer, final Iterable<T> texts,
+			final boolean includeEmpty) {
 		ContractCheck.mustNotBeNullOrEmpty(delimiter, "delimiter"); //$NON-NLS-1$
 		if (texts == null) {
 			return StringUtilities.EMPTY_STRING;
@@ -112,7 +118,7 @@ public final class StringUtilities {
 		for (T t : texts) {
 			if (t != null) {
 				CharSequence tt = transposer.transpose(t);
-				if (tt.length() > 0) {
+				if (includeEmpty || tt.length() > 0) {
 					if (temp.length() > 0) {
 						temp.append(delimiter);
 					}

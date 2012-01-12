@@ -31,6 +31,7 @@ import java.util.Map;
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.pattern.factory.ParameterFactory;
+import org.jbasics.pattern.modifer.Concatable;
 import org.jbasics.pattern.strategy.SubstitutionStrategy;
 import org.jbasics.pattern.transpose.Transposer;
 import org.jbasics.types.factories.MapFactory;
@@ -68,13 +69,30 @@ public class MapTransposer<K, V> implements Transposer<Map<K, V>, Collection<V>>
 		}
 		Map<K, V> result = this.mapFactory.newInstance();
 		for (V value : input) {
-			result.put(this.keyFactory.create(value), value);
+			K key = this.keyFactory.create(value);
+			if (!result.containsKey(key)) {
+				result.put(key, value);
+			} else {
+				result.put(key, handleDuplicateValue(value, result.get(key)));
+			}
+			V old = result.get(key);
 		}
 		return this.mutable ? result : Collections.unmodifiableMap(result);
 	}
 
 	public Map<K, V> substitute(final Collection<V> input) {
 		return transpose(input);
+	}
+
+	protected V handleDuplicateValue(final V newValue, final V oldValue) {
+		if (newValue instanceof Concatable) {
+			try {
+				return ((Concatable<V>) newValue).concat(oldValue);
+			} catch (ClassCastException e) {
+				// ignore since the concatable is not implemented correctly
+			}
+		}
+		return newValue;
 	}
 
 }

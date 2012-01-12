@@ -27,12 +27,12 @@ package org.jbasics.math.expression.simple;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.jbasics.math.expression.simple.SimpleExpressionLexer;
-import org.jbasics.testing.Java14LoggingTestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+
+import org.jbasics.testing.Java14LoggingTestCase;
 
 @RunWith(Parameterized.class)
 public class SimpleExpressionLexerTest extends Java14LoggingTestCase {
@@ -43,13 +43,14 @@ public class SimpleExpressionLexerTest extends Java14LoggingTestCase {
 				new String[] { "($4020_15 - $7012_c) + ($5020_v - $5120_c) * 100" },
 				new String[] { "42 * 7 + HalloWelt" },
 				new String[] { "$4010_v" },
-				new String[] { "$2060_c+$100_a-$900_b" }
-		);
+				new String[] { "$2060_c+$100_a-$900_b" },
+				new String[] { "10^a+sin(a^2)*a(a)" }
+				);
 	}
 
 	private final String testExpression;
 
-	public SimpleExpressionLexerTest(String testExpression) {
+	public SimpleExpressionLexerTest(final String testExpression) {
 		this.testExpression = testExpression;
 	}
 

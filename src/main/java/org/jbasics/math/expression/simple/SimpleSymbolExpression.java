@@ -33,18 +33,19 @@ import org.jbasics.checker.ContractCheck;
 public class SimpleSymbolExpression extends SimpleExpression {
 	private final String symbol;
 
-	public SimpleSymbolExpression(CharSequence symbol) {
-		this.symbol = ContractCheck.mustNotBeNullOrTrimmedEmpty(symbol, "symbol").intern();
+	public SimpleSymbolExpression(final CharSequence symbol) {
+		this.symbol = ContractCheck.mustNotBeNullOrTrimmedEmpty(symbol, "symbol").intern(); //$NON-NLS-1$
 	}
 
 	public String getSymbol() {
 		return this.symbol;
 	}
 
-	public BigDecimal eval(SimpleSymbolResolver resolver, MathContext mc) {
+	@Override
+	public BigDecimal eval(final SimpleSymbolResolver resolver, final MathContext mc) {
 		BigDecimal temp = resolver.resolve(this.symbol);
 		if (temp == null) {
-			throw new RuntimeException("Cannot resolve symbol " + this.symbol);
+			throw new RuntimeException("Cannot resolve symbol " + this.symbol); //$NON-NLS-1$
 		}
 		return temp;
 	}
@@ -54,13 +55,13 @@ public class SimpleSymbolExpression extends SimpleExpression {
 		if (Character.isJavaIdentifierStart(this.symbol.charAt(0))) {
 			return this.symbol;
 		} else {
-			return "$" + this.symbol;
+			return "$" + this.symbol; //$NON-NLS-1$
 		}
 	}
 
 	@Override
-	public <T extends Collection<String>> void collectSymbols(T collection) {
-		ContractCheck.mustNotBeNull(collection, "collection").add(this.symbol);
+	public <T extends Collection<String>> void collectSymbols(final T collection) {
+		ContractCheck.mustNotBeNull(collection, "collection").add(this.symbol); //$NON-NLS-1$
 	}
 
 }

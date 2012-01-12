@@ -26,21 +26,38 @@ package org.jbasics.math.expression.simple;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Collection;
 
-public class SimpleMultiplyExpression extends SimpleBinaryExpression {
+import org.jbasics.checker.ContractCheck;
 
-	public SimpleMultiplyExpression(final SimpleExpression lhs, final SimpleExpression rhs) {
-		super(lhs, rhs);
+public class SimpleFunctionExpression extends SimpleExpression {
+	private final String functionName;
+	private final SimpleExpression[] expressions;
+
+	SimpleFunctionExpression(final String functionName, final SimpleExpression... expressions) {
+		this.functionName = ContractCheck.mustNotBeNullOrTrimmedEmpty(functionName, "functionName"); //$NON-NLS-1$
+		this.expressions = expressions;
+	}
+
+	SimpleFunctionExpression(final String functionName, final Collection<SimpleExpression> expressions) {
+		this.functionName = ContractCheck.mustNotBeNullOrTrimmedEmpty(functionName, "functionName"); //$NON-NLS-1$
+		this.expressions = expressions.toArray(new SimpleExpression[expressions.size()]);
 	}
 
 	@Override
-	protected BigDecimal evalOp(final BigDecimal left, final BigDecimal right, final MathContext mc) {
-		return left.multiply(right, mc);
+	public BigDecimal eval(final SimpleSymbolResolver resolver, final MathContext mc) {
+		BigDecimal[] temp = new BigDecimal[this.expressions.length];
+		for (int i = 0; i < this.expressions.length; i++) {
+			temp[i] = this.expressions[i].eval(resolver, mc);
+		}
+		return resolver.resolve(this.functionName, temp);
 	}
 
 	@Override
-	public String toString() {
-		return new StringBuilder().append(this.lhs).append(" * ").append(this.rhs).toString(); //$NON-NLS-1$
+	public <T extends Collection<String>> void collectSymbols(final T collection) {
+		for (SimpleExpression e : this.expressions) {
+			e.collectSymbols(collection);
+		}
 	}
 
 }

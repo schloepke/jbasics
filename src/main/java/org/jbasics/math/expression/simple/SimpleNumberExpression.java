@@ -33,15 +33,16 @@ import org.jbasics.checker.ContractCheck;
 public class SimpleNumberExpression extends SimpleExpression {
 	private final BigDecimal number;
 
-	public SimpleNumberExpression(CharSequence number) {
-		this.number = new BigDecimal(ContractCheck.mustNotBeNullOrTrimmedEmpty(number, "number"));
+	public SimpleNumberExpression(final CharSequence number) {
+		this.number = new BigDecimal(ContractCheck.mustNotBeNullOrTrimmedEmpty(number, "number")); //$NON-NLS-1$
 	}
 
 	public BigDecimal getNumber() {
 		return this.number;
 	}
 
-	public BigDecimal eval(SimpleSymbolResolver resolver, MathContext mc) {
+	@Override
+	public BigDecimal eval(final SimpleSymbolResolver resolver, final MathContext mc) {
 		return this.number;
 	}
 
@@ -51,7 +52,7 @@ public class SimpleNumberExpression extends SimpleExpression {
 	}
 
 	@Override
-	public <T extends Collection<String>> void collectSymbols(T collection) {
+	public <T extends Collection<String>> void collectSymbols(final T collection) {
 		// Numbers cannot have any symbols
 	}
 }

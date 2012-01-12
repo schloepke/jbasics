@@ -22,25 +22,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.math.expression.simple;
+package org.jbasics.command;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
+public class CommandsScanner {
 
-public class SimpleMultiplyExpression extends SimpleBinaryExpression {
-
-	public SimpleMultiplyExpression(final SimpleExpression lhs, final SimpleExpression rhs) {
-		super(lhs, rhs);
+	public void scan(final String packageName) {
+		throw new UnsupportedOperationException("Not yet implemented"); //$NON-NLS-1$
 	}
 
-	@Override
-	protected BigDecimal evalOp(final BigDecimal left, final BigDecimal right, final MathContext mc) {
-		return left.multiply(right, mc);
-	}
-
-	@Override
-	public String toString() {
-		return new StringBuilder().append(this.lhs).append(" * ").append(this.rhs).toString(); //$NON-NLS-1$
+	public void scan(final Package packageName) {
+		throw new UnsupportedOperationException("Not yet implemented"); //$NON-NLS-1$
 	}
 
 }

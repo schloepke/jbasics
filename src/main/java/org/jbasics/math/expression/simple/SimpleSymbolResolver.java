@@ -27,5 +27,5 @@ package org.jbasics.math.expression.simple;
 import java.math.BigDecimal;
 
 public interface SimpleSymbolResolver {
-	BigDecimal resolve(String symbol);
+	BigDecimal resolve(String symbol, BigDecimal... parameters);
 }

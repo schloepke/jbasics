@@ -35,8 +35,8 @@ public abstract class SimpleBinaryExpression extends SimpleExpression {
 	protected final SimpleExpression rhs;
 
 	public SimpleBinaryExpression(final SimpleExpression lhs, final SimpleExpression rhs) {
-		this.lhs = ContractCheck.mustNotBeNull(lhs, "lhs");
-		this.rhs = ContractCheck.mustNotBeNull(rhs, "rhs");
+		this.lhs = ContractCheck.mustNotBeNull(lhs, "lhs"); //$NON-NLS-1$
+		this.rhs = ContractCheck.mustNotBeNull(rhs, "rhs"); //$NON-NLS-1$
 	}
 
 	@Override

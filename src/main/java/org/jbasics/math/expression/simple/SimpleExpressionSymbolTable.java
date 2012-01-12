@@ -44,22 +44,22 @@ public class SimpleExpressionSymbolTable implements Delegate<Set<String>> {
 		this.symbols = Collections.unmodifiableSet(this.mutableSymbolSet);
 	}
 
-	public SimpleExpressionSymbolTable(Delegate<SimpleExpression>... expressions) {
+	public SimpleExpressionSymbolTable(final Delegate<SimpleExpression>... expressions) {
 		this();
 		addAllSymbols(expressions);
 	}
 
-	public SimpleExpressionSymbolTable(SimpleExpression... expressions) {
+	public SimpleExpressionSymbolTable(final SimpleExpression... expressions) {
 		this();
 		addAllSymbols(expressions);
 	}
 
-	public SimpleExpressionSymbolTable(Class<? extends Enum<? extends Delegate<SimpleExpression>>> enumClass) {
+	public SimpleExpressionSymbolTable(final Class<? extends Enum<? extends Delegate<SimpleExpression>>> enumClass) {
 		this();
 		addAllSymbols(enumClass);
 	}
 
-	public void addAllSymbols(SimpleExpression... expressions) {
+	public void addAllSymbols(final SimpleExpression... expressions) {
 		if (expressions != null) {
 			for (SimpleExpression expression : expressions) {
 				expression.collectSymbols(this.mutableSymbolSet);
@@ -67,7 +67,7 @@ public class SimpleExpressionSymbolTable implements Delegate<Set<String>> {
 		}
 	}
 
-	public void addAllSymbols(Delegate<SimpleExpression>... expressions) {
+	public void addAllSymbols(final Delegate<SimpleExpression>... expressions) {
 		if (expressions != null) {
 			for (Delegate<SimpleExpression> expression : expressions) {
 				expression.delegate().collectSymbols(this.mutableSymbolSet);
@@ -76,11 +76,11 @@ public class SimpleExpressionSymbolTable implements Delegate<Set<String>> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void addAllSymbols(Class<? extends Enum<? extends Delegate<SimpleExpression>>> enumClass) {
+	public void addAllSymbols(final Class<? extends Enum<? extends Delegate<SimpleExpression>>> enumClass) {
 		try {
-			Method valMethod = ContractCheck.mustNotBeNull(enumClass, "enumClass").getMethod("values");
+			Method valMethod = ContractCheck.mustNotBeNull(enumClass, "enumClass").getMethod("values"); //$NON-NLS-1$ //$NON-NLS-2$
 			if (!Modifier.isStatic(valMethod.getModifiers())) {
-				throw new IllegalArgumentException("Inncorrect class given since missing static values method on enum");
+				throw new IllegalArgumentException("Inncorrect class given since missing static values method on enum"); //$NON-NLS-1$
 			}
 			Delegate<SimpleExpression>[] expressions = (Delegate<SimpleExpression>[]) valMethod.invoke(enumClass);
 			addAllSymbols(expressions);

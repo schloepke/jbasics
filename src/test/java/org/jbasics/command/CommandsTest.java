@@ -22,25 +22,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.math.expression.simple;
+package org.jbasics.command;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
+import java.io.IOException;
 
-public class SimpleMultiplyExpression extends SimpleBinaryExpression {
+import org.junit.Test;
 
-	public SimpleMultiplyExpression(final SimpleExpression lhs, final SimpleExpression rhs) {
-		super(lhs, rhs);
+@SuppressWarnings("nls")
+public class CommandsTest {
+	public final static String[] SPLIT_CALL_ARGS = new String[] {
+			"TestCommands/split",
+			"portfolio=Regulatory Reporting,Non-Regulatory-Reporting",
+			"destination=folder/subfolder",
+			"stress=23,43,53" };
+
+	public final static String[] DELETE_CALL_ARGS = new String[] {
+			"deleteProcessed",
+			"destination=folder/subfolder",
+			"destination=anotherFolder/something" };
+
+	@Test
+	public void testArgsParsin() {
+		CommandCall split = CommandCall.create(CommandsTest.SPLIT_CALL_ARGS);
+		CommandCall delete = CommandCall.create(CommandsTest.DELETE_CALL_ARGS);
+		System.out.println("COMMAND> " + split);
+		System.out.println("COMMAND> " + delete);
 	}
 
-	@Override
-	protected BigDecimal evalOp(final BigDecimal left, final BigDecimal right, final MathContext mc) {
-		return left.multiply(right, mc);
-	}
-
-	@Override
-	public String toString() {
-		return new StringBuilder().append(this.lhs).append(" * ").append(this.rhs).toString(); //$NON-NLS-1$
+	@Test
+	public void testCommandExecution() throws IOException {
+		CommandExecutor e = new CommandExecutorBuilder().add(CommandClassExample.class).build();
+		e.printCommand(System.out);
+		CommandCall split = CommandCall.create(CommandsTest.SPLIT_CALL_ARGS);
+		CommandCall delete = CommandCall.create(CommandsTest.DELETE_CALL_ARGS);
+		e.execute(split);
+		e.execute(delete);
 	}
 
 }

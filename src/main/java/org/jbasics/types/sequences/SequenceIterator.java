@@ -22,25 +22,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.math.expression.simple;
+package org.jbasics.types.sequences;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
+import java.util.Iterator;
 
-public class SimpleMultiplyExpression extends SimpleBinaryExpression {
+public final class SequenceIterator<T> implements Iterator<T> {
+	private Sequence<T> current;
 
-	public SimpleMultiplyExpression(final SimpleExpression lhs, final SimpleExpression rhs) {
-		super(lhs, rhs);
+	@SuppressWarnings("unchecked")
+	public SequenceIterator(final Sequence<T> sequence) {
+		this.current = sequence == null ? (Sequence<T>) Sequence.EMPTY_SEQUENCE : sequence;
 	}
 
-	@Override
-	protected BigDecimal evalOp(final BigDecimal left, final BigDecimal right, final MathContext mc) {
-		return left.multiply(right, mc);
+	public boolean hasNext() {
+		return !this.current.isEmpty();
 	}
 
-	@Override
-	public String toString() {
-		return new StringBuilder().append(this.lhs).append(" * ").append(this.rhs).toString(); //$NON-NLS-1$
+	public T next() {
+		T temp = this.current.first();
+		this.current = this.current.rest();
+		return temp;
+	}
+
+	public void remove() {
+		throw new UnsupportedOperationException("Sequences are always imutable"); //$NON-NLS-1$
 	}
 
 }

@@ -29,7 +29,7 @@ import org.jbasics.checker.ContractCheck;
 public class SimpleExpressionLexer {
 
 	public static enum TokenType {
-		ADD, SUBTRACT, MULTIPLY, DIVIDE, LEFT_BRACE, RIGHT_BRACE, NUMBER, SYMBOL, EOF
+		ADD, SUBTRACT, MULTIPLY, DIVIDE, POW, LEFT_BRACE, RIGHT_BRACE, COMMA, NUMBER, SYMBOL, EOF
 	}
 
 	private final CharSequence sequence;
@@ -84,6 +84,10 @@ public class SimpleExpressionLexer {
 					this.currentContent.append("/"); //$NON-NLS-1$
 					this.currentType = TokenType.DIVIDE;
 					break;
+				case '^':
+					this.currentContent.append("^"); //$NON-NLS-1$
+					this.currentType = TokenType.POW;
+					break;
 				case '(':
 					this.currentContent.append("("); //$NON-NLS-1$
 					this.currentType = TokenType.LEFT_BRACE;
@@ -91,6 +95,10 @@ public class SimpleExpressionLexer {
 				case ')':
 					this.currentContent.append(")"); //$NON-NLS-1$
 					this.currentType = TokenType.RIGHT_BRACE;
+					break;
+				case ',':
+					this.currentContent.append(","); //$NON-NLS-1$
+					this.currentType = TokenType.COMMA;
 					break;
 				default:
 					parseNumberOrSymbol(c);

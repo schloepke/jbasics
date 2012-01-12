@@ -22,25 +22,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.math.expression.simple;
+package org.jbasics.pattern.delivering;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-
-public class SimpleMultiplyExpression extends SimpleBinaryExpression {
-
-	public SimpleMultiplyExpression(final SimpleExpression lhs, final SimpleExpression rhs) {
-		super(lhs, rhs);
-	}
-
-	@Override
-	protected BigDecimal evalOp(final BigDecimal left, final BigDecimal right, final MathContext mc) {
-		return left.multiply(right, mc);
-	}
-
-	@Override
-	public String toString() {
-		return new StringBuilder().append(this.lhs).append(" * ").append(this.rhs).toString(); //$NON-NLS-1$
-	}
-
+public interface Deliverable<R> {
+	R deliver();
 }

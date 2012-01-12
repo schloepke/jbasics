@@ -37,16 +37,16 @@ public class PowAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
 		this(null, null);
 	}
 
-	public PowAlgorithmStrategy(AlgorithmStrategy<BigDecimal> exponentialFunction, AlgorithmStrategy<BigDecimal> logarithmFunction) {
+	public PowAlgorithmStrategy(final AlgorithmStrategy<BigDecimal> exponentialFunction, final AlgorithmStrategy<BigDecimal> logarithmFunction) {
 		this.exponentialFunction = exponentialFunction != null ? exponentialFunction : new ExponentialTaylerAlgorithmStrategy();
 		this.logarithmFunction = logarithmFunction != null ? logarithmFunction : new NaturalLogarithmAlgorithmStrategy();
 	}
 
-	public BigDecimal calculate(MathContext mc, BigDecimal guess, BigDecimal... xn) {
+	public BigDecimal calculate(final MathContext mc, final BigDecimal guess, final BigDecimal... xn) {
 		if (xn == null || xn.length != 2) {
 			throw new IllegalArgumentException("Illegal amount of arguments supplied (required 2, got " + (xn == null ? 0 : xn.length) + ")");
 		}
-		return this.exponentialFunction.calculate(mc, null, this.logarithmFunction.calculate(mc, null, xn[0])).multiply(xn[1], mc);
+		return this.exponentialFunction.calculate(mc, null, this.logarithmFunction.calculate(mc, null, xn[0]).multiply(xn[1], mc));
 	}
 
 }

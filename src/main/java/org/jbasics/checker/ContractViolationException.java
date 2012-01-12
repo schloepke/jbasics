@@ -26,9 +26,10 @@ package org.jbasics.checker;
 
 import org.jbasics.localize.LocalizedRuntimeException;
 
+@SuppressWarnings("serial")
 public final class ContractViolationException extends LocalizedRuntimeException {
 
-	public ContractViolationException(String messageKey, Object... arguments) {
+	public ContractViolationException(final String messageKey, final Object... arguments) {
 		super(ContractCheck.class, messageKey, arguments);
 	}
 

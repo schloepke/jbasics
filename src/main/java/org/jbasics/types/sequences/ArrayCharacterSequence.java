@@ -27,14 +27,14 @@ package org.jbasics.types.sequences;
 /**
  * {@link CharSequence} which is based on an array of characters without copying or modifying the array.
  * <p>
- * Because this {@link CharSequence} does not alter or copy the array the caller needs to be sure that the character array is not altered
- * from outside. If so this {@link CharSequence} would change it's behavior. The benefit of this {@link CharSequence} is that a portion
- * of a char array can be used as sequence offering additional sub sequences without the need to clone or copy the char array. This is
- * useful when the array is quite large and only a portion needs to be used as sequence.
+ * Because this {@link CharSequence} does not alter or copy the array the caller needs to be sure that the character array is not altered from
+ * outside. If so this {@link CharSequence} would change it's behavior. The benefit of this {@link CharSequence} is that a portion of a char array can
+ * be used as sequence offering additional sub sequences without the need to clone or copy the char array. This is useful when the array is quite
+ * large and only a portion needs to be used as sequence.
  * </p>
  * <p>
- * In case one requires a {@link CharSequence} with the guarantee that it cannot be altered from the outside ones it is created java offers the
- * quite useful class {@link String} for this.
+ * In case one requires a {@link CharSequence} with the guarantee that it cannot be altered from the outside ones it is created java offers the quite
+ * useful class {@link String} for this.
  * </p>
  * 
  * @author Stephan Schloepke

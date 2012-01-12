@@ -38,37 +38,6 @@
 		<url>http://github.com/schloepke/jbasics/issues</url>
 	</issueManagement>
 
-	<distributionManagement>
-		<!--
-		<repository>
-			<id>step-h</id>
-			<url>sftp://step-h.com:47922/httpdocs/release</url>
-		</repository>
-		<snapshotRepository>
-			<id>step-h</id>
-			<url>sftp://step-h.com:47922/httpdocs/snapshot</url>
-		</snapshotRepository>
-		-->
-		<repository>
-			<id>step-h</id>
-			<url>sftp://step-h.com:47922/httpdocs/release</url>
-		</repository>
-		<snapshotRepository>
-			<id>step-h</id>
-			<url>sftp://step-h.com:47922/httpdocs/snapshot</url>
-		</snapshotRepository>
-		<!--
-		<repository>
-			<id>github-pages</id>
-			<url>file:///${basedir}/_gh-pages/repository/</url>
-		</repository>
-		<snapshotRepository>
-			<id>github-pages</id>
-			<url>file:///${basedir}/_gh-pages/repository/</url>
-		</snapshotRepository>
-		-->
-	</distributionManagement>
-
 	<developers>
 		<developer>
 			<id>schloepke</id>
@@ -372,5 +341,32 @@
 			</releases>
 		</pluginRepository>
 	</pluginRepositories>
+
+	<distributionManagement>
+		<repository>
+			<id>step-h</id>
+			<url>sftp://step-h.com:47922/httpdocs/release</url>
+		</repository>
+		<snapshotRepository>
+			<id>step-h</id>
+			<url>sftp://step-h.com:47922/httpdocs/snapshot</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<profiles>
+		<profile>
+			<id>github-repo</id>
+			<distributionManagement>
+				<repository>
+					<id>github-pages</id>
+					<url>file:///${basedir}/_gh-pages/repository/</url>
+				</repository>
+				<snapshotRepository>
+					<id>github-pages</id>
+					<url>file:///${basedir}/_gh-pages/repository/</url>
+				</snapshotRepository>
+			</distributionManagement>
+		</profile>
+	</profiles>
 
 </project>

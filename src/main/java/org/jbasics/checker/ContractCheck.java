@@ -25,14 +25,14 @@
 package org.jbasics.checker;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
  * Simple class offering methods to check if a call contract is broken or not.
  * <p>
- * Usually one makes a check of null and throws an {@link IllegalAccessException} or a {@link NullPointerException}.
- * This is a line of code written constantly. This helper is supposed to limit the code to write especially in
- * constructors or setter methods.
+ * Usually one makes a check of null and throws an {@link IllegalAccessException} or a {@link NullPointerException}. This is a line of code written
+ * constantly. This helper is supposed to limit the code to write especially in constructors or setter methods.
  * </p>
  * <p>
  * Example:
@@ -80,6 +80,49 @@ public final class ContractCheck {
 			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
 		}
 		return instance;
+	}
+
+	/**
+	 * Checks the supplied instance collection to be not null and not zero length.
+	 * 
+	 * @param <T> The type of the instance
+	 * @param collection The instance to check
+	 * @param instanceName The name of the instance (can be null) for the exception message
+	 *            generated
+	 * @return The checked instance array which is guaranteed to be neither null nor zero length.
+	 * @throws ContractViolationException If the array instance to check is null or zero length.
+	 * @since 1.0
+	 */
+	public static <T> Collection<T> mustNotBeNullOrEmpty(final Collection<T> collection, final String instanceName) {
+		if (collection == null) {
+			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+		}
+		if (collection.size() == 0) {
+			throw new ContractViolationException("mustNotBeEmpty", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+		}
+		return collection;
+	}
+
+	/**
+	 * Checks the supplied instance map to be not null and not zero length.
+	 * 
+	 * @param <K> The type of the map key
+	 * @param <V> The type of the map value
+	 * @param map The instance to check
+	 * @param instanceName The name of the instance (can be null) for the exception message
+	 *            generated
+	 * @return The checked instance array which is guaranteed to be neither null nor zero length.
+	 * @throws ContractViolationException If the array instance to check is null or zero length.
+	 * @since 1.0
+	 */
+	public static <K, V> Map<K, V> mustNotBeNullOrEmpty(final Map<K, V> map, final String instanceName) {
+		if (map == null) {
+			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+		}
+		if (map.size() == 0) {
+			throw new ContractViolationException("mustNotBeEmpty", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+		}
+		return map;
 	}
 
 	/**

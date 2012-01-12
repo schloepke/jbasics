@@ -27,20 +27,22 @@ package org.jbasics.math.expression.simple;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-public class SimpleMultiplyExpression extends SimpleBinaryExpression {
+import org.jbasics.math.BigDecimalMathLibrary;
 
-	public SimpleMultiplyExpression(final SimpleExpression lhs, final SimpleExpression rhs) {
+public class SimplePowerExpression extends SimpleBinaryExpression {
+
+	public SimplePowerExpression(final SimpleExpression lhs, final SimpleExpression rhs) {
 		super(lhs, rhs);
 	}
 
 	@Override
 	protected BigDecimal evalOp(final BigDecimal left, final BigDecimal right, final MathContext mc) {
-		return left.multiply(right, mc);
+		return BigDecimalMathLibrary.pow(left, right).valueToPrecision(mc);
 	}
 
 	@Override
 	public String toString() {
-		return new StringBuilder().append(this.lhs).append(" * ").append(this.rhs).toString(); //$NON-NLS-1$
+		return new StringBuilder().append(this.lhs).append("^").append(this.rhs).toString(); //$NON-NLS-1$
 	}
 
 }

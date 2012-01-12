@@ -29,18 +29,18 @@ import java.math.MathContext;
 
 public class SimpleAddExpression extends SimpleBinaryExpression {
 
-	public SimpleAddExpression(SimpleExpression lhs, SimpleExpression rhs) {
+	public SimpleAddExpression(final SimpleExpression lhs, final SimpleExpression rhs) {
 		super(lhs, rhs);
 	}
 
 	@Override
-	protected BigDecimal evalOp(BigDecimal left, BigDecimal right, MathContext mc) {
+	protected BigDecimal evalOp(final BigDecimal left, final BigDecimal right, final MathContext mc) {
 		return left.add(right, mc);
 	}
 
 	@Override
 	public String toString() {
-		return new StringBuilder().append(this.lhs).append(" + ").append(this.rhs).toString();
+		return new StringBuilder().append(this.lhs).append(" + ").append(this.rhs).toString(); //$NON-NLS-1$
 	}
 
 }

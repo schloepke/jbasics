@@ -29,18 +29,18 @@ import java.math.MathContext;
 
 public class SimpleSubtractExpression extends SimpleBinaryExpression {
 
-	public SimpleSubtractExpression(SimpleExpression lhs, SimpleExpression rhs) {
+	public SimpleSubtractExpression(final SimpleExpression lhs, final SimpleExpression rhs) {
 		super(lhs, rhs);
 	}
 
 	@Override
-	protected BigDecimal evalOp(BigDecimal left, BigDecimal right, MathContext mc) {
+	protected BigDecimal evalOp(final BigDecimal left, final BigDecimal right, final MathContext mc) {
 		return left.subtract(right, mc);
 	}
 
 	@Override
 	public String toString() {
-		return new StringBuilder().append(this.lhs).append(" - ").append(this.rhs).toString();
+		return new StringBuilder().append(this.lhs).append(" - ").append(this.rhs).toString(); //$NON-NLS-1$
 	}
 
 }
