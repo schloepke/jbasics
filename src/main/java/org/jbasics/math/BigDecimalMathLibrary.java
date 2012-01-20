@@ -34,6 +34,7 @@ import org.jbasics.math.impl.ArcTangentIrationalNumber;
 import org.jbasics.math.impl.ArithmeticGeometricMeanIrationalNumber;
 import org.jbasics.math.impl.CosineIrationalNumber;
 import org.jbasics.math.impl.ExponentialIrationalNumber;
+import org.jbasics.math.impl.GoldenRatioIrationalNumber;
 import org.jbasics.math.impl.HyperbolicCosineIrationalNumber;
 import org.jbasics.math.impl.HyperbolicSineIrationalNumber;
 import org.jbasics.math.impl.HyperbolicTangentIrationalNumber;
@@ -73,11 +74,23 @@ public final class BigDecimalMathLibrary {
 	 */
 	public final static IrationalNumber<BigDecimal> PI2 = PiIrationalNumber.PI2;
 	/**
+	 * The constant PHI (Golden Ratio) as {@link IrationalNumber}.
+	 * 
+	 * @since 1.0
+	 */
+	public final static IrationalNumber<BigDecimal> PHI = GoldenRatioIrationalNumber.PHI;
+	/**
 	 * The constant sqrt(2) as {@link IrationalNumber}.
 	 * 
 	 * @since 1.0
 	 */
 	public final static IrationalNumber<BigDecimal> SQRT2 = SquareRootIrationalNumber.SQUARE_ROOT_OF_2;
+	/**
+	 * The constant sqrt(3) as {@link IrationalNumber}.
+	 * 
+	 * @since 1.0
+	 */
+	public final static IrationalNumber<BigDecimal> SQRT3 = SquareRootIrationalNumber.SQUARE_ROOT_OF_3;
 	/**
 	 * The constant of 1/sqrt(2) or sqrt(1/2) as {@link IrationalNumber}.
 	 * 
@@ -98,8 +111,7 @@ public final class BigDecimalMathLibrary {
 	}
 
 	/**
-	 * Returns x*pi as {@link IrationalNumber}. If x is one or two the costant {@link #PI} or
-	 * {@link #PI2} is automaticly returned.
+	 * Returns x*pi as {@link IrationalNumber}. If x is one or two the constant {@link #PI} or {@link #PI2} is returned.
 	 * 
 	 * @param x The factor for PI.
 	 * @return The irational number of x*PI.
@@ -107,6 +119,17 @@ public final class BigDecimalMathLibrary {
 	 */
 	public static IrationalNumber<BigDecimal> piMultiple(final BigDecimal x) {
 		return PiIrationalNumber.valueOf(x);
+	}
+
+	/**
+	 * Returns x*PHI (the golden ratio) as {@link IrationalNumber}. If x is one the constant {@link #PHI} returned.
+	 * 
+	 * @param x The factor for PI.
+	 * @return The irational number of x*PHI.
+	 * @since 1.0
+	 */
+	public static IrationalNumber<BigDecimal> goldenRatioMultiple(final BigDecimal x) {
+		return GoldenRatioIrationalNumber.valueOf(x);
 	}
 
 	/**
@@ -142,7 +165,7 @@ public final class BigDecimalMathLibrary {
 	 */
 	public static IrationalNumber<BigDecimal> geometricMean(final BigDecimal a0, final BigDecimal a1,
 			final MathContext mc) {
-		return sqrt(ContractCheck.mustNotBeNull(a0, "a0").multiply(ContractCheck.mustNotBeNull(a1, "a1")));
+		return BigDecimalMathLibrary.sqrt(ContractCheck.mustNotBeNull(a0, "a0").multiply(ContractCheck.mustNotBeNull(a1, "a1")));
 	}
 
 	/**

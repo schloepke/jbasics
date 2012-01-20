@@ -34,8 +34,7 @@ import org.jbasics.math.strategies.SquareRootAlgorithmStrategy;
 /**
  * Calculates the square root for the given number.
  * <p>
- * Using the Heron algorithm in conjunction with a start value calculated by the
- * {@link Math#sqrt(double)} function.
+ * Using the Heron algorithm in conjunction with a start value calculated by the {@link Math#sqrt(double)} function.
  * </p>
  * 
  * @author Stephan Schloepke
@@ -47,21 +46,22 @@ public class SquareRootIrationalNumber extends BigDecimalIrationalNumber {
 	 * The constant square root of two.
 	 */
 	public static final IrationalNumber<BigDecimal> SQUARE_ROOT_OF_2 = new SquareRootIrationalNumber(MathImplConstants.TWO);
+	public static final IrationalNumber<BigDecimal> SQUARE_ROOT_OF_3 = new SquareRootIrationalNumber(MathImplConstants.THREE);
 
-	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
+	public static IrationalNumber<BigDecimal> valueOf(final BigDecimal x) {
 		if (ContractCheck.mustNotBeNull(x, "x").signum() < 0) {
 			throw new ArithmeticException("Square root can only be calculated of a positiv number " + x);
 		}
 		if (MathImplConstants.TWO.equals(x)) {
-			return SQUARE_ROOT_OF_2;
+			return SquareRootIrationalNumber.SQUARE_ROOT_OF_2;
 		} else if (MathImplConstants.HALF.equals(x)) {
 			return SquareRootReciprocalIrationalNumber.SQUARE_ROOT_RECIPROCAL_OF_2;
 		}
 		return new SquareRootIrationalNumber(x);
 	}
 
-	private SquareRootIrationalNumber(BigDecimal x) {
-		super(STRATEGY, x);
+	private SquareRootIrationalNumber(final BigDecimal x) {
+		super(SquareRootIrationalNumber.STRATEGY, x);
 	}
 
 }
