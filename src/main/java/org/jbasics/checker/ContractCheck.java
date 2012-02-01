@@ -28,6 +28,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.jbasics.types.tuples.Range;
+
 /**
  * Simple class offering methods to check if a call contract is broken or not.
  * <p>
@@ -270,6 +272,52 @@ public final class ContractCheck {
 	}
 
 	/**
+	 * Checks if the value is not null and in the range of low and high and converts any number to long.
+	 * 
+	 * @param numberValue The value to check
+	 * @param low The inclusive lower bound which is a valid value.
+	 * @param high The inclusive upper bound which is a valid value.
+	 * @param instanceName The name of the instance for the exception message (can be null).
+	 * @return The value guaranteed to be within the range [low, high]
+	 * @throws ContractViolationException If the value is not in the range [low, high].
+	 * @since 1.0
+	 */
+	public static long mustNotBeNullAndInRange(final Number numberValue, final long low, final long high, final String instanceName) {
+		if (numberValue == null) {
+			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+		}
+		long longValue = numberValue.longValue();
+		if (longValue < low || longValue > high) {
+			throw new ContractViolationException("mustBeInRange", instanceName != null ? instanceName : ContractCheck.UNKNOWN, Long.valueOf(low),
+					Long.valueOf(high));
+		}
+		return longValue;
+	}
+
+	/**
+	 * Checks if the value is not null and in the range of low and high and converts any number to double.
+	 * 
+	 * @param numberValue The value to check
+	 * @param low The inclusive lower bound which is a valid value.
+	 * @param high The inclusive upper bound which is a valid value.
+	 * @param instanceName The name of the instance for the exception message (can be null).
+	 * @return The value guaranteed to be within the range [low, high] and not null
+	 * @throws ContractViolationException If the value is not in the range [low, high].
+	 * @since 1.0
+	 */
+	public static double mustNotBeNullAndInRange(final Number numberValue, final double low, final double high, final String instanceName) {
+		if (numberValue == null) {
+			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+		}
+		double longValue = numberValue.doubleValue();
+		if (longValue < low || longValue > high) {
+			throw new ContractViolationException("mustBeInRange", instanceName != null ? instanceName : ContractCheck.UNKNOWN, Double.valueOf(low),
+					Double.valueOf(high));
+		}
+		return longValue;
+	}
+
+	/**
 	 * Checks if the value is in the range of low and high.
 	 * 
 	 * @param <T> The type of the {@link Number} to check
@@ -289,6 +337,27 @@ public final class ContractCheck {
 		}
 		if ((low != null && low.compareTo(numberValue) > 0) || (high != null && high.compareTo(numberValue) < 0)) {
 			throw new ContractViolationException("mustBeInRange", instanceName != null ? instanceName : ContractCheck.UNKNOWN, low, high);
+		}
+		return numberValue;
+	}
+
+	/**
+	 * Checks if the value is in the range of low and high.
+	 * 
+	 * @param <T> The type of the {@link Comparable} to check
+	 * @param numberValue The value to check
+	 * @param range The range to check with (if null no check is applied other than the null check)
+	 * @param instanceName The name of the instance for the exception message (can be null).
+	 * @return The value guaranteed to be within the given range
+	 * @throws ContractViolationException If the value is not in the given range.
+	 * @since 1.0
+	 */
+	public static <T extends Comparable<T>> T mustBeInRange(final T numberValue, final Range<T> range, final String instanceName) {
+		if (numberValue == null) {
+			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+		}
+		if (range != null && !range.isInRange(numberValue)) {
+			throw new ContractViolationException("mustBeInRangeForRange", instanceName != null ? instanceName : ContractCheck.UNKNOWN, range);
 		}
 		return numberValue;
 	}
