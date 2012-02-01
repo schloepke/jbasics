@@ -146,7 +146,7 @@
 						<goals>
 							<goal>check</goal>
 						</goals>
-						<phase>compile</phase>
+						<phase>prepare-package</phase>
 					</execution>
 				</executions>
 			</plugin>
