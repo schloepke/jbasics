@@ -39,7 +39,7 @@ public class GoldenRatioAlgorithmStrategy implements AlgorithmStrategy<BigDecima
 	private static final IrationalNumber<BigDecimal> SQUARE_ROOT_OF_FIVE = SquareRootIrationalNumber.valueOf(GoldenRatioAlgorithmStrategy.FIVE);
 
 	public BigDecimal calculate(final MathContext mc, final BigDecimal guess, final BigDecimal... xn) {
-		BigDecimal phi = GoldenRatioAlgorithmStrategy.HALF.multiply(GoldenRatioAlgorithmStrategy.SQUARE_ROOT_OF_FIVE.valueToPrecision(mc).divide(
+		BigDecimal phi = GoldenRatioAlgorithmStrategy.HALF.add(GoldenRatioAlgorithmStrategy.SQUARE_ROOT_OF_FIVE.valueToPrecision(mc).divide(
 				GoldenRatioAlgorithmStrategy.TWO), mc);
 		if (xn == null || xn.length == 0) {
 			return phi;
