@@ -25,6 +25,7 @@
 package org.jbasics.math;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -86,10 +87,37 @@ public class BigDecimalMatrix implements Iterable<Collection<BigDecimal>> {
 	}
 
 	public BigDecimalMatrix multiply(final BigDecimal scalar) {
+		return multiply(scalar, MathContext.UNLIMITED);
+	}
+
+	public BigDecimalMatrix multiply(final BigDecimal scalar, final MathContext mc) {
 		BigDecimalMatrix result = new BigDecimalMatrix(this.rows, this.columns);
 		for (int i = 0; i < this.matrix.length; i++) {
 			for (int j = 0; j < this.matrix[i].length; j++) {
-				result.matrix[i][j] = this.matrix[i][j].multiply(scalar);
+				result.matrix[i][j] = this.matrix[i][j].multiply(scalar, mc);
+			}
+		}
+		return result;
+	}
+
+	public BigDecimalMatrix multiply(final BigDecimalMatrix factor) {
+		return multiply(factor, MathContext.UNLIMITED);
+	}
+
+	public BigDecimalMatrix multiply(final BigDecimalMatrix factor, final MathContext mc) {
+		if (this.columns != factor.rows) {
+			throw new IllegalArgumentException("The rows of the matrix factor must be equal to the columns of this matrix"); //$NON-NLS-1$
+		}
+		BigDecimalMatrix result = new BigDecimalMatrix(factor.rows, factor.columns);
+		int columnsZeroBased = result.columns - 1;
+		for (int i = 0; i < columnsZeroBased; i++) {
+			int rowsZeroBased = result.rows - 1;
+			for (int j = 0; j < rowsZeroBased; j++) {
+				BigDecimal temp = BigDecimal.ZERO;
+				for (int k = 0; k < rowsZeroBased; j++) {
+					temp.add(this.matrix[j][k].multiply(factor.matrix[k][i], mc), mc);
+				}
+				result.matrix[j][i] = temp;
 			}
 		}
 		return result;

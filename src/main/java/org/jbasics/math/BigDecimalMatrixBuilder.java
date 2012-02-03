@@ -41,14 +41,14 @@ public class BigDecimalMatrixBuilder implements Builder<BigDecimalMatrix> {
 	public BigDecimalMatrixBuilder set(final int row, final int column, final BigDecimal value) {
 		int x = ContractCheck.mustBeInRange(row, 1, Integer.MAX_VALUE, "row") - 1; //$NON-NLS-1$
 		int y = ContractCheck.mustBeInRange(column, 1, Integer.MAX_VALUE, "row") - 1; //$NON-NLS-1$
-		if (this.storage.size() < x) {
+		if (this.storage.size() <= x) {
 			// need to be extended by adding the missing rows
 			for (int i = x - this.storage.size(); i >= 0; i--) {
 				this.storage.add(new ArrayList<BigDecimal>());
 			}
 		}
 		List<BigDecimal> temp = this.storage.get(x);
-		if (temp.size() < y) {
+		if (temp.size() <= y) {
 			// need to be extended by adding the missing rows
 			for (int i = y - temp.size(); i >= 0; i--) {
 				temp.add(BigDecimal.ZERO);
