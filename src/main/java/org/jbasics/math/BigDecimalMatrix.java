@@ -34,10 +34,22 @@ import org.jbasics.arrays.ArrayCollection;
 import org.jbasics.arrays.ArrayIterator;
 import org.jbasics.checker.ContractCheck;
 
-public class BigDecimalMatrix implements Iterable<Collection<BigDecimal>> {
+public class BigDecimalMatrix implements Iterable<Collection<BigDecimal>> /*, Comparable<BigDecimalMatrix> */ {
 	private final int rows, columns;
 	private final BigDecimal[][] matrix;
 	private transient Collection<BigDecimal>[] iterables;
+	
+	public static BigDecimalMatrixBuilder create() {
+		return new BigDecimalMatrixBuilder();
+	}
+	
+	public static BigDecimalMatrix createIdentityMatrix(int size) {
+		BigDecimalMatrix result = new BigDecimalMatrix(size, size);
+		for(int i = 0; i < size; i++) {
+			result.matrix[i][i] = BigDecimal.ONE;
+		}
+		return result;
+	}
 
 	public BigDecimalMatrix(final int rows, final int columns, final BigDecimal... values) {
 		this.rows = ContractCheck.mustBeInRange(rows, 1, Integer.MAX_VALUE, "rows"); //$NON-NLS-1$
@@ -85,6 +97,41 @@ public class BigDecimalMatrix implements Iterable<Collection<BigDecimal>> {
 	public BigDecimal get(final int row, final int column) {
 		return this.matrix[row][column];
 	}
+	
+	public BigDecimalMatrix transpose() {
+		BigDecimalMatrix result = new BigDecimalMatrix(this.columns, this.rows);
+		for (int i = 0; i < this.rows; i++) {
+			for (int j = 0; j < this.columns; j++) {
+				result.matrix[j][i] = this.matrix[i][j];
+			}
+		}
+		return result;
+	}
+
+	public BigDecimalMatrix add(BigDecimalMatrix summant) {
+		return add(summant, MathContext.UNLIMITED);
+	}
+
+	public BigDecimalMatrix add(BigDecimalMatrix summant, final MathContext mc) {
+		if (ContractCheck.mustNotBeNull(summant, "summant").rows != this.rows || summant.columns != this.columns) {
+			throw new IllegalArgumentException("Matrix summation can only be done with matrices of the exact same dimensions");
+		}
+		BigDecimalMatrix result = new BigDecimalMatrix(this.rows, this.columns);
+		for (int i = 0; i < this.matrix.length; i++) {
+			for (int j = 0; j < this.matrix[i].length; j++) {
+				result.matrix[i][j] = this.matrix[i][j].add(summant.matrix[i][j], mc);
+			}
+		}
+		return result;
+	}
+
+	public BigDecimalMatrix multiply(final long scalar) {
+		return multiply(BigDecimal.valueOf(scalar), MathContext.UNLIMITED);
+	}
+
+	public BigDecimalMatrix multiply(final double scalar) {
+		return multiply(BigDecimal.valueOf(scalar), MathContext.UNLIMITED);
+	}
 
 	public BigDecimalMatrix multiply(final BigDecimal scalar) {
 		return multiply(scalar, MathContext.UNLIMITED);
@@ -108,28 +155,17 @@ public class BigDecimalMatrix implements Iterable<Collection<BigDecimal>> {
 		if (this.columns != factor.rows) {
 			throw new IllegalArgumentException("The rows of the matrix factor must be equal to the columns of this matrix"); //$NON-NLS-1$
 		}
-		BigDecimalMatrix result = new BigDecimalMatrix(factor.rows, factor.columns);
-		int columnsZeroBased = result.columns - 1;
-		for (int i = 0; i < columnsZeroBased; i++) {
-			int rowsZeroBased = result.rows - 1;
-			for (int j = 0; j < rowsZeroBased; j++) {
+		BigDecimalMatrix result = new BigDecimalMatrix(this.rows, factor.columns);
+		for (int i = 0; i < result.columns; i++) {
+			for (int j = 0; j < result.rows; j++) {
 				BigDecimal temp = BigDecimal.ZERO;
-				for (int k = 0; k < rowsZeroBased; j++) {
-					temp.add(this.matrix[j][k].multiply(factor.matrix[k][i], mc), mc);
+				for (int k = 0; k < this.columns; k++) {
+					temp = temp.add(this.matrix[j][k].multiply(factor.matrix[k][i], mc), mc);
 				}
 				result.matrix[j][i] = temp;
 			}
 		}
 		return result;
-	}
-
-	private static int determinColumnSize(final List<List<BigDecimal>> values) {
-		assert values != null;
-		int maxColumns = 0;
-		for (List<BigDecimal> column : values) {
-			maxColumns = Math.max(maxColumns, column != null ? column.size() : 0);
-		}
-		return maxColumns;
 	}
 
 	@Override
@@ -158,4 +194,66 @@ public class BigDecimalMatrix implements Iterable<Collection<BigDecimal>> {
 		}
 		return new ArrayIterator<Collection<BigDecimal>>(this.iterables);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 17;
+		int result = 1;
+		for(BigDecimal[] row : this.matrix) {
+			for(BigDecimal value : row) {
+				result = result * prime + (value == null ? BigDecimal.ZERO.hashCode() : value.hashCode());
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		} else {
+			BigDecimal[][] m = ((BigDecimalMatrix) obj).matrix;
+			if (m.length != this.matrix.length) {
+				return false;
+			}
+			for(int i = 0; i < this.matrix.length; i++) {
+				if (m[i].length != this.matrix[i].length) {
+					return false;
+				}
+				for(int j = 0; j < this.matrix[i].length; j++) {
+					BigDecimal left = this.matrix[i][j];
+					BigDecimal right = m[i][j];
+					if (left == null) {
+						left = BigDecimal.ZERO;
+					}
+					if (right == null) {
+						left = BigDecimal.ZERO;
+					}
+					if (!left.equals(right)) {
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+	}
+
+	/*
+	public int compareTo(BigDecimalMatrix arg0) {
+		// Equal is easy but how to do less or greater?
+		return 0;
+	}
+	*/
+	
+	private static int determinColumnSize(final List<List<BigDecimal>> values) {
+		assert values != null;
+		int maxColumns = 0;
+		for (List<BigDecimal> column : values) {
+			maxColumns = Math.max(maxColumns, column != null ? column.size() : 0);
+		}
+		return maxColumns;
+	}
+
 }

@@ -25,6 +25,7 @@
 package org.jbasics.math;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,11 +34,79 @@ import org.jbasics.pattern.builder.Builder;
 
 public class BigDecimalMatrixBuilder implements Builder<BigDecimalMatrix> {
 	private final List<List<BigDecimal>> storage;
+	private int currentRow = 0;
 
 	public BigDecimalMatrixBuilder() {
 		this.storage = new ArrayList<List<BigDecimal>>();
 	}
+	
+	public BigDecimalMatrixBuilder withSize(int rows, int cols) {
+		set(rows, cols, BigDecimal.ZERO);
+		return this;
+	}
+	
+	public BigDecimalMatrixBuilder withRow(BigDecimal...values) {
+		this.currentRow++;
+		if (values != null) {
+			for(int i = 0; i < values.length; i++) {
+				set(this.currentRow, i+1, values[i]);
+			}
+		}
+		return this;
+	}
 
+	public BigDecimalMatrixBuilder withRowFromLongs(long...values) {
+		this.currentRow++;
+		if (values != null) {
+			for(int i = 0; i < values.length; i++) {
+				set(this.currentRow, i+1, BigDecimal.valueOf(values[i]));
+			}
+		}
+		return this;
+	}
+	
+	public BigDecimalMatrixBuilder withRowFromDoubles(double...values) {
+		this.currentRow++;
+		if (values != null) {
+			for(int i = 0; i < values.length; i++) {
+				set(this.currentRow, i+1, BigDecimal.valueOf(values[i]));
+			}
+		}
+		return this;
+	}
+	
+	public BigDecimalMatrixBuilder withRowFromNumbers(Number...values) {
+		this.currentRow++;
+		if (values != null) {
+			for(int i = 0; i < values.length; i++) {
+				Number temp = values[i];
+				if (temp == null) {
+					set(this.currentRow, i+1, BigDecimal.ZERO);
+				} else if(temp instanceof BigDecimal) {
+					set(this.currentRow, i+1, (BigDecimal)values[i]);
+				} else if (temp instanceof BigInteger) {
+					set(this.currentRow, i+1, new BigDecimal((BigInteger)values[i]));
+				} else if (temp instanceof Long || temp instanceof Integer) {
+					set(this.currentRow, i+1, BigDecimal.valueOf(values[i].longValue()));
+				} else {
+					set(this.currentRow, i+1, BigDecimal.valueOf(values[i].doubleValue()));
+				}
+			}
+		}
+		return this;
+	}
+
+	public BigDecimalMatrixBuilder withRowFromStrings(String...values) {
+		this.currentRow++;
+		if (values != null) {
+			for(int i = 0; i < values.length; i++) {
+				String temp = values[i];
+				set(this.currentRow, i+1, temp == null ? BigDecimal.ZERO : new BigDecimal(temp));
+			}
+		}
+		return this;
+	}
+		
 	public BigDecimalMatrixBuilder set(final int row, final int column, final BigDecimal value) {
 		int x = ContractCheck.mustBeInRange(row, 1, Integer.MAX_VALUE, "row") - 1; //$NON-NLS-1$
 		int y = ContractCheck.mustBeInRange(column, 1, Integer.MAX_VALUE, "row") - 1; //$NON-NLS-1$
@@ -60,6 +129,7 @@ public class BigDecimalMatrixBuilder implements Builder<BigDecimalMatrix> {
 
 	public void reset() {
 		this.storage.clear();
+		this.currentRow = 0;
 	}
 
 	public BigDecimalMatrix build() {
