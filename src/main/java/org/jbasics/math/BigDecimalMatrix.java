@@ -125,6 +125,23 @@ public class BigDecimalMatrix implements Iterable<Collection<BigDecimal>> /*, Co
 		return result;
 	}
 
+	public BigDecimalMatrix subtract(BigDecimalMatrix summant) {
+		return subtract(summant, MathContext.UNLIMITED);
+	}
+
+	public BigDecimalMatrix subtract(BigDecimalMatrix summant, final MathContext mc) {
+		if (ContractCheck.mustNotBeNull(summant, "summant").rows != this.rows || summant.columns != this.columns) {
+			throw new IllegalArgumentException("Matrix summation can only be done with matrices of the exact same dimensions");
+		}
+		BigDecimalMatrix result = new BigDecimalMatrix(this.rows, this.columns);
+		for (int i = 0; i < this.matrix.length; i++) {
+			for (int j = 0; j < this.matrix[i].length; j++) {
+				result.matrix[i][j] = this.matrix[i][j].subtract(summant.matrix[i][j], mc);
+			}
+		}
+		return result;
+	}
+
 	public BigDecimalMatrix multiply(final long scalar) {
 		return multiply(BigDecimal.valueOf(scalar), MathContext.UNLIMITED);
 	}

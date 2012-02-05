@@ -50,6 +50,8 @@ public class BigDecimalMatrixTest {
 		BigDecimalMatrix expected = BigDecimalMatrix.create().withRowFromLongs(1, 0, 7).withRowFromLongs(3, 3, 6).build();
 		BigDecimalMatrix calculated = input.add(summant);
 		Assert.assertEquals(expected, calculated);
+		calculated = calculated.subtract(summant);
+		Assert.assertEquals(input, calculated);
 	}
 
 	@Test
