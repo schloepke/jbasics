@@ -58,6 +58,20 @@ public class BigDecimalMatrix implements Iterable<Collection<BigDecimal>> /*, Co
 		}
 		return result;
 	}
+	
+	public static BigDecimalMatrix createRandomMatrix(int rows, int columns) {
+		return createRandomMatrix(rows, columns, new JavaRandomNumberSequence());
+	}
+
+	public static BigDecimalMatrix createRandomMatrix(int rows, int columns, RandomNumberSequence<? extends Number> r) {
+		BigDecimalMatrix result = new BigDecimalMatrix(rows, columns);
+		for(int i = 0; i < rows; i++) {
+			for(int j = 0; j < rows; j++) {
+				result.matrix[i][j] = NumberConverter.toBigDecimal(r.nextRandomNumber());
+			}
+		}
+		return result;
+	}
 
 	public BigDecimalMatrix(final int rows, final int columns, final Number... values) {
 		this.rows = ContractCheck.mustBeInRange(rows, 1, Integer.MAX_VALUE, "rows"); //$NON-NLS-1$

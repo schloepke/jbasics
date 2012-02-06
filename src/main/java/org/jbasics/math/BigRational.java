@@ -40,6 +40,10 @@ import java.math.MathContext;
  */
 public final class BigRational extends Number implements Comparable<BigRational> {
 	/**
+	 * The serial version UID required as a derive from number
+	 */
+	private static final long serialVersionUID = -1773220741262593011L;
+	/**
 	 * Constant {@link BigRational} for the value of zero (0/1)
 	 */
 	public static final BigRational ZERO = new BigRational(BigInteger.valueOf(0L), BigInteger.valueOf(1L));
