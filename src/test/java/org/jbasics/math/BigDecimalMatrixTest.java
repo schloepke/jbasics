@@ -72,11 +72,18 @@ public class BigDecimalMatrixTest {
 	}
 	
 	@Test
+	public void testRowAndColumnVector() {
+		BigDecimalMatrix rowVector = BigDecimalMatrix.createRowVector(3, 5, 7);
+		BigDecimalMatrix colVector = BigDecimalMatrix.createColumnVector(4, 8, 2);
+		BigDecimalMatrix expected = BigDecimalMatrix.createColumnVector(66);
+		Assert.assertEquals(expected, rowVector.multiply(colVector));
+	}
+	
+	@Test
 	public void testAssociativeProperty() {
 		BigDecimalMatrix A = BigDecimalMatrix.create().withRowFromLongs(1, 2, 3).withRowFromLongs(4, 5, 6).build();
 		BigDecimalMatrix B = BigDecimalMatrix.create().withRowFromLongs(6, -1).withRowFromLongs(3, 2).withRowFromLongs(0, -3).build();
 		BigDecimalMatrix C = BigDecimalMatrix.create().withRowFromLongs(12, -6).withRowFromLongs(39, -12).build();
-		// (A * B) * C = A * (B * C)
 		Assert.assertEquals(A.multiply(B).multiply(C), A.multiply(B.multiply(C)));
 	}
 
@@ -85,7 +92,6 @@ public class BigDecimalMatrixTest {
 		BigDecimalMatrix A = BigDecimalMatrix.create().withRowFromLongs(1, 2).withRowFromLongs(4, 5).build();
 		BigDecimalMatrix B = BigDecimalMatrix.create().withRowFromLongs(6, -1).withRowFromLongs(3, 2).build();
 		BigDecimalMatrix C = BigDecimalMatrix.create().withRowFromLongs(12, -6).withRowFromLongs(39, -12).build();
-		// (A + B) * C = A * C + B * C
 		Assert.assertEquals(A.add(B).multiply(C), A.multiply(C).add(B.multiply(C)));
 	}
 

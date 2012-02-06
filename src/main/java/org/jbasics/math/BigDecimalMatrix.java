@@ -43,6 +43,14 @@ public class BigDecimalMatrix implements Iterable<Collection<BigDecimal>> /*, Co
 		return new BigDecimalMatrixBuilder();
 	}
 	
+	public static BigDecimalMatrix createColumnVector(Number...values) {
+		return new BigDecimalMatrix(ContractCheck.mustNotBeNullOrEmpty(values, "values").length, 1, values);
+	}
+	
+	public static BigDecimalMatrix createRowVector(Number...values) {
+		return new BigDecimalMatrix(1, ContractCheck.mustNotBeNullOrEmpty(values, "values").length, values);
+	}
+	
 	public static BigDecimalMatrix createIdentityMatrix(int size) {
 		BigDecimalMatrix result = new BigDecimalMatrix(size, size);
 		for(int i = 0; i < size; i++) {
@@ -51,17 +59,19 @@ public class BigDecimalMatrix implements Iterable<Collection<BigDecimal>> /*, Co
 		return result;
 	}
 
-	public BigDecimalMatrix(final int rows, final int columns, final BigDecimal... values) {
+	public BigDecimalMatrix(final int rows, final int columns, final Number... values) {
 		this.rows = ContractCheck.mustBeInRange(rows, 1, Integer.MAX_VALUE, "rows"); //$NON-NLS-1$
 		this.columns = ContractCheck.mustBeInRange(columns, 1, Integer.MAX_VALUE, "columns"); //$NON-NLS-1$
 		this.matrix = new BigDecimal[rows][columns];
 		int i = 0, j = 0;
-		for (BigDecimal value : values) {
-			this.matrix[i][j] = value == null ? BigDecimal.ZERO : value;
-			if (i++ >= rows) {
-				i = 0;
-				if (j++ >= columns) {
-					break;
+		if (values != null) {
+			for (Number value : values) {
+				this.matrix[i][j] = value == null ? BigDecimal.ZERO : NumberConverter.toBigDecimal(value);
+				if (++j >= columns) {
+					j = 0;
+					if (++i >= rows) {
+						return;
+					}
 				}
 			}
 		}
@@ -76,21 +86,21 @@ public class BigDecimalMatrix implements Iterable<Collection<BigDecimal>> /*, Co
 		}
 	}
 
-	public BigDecimalMatrix(final int rows, final int columns, final List<List<BigDecimal>> values) {
+	public BigDecimalMatrix(final int rows, final int columns, final List<List<Number>> values) {
 		ContractCheck.mustNotBeNullOrEmpty(values, "values"); //$NON-NLS-1$
 		this.rows = ContractCheck.mustBeInRange(rows, 1, Integer.MAX_VALUE, "rows"); //$NON-NLS-1$
 		this.columns = ContractCheck.mustBeInRange(columns, 1, Integer.MAX_VALUE, "columns"); //$NON-NLS-1$
 		this.matrix = new BigDecimal[this.rows][this.columns];
 		for (int i = 0; i < this.rows; i++) {
-			List<BigDecimal> colData = values.size() <= i ? null : values.get(i);
+			List<? extends Number> colData = values.size() <= i ? null : values.get(i);
 			for (int j = 0; j < this.columns; j++) {
-				BigDecimal v = colData == null || colData.size() <= j ? null : colData.get(j);
-				this.matrix[i][j] = v != null ? v : BigDecimal.ZERO;
+				Number v = colData == null || colData.size() <= j ? null : colData.get(j);
+				this.matrix[i][j] = v == null ? BigDecimal.ZERO : NumberConverter.toBigDecimal(v);
 			}
 		}
 	}
 
-	public BigDecimalMatrix(final List<List<BigDecimal>> values) {
+	public BigDecimalMatrix(final List<List<Number>> values) {
 		this(ContractCheck.mustNotBeNullOrEmpty(values, "values").size(), BigDecimalMatrix.determinColumnSize(values), values); //$NON-NLS-1$
 	}
 
@@ -150,10 +160,18 @@ public class BigDecimalMatrix implements Iterable<Collection<BigDecimal>> /*, Co
 		return multiply(BigDecimal.valueOf(scalar), MathContext.UNLIMITED);
 	}
 
+	public BigDecimalMatrix multiply(final Number scalar) {
+		return multiply(NumberConverter.toBigDecimal(scalar), MathContext.UNLIMITED);
+	}
+
+	public BigDecimalMatrix multiply(final Number scalar, final MathContext mc) {
+		return multiply(NumberConverter.toBigDecimal(scalar), mc);
+	}
+
 	public BigDecimalMatrix multiply(final BigDecimal scalar) {
 		return multiply(scalar, MathContext.UNLIMITED);
 	}
-
+	
 	public BigDecimalMatrix multiply(final BigDecimal scalar, final MathContext mc) {
 		BigDecimalMatrix result = new BigDecimalMatrix(this.rows, this.columns);
 		for (int i = 0; i < this.matrix.length; i++) {
@@ -257,17 +275,10 @@ public class BigDecimalMatrix implements Iterable<Collection<BigDecimal>> /*, Co
 		}
 	}
 
-	/*
-	public int compareTo(BigDecimalMatrix arg0) {
-		// Equal is easy but how to do less or greater?
-		return 0;
-	}
-	*/
-	
-	private static int determinColumnSize(final List<List<BigDecimal>> values) {
+	private static int determinColumnSize(final List<List<Number>> values) {
 		assert values != null;
 		int maxColumns = 0;
-		for (List<BigDecimal> column : values) {
+		for (List<Number> column : values) {
 			maxColumns = Math.max(maxColumns, column != null ? column.size() : 0);
 		}
 		return maxColumns;

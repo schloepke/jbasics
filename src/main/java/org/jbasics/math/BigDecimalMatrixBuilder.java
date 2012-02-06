@@ -33,11 +33,11 @@ import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.builder.Builder;
 
 public class BigDecimalMatrixBuilder implements Builder<BigDecimalMatrix> {
-	private final List<List<BigDecimal>> storage;
+	private final List<List<Number>> storage;
 	private int currentRow = 0;
 
 	public BigDecimalMatrixBuilder() {
-		this.storage = new ArrayList<List<BigDecimal>>();
+		this.storage = new ArrayList<List<Number>>();
 	}
 	
 	public BigDecimalMatrixBuilder withSize(int rows, int cols) {
@@ -79,18 +79,7 @@ public class BigDecimalMatrixBuilder implements Builder<BigDecimalMatrix> {
 		this.currentRow++;
 		if (values != null) {
 			for(int i = 0; i < values.length; i++) {
-				Number temp = values[i];
-				if (temp == null) {
-					set(this.currentRow, i+1, BigDecimal.ZERO);
-				} else if(temp instanceof BigDecimal) {
-					set(this.currentRow, i+1, (BigDecimal)values[i]);
-				} else if (temp instanceof BigInteger) {
-					set(this.currentRow, i+1, new BigDecimal((BigInteger)values[i]));
-				} else if (temp instanceof Long || temp instanceof Integer) {
-					set(this.currentRow, i+1, BigDecimal.valueOf(values[i].longValue()));
-				} else {
-					set(this.currentRow, i+1, BigDecimal.valueOf(values[i].doubleValue()));
-				}
+				set(this.currentRow, i+1, values[i]);
 			}
 		}
 		return this;
@@ -107,16 +96,16 @@ public class BigDecimalMatrixBuilder implements Builder<BigDecimalMatrix> {
 		return this;
 	}
 		
-	public BigDecimalMatrixBuilder set(final int row, final int column, final BigDecimal value) {
+	public BigDecimalMatrixBuilder set(final int row, final int column, final Number value) {
 		int x = ContractCheck.mustBeInRange(row, 1, Integer.MAX_VALUE, "row") - 1; //$NON-NLS-1$
 		int y = ContractCheck.mustBeInRange(column, 1, Integer.MAX_VALUE, "row") - 1; //$NON-NLS-1$
 		if (this.storage.size() <= x) {
 			// need to be extended by adding the missing rows
 			for (int i = x - this.storage.size(); i >= 0; i--) {
-				this.storage.add(new ArrayList<BigDecimal>());
+				this.storage.add(new ArrayList<Number>());
 			}
 		}
-		List<BigDecimal> temp = this.storage.get(x);
+		List<Number> temp = this.storage.get(x);
 		if (temp.size() <= y) {
 			// need to be extended by adding the missing rows
 			for (int i = y - temp.size(); i >= 0; i--) {
