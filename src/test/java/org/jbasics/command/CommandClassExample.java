@@ -24,6 +24,7 @@
  */
 package org.jbasics.command;
 
+import java.io.File;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
@@ -63,6 +64,14 @@ public class CommandClassExample {
 	@Command
 	public static Integer deleteProcessed(@CommandParam("destination") final List<URI> destination) {
 		System.out.println("deleteProcessed(\"" + destination + "\")");
+		return Integer.valueOf(200);
+	}
+
+	@Command
+	public static Integer listFiles(@CommandParam("input") final List<File> files) {
+		for (File f : files) {
+			System.out.println(f + " => " + f);
+		}
 		return Integer.valueOf(200);
 	}
 }

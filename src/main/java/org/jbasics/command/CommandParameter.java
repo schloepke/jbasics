@@ -205,12 +205,20 @@ public class CommandParameter implements Extendable<CommandParameter, String>, C
 		}
 		List<File> files = new ArrayList<File>();
 		for (String value : this.values) {
-			String[] temp = value.split("@", 2);
+			String[] temp = value.split("@", 2); //$NON-NLS-1$
+			File dir = null;
+			CommandFileFilter filter = null;
 			if (temp.length == 2) {
-				files.addAll(Arrays.asList(new File(temp[0]).listFiles(new CommandFileFilter(temp[1], true))));
+				dir = new File(temp[0]);
+				filter = new CommandFileFilter(temp[1], true);
 			} else {
 				File t = new File(value);
-				files.addAll(Arrays.asList(new File(t.getAbsolutePath()).listFiles(new CommandFileFilter(t.getName(), false))));
+				dir = new File(t.getAbsolutePath()).getParentFile();
+				filter = new CommandFileFilter(t.getName(), false);
+			}
+			File[] filteredFiles = dir.listFiles(filter);
+			if (filteredFiles != null && filteredFiles.length > 0) {
+				files.addAll(Arrays.asList(filteredFiles));
 			}
 		}
 		return files;

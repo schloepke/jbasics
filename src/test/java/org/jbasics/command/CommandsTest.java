@@ -41,6 +41,10 @@ public class CommandsTest {
 			"destination=folder/subfolder",
 			"destination=anotherFolder/something" };
 
+	public final static String[] LIST_FILES_ARGS = new String[] {
+			"listFiles",
+			"input=*" };
+
 	@Test
 	public void testArgsParsin() {
 		CommandCall split = CommandCall.create(CommandsTest.SPLIT_CALL_ARGS);
@@ -55,8 +59,10 @@ public class CommandsTest {
 		e.printCommand(System.out);
 		CommandCall split = CommandCall.create(CommandsTest.SPLIT_CALL_ARGS);
 		CommandCall delete = CommandCall.create(CommandsTest.DELETE_CALL_ARGS);
+		CommandCall listFiles = CommandCall.create(CommandsTest.LIST_FILES_ARGS);
 		e.execute(split);
 		e.execute(delete);
+		e.execute(listFiles);
 	}
 
 }
