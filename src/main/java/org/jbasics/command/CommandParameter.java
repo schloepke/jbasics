@@ -24,10 +24,12 @@
  */
 package org.jbasics.command;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -191,6 +193,27 @@ public class CommandParameter implements Extendable<CommandParameter, String>, C
 			result.add(Enum.valueOf(enumType, value));
 		}
 		return Collections.unmodifiableList(result);
+	}
+
+	public File asFile() {
+		return new File(this.values.first());
+	}
+
+	public List<File> asFiles() {
+		if (this.values.isEmpty()) {
+			return Collections.emptyList();
+		}
+		List<File> files = new ArrayList<File>();
+		for (String value : this.values) {
+			String[] temp = value.split("@", 2);
+			if (temp.length == 2) {
+				files.addAll(Arrays.asList(new File(temp[0]).listFiles(new CommandFileFilter(temp[1], true))));
+			} else {
+				File t = new File(value);
+				files.addAll(Arrays.asList(new File(t.getAbsolutePath()).listFiles(new CommandFileFilter(t.getName(), false))));
+			}
+		}
+		return files;
 	}
 
 	@Override

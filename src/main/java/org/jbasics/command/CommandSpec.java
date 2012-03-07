@@ -24,6 +24,7 @@
  */
 package org.jbasics.command;
 
+import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -114,6 +115,8 @@ public class CommandSpec implements ExecuteStrategy<Integer, CommandCall> {
 					temp[i] = isList ? value.asBigDecimals() : value.mustBeSingle().asBigDecimal();
 				} else if (URI.class.isAssignableFrom(paramType)) {
 					temp[i] = isList ? value.asURIs() : value.mustBeSingle().asURI();
+				} else if (File.class.isAssignableFrom(paramType)) {
+					temp[i] = isList ? value.asFiles() : value.mustBeSingle().asFile();
 				} else {
 					throw new UnsupportedOperationException("Unsupported custom type " + paramType); //$NON-NLS-1$
 				}

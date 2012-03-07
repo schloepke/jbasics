@@ -24,6 +24,8 @@
  */
 package org.jbasics.pattern.coder;
 
-public interface Codec<T, TEnc> extends Decoder<T, TEnc>, Encoder<T, TEnc> {
-	// Interface to only combine encoder and decoder
+public interface Decoder<T, TEnc> {
+
+	T decode(TEnc encodedInput);
+
 }
