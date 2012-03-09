@@ -34,31 +34,41 @@ import org.jbasics.checker.ContractCheck;
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.factory.ParameterFactory;
 
-
 public class URLMappingFactory implements ParameterFactory<URL, URI> {
-	public final static ParameterFactory<URL, URI> SHARED_INSTANCE = new URLMappingFactory();
+	public final static URLMappingFactory SHARED_INSTANCE = new URLMappingFactory();
 	private final Map<String, ParameterFactory<URL, URI>> schemeFactories;
 
 	public URLMappingFactory() {
 		this.schemeFactories = new ConcurrentHashMap<String, ParameterFactory<URL, URI>>();
-		this.setSchemeFactory(JavaResourceURLMapper.SCHEME, JavaResourceURLMapper.SHARED_INSTANCE);
 	}
 
-	public void setSchemeFactory(String scheme, ParameterFactory<URL, URI> factory) {
+	public void setSchemeFactory(final String scheme, final ParameterFactory<URL, URI> factory) {
 		if (factory == null) {
-			this.schemeFactories.remove(ContractCheck.mustNotBeNullOrTrimmedEmpty(scheme, "scheme"));
+			this.schemeFactories.remove(ContractCheck.mustNotBeNullOrTrimmedEmpty(scheme, "scheme")); //$NON-NLS-1$
 		} else {
-			this.schemeFactories.put(ContractCheck.mustNotBeNullOrTrimmedEmpty(scheme, "scheme"), factory);
+			this.schemeFactories.put(ContractCheck.mustNotBeNullOrTrimmedEmpty(scheme, "scheme"), factory); //$NON-NLS-1$
 		}
 	}
 
-	public URL create(URI resourceUri) {
-		String scheme = ContractCheck.mustNotBeNull(resourceUri, "resourceUri").getScheme();
+	public URL create(final URI resourceUri) {
+		String scheme = ContractCheck.mustNotBeNull(resourceUri, "resourceUri").getScheme(); //$NON-NLS-1$
 		ParameterFactory<URL, URI> factory = this.schemeFactories.get(scheme);
 		if (factory != null) {
-			return factory.create(resourceUri);
+			URL temp = factory.create(resourceUri);
+			if (temp != null) {
+				return temp;
+			}
 		}
 		try {
+			URI newResourceUri = URITransposer.SHARED_INSTANCE.transpose(resourceUri);
+			scheme = newResourceUri.getScheme();
+			factory = this.schemeFactories.get(scheme);
+			if (factory != null) {
+				URL temp = factory.create(newResourceUri);
+				if (temp != null) {
+					return temp;
+				}
+			}
 			return resourceUri.toURL();
 		} catch (MalformedURLException e) {
 			throw DelegatedException.delegate(e);

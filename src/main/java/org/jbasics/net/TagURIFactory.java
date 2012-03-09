@@ -31,6 +31,7 @@ import java.util.Locale;
 
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.factory.ParameterFactory;
+import org.jbasics.pattern.modifer.Extendable;
 import org.jbasics.text.StringUtilities;
 
 /**
@@ -39,7 +40,7 @@ import org.jbasics.text.StringUtilities;
  * 
  * @author Stephan Schloepke
  */
-public class TagURIFactory implements ParameterFactory<URI, String> {
+public class TagURIFactory implements ParameterFactory<URI, String>, Extendable<TagURIFactory, String> {
 	public static final String TAG_SCHEME = "tag"; //$NON-NLS-1$
 	public static final String TAG_PARTS_DELIMITER = ":"; //$NON-NLS-1$
 	public static final String TAG_PATH_DELIMITER = "/"; //$NON-NLS-1$
