@@ -69,7 +69,7 @@ public class URLMappingFactory implements ParameterFactory<URL, URI> {
 					return temp;
 				}
 			}
-			return resourceUri.toURL();
+			return newResourceUri.toURL();
 		} catch (MalformedURLException e) {
 			throw DelegatedException.delegate(e);
 		}

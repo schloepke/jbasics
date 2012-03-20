@@ -40,15 +40,15 @@ public class JAXBInstanceFactory<T> implements Factory<T> {
 	private final JAXBUnmarshallerPool pool;
 	private final URL documentUrl;
 
-	public JAXBInstanceFactory(final Class<?> documentType, final File documentFile) {
+	public JAXBInstanceFactory(final Class<T> documentType, final File documentFile) {
 		this(documentType, documentFile.toURI());
 	}
 
-	public JAXBInstanceFactory(final Class<?> documentType, final URI documentUri) {
+	public JAXBInstanceFactory(final Class<T> documentType, final URI documentUri) {
 		this(documentType, URLMappingFactory.SHARED_INSTANCE.create(documentUri));
 	}
 
-	public JAXBInstanceFactory(final Class<?> documentType, final URL documentUrl) {
+	public JAXBInstanceFactory(final Class<T> documentType, final URL documentUrl) {
 		this.pool = new JAXBUnmarshallerPool(ContractCheck.mustNotBeNull(documentType, "documentType")); //$NON-NLS-1$
 		this.documentUrl = ContractCheck.mustNotBeNull(documentUrl, "documentUrl"); //$NON-NLS-1$
 	}

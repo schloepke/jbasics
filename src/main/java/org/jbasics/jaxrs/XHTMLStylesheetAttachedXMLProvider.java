@@ -121,7 +121,7 @@ public class XHTMLStylesheetAttachedXMLProvider implements MessageBodyWriter<XHT
 				factory.setXIncludeAware(true);
 				XMLReader reader = factory.newSAXParser().getXMLReader();
 				ByteArrayOutputStream temp = new ByteArrayOutputStream();
-				marshaller.marshal(t, new OutputStreamWriter(temp));
+				marshaller.marshal(t.getEntity(), new OutputStreamWriter(temp));
 				source = new SAXSource(reader, new InputSource(new ByteArrayInputStream(temp.toByteArray())));
 			}
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
