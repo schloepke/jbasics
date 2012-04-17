@@ -35,12 +35,13 @@ import org.jbasics.pattern.transpose.ElementFilter;
 import org.jbasics.pattern.transpose.Transposer;
 import org.jbasics.types.factories.ListFactory;
 
-public class CollectionFilter<E> implements Transposer<List<E>, Collection<E>>, SubstitutionStrategy<List<E>, Collection<E>> {
+public class CollectionFilter<E> implements Transposer<List<E>, Collection<? extends E>>, SubstitutionStrategy<List<E>, Collection<? extends E>> {
 	private final ElementFilter<E> filterDecision;
 	private final Factory<? extends List<E>> listFactory;
 	private final boolean mutable;
 
-	public static <E> List<E> filter(final Collection<E> input, final ElementFilter<E> filterDecision, final Factory<? extends List<E>> listFactory,
+	public static <E> List<E> filter(final Collection<? extends E> input, final ElementFilter<E> filterDecision,
+			final Factory<? extends List<E>> listFactory,
 			final boolean mutable) {
 		ContractCheck.mustNotBeNull(filterDecision, "filterDecision"); //$NON-NLS-1$
 		ContractCheck.mustNotBeNull(listFactory, "listFactory"); //$NON-NLS-1$
@@ -56,11 +57,11 @@ public class CollectionFilter<E> implements Transposer<List<E>, Collection<E>>, 
 		return mutable ? result : Collections.unmodifiableList(result);
 	}
 
-	public static <E> List<E> filter(final Collection<E> input, final ElementFilter<E> filterDecision) {
+	public static <E> List<E> filter(final Collection<? extends E> input, final ElementFilter<E> filterDecision) {
 		return CollectionFilter.filter(input, filterDecision, false);
 	}
 
-	public static <E> List<E> filter(final Collection<E> input, final ElementFilter<E> filterDecision, final boolean mutable) {
+	public static <E> List<E> filter(final Collection<? extends E> input, final ElementFilter<E> filterDecision, final boolean mutable) {
 		return CollectionFilter.filter(input, filterDecision, ListFactory.<E> randomAccessListFactory(), mutable);
 	}
 
@@ -82,15 +83,15 @@ public class CollectionFilter<E> implements Transposer<List<E>, Collection<E>>, 
 		this.mutable = mutable;
 	}
 
-	public List<E> filter(final Collection<E> input) {
+	public List<E> filter(final Collection<? extends E> input) {
 		return transpose(input);
 	}
 
-	public List<E> substitute(final Collection<E> input) {
+	public List<E> substitute(final Collection<? extends E> input) {
 		return transpose(input);
 	}
 
-	public List<E> transpose(final Collection<E> input) {
+	public List<E> transpose(final Collection<? extends E> input) {
 		return CollectionFilter.filter(input, this.filterDecision, this.listFactory, this.mutable);
 	}
 

@@ -24,8 +24,8 @@
  */
 package org.jbasics.pattern.strategy;
 
-public interface CalculateStrategy<Result, Parameter> {
+public interface CalculateStrategy<Result, Request> {
 
-	Result calculate(Parameter param);
+	Result calculate(Request request);
 
 }

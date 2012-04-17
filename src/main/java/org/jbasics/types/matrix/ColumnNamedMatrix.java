@@ -98,7 +98,11 @@ public class ColumnNamedMatrix<T> implements Iterable<List<T>> {
 
 	@SuppressWarnings("unchecked")
 	public ColumnNamedMatrix<T> appendEmptyRow() {
-		this.rows.add(new ArrayList<T>(this.columns.length));
+		List<T> temp = new ArrayList<T>(this.columns.length);
+		for (String column : this.columns) {
+			temp.add(null);
+		}
+		this.rows.add(temp);
 		this.currentRow = this.rows.size() - 1;
 		return this;
 	}
@@ -152,12 +156,30 @@ public class ColumnNamedMatrix<T> implements Iterable<List<T>> {
 		return setCell(getColumnIndex(column), row, value);
 	}
 
+	public ColumnNamedMatrix<T> setCellIfColumnExists(final String column, final int row, final T value) {
+		int columnIndex = getColumnIndex(column);
+		if (columnIndex >= 0) {
+			return setCell(columnIndex, row, value);
+		} else {
+			return this;
+		}
+	}
+
 	public ColumnNamedMatrix<T> setCellInCurrentRow(final int column, final T value) {
 		return setCell(column, this.currentRow, value);
 	}
 
 	public ColumnNamedMatrix<T> setCellInCurrentRow(final String column, final T value) {
 		return setCell(getColumnIndex(column), this.currentRow, value);
+	}
+
+	public ColumnNamedMatrix<T> setCellInCurrentRowIfColumnExists(final String column, final T value) {
+		int columnIndex = getColumnIndex(column);
+		if (columnIndex >= 0) {
+			return setCell(columnIndex, this.currentRow, value);
+		} else {
+			return this;
+		}
 	}
 
 	public T getCell(final int column, final int row) {

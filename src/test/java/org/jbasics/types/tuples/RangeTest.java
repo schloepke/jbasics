@@ -151,4 +151,19 @@ public class RangeTest<T extends Comparable<T>> extends Java14LoggingTestCase {
 			}
 		}
 	}
+
+	@Test
+	public void testIntersect() {
+		Range<Integer> one = Range.create(10, true, 20, true);
+		Range<Integer> two = Range.create(13, true, 17, true);
+		Range<Integer> expected = Range.create(13, true, 17, true);
+		Assert.assertEquals(expected, one.intersect(two));
+
+		one = Range.create(10, true, 20, true);
+		two = Range.create(10, false, 20, true);
+		expected = Range.create(10, false, 20, true);
+		Assert.assertEquals(expected, one.intersect(two));
+
+	}
+
 }

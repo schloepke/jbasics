@@ -31,6 +31,7 @@ import java.util.GregorianCalendar;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.jbasics.pattern.factory.Factory;
@@ -89,6 +90,10 @@ public final class XMLDateFactory implements ParameterFactory<XMLGregorianCalend
 		return this.datatypeFactory.newXMLGregorianCalendar(year, month, DatatypeConstants.FIELD_UNDEFINED,
 				DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED,
 				DatatypeConstants.FIELD_UNDEFINED, DatatypeConstants.FIELD_UNDEFINED);
+	}
+
+	public Duration createDuration(String isoDurationString) {
+		return this.datatypeFactory.newDuration(isoDurationString);
 	}
 
 }
