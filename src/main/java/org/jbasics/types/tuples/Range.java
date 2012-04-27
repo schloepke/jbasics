@@ -262,7 +262,6 @@ public class Range<T extends Comparable<T>> extends Pair<T, T> implements Compar
 			}
 		}
 		return true;
-
 	}
 
 	/**

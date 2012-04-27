@@ -82,7 +82,7 @@ public class Quintuple<A, B, C, D, E> implements Tuple<A, Tuple<B, Tuple<C, Tupl
 	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
-		} else if (obj == null || !(obj instanceof Quadruple<?, ?, ?, ?>)) {
+		} else if (obj == null || !(obj instanceof Quintuple<?, ?, ?, ?, ?>)) {
 			return false;
 		}
 		Quintuple<?, ?, ?, ?, ?> other = (Quintuple<?, ?, ?, ?, ?>) obj;
