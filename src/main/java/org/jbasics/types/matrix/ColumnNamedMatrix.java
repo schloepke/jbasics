@@ -216,4 +216,56 @@ public class ColumnNamedMatrix<T> implements Iterable<List<T>> {
 		return temp.toString();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return (31 + Arrays.hashCode(this.columns)) * 31 + this.rows.hashCode();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (obj == null || !(obj instanceof ColumnNamedMatrix)) {
+			return false;
+		} else {
+			ColumnNamedMatrix<?> other = (ColumnNamedMatrix<?>) obj;
+			return Arrays.equals(this.columns, other.columns) && this.rows.equals(other.rows);
+		}
+	}
+
+	public ColumnNamedMatrix<String> diffMatrix(final ColumnNamedMatrix<?> input) {
+		ColumnNamedMatrix<String> result = new ColumnNamedMatrix<String>(this.columns);
+		int maxRows = Math.max(this.rows.size(), input.rows.size());
+		for (int i = 0; i < maxRows; i++) {
+			if (i < this.rows.size()) {
+				result.appendRow(diffLine(this.rows.get(i), i < input.rows.size() ? input.rows.get(i) : Collections.emptyList()));
+			} else {
+				result.appendRow(diffLine(Collections.emptyList(), input.rows.get(i)));
+			}
+		}
+		return result;
+	}
+
+	private List<String> diffLine(final List<?> lhs, final List<?> rhs) {
+		List<String> result = new ArrayList<String>(Math.max(lhs.size(), rhs.size()));
+		for (int i = 0; i < result.size(); i++) {
+			String lhsString = i < lhs.size() ? String.valueOf(lhs.get(i)) : "[N/A]"; //$NON-NLS-1$
+			String rhsString = i < rhs.size() ? String.valueOf(rhs.get(i)) : "[N/A]"; //$NON-NLS-1$
+			if (lhsString.equals(rhsString)) {
+				result.add(lhsString);
+			} else {
+				result.add("!! " + lhs + " <> " + rhs + " !!"); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+			}
+		}
+		return result;
+	}
+
 }
