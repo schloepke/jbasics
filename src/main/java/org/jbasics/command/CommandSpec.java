@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- *
+ * 
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,8 +34,12 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
+import java.sql.Date;
 import java.util.Collection;
 import java.util.List;
+
+import javax.xml.datatype.Duration;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.command.annotations.CommandParam;
@@ -60,14 +64,13 @@ public class CommandSpec implements ExecuteStrategy<Integer, CommandCall> {
 	}
 
 	private Triplet<String, Type, Boolean>[] scanParameters(final Method m) {
-		Annotation[][] annotations = m.getParameterAnnotations();
-		Type[] params = m.getGenericParameterTypes();
-		@SuppressWarnings("unchecked")
-		Triplet<String, Type, Boolean>[] result = new Triplet[params.length];
+		final Annotation[][] annotations = m.getParameterAnnotations();
+		final Type[] params = m.getGenericParameterTypes();
+		@SuppressWarnings("unchecked") final Triplet<String, Type, Boolean>[] result = new Triplet[params.length];
 		for (int i = 0; i < params.length; i++) {
-			Annotation[] paramAnnotations = annotations[i];
+			final Annotation[] paramAnnotations = annotations[i];
 			CommandParam cmdParam = null;
-			for (Annotation paramAnnotation : paramAnnotations) {
+			for (final Annotation paramAnnotation : paramAnnotations) {
 				if (paramAnnotation instanceof CommandParam) {
 					cmdParam = (CommandParam) paramAnnotation;
 					break;
@@ -76,7 +79,7 @@ public class CommandSpec implements ExecuteStrategy<Integer, CommandCall> {
 			if (cmdParam == null) {
 				throw new RuntimeException("Missing @CommandParam annotation on the parmeter"); //$NON-NLS-1$
 			}
-			String parameterName = cmdParam.value().trim();
+			final String parameterName = cmdParam.value().trim();
 			if (parameterName.length() == 0) {
 				throw new RuntimeException("@CommandParam value cannot be an empty string it defines the name of the parameter"); //$NON-NLS-1$
 			}
@@ -85,16 +88,17 @@ public class CommandSpec implements ExecuteStrategy<Integer, CommandCall> {
 		return result;
 	}
 
+	@Override
 	public Integer execute(final CommandCall request) {
-		CommandCall cmdCall = ContractCheck.mustNotBeNull(request, "request"); //$NON-NLS-1$
-		Object[] temp = new Object[this.commandParameterMapping.length];
+		final CommandCall cmdCall = ContractCheck.mustNotBeNull(request, "request"); //$NON-NLS-1$
+		final Object[] temp = new Object[this.commandParameterMapping.length];
 		for (int i = 0; i < temp.length; i++) {
-			Triplet<String, Type, Boolean> paramSpec = this.commandParameterMapping[i];
-			CommandParameter value = cmdCall.getParameters().get(paramSpec.first());
+			final Triplet<String, Type, Boolean> paramSpec = this.commandParameterMapping[i];
+			final CommandParameter value = cmdCall.getParameters().get(paramSpec.first());
 			if (value != null) {
 				Class<?> paramType = null;
 				boolean isList = false;
-				Type paramT = paramSpec.second();
+				final Type paramT = paramSpec.second();
 				if (paramT instanceof Class) {
 					paramType = (Class<?>) paramT;
 				} else if (paramT instanceof ParameterizedType) {
@@ -117,6 +121,12 @@ public class CommandSpec implements ExecuteStrategy<Integer, CommandCall> {
 					temp[i] = isList ? value.asURIs() : value.mustBeSingle().asURI();
 				} else if (File.class.isAssignableFrom(paramType)) {
 					temp[i] = isList ? value.asFiles() : value.mustBeSingle().asFile();
+				} else if (Date.class.isAssignableFrom(paramType)) {
+					temp[i] = isList ? value.asDates() : value.mustBeSingle().asDate();
+				} else if (XMLGregorianCalendar.class.isAssignableFrom(paramType)) {
+					temp[i] = isList ? value.asXmlDates() : value.mustBeSingle().asXmlDate();
+				} else if (Duration.class.isAssignableFrom(paramType)) {
+					temp[i] = isList ? value.asDurations() : value.mustBeSingle().asDuration();
 				} else {
 					throw new UnsupportedOperationException("Unsupported custom type " + paramType); //$NON-NLS-1$
 				}
@@ -126,11 +136,11 @@ public class CommandSpec implements ExecuteStrategy<Integer, CommandCall> {
 		}
 		try {
 			return (Integer) this.commandMethod.invoke(null, temp);
-		} catch (IllegalArgumentException e) {
+		} catch (final IllegalArgumentException e) {
 			throw DelegatedException.delegate(e);
-		} catch (IllegalAccessException e) {
+		} catch (final IllegalAccessException e) {
 			throw DelegatedException.delegate(e);
-		} catch (InvocationTargetException e) {
+		} catch (final InvocationTargetException e) {
 			throw DelegatedException.delegate(e);
 		} finally {
 			//
@@ -152,14 +162,14 @@ public class CommandSpec implements ExecuteStrategy<Integer, CommandCall> {
 	@Override
 	@SuppressWarnings("nls")
 	public String toString() {
-		StringBuilder temp = new StringBuilder().append(this.namespace).append("/").append(this.name);
-		for (Triplet<String, Type, Boolean> paramSpec : this.commandParameterMapping) {
-			Type t = paramSpec.second();
+		final StringBuilder temp = new StringBuilder().append(this.namespace).append("/").append(this.name);
+		for (final Triplet<String, Type, Boolean> paramSpec : this.commandParameterMapping) {
+			final Type t = paramSpec.second();
 			String typeName = null;
 			if (t instanceof Class) {
 				typeName = ((Class<?>) t).getSimpleName();
 			} else if (t instanceof ParameterizedType) {
-				Class<?> tt = getListType((ParameterizedType) t);
+				final Class<?> tt = getListType((ParameterizedType) t);
 				if (tt != null) {
 					typeName = tt.getSimpleName() + "s"; //$NON-NLS-1$
 				}
@@ -174,9 +184,9 @@ public class CommandSpec implements ExecuteStrategy<Integer, CommandCall> {
 	}
 
 	private final Class<?> getListType(final ParameterizedType type) {
-		Type rawType = type.getRawType();
+		final Type rawType = type.getRawType();
 		if (rawType == List.class || rawType == Collection.class) {
-			Type implType = type.getActualTypeArguments()[0];
+			final Type implType = type.getActualTypeArguments()[0];
 			if (implType instanceof Class) {
 				return (Class<?>) implType;
 			}
