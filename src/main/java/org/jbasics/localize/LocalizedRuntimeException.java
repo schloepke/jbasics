@@ -30,6 +30,26 @@ package org.jbasics.localize;
  */
 public class LocalizedRuntimeException extends RuntimeException {
 	private final String localizedMessage;
+	
+	public LocalizedRuntimeException() {
+		super();
+		this.localizedMessage = null;
+	}
+
+	public LocalizedRuntimeException(String message) {
+		super(message);
+		this.localizedMessage = null;
+	}
+
+	public LocalizedRuntimeException(Throwable cause) {
+		super(cause);
+		this.localizedMessage = null;
+	}
+
+	public LocalizedRuntimeException(String message, Throwable cause) {
+		super(message, cause);
+		this.localizedMessage = null;
+	}
 
 	public LocalizedRuntimeException(Object bundleInstance, String key, Object... arguments) {
 		this(LocalizedMessageAccessor.getMessageBundleName(bundleInstance), key, arguments);

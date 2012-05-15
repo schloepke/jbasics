@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- *
+ * 
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,7 +28,6 @@ import java.math.BigInteger;
 import java.util.Random;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import org.jbasics.testing.Java14LoggingTestCase;
@@ -57,8 +56,8 @@ public class ArbitraryIntegerTest extends Java14LoggingTestCase {
 		Assert.assertEquals(BigInteger.valueOf(-2), ArbitraryInteger.valueOf(BigInteger.valueOf(-2).toByteArray()).toNumber());
 		Assert.assertEquals(BigInteger.valueOf(3), ArbitraryInteger.valueOf(BigInteger.valueOf(3).toByteArray()).toNumber());
 		for (int i = 0; i < this.iterations; i++) {
-			BigInteger reference = BigInteger.valueOf(this.randomizer.nextLong()).pow(this.randomizer.nextInt(20) + 10);
-			ArbitraryInteger proband = ArbitraryInteger.valueOf(reference.toByteArray());
+			final BigInteger reference = BigInteger.valueOf(this.randomizer.nextLong()).pow(this.randomizer.nextInt(20) + 10);
+			final ArbitraryInteger proband = ArbitraryInteger.valueOf(reference.toByteArray());
 			Assert.assertEquals(reference, proband.toNumber());
 		}
 	}
@@ -69,21 +68,17 @@ public class ArbitraryIntegerTest extends Java14LoggingTestCase {
 		Assert.assertTrue(ArbitraryInteger.ZERO.isZero());
 		Assert.assertFalse(ArbitraryInteger.ZERO.isPositiv());
 		Assert.assertEquals(0, ArbitraryInteger.ZERO.signum());
-
 		Assert.assertFalse(ArbitraryInteger.ONE.isNegativ());
 		Assert.assertFalse(ArbitraryInteger.ONE.isZero());
 		Assert.assertTrue(ArbitraryInteger.ONE.isPositiv());
 		Assert.assertEquals(1, ArbitraryInteger.ONE.signum());
-
 		Assert.assertTrue(ArbitraryInteger.MINUS_ONE.isNegativ());
 		Assert.assertFalse(ArbitraryInteger.MINUS_ONE.isZero());
 		Assert.assertFalse(ArbitraryInteger.MINUS_ONE.isPositiv());
 		Assert.assertEquals(-1, ArbitraryInteger.MINUS_ONE.signum());
-
 		for (int i = 0; i < this.iterations; i++) {
-			BigInteger reference = BigInteger.valueOf(this.randomizer.nextLong() - Long.MAX_VALUE).pow(
-					this.randomizer.nextInt(20) + 10);
-			ArbitraryInteger proband = ArbitraryInteger.valueOf(reference.toByteArray());
+			final BigInteger reference = BigInteger.valueOf(this.randomizer.nextLong() - Long.MAX_VALUE).pow(this.randomizer.nextInt(20) + 10);
+			final ArbitraryInteger proband = ArbitraryInteger.valueOf(reference.toByteArray());
 			Assert.assertEquals(reference.signum(), proband.signum());
 			Assert.assertTrue(reference.signum() < 0 && proband.isNegativ() || reference.signum() > 0 && !proband.isNegativ());
 			Assert.assertTrue(reference.signum() > 0 && proband.isPositiv() || reference.signum() < 0 && !proband.isPositiv());
@@ -94,14 +89,13 @@ public class ArbitraryIntegerTest extends Java14LoggingTestCase {
 	@Test
 	public void testUnaryFunctions() {
 		for (int i = 0; i < this.iterations; i++) {
-			ArbitraryInteger proband = ArbitraryInteger.valueOf(this.randomizer.nextInt());
+			final ArbitraryInteger proband = ArbitraryInteger.valueOf(this.randomizer.nextInt());
 			Assert.assertTrue(proband.signum() * -1 == proband.negate().signum());
-			BigInteger t = proband.toNumber();
+			final BigInteger t = proband.toNumber();
 			Assert.assertEquals(t.pow(2), proband.square().toNumber());
-			Assert.assertTrue(proband.isNegativ() && proband.abs().isPositiv() || proband.isPositiv()
-					&& proband.abs().isPositiv());
+			Assert.assertTrue(proband.isNegativ() && proband.abs().isPositiv() || proband.isPositiv() && proband.abs().isPositiv());
 			if (!proband.isZero()) {
-				ArbitraryRational ratProband = proband.reciprocal();
+				final ArbitraryRational ratProband = proband.reciprocal();
 				if (proband.isPositiv()) {
 					Assert.assertTrue(ArbitraryInteger.ONE == ratProband.numerator());
 					Assert.assertTrue(proband == ratProband.denominator());
@@ -114,9 +108,9 @@ public class ArbitraryIntegerTest extends Java14LoggingTestCase {
 			Assert.assertEquals(proband.toNumber().subtract(BigInteger.ONE), proband.decrement().toNumber());
 		}
 		try {
-			ArbitraryRational ratProband = ArbitraryInteger.ZERO.reciprocal();
+			final ArbitraryRational ratProband = ArbitraryInteger.ZERO.reciprocal();
 			Assert.fail("Reciprocal of zero should yield an ArithmeticException");
-		} catch (ArithmeticException e) {
+		} catch (final ArithmeticException e) {
 			// thats good
 		}
 		Assert.assertTrue(ArbitraryInteger.ONE == ArbitraryInteger.ZERO.increment());
@@ -128,39 +122,33 @@ public class ArbitraryIntegerTest extends Java14LoggingTestCase {
 	@Test
 	public void testAddAndSubtract() {
 		for (int i = 0; i < this.iterations; i++) {
-			BigInteger referenceBase = BigInteger.valueOf(this.randomizer.nextLong()).pow(
-						this.randomizer.nextInt(20) + 10);
-			BigInteger referenceSummand = BigInteger.valueOf(this.randomizer.nextLong()).pow(
-						this.randomizer.nextInt(20) + 15);
-			BigInteger referenceSubtrahend = BigInteger.valueOf(this.randomizer.nextLong()).pow(
-						this.randomizer.nextInt(20) + 15);
-			BigInteger referenceAdd = referenceBase.add(referenceSummand);
-			BigInteger referenceSubtract = referenceBase.subtract(referenceSubtrahend);
-
+			final BigInteger referenceBase = BigInteger.valueOf(this.randomizer.nextLong()).pow(this.randomizer.nextInt(20) + 10);
+			final BigInteger referenceSummand = BigInteger.valueOf(this.randomizer.nextLong()).pow(this.randomizer.nextInt(20) + 15);
+			final BigInteger referenceSubtrahend = BigInteger.valueOf(this.randomizer.nextLong()).pow(this.randomizer.nextInt(20) + 15);
+			final BigInteger referenceAdd = referenceBase.add(referenceSummand);
+			final BigInteger referenceSubtract = referenceBase.subtract(referenceSubtrahend);
 			try {
-				ArbitraryInteger base = ArbitraryInteger.valueOf(referenceBase.toByteArray());
-				ArbitraryInteger summand = ArbitraryInteger.valueOf(referenceSummand.toByteArray());
-				ArbitraryInteger subtrahend = ArbitraryInteger.valueOf(referenceSubtrahend.toByteArray());
-				ArbitraryInteger add = base.add(summand);
-				ArbitraryInteger subtract = base.subtract(subtrahend);
-
-// this.logger.log(Level.FINE, "---- Add/Subtract Test Result ----");
-// this.logger.log(Level.FINE, "R.Base:       {0}", referenceBase.toString());
-// this.logger.log(Level.FINE, "Base:         {0}", base.toNumber().toString());
-// this.logger.log(Level.FINE, "-");
-// this.logger.log(Level.FINE, "R.Summand:    {0}", referenceSummand.toString());
-// this.logger.log(Level.FINE, "Summand:      {0}", summand.toNumber().toString());
-// this.logger.log(Level.FINE, "R.Add:        {0}", referenceAdd.toString());
-// this.logger.log(Level.FINE, "Add:          {0}", add.toNumber().toString());
-// this.logger.log(Level.FINE, "-");
-// this.logger.log(Level.FINE, "R.Subtrahend: {0}", referenceSubtrahend.toString());
-// this.logger.log(Level.FINE, "Subtrahend:   {0}", subtrahend.toNumber().toString());
-// this.logger.log(Level.FINE, "R.Subtract:   {0}", referenceSubtract.toString());
-// this.logger.log(Level.FINE, "Subtract:     {0}", subtract.toNumber().toString());
-
+				final ArbitraryInteger base = ArbitraryInteger.valueOf(referenceBase.toByteArray());
+				final ArbitraryInteger summand = ArbitraryInteger.valueOf(referenceSummand.toByteArray());
+				final ArbitraryInteger subtrahend = ArbitraryInteger.valueOf(referenceSubtrahend.toByteArray());
+				final ArbitraryInteger add = base.add(summand);
+				final ArbitraryInteger subtract = base.subtract(subtrahend);
+				// this.logger.log(Level.FINE, "---- Add/Subtract Test Result ----");
+				// this.logger.log(Level.FINE, "R.Base:       {0}", referenceBase.toString());
+				// this.logger.log(Level.FINE, "Base:         {0}", base.toNumber().toString());
+				// this.logger.log(Level.FINE, "-");
+				// this.logger.log(Level.FINE, "R.Summand:    {0}", referenceSummand.toString());
+				// this.logger.log(Level.FINE, "Summand:      {0}", summand.toNumber().toString());
+				// this.logger.log(Level.FINE, "R.Add:        {0}", referenceAdd.toString());
+				// this.logger.log(Level.FINE, "Add:          {0}", add.toNumber().toString());
+				// this.logger.log(Level.FINE, "-");
+				// this.logger.log(Level.FINE, "R.Subtrahend: {0}", referenceSubtrahend.toString());
+				// this.logger.log(Level.FINE, "Subtrahend:   {0}", subtrahend.toNumber().toString());
+				// this.logger.log(Level.FINE, "R.Subtract:   {0}", referenceSubtract.toString());
+				// this.logger.log(Level.FINE, "Subtract:     {0}", subtract.toNumber().toString());
 				Assert.assertEquals(referenceAdd, add.toNumber());
 				Assert.assertEquals(referenceSubtract, subtract.toNumber());
-			} catch (RuntimeException e) {
+			} catch (final RuntimeException e) {
 				System.out.println("DEBUG:\n result=" + referenceAdd + "\n base=" + referenceBase + "\n summand=" + referenceSummand);
 				throw e;
 			}
@@ -168,65 +156,56 @@ public class ArbitraryIntegerTest extends Java14LoggingTestCase {
 	}
 
 	@Test
-	@Ignore
+	//	@Ignore
 	public void testError() {
-		BigInteger expected = new BigInteger(
+		final BigInteger expected = new BigInteger(
 				"-21879735541154229227791466086683579076280366900663919915753229387157638465447645473796772623668045395740955309606736155779128756008339957572547941535794434578480215038788509096467838347886473545594060505762132643352249899219355437010881930845931383892202505836028226277071210345446100300049491815172291901607412785191595203158765534011920622413229502503599901979001591778273253653797354435151875336398535748044703258181950911024961165427456263081841563451921906420195137198000588366609734090191658141766012035934674383050760060577");
-		BigInteger base = new BigInteger(
+		final BigInteger base = new BigInteger(
 				"-3228726627582846843290820710883679623592042640079220481770963323951837510830508501247332136871648166342996470281533856438991004882077331751097465364798487715149826580828393194189282216157367788009073684447495167230378224597373273512771994353269846226315145836570343421376491081492520530677846890344134032578169159149903380796871699729392389100446360276235368676263583346951551589759060277018476364782061697792018900780956155340644583423166768778760902979479131980271876060077060059959663807355136049008039964762632470972224239566848");
-		BigInteger summand = new BigInteger(
+		final BigInteger summand = new BigInteger(
 				"3206846892041692614063029244796996044515762273178556561855210094564679872365060855773535364247980120947255514971927120283211876126068991793524917423262693280571346365789604685092814377809481314463479623941733034587025974698153918075761112422423914842422943330734315195099419871147074430377797398528961740676561746364711785593712934195380468478033130773731768774284581755173278336105262922583324489445663162043974197522774204429619622257739312515679061416027210073851680922879059471593054073264944390866273952726697796589173479506271");
-		BigInteger calculated = ArbitraryInteger.valueOf(base.toByteArray()).add(ArbitraryInteger.valueOf(summand.toByteArray())).toNumber();
+		final BigInteger calculated = ArbitraryInteger.valueOf(base.toByteArray()).add(ArbitraryInteger.valueOf(summand.toByteArray())).toNumber();
 		Assert.assertEquals(expected, calculated);
 	}
 
 	@Test
 	public void testDivide() {
-		BigInteger dividend = BigInteger.valueOf(4566746).pow(4);
-		BigInteger divisor = dividend.shiftRight(7).subtract(BigInteger.valueOf(245));
-		System.out.println(dividend + " / " + divisor + " = " +
-				dividend.divide(divisor) + " rem " + dividend.remainder(divisor));
-		System.out.println("N " + dividend.bitLength() + " - D " + divisor.bitLength() + " = "
-				+ (dividend.bitLength() - divisor.bitLength()));
+		final BigInteger dividend = BigInteger.valueOf(4566746).pow(4);
+		final BigInteger divisor = dividend.shiftRight(7).subtract(BigInteger.valueOf(245));
+		System.out.println(dividend + " / " + divisor + " = " + dividend.divide(divisor) + " rem " + dividend.remainder(divisor));
+		System.out.println("N " + dividend.bitLength() + " - D " + divisor.bitLength() + " = " + (dividend.bitLength() - divisor.bitLength()));
 		System.out.println("Q => " + dividend.divide(divisor).bitLength());
 		System.out.println("R => " + dividend.remainder(divisor).bitLength());
 		System.out.println("----");
-		int diff = dividend.bitLength() - divisor.bitLength();
-		BigInteger n = dividend.shiftRight(divisor.bitLength());
-		BigInteger d = divisor.shiftRight(divisor.bitLength() - 1);
+		final int diff = dividend.bitLength() - divisor.bitLength();
+		final BigInteger n = dividend.shiftRight(divisor.bitLength());
+		final BigInteger d = divisor.shiftRight(divisor.bitLength() - 1);
 		System.out.println(n + " / " + d + " = " + n.divide(d));
 	}
 
 	@Test
 	public void testMulIdentity() {
-		int x = 4456; // 132982340;
-		int y = 300; // 198309094;
-		long z = x * y;
-
-		int x0 = x & 0x0000ffff;
-		int x1 = x >>> 16;
-		int y0 = y & 0x0000ffff;
-		int y1 = y >>> 16;
-
-		long x0y0 = x0 * y0;
-		long x1y1 = x1 * y1;
-		int xx = (x1 - x0) * (y1 - y0);
-		long p3a = (x1 - x0) * (y0 - y1) + x0y0 + x1y1;
-		long p3b = (x1 + x0) * (y1 + y0) - x0y0 - x1y1;
-
-		long za = (x1y1 << 32) + (p3a << 16) + x0y0;
-		long zb = (x1y1 << 32) + (p3b << 16) + x0y0;
-
+		final int x = 4456; // 132982340;
+		final int y = 300; // 198309094;
+		final long z = x * y;
+		final int x0 = x & 0x0000ffff;
+		final int x1 = x >>> 16;
+		final int y0 = y & 0x0000ffff;
+		final int y1 = y >>> 16;
+		final long x0y0 = x0 * y0;
+		final long x1y1 = x1 * y1;
+		final int xx = (x1 - x0) * (y1 - y0);
+		final long p3a = (x1 - x0) * (y0 - y1) + x0y0 + x1y1;
+		final long p3b = (x1 + x0) * (y1 + y0) - x0y0 - x1y1;
+		final long za = (x1y1 << 32) + (p3a << 16) + x0y0;
+		final long zb = (x1y1 << 32) + (p3b << 16) + x0y0;
 		System.out.println("z  = " + z);
 		System.out.println("za = " + za);
 		System.out.println("zb = " + zb);
-
 		System.out.println("p3a = " + p3a);
 		System.out.println("p3b = " + p3b);
 		System.out.println("xx = " + xx);
 		System.out.println("xx = " + (x1 - x0));
 		System.out.println("xx = " + (y1 - y0));
-
 	}
-
 }

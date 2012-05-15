@@ -26,6 +26,7 @@ package org.jbasics.math;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -254,7 +255,8 @@ public class BigDecimalMatrix implements Iterable<Collection<BigDecimal>> /* , C
 		if (this.iterables == null) {
 			this.iterables = new Collection[this.matrix.length];
 			for (int i = 0; i < this.matrix.length; i++) {
-				this.iterables[i] = new ArrayCollection<BigDecimal>(this.matrix[i]);
+				//this.iterables[i] = new ArrayCollection<BigDecimal>(this.matrix[i]);
+				this.iterables[i] = Arrays.asList(this.matrix[i]);
 			}
 		}
 		return new ArrayIterator<Collection<BigDecimal>>(this.iterables);
