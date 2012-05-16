@@ -52,7 +52,6 @@ public class ArrayIterator<T> implements Iterator<T>, ListIterator<T> {
 	 * @throws ContractViolationException If data is null.
 	 * @since 1.0
 	 */
-	@SafeVarargs
 	public ArrayIterator(final T... data) {
 		this.data = ContractCheck.mustNotBeNull(data, "data"); //$NON-NLS-1$
 		this.size = data.length;

@@ -61,7 +61,6 @@ public class ArrayCollection<T> implements List<T> {
 	 * @throws ContractViolationException If the given data is null.
 	 * @since 1.0
 	 */
-	@SafeVarargs
 	public ArrayCollection(final T... data) {
 		this.data = ContractCheck.mustNotBeNull(data, "data"); //$NON-NLS-1$
 		this.offset = 0;
@@ -216,12 +215,12 @@ public class ArrayCollection<T> implements List<T> {
 
 	@Override
 	public ListIterator<T> listIterator() {
-		return new ArrayIterator<>(this.offset, this.size, this.data);
+		return new ArrayIterator<T>(this.offset, this.size, this.data);
 	}
 
 	@Override
 	public ListIterator<T> listIterator(final int index) {
-		return new ArrayIterator<>(index, this.offset, this.size, this.data);
+		return new ArrayIterator<T>(index, this.offset, this.size, this.data);
 	}
 
 	@Override
@@ -229,7 +228,7 @@ public class ArrayCollection<T> implements List<T> {
 		if (fromIndex < 0 || toIndex + this.offset > this.data.length || fromIndex > toIndex) {
 			throw new IndexOutOfBoundsException();
 		}
-		return new ArrayCollection<>(this.data, this.offset + fromIndex, toIndex - fromIndex);
+		return new ArrayCollection<T>(this.data, this.offset + fromIndex, toIndex - fromIndex);
 	}
 
 	// The rest is unsupported since optional and not interesting for an immutable collection.
