@@ -61,7 +61,7 @@ public class ArrayCollection<T> implements List<T> {
 	 * @throws ContractViolationException If the given data is null.
 	 * @since 1.0
 	 */
-	public ArrayCollection(final T... data) {
+	public ArrayCollection(@SuppressWarnings("unchecked") final T... data) {
 		this.data = ContractCheck.mustNotBeNull(data, "data"); //$NON-NLS-1$
 		this.offset = 0;
 		this.size = data.length;
