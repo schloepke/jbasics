@@ -245,7 +245,7 @@ public class Range<T extends Comparable<T>> extends Pair<T, T> implements Compar
 			if (tempCheck == null) {
 				return false;
 			}
-			int i = temp.compareTo(tempCheck);
+			final int i = temp.compareTo(tempCheck);
 			if (i > 0 || (i == 0 && !this.includeFrom && checkRange.isIncludeFrom())) {
 				return false;
 			}
@@ -256,7 +256,7 @@ public class Range<T extends Comparable<T>> extends Pair<T, T> implements Compar
 			if (tempCheck == null) {
 				return false;
 			}
-			int i = temp.compareTo(tempCheck);
+			final int i = temp.compareTo(tempCheck);
 			if (i < 0 || (i == 0 && !this.includeTo && checkRange.isIncludeTo())) {
 				return false;
 			}
@@ -273,7 +273,7 @@ public class Range<T extends Comparable<T>> extends Pair<T, T> implements Compar
 	 * @return True if the given value lays left or before the range starts.
 	 */
 	public boolean isLeftOuterRange(final T check) {
-		T temp = left();
+		final T temp = left();
 		if (check == null) {
 			return temp != null;
 		} else if (temp == null) {
@@ -292,13 +292,48 @@ public class Range<T extends Comparable<T>> extends Pair<T, T> implements Compar
 	 * @return True if the given value lays right or after the range ends.
 	 */
 	public boolean isRightOuterRange(final T check) {
-		T temp = right();
+		final T temp = right();
 		if (check == null) {
 			return temp != null;
 		} else if (temp == null) {
 			return false;
 		} else {
-			return this.includeTo ? temp.compareTo(check) <= 0 : temp.compareTo(check) < 0;
+			return this.includeTo ? temp.compareTo(check) < 0 : temp.compareTo(check) <= 0;
+		}
+	}
+
+	public boolean isOverlapped(final Range<T> checkRange) {
+		final int left = compareLeft(checkRange);
+		return left == 0 || left == compareRight(checkRange) || (left < 0 && compareLeftToRight(checkRange) <= 0)
+				|| checkRange.compareLeftToRight(this) >= 0;
+	}
+
+	public Pair<Range<T>, Range<T>> split(final T splitPoint) {
+		if (!isInRange(splitPoint)) {
+			throw new IllegalArgumentException("Split point is not part of the range"); //$NON-NLS-1$
+		} else {
+			return new Pair<Range<T>, Range<T>>(
+					createNewInstance(first(), this.includeFrom, splitPoint, false),
+					createNewInstance(splitPoint, true, second(), isIncludeTo()));
+		}
+	}
+
+	/**
+	 * Locates the given value in the range. Returns -1 if the given value is
+	 * left outer the range, 0 if it is in the range and 1 if it is right outer range.
+	 * 
+	 * @param check
+	 *            The value to check
+	 * @return The value where the range to check is located. -1 left outer, 1 right outer and 0 overlapping or in
+	 *         range.
+	 */
+	public int locate(final T check) {
+		if (isLeftOuterRange(check)) {
+			return -1;
+		} else if (isRightOuterRange(check)) {
+			return 1;
+		} else {
+			return 0;
 		}
 	}
 
@@ -307,11 +342,11 @@ public class Range<T extends Comparable<T>> extends Pair<T, T> implements Compar
 			if (compareRight(other) > 0) {
 				return other;
 			} else {
-				return new Range<T>(other.left(), other.includeFrom, right(), this.includeTo);
+				return createNewInstance(other.left(), other.includeFrom, right(), this.includeTo);
 			}
 		} else {
 			if (compareRight(other) > 0) {
-				return new Range<T>(left(), this.includeFrom, other.right(), other.includeTo);
+				return createNewInstance(left(), this.includeFrom, other.right(), other.includeTo);
 			} else {
 				return this;
 			}
@@ -323,11 +358,11 @@ public class Range<T extends Comparable<T>> extends Pair<T, T> implements Compar
 			if (compareRight(other) < 0) {
 				return other;
 			} else {
-				return new Range<T>(other.left(), other.includeFrom, right(), this.includeTo);
+				return createNewInstance(other.left(), other.includeFrom, right(), this.includeTo);
 			}
 		} else {
 			if (compareRight(other) < 0) {
-				return new Range<T>(left(), this.includeFrom, other.right(), other.includeTo);
+				return createNewInstance(left(), this.includeFrom, other.right(), other.includeTo);
 			} else {
 				return this;
 			}
@@ -348,8 +383,8 @@ public class Range<T extends Comparable<T>> extends Pair<T, T> implements Compar
 	@Override
 	public <A extends Appendable> A appendTo(final A appendable) throws IOException {
 		ContractCheck.mustNotBeNull(appendable, "appendable"); //$NON-NLS-1$
-		T from = left();
-		T to = right();
+		final T from = left();
+		final T to = right();
 		if (from == null) {
 			appendable.append("[").append(Range.INFINITE); //$NON-NLS-1$
 		} else {
@@ -394,7 +429,7 @@ public class Range<T extends Comparable<T>> extends Pair<T, T> implements Compar
 		} else if (!super.equals(obj) || !(obj instanceof Range<?>)) {
 			return false;
 		}
-		Range<?> other = (Range<?>) obj;
+		final Range<?> other = (Range<?>) obj;
 		return this.includeFrom == other.includeFrom && this.includeTo == other.includeTo;
 	}
 
@@ -407,10 +442,11 @@ public class Range<T extends Comparable<T>> extends Pair<T, T> implements Compar
 	}
 
 	public int compareLeft(final Range<T> o) {
-		if (left() == null) {
+		final T left = left();
+		if (left == null) {
 			return o.left() == null ? 0 : -1;
 		} else {
-			int temp = left().compareTo(o.left());
+			final int temp = left.compareTo(o.left());
 			if (temp != 0) {
 				return temp;
 			} else if (this.includeFrom) {
@@ -422,10 +458,11 @@ public class Range<T extends Comparable<T>> extends Pair<T, T> implements Compar
 	}
 
 	public int compareRight(final Range<T> o) {
-		if (right() == null) {
+		final T right = right();
+		if (right == null) {
 			return o.right() == null ? 0 : 1;
 		} else {
-			int temp = right().compareTo(o.right());
+			final int temp = right.compareTo(o.right());
 			if (temp != 0) {
 				return temp;
 			} else if (this.includeFrom) {
@@ -436,4 +473,24 @@ public class Range<T extends Comparable<T>> extends Pair<T, T> implements Compar
 		}
 	}
 
+	public int compareLeftToRight(final Range<T> o) {
+		final T left = left();
+		if (left == null) {
+			return o.right() == null ? 0 : 1;
+		} else {
+			final int temp = left.compareTo(o.right());
+			if (temp != 0) {
+				return temp;
+			} else if (this.includeFrom) {
+				return o.includeTo ? 0 : -1;
+			} else {
+				return o.includeTo ? 1 : 0;
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	protected <E extends Range<T>> E createNewInstance(final T from, final boolean includeLeft, final T to, final boolean includeRight) {
+		return (E) new Range<T>(from, includeLeft, to, includeRight);
+	}
 }
