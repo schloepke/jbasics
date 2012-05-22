@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- *
+ * 
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -33,8 +33,9 @@ import org.jbasics.types.tuples.Range;
 /**
  * Simple class offering methods to check if a call contract is broken or not.
  * <p>
- * Usually one makes a check of null and throws an {@link IllegalAccessException} or a {@link NullPointerException}. This is a line of code written
- * constantly. This helper is supposed to limit the code to write especially in constructors or setter methods.
+ * Usually one makes a check of null and throws an {@link IllegalAccessException} or a {@link NullPointerException}.
+ * This is a line of code written constantly. This helper is supposed to limit the code to write especially in
+ * constructors or setter methods.
  * </p>
  * <p>
  * Example:
@@ -79,7 +80,7 @@ public final class ContractCheck {
 	 */
 	public static <T> T mustNotBeNull(final T instance, final String instanceName) {
 		if (instance == null) {
-			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+			throw ContractCheck.createNotNullException("mustNotBeNull", instanceName);
 		}
 		return instance;
 	}
@@ -97,7 +98,7 @@ public final class ContractCheck {
 	 */
 	public static <T> Collection<T> mustNotBeNullOrEmpty(final Collection<T> collection, final String instanceName) {
 		if (collection == null) {
-			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+			throw ContractCheck.createNotNullException("mustNotBeNull", instanceName);
 		}
 		if (collection.size() == 0) {
 			throw new ContractViolationException("mustNotBeEmpty", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
@@ -119,7 +120,7 @@ public final class ContractCheck {
 	 */
 	public static <K, V> Map<K, V> mustNotBeNullOrEmpty(final Map<K, V> map, final String instanceName) {
 		if (map == null) {
-			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+			throw ContractCheck.createNotNullException("mustNotBeNull", instanceName);
 		}
 		if (map.size() == 0) {
 			throw new ContractViolationException("mustNotBeEmpty", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
@@ -140,7 +141,7 @@ public final class ContractCheck {
 	 */
 	public static <T> T[] mustNotBeNullOrEmpty(final T[] array, final String instanceName) {
 		if (array == null) {
-			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+			throw ContractCheck.createNotNullException("mustNotBeNull", instanceName);
 		}
 		if (array.length == 0) {
 			throw new ContractViolationException("mustNotBeEmpty", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
@@ -161,7 +162,7 @@ public final class ContractCheck {
 	 */
 	public static <T extends CharSequence> T mustNotBeNullOrEmpty(final T charSequence, final String instanceName) {
 		if (charSequence == null) {
-			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+			throw ContractCheck.createNotNullException("mustNotBeNull", instanceName);
 		}
 		if (charSequence.length() == 0) {
 			throw new ContractViolationException("mustNotBeEmpty", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
@@ -182,9 +183,9 @@ public final class ContractCheck {
 	 */
 	public static String mustNotBeNullOrTrimmedEmpty(final CharSequence charSequence, final String instanceName) {
 		if (charSequence == null) {
-			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+			throw ContractCheck.createNotNullException("mustNotBeNull", instanceName);
 		}
-		String temp = charSequence.toString().trim();
+		final String temp = charSequence.toString().trim();
 		if (temp.length() == 0) {
 			throw new ContractViolationException("mustNotBeEmpty", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
 		}
@@ -203,7 +204,7 @@ public final class ContractCheck {
 	 */
 	public static byte[] mustNotBeNullOrEmpty(final byte[] byteArray, final String instanceName) {
 		if (byteArray == null) {
-			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+			throw ContractCheck.createNotNullException("mustNotBeNull", instanceName);
 		}
 		if (byteArray.length == 0) {
 			throw new ContractViolationException("mustNotBeEmpty", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
@@ -225,8 +226,7 @@ public final class ContractCheck {
 	public static int mustBeInRange(final int intValue, final int low, final int high, final String instanceName) {
 		if (intValue < low || intValue > high) {
 			throw new ContractViolationException("mustBeInRange", instanceName != null ? instanceName : ContractCheck.UNKNOWN, Integer.valueOf(low),
-					Integer
-							.valueOf(high));
+					Integer.valueOf(high));
 		}
 		return intValue;
 	}
@@ -245,8 +245,7 @@ public final class ContractCheck {
 	public static long mustBeInRange(final long longValue, final long low, final long high, final String instanceName) {
 		if (longValue < low || longValue > high) {
 			throw new ContractViolationException("mustBeInRange", instanceName != null ? instanceName : ContractCheck.UNKNOWN, Long.valueOf(low),
-					Long
-							.valueOf(high));
+					Long.valueOf(high));
 		}
 		return longValue;
 	}
@@ -265,8 +264,7 @@ public final class ContractCheck {
 	public static double mustBeInRange(final double doubleValue, final double low, final double high, final String instanceName) {
 		if (doubleValue < low || doubleValue > high) {
 			throw new ContractViolationException("mustBeInRange", instanceName != null ? instanceName : ContractCheck.UNKNOWN, Double.valueOf(low),
-					Double
-							.valueOf(high));
+					Double.valueOf(high));
 		}
 		return doubleValue;
 	}
@@ -284,9 +282,9 @@ public final class ContractCheck {
 	 */
 	public static long mustNotBeNullAndInRange(final Number numberValue, final long low, final long high, final String instanceName) {
 		if (numberValue == null) {
-			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+			throw ContractCheck.createNotNullException("mustNotBeNull", instanceName);
 		}
-		long longValue = numberValue.longValue();
+		final long longValue = numberValue.longValue();
 		if (longValue < low || longValue > high) {
 			throw new ContractViolationException("mustBeInRange", instanceName != null ? instanceName : ContractCheck.UNKNOWN, Long.valueOf(low),
 					Long.valueOf(high));
@@ -307,9 +305,9 @@ public final class ContractCheck {
 	 */
 	public static double mustNotBeNullAndInRange(final Number numberValue, final double low, final double high, final String instanceName) {
 		if (numberValue == null) {
-			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+			throw ContractCheck.createNotNullException("mustNotBeNull", instanceName);
 		}
-		double longValue = numberValue.doubleValue();
+		final double longValue = numberValue.doubleValue();
 		if (longValue < low || longValue > high) {
 			throw new ContractViolationException("mustBeInRange", instanceName != null ? instanceName : ContractCheck.UNKNOWN, Double.valueOf(low),
 					Double.valueOf(high));
@@ -333,9 +331,9 @@ public final class ContractCheck {
 	public static <T extends Number, C extends Comparable<T>> T mustBeInRange(final T numberValue, final C low, final C high,
 			final String instanceName) {
 		if (numberValue == null) {
-			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+			throw ContractCheck.createNotNullException("mustNotBeNull", instanceName);
 		}
-		if ((low != null && low.compareTo(numberValue) > 0) || (high != null && high.compareTo(numberValue) < 0)) {
+		if (low != null && low.compareTo(numberValue) > 0 || high != null && high.compareTo(numberValue) < 0) {
 			throw new ContractViolationException("mustBeInRange", instanceName != null ? instanceName : ContractCheck.UNKNOWN, low, high);
 		}
 		return numberValue;
@@ -354,7 +352,7 @@ public final class ContractCheck {
 	 */
 	public static <T extends Comparable<T>> T mustBeInRange(final T numberValue, final Range<T> range, final String instanceName) {
 		if (numberValue == null) {
-			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+			throw ContractCheck.createNotNullException("mustNotBeNull", instanceName);
 		}
 		if (range != null && !range.isInRange(numberValue)) {
 			throw new ContractViolationException("mustBeInRangeForRange", instanceName != null ? instanceName : ContractCheck.UNKNOWN, range);
@@ -380,7 +378,7 @@ public final class ContractCheck {
 		if (numberValue == null) {
 			return numberValue;
 		}
-		if ((low != null && low.compareTo(numberValue) > 0) || (high != null && high.compareTo(numberValue) < 0)) {
+		if (low != null && low.compareTo(numberValue) > 0 || high != null && high.compareTo(numberValue) < 0) {
 			throw new ContractViolationException("mustBeInRange", instanceName != null ? instanceName : ContractCheck.UNKNOWN, low, high);
 		}
 		return numberValue;
@@ -426,7 +424,7 @@ public final class ContractCheck {
 	 */
 	public static <T extends CharSequence> T mustMatchPattern(final T charSequence, final Pattern pattern, final String instanceName) {
 		if (charSequence == null) {
-			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+			throw ContractCheck.createNotNullException("mustNotBeNull", instanceName);
 		}
 		if (pattern != null && !pattern.matcher(charSequence).matches()) {
 			throw new ContractViolationException("mustMatchPattern", instanceName != null ? instanceName : ContractCheck.UNKNOWN, pattern.pattern());
@@ -451,7 +449,7 @@ public final class ContractCheck {
 	public static <T> T mustBeEqual(final T instance, final T check, final String instanceName) {
 		if (instance == null) {
 			if (check != null) {
-				throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+				throw ContractCheck.createNotNullException("mustNotBeNull", instanceName);
 			}
 		} else if (check == null) {
 			throw new ContractViolationException("mustBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
@@ -479,7 +477,7 @@ public final class ContractCheck {
 	public static <T> T[] mustMatchSizeOrBothBeNull(final T[] instance, final Object[] check, final String instanceName) {
 		if (instance == null) {
 			if (check != null) {
-				throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+				throw ContractCheck.createNotNullException("mustNotBeNull", instanceName);
 			}
 		} else if (check == null) {
 			throw new ContractViolationException("mustBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
@@ -505,9 +503,31 @@ public final class ContractCheck {
 	@SuppressWarnings("boxing")
 	public static <T> T[] mustMatchSizeAndNotBeNull(final T[] instance, final int check, final String instanceName) {
 		if (instance == null) {
-			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+			throw ContractCheck.createNotNullException("mustNotBeNull", instanceName);
 		} else if (instance.length != check) {
 			throw new ContractViolationException("mustBeOfSize", instanceName != null ? instanceName : ContractCheck.UNKNOWN, check, instance.length);
+		}
+		return instance;
+	}
+
+	/**
+	 * Checks if the given array is not null and of the given check size. If the instance array is not null and also
+	 * the length of the array is of the cheked size the given array is returned and guaranteed to match the check.
+	 * 
+	 * @param <T> The type of the array instance
+	 * @param instance The array instance to check
+	 * @param check The size the array needs to have
+	 * @param instanceName The name of the array instance for the exception.
+	 * @return The array instance as given
+	 * @throws ContractViolationException If the array instance is null or not the same size as the check size.
+	 * @since 1.0
+	 */
+	@SuppressWarnings("boxing")
+	public static <T> T[] mustMatchSizeRangeAndNotBeNull(final T[] instance, final int low, final int high, final String instanceName) {
+		if (instance == null) {
+			throw ContractCheck.createNotNullException("mustNotBeNull", instanceName);
+		} else if (instance.length < low || instance.length > high) {
+			throw new ContractViolationException("mustBeInRange", instanceName != null ? instanceName : ContractCheck.UNKNOWN, low, high);
 		}
 		return instance;
 	}
@@ -528,11 +548,33 @@ public final class ContractCheck {
 	@SuppressWarnings("boxing")
 	public static <T extends Collection<?>> T mustMatchSizeAndNotBeNull(final T instance, final int check, final String instanceName) {
 		if (instance == null) {
-			throw new ContractViolationException("mustNotBeNull", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+			throw ContractCheck.createNotNullException("mustNotBeNull", instanceName);
 		} else if (instance.size() != check) {
 			throw new ContractViolationException("mustBeOfSize", instanceName != null ? instanceName : ContractCheck.UNKNOWN, check, instance.size());
 		}
 		return instance;
 	}
 
+	/**
+	 * Creates a {@link ContractViolationException} and removes all parts of the {@link ContractCheck} class from the
+	 * stack trace.
+	 * 
+	 * @param instanceName
+	 * @return
+	 */
+	private static ContractViolationException createNotNullException(final String messageKey, final String instanceName, final Object... extra) {
+		final ContractViolationException temp = new ContractViolationException(messageKey, instanceName != null ? instanceName
+				: ContractCheck.UNKNOWN);
+		final StackTraceElement[] tempStack = temp.getStackTrace();
+		int i = 0;
+		while (i < tempStack.length && tempStack[i].getClassName().equals(ContractCheck.class.getName())) {
+			i++;
+		}
+		if (i > 0 && i < tempStack.length) {
+			final StackTraceElement[] tempNewStack = new StackTraceElement[tempStack.length - i];
+			System.arraycopy(tempStack, i, tempNewStack, 0, tempNewStack.length);
+			temp.setStackTrace(tempNewStack);
+		}
+		return temp;
+	}
 }
