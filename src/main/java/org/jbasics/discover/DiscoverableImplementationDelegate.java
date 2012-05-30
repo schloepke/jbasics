@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- *
+ * 
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -30,6 +30,7 @@ import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.delegation.ReleasableDelegate;
 
 public class DiscoverableImplementationDelegate<T> implements ReleasableDelegate<T>, Serializable {
+	private static final long serialVersionUID = 20120101L;
 	private final Class<T> abstractClass;
 	private final Class<? extends T> defaultImpl;
 	private transient T instance;
@@ -47,23 +48,25 @@ public class DiscoverableImplementationDelegate<T> implements ReleasableDelegate
 		this.defaultImpl = defaultImpl;
 	}
 
+	@Override
 	public T delegate() {
 		if (this.instance == null) {
-			Class<? extends T> temp = ServiceClassDiscovery.discoverImplementation(this.abstractClass, this.defaultImpl);
+			final Class<? extends T> temp = ServiceClassDiscovery.discoverImplementation(this.abstractClass, this.defaultImpl);
 			if (temp == null) {
 				throw new RuntimeException("Cannot find an implementation for the abstract class " + this.abstractClass.getName()); //$NON-NLS-1$
 			}
 			try {
 				this.instance = temp.newInstance();
-			} catch (InstantiationException e) {
+			} catch (final InstantiationException e) {
 				throw new RuntimeException("Cannot instantiate implmentation " + temp.getName(), e); //$NON-NLS-1$
-			} catch (IllegalAccessException e) {
+			} catch (final IllegalAccessException e) {
 				throw new RuntimeException("Cannot instantiate implmentation " + temp.getName(), e); //$NON-NLS-1$
 			}
 		}
 		return this.instance;
 	}
 
+	@Override
 	public boolean release() {
 		this.instance = null;
 		return false;
