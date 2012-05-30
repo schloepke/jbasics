@@ -48,9 +48,9 @@ public final class StringUtilities {
 			i++;
 		}
 		if (i < texts.length) {
-			StringBuilder temp = new StringBuilder(texts[i++]);
+			final StringBuilder temp = new StringBuilder(texts[i++]);
 			for (; i < texts.length; i++) {
-				CharSequence t = texts[i];
+				final CharSequence t = texts[i];
 				if (t != null && t.length() > 0) {
 					temp.append(delimiter).append(texts[i]);
 				}
@@ -79,11 +79,11 @@ public final class StringUtilities {
 			i++;
 		}
 		if (i < texts.length) {
-			StringBuilder temp = new StringBuilder(transposer.transpose(texts[i++]));
+			final StringBuilder temp = new StringBuilder(transposer.transpose(texts[i++]));
 			for (; i < texts.length; i++) {
-				T t = texts[i];
+				final T t = texts[i];
 				if (t != null) {
-					CharSequence tt = transposer.transpose(t);
+					final CharSequence tt = transposer.transpose(t);
 					if (tt.length() > 0) {
 						temp.append(delimiter).append(tt);
 					}
@@ -114,10 +114,10 @@ public final class StringUtilities {
 		if (transposer == null) {
 			transposer = (Transposer<String, T>) StringUtilities.JAVA_TO_STRING_TRANSPOSER;
 		}
-		StringBuilder temp = new StringBuilder();
-		for (T t : texts) {
+		final StringBuilder temp = new StringBuilder();
+		for (final T t : texts) {
 			if (t != null) {
-				CharSequence tt = transposer.transpose(t);
+				final CharSequence tt = transposer.transpose(t);
 				if (includeEmpty || tt.length() > 0) {
 					if (temp.length() > 0) {
 						temp.append(delimiter);
@@ -165,7 +165,7 @@ public final class StringUtilities {
 		if (ContractCheck.mustNotBeNull(input, "input").length() >= length) { //$NON-NLS-1$
 			return input;
 		} else {
-			StringBuilder temp = new StringBuilder(length);
+			final StringBuilder temp = new StringBuilder(length);
 			for (int i = length - input.length(); i > 0; i--) {
 				temp.append(padCharacter);
 			}
@@ -178,7 +178,7 @@ public final class StringUtilities {
 		if (ContractCheck.mustNotBeNull(input, "input").length() >= length) { //$NON-NLS-1$
 			return input;
 		} else {
-			StringBuilder temp = new StringBuilder(length);
+			final StringBuilder temp = new StringBuilder(length);
 			temp.append(input);
 			for (int i = length - input.length(); i > 0; i--) {
 				temp.append(padCharacter);
@@ -204,13 +204,13 @@ public final class StringUtilities {
 				appendable.append(suffix);
 			}
 			return appendable;
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw DelegatedException.delegate(e);
 		}
 	}
 
 	public static boolean isAllNotNullAndNotTrimmedEmpty(final String... strings) {
-		for (String test : strings) {
+		for (final String test : strings) {
 			if (test == null || test.trim().length() == 0) {
 				return false;
 			}
@@ -219,12 +219,16 @@ public final class StringUtilities {
 	}
 
 	public static boolean isAtLeastOneNotNullAndNotTrimmedEmpty(final String... strings) {
-		for (String test : strings) {
+		for (final String test : strings) {
 			if (test != null && test.trim().length() > 0) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	public static String maxLength(final int length, final String input) {
+		return input.length() > length ? input.substring(0, length) : input;
 	}
 
 }
