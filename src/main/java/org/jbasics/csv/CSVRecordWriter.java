@@ -54,7 +54,6 @@ public class CSVRecordWriter implements Closeable {
 		return this;
 	}
 
-	@Override
 	public void close() throws IOException {
 		if (this.writer instanceof Closeable) {
 			((Closeable) this.writer).close();

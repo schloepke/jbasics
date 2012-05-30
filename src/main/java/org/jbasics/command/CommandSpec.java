@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- * 
+ *
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -66,7 +66,8 @@ public class CommandSpec implements ExecuteStrategy<Integer, CommandCall> {
 	private Triplet<String, Type, Boolean>[] scanParameters(final Method m) {
 		final Annotation[][] annotations = m.getParameterAnnotations();
 		final Type[] params = m.getGenericParameterTypes();
-		@SuppressWarnings("unchecked") final Triplet<String, Type, Boolean>[] result = new Triplet[params.length];
+		@SuppressWarnings("unchecked")
+		final Triplet<String, Type, Boolean>[] result = new Triplet[params.length];
 		for (int i = 0; i < params.length; i++) {
 			final Annotation[] paramAnnotations = annotations[i];
 			CommandParam cmdParam = null;
@@ -88,7 +89,6 @@ public class CommandSpec implements ExecuteStrategy<Integer, CommandCall> {
 		return result;
 	}
 
-	@Override
 	public Integer execute(final CommandCall request) {
 		final CommandCall cmdCall = ContractCheck.mustNotBeNull(request, "request"); //$NON-NLS-1$
 		final Object[] temp = new Object[this.commandParameterMapping.length];

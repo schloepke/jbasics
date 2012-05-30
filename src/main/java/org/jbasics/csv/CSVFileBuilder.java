@@ -57,13 +57,11 @@ public class CSVFileBuilder implements Builder<CSVTable> {
 		this.separator = separator;
 	}
 
-	@Override
 	public void reset() {
 		this.headers.clear();
 		this.records.clear();
 	}
 
-	@Override
 	public CSVTable build() {
 		final String[] headers = this.headers.toArray(new String[this.headers.size()]);
 		final CSVRecord[] records = this.records.toArray(new CSVRecord[this.records.size()]);

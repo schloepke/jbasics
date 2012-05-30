@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- * 
+ *
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -45,7 +45,8 @@ import org.jbasics.checker.ContractViolationException;
  * </p>
  * 
  * @author Stephan Schloepke
- * @param <T> The type of the array collection.
+ * @param <T>
+ *            The type of the array collection.
  * @since 1.0
  */
 public class ArrayCollection<T> implements List<T> {
@@ -57,8 +58,10 @@ public class ArrayCollection<T> implements List<T> {
 	 * Creates an {@link ArrayCollection} with the given data. The data is NOT copied
 	 * and therefore any change to the array will also lead to a change in the collection!
 	 * 
-	 * @param data The data to create the collection for (NOT copied and must NOT be null)
-	 * @throws ContractViolationException If the given data is null.
+	 * @param data
+	 *            The data to create the collection for (NOT copied and must NOT be null)
+	 * @throws ContractViolationException
+	 *             If the given data is null.
 	 * @since 1.0
 	 */
 	public ArrayCollection(@SuppressWarnings("unchecked") final T... data) {
@@ -71,8 +74,10 @@ public class ArrayCollection<T> implements List<T> {
 	 * Creates an {@link ArrayCollection} with the given data. The data is NOT copied
 	 * and therefore any change to the array will also lead to a change in the collection!
 	 * 
-	 * @param data The data to create the collection for (NOT copied and must NOT be null)
-	 * @throws ContractViolationException If the given data is null.
+	 * @param data
+	 *            The data to create the collection for (NOT copied and must NOT be null)
+	 * @throws ContractViolationException
+	 *             If the given data is null.
 	 * @since 1.0
 	 */
 	protected ArrayCollection(final T[] data, final int offset, final int size) {
@@ -83,35 +88,28 @@ public class ArrayCollection<T> implements List<T> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.util.Collection#iterator()
 	 */
-	@Override
 	public Iterator<T> iterator() {
 		return new ArrayIterator<T>(this.offset, this.size, this.data);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.util.Collection#size()
 	 */
-	@Override
 	public int size() {
 		return this.size;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.util.Collection#isEmpty()
 	 */
-	@Override
 	public boolean isEmpty() {
 		return this.size == 0;
 	}
 
-	@Override
 	public T get(final int index) {
 		if (index >= this.size) {
 			throw new IndexOutOfBoundsException();
@@ -121,10 +119,8 @@ public class ArrayCollection<T> implements List<T> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.util.Collection#toArray()
 	 */
-	@Override
 	public Object[] toArray() {
 		final Object[] dest = new Object[this.size];
 		System.arraycopy(this.data, this.offset, dest, 0, this.size);
@@ -133,12 +129,11 @@ public class ArrayCollection<T> implements List<T> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.util.Collection#toArray(T[])
 	 */
-	@Override
 	public <TA> TA[] toArray(final TA[] dest) {
-		@SuppressWarnings("unchecked") final TA[] destination = dest.length >= this.size ? dest : (TA[]) Array.newInstance(dest.getClass()
+		@SuppressWarnings("unchecked")
+		final TA[] destination = dest.length >= this.size ? dest : (TA[]) Array.newInstance(dest.getClass()
 				.getComponentType(), this.size);
 		System.arraycopy(this.data, this.offset, destination, 0, this.size);
 		return destination;
@@ -146,10 +141,8 @@ public class ArrayCollection<T> implements List<T> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.util.Collection#contains(java.lang.Object)
 	 */
-	@Override
 	public boolean contains(final Object obj) {
 		for (int i = 0; i < this.size; i++) {
 			final Object current = this.data[i + this.offset];
@@ -162,10 +155,8 @@ public class ArrayCollection<T> implements List<T> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.util.Collection#containsAll(java.util.Collection)
 	 */
-	@Override
 	public boolean containsAll(final Collection<?> c) {
 		for (final Object obj : c) {
 			if (!contains(obj)) {
@@ -175,7 +166,6 @@ public class ArrayCollection<T> implements List<T> {
 		return true;
 	}
 
-	@Override
 	public int indexOf(final Object check) {
 		if (check == null) {
 			for (int i = 0; i < this.size; i++) {
@@ -194,7 +184,6 @@ public class ArrayCollection<T> implements List<T> {
 		return -1;
 	}
 
-	@Override
 	public int lastIndexOf(final Object check) {
 		if (check == null) {
 			for (int i = this.size - 1; i >= 0; i++) {
@@ -213,17 +202,14 @@ public class ArrayCollection<T> implements List<T> {
 		return -1;
 	}
 
-	@Override
 	public ListIterator<T> listIterator() {
 		return new ArrayIterator<T>(this.offset, this.size, this.data);
 	}
 
-	@Override
 	public ListIterator<T> listIterator(final int index) {
 		return new ArrayIterator<T>(index, this.offset, this.size, this.data);
 	}
 
-	@Override
 	public List<T> subList(final int fromIndex, final int toIndex) {
 		if (fromIndex < 0 || toIndex + this.offset > this.data.length || fromIndex > toIndex) {
 			throw new IndexOutOfBoundsException();
@@ -237,7 +223,6 @@ public class ArrayCollection<T> implements List<T> {
 	 * 
 	 * @see java.util.Collection#add(java.lang.Object)
 	 */
-	@Override
 	public boolean add(final T e) {
 		throw new UnsupportedOperationException("Unsuported for imutable array collection"); //$NON-NLS-1$
 	}
@@ -247,7 +232,6 @@ public class ArrayCollection<T> implements List<T> {
 	 * 
 	 * @see java.util.Collection#remove(java.lang.Object)
 	 */
-	@Override
 	public boolean remove(final Object o) {
 		throw new UnsupportedOperationException("Unsuported for imutable array collection"); //$NON-NLS-1$
 	}
@@ -257,7 +241,6 @@ public class ArrayCollection<T> implements List<T> {
 	 * 
 	 * @see java.util.Collection#addAll(java.util.Collection)
 	 */
-	@Override
 	public boolean addAll(final Collection<? extends T> c) {
 		throw new UnsupportedOperationException("Unsuported for imutable array collection"); //$NON-NLS-1$
 	}
@@ -267,7 +250,6 @@ public class ArrayCollection<T> implements List<T> {
 	 * 
 	 * @see java.util.Collection#removeAll(java.util.Collection)
 	 */
-	@Override
 	public boolean removeAll(final Collection<?> c) {
 		throw new UnsupportedOperationException("Unsuported for imutable array collection"); //$NON-NLS-1$
 	}
@@ -277,7 +259,6 @@ public class ArrayCollection<T> implements List<T> {
 	 * 
 	 * @see java.util.Collection#retainAll(java.util.Collection)
 	 */
-	@Override
 	public boolean retainAll(final Collection<?> c) {
 		throw new UnsupportedOperationException("Unsuported for imutable array collection"); //$NON-NLS-1$
 	}
@@ -287,27 +268,22 @@ public class ArrayCollection<T> implements List<T> {
 	 * 
 	 * @see java.util.Collection#clear()
 	 */
-	@Override
 	public void clear() {
 		throw new UnsupportedOperationException("Unsuported for imutable array collection"); //$NON-NLS-1$
 	}
 
-	@Override
 	public boolean addAll(final int index, final Collection<? extends T> c) {
 		throw new UnsupportedOperationException("Unsuported for imutable array collection"); //$NON-NLS-1$
 	}
 
-	@Override
 	public T set(final int index, final T element) {
 		throw new UnsupportedOperationException("Unsuported for imutable array collection"); //$NON-NLS-1$
 	}
 
-	@Override
 	public void add(final int index, final T element) {
 		throw new UnsupportedOperationException("Unsuported for imutable array collection"); //$NON-NLS-1$
 	}
 
-	@Override
 	public T remove(final int index) {
 		throw new UnsupportedOperationException("Unsuported for imutable array collection"); //$NON-NLS-1$
 	}

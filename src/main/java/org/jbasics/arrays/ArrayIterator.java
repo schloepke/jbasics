@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- * 
+ *
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,7 +35,8 @@ import org.jbasics.checker.ContractViolationException;
  * Simple {@link Iterator} to iterate over any typed array.
  * 
  * @author Stephan Schloepke
- * @param <T> The type of the data in the array.
+ * @param <T>
+ *            The type of the data in the array.
  * @since 1.0
  */
 public class ArrayIterator<T> implements Iterator<T>, ListIterator<T> {
@@ -48,8 +49,10 @@ public class ArrayIterator<T> implements Iterator<T>, ListIterator<T> {
 	 * Create an iterator for the given data. The data is NOT copied therefore
 	 * any change to the data will be reflected by the iterator as well!
 	 * 
-	 * @param data The data to iterate over (MUST not be null).
-	 * @throws ContractViolationException If data is null.
+	 * @param data
+	 *            The data to iterate over (MUST not be null).
+	 * @throws ContractViolationException
+	 *             If data is null.
 	 * @since 1.0
 	 */
 	public ArrayIterator(@SuppressWarnings("unchecked") final T... data) {
@@ -62,8 +65,10 @@ public class ArrayIterator<T> implements Iterator<T>, ListIterator<T> {
 	 * Create an iterator for the given data. The data is NOT copied therefore
 	 * any change to the data will be reflected by the iterator as well!
 	 * 
-	 * @param data The data to iterate over (MUST not be null).
-	 * @throws ContractViolationException If data is null.
+	 * @param data
+	 *            The data to iterate over (MUST not be null).
+	 * @throws ContractViolationException
+	 *             If data is null.
 	 * @since 1.0
 	 */
 	public ArrayIterator(final int offset, final int size, final T[] data) {
@@ -76,8 +81,10 @@ public class ArrayIterator<T> implements Iterator<T>, ListIterator<T> {
 	 * Create an iterator for the given data. The data is NOT copied therefore
 	 * any change to the data will be reflected by the iterator as well!
 	 * 
-	 * @param data The data to iterate over (MUST not be null).
-	 * @throws ContractViolationException If data is null.
+	 * @param data
+	 *            The data to iterate over (MUST not be null).
+	 * @throws ContractViolationException
+	 *             If data is null.
 	 * @since 1.0
 	 */
 	public ArrayIterator(final int initialIndex, final T[] data) {
@@ -91,8 +98,10 @@ public class ArrayIterator<T> implements Iterator<T>, ListIterator<T> {
 	 * Create an iterator for the given data. The data is NOT copied therefore
 	 * any change to the data will be reflected by the iterator as well!
 	 * 
-	 * @param data The data to iterate over (MUST not be null).
-	 * @throws ContractViolationException If data is null.
+	 * @param data
+	 *            The data to iterate over (MUST not be null).
+	 * @throws ContractViolationException
+	 *             If data is null.
 	 * @since 1.0
 	 */
 	public ArrayIterator(final int initialIndex, final int offset, final int size, final T[] data) {
@@ -104,20 +113,16 @@ public class ArrayIterator<T> implements Iterator<T>, ListIterator<T> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.util.Iterator#hasNext()
 	 */
-	@Override
 	public boolean hasNext() {
 		return this.next < this.size;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.util.Iterator#next()
 	 */
-	@Override
 	public T next() {
 		if (hasNext()) {
 			return this.data[this.offset + this.next++];
@@ -126,12 +131,10 @@ public class ArrayIterator<T> implements Iterator<T>, ListIterator<T> {
 		}
 	}
 
-	@Override
 	public boolean hasPrevious() {
 		return this.next >= 0;
 	}
 
-	@Override
 	public T previous() {
 		if (hasPrevious()) {
 			return this.data[this.offset + this.next--];
@@ -140,12 +143,10 @@ public class ArrayIterator<T> implements Iterator<T>, ListIterator<T> {
 		}
 	}
 
-	@Override
 	public int nextIndex() {
 		return this.next;
 	}
 
-	@Override
 	public int previousIndex() {
 		return this.next - 1;
 	}
@@ -153,17 +154,14 @@ public class ArrayIterator<T> implements Iterator<T>, ListIterator<T> {
 	/**
 	 * Optional operation to remove is not supported by this {@link Iterator}.
 	 */
-	@Override
 	public void remove() {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
 	public void set(final T e) {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
 	public void add(final T e) {
 		throw new UnsupportedOperationException();
 	}

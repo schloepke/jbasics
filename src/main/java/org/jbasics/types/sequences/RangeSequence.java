@@ -60,12 +60,10 @@ public final class RangeSequence<T extends Comparable<T>> extends Range<T> imple
 		return null;
 	}
 
-	@Override
 	public RangeSequence<T> concat(final RangeSequence<T> other) {
 		return new RangeSequence<T>(this, ContractCheck.mustNotBeNull(other, "other"));
 	}
 
-	@Override
 	public Iterator<Range<T>> iterator() {
 		return this.rangeSequence.iterator();
 	}

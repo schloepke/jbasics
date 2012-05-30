@@ -35,25 +35,21 @@ public class AppendableWithClosable implements Appendable, Closeable {
 		return this.result;
 	}
 
-	@Override
 	public void close() throws IOException {
 		this.result = this.builder.toString();
 		this.builder.setLength(0);
 	}
 
-	@Override
 	public Appendable append(final CharSequence csq) throws IOException {
 		this.builder.append(csq);
 		return this;
 	}
 
-	@Override
 	public Appendable append(final CharSequence csq, final int start, final int end) throws IOException {
 		this.builder.append(csq, start, end);
 		return this;
 	}
 
-	@Override
 	public Appendable append(final char c) throws IOException {
 		this.builder.append(c);
 		return this;
