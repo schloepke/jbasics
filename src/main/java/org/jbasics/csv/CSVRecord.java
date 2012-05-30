@@ -25,6 +25,7 @@
 package org.jbasics.csv;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -56,6 +57,10 @@ public class CSVRecord implements Iterable<String> {
 		return new ArrayIterator<String>(this.fields);
 	}
 
+	public int size() {
+		return this.fields.length;
+	}
+
 	public String getField(final int index) {
 		return this.fields[index];
 	}
@@ -75,11 +80,7 @@ public class CSVRecord implements Iterable<String> {
 
 	@Override
 	public String toString() {
-		try {
-			return append(new StringBuilder(), ',').toString();
-		} catch (final IOException e) {
-			return "IOException caused trying to append to string builder: " + e.getMessage(); //$NON-NLS-1$
-		}
+		return Arrays.toString(this.fields);
 	}
 
 	private Appendable appendValue(final String value, final Appendable appendable, final char separator) throws IOException {
