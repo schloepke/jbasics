@@ -165,7 +165,7 @@
 									<version>2.1.0</version>
 								</requireMavenVersion>
 								<requireJavaVersion>
-									<version>1.5</version>
+									<version>1.6</version>
 								</requireJavaVersion>
 							</rules>
 						</configuration>

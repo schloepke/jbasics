@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- *
+ * 
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,12 +26,11 @@ package org.jbasics.configuration.properties;
 
 import org.jbasics.pattern.factory.ParameterFactory;
 
-public class IntValueTypeFactory implements ParameterFactory<Integer, String> {
+public class IntValueTypeFactory extends ValueTypeFactory implements ParameterFactory<Integer, String> {
 	public static final IntValueTypeFactory SHARED_INSTANCE = new IntValueTypeFactory();
 	public static final IntValueTypeFactory SHARED_INSTANCE_HEXADECIMAL = new IntValueTypeFactory(16);
 	public static final IntValueTypeFactory SHARED_INSTANCE_OCTAL = new IntValueTypeFactory(8);
 	public static final IntValueTypeFactory SHARED_INSTANCE_DUAL = new IntValueTypeFactory(2);
-
 	private final int radix;
 
 	public IntValueTypeFactory() {
@@ -42,8 +41,8 @@ public class IntValueTypeFactory implements ParameterFactory<Integer, String> {
 		this.radix = radix;
 	}
 
+	@Override
 	public Integer create(final String param) {
 		return param == null ? null : Integer.valueOf(param, this.radix);
 	}
-
 }

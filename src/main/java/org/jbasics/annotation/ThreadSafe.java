@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- * 
+ *
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,30 +22,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.configuration.properties;
+package org.jbasics.annotation;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import org.jbasics.pattern.factory.ParameterFactory;
-
-public class DateValueTypeFactory extends ValueTypeFactory implements ParameterFactory<XMLGregorianCalendar, String> {
-	public static final DateValueTypeFactory SHARED_INSTANCE = new DateValueTypeFactory();
-	private final DatatypeFactory durationFac;
-
-	public DateValueTypeFactory() {
-		try {
-			this.durationFac = DatatypeFactory.newInstance();
-		} catch (final DatatypeConfigurationException e) {
-			throw new RuntimeException("Could not create a new instance of the DatatypeFactory", e); //$NON-NLS-1$
-		}
-	}
-
-	@Override
-	public XMLGregorianCalendar create(final String param) {
-		synchronized (this.durationFac) {
-			return param == null ? null : this.durationFac.newXMLGregorianCalendar(param.trim());
-		}
-	}
+/**
+ * Defines that the state of an Instance of the class is always thread safe.
+ * It is required that there is nothing required to further synchronize any
+ * access to an instance of the annotated type. If the thread safetynes is
+ * reached by immutability it should be annotated as well with {@link ImmutableState}.
+ * 
+ * @author Stephan Schloepke
+ * @since 1.0
+ */
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ThreadSafe {
 }

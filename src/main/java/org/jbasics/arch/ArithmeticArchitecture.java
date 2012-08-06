@@ -24,6 +24,9 @@
  */
 package org.jbasics.arch;
 
+import org.jbasics.annotation.ImmutableState;
+import org.jbasics.annotation.ThreadSafe;
+
 /**
  * A simple helper to try and determine if the underlying JVM is a 32 bit or a 64 bit one.
  * <p>
@@ -40,6 +43,8 @@ package org.jbasics.arch;
  * @author Stephan Schloepke
  * @since 1.0
  */
+@ThreadSafe
+@ImmutableState
 public final class ArithmeticArchitecture {
 	/**
 	 * The number used as data model to check for 64 bit architecture.
@@ -57,6 +62,7 @@ public final class ArithmeticArchitecture {
 	 * True if the JVM is a 64bit JVM.
 	 */
 	public static final boolean JVM64BIT;
+
 	static {
 		boolean env64bit = false;
 		final String dataModel = System.getProperty(ArithmeticArchitecture.SUN_ARCH_DATA_MODEL_PROPERTY);
@@ -90,5 +96,12 @@ public final class ArithmeticArchitecture {
 	 */
 	public static boolean is64Bit() {
 		return ArithmeticArchitecture.JVM64BIT;
+	}
+
+	/**
+	 * Private constructor to hinder instantiation.
+	 */
+	protected ArithmeticArchitecture() {
+		// To hinder anyone to instantiate this type.
 	}
 }

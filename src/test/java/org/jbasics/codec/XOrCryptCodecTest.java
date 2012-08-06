@@ -24,9 +24,13 @@
  */
 package org.jbasics.codec;
 
+import java.nio.charset.Charset;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
+
+import org.jbasics.pattern.coder.Codec;
 
 @SuppressWarnings("nls")
 public class XOrCryptCodecTest {
@@ -50,18 +54,16 @@ public class XOrCryptCodecTest {
 
 	@Test
 	public void testKeyCrypting() {
-		final XOrCryptCodec codec = new XOrCryptCodec("Protecting the secret is cared by hal");
-		final byte[] temp = codec.encode("x:schls0:MtowkdOkdJicOjhdhenU23421");
-		System.out.println(temp.length);
-		final String out = RFC3548Base32Codec.INSTANCE.encode(temp).toString();
-		System.out.println(out);
+		final XOrCryptCodec crypterCodec = new XOrCryptCodec("Protecting the secret is cared by hal", Charset.forName("ISO-8859-1"));
+		final Codec<CharSequence, CharSequence> codec = new CombinedCodec<CharSequence, CharSequence>(new EncoderChain<CharSequence, CharSequence>(
+				new EncoderChain<CharSequence, CharSequence>(crypterCodec, RFC3548Base32Codec.INSTANCE), new ChunkedEncoder(6, "-")),
+				new DecoderChain<CharSequence, CharSequence>(RFC3548Base32Codec.INSTANCE, crypterCodec));
+		final String input = "schls0:MtšwkdOkdJicOjhdhuZh27";
+		final String encoded = codec.encode(input).toString().toLowerCase();
+		System.out.println(encoded);
+		final String decoded = codec.decode(encoded).toString();
+		System.out.println(decoded);
+		Assert.assertEquals(input, decoded);
 	}
 
-	@Test
-	public void testKeyCryptingBack() {
-		final byte[] temp = RFC3548Base32Codec.INSTANCE.decode("KAGF4AAL-BUPBUU0S-NVKAYHYM-A24AGBZJ-BIFCGGA2-CAHUKTRM-CJIGIV0Z");
-		final XOrCryptCodec codec = new XOrCryptCodec("Protecting the secret is cared by hal");
-		final String out = codec.decode(temp).toString();
-		System.out.println(out);
-	}
 }

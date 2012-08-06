@@ -29,6 +29,8 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Date;
 
+import org.jbasics.annotation.ImmutableState;
+import org.jbasics.annotation.ThreadSafe;
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.checker.ContractViolationException;
 
@@ -38,6 +40,8 @@ import org.jbasics.checker.ContractViolationException;
  * @author Stephan Schloepke
  * @since 1.0
  */
+@ThreadSafe
+@ImmutableState
 public final class ArrayConstants {
 	/**
 	 * A zero length boolean array constant.
