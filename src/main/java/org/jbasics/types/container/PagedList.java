@@ -52,7 +52,7 @@ public class PagedList<T> implements PageableData<T> {
 	}
 
 	public boolean nextPage() {
-		int newPage = this.page + 1;
+		final int newPage = this.page + 1;
 		if (this.data.size() < newPage * this.pageSize) {
 			return false;
 		}
@@ -118,8 +118,8 @@ public class PagedList<T> implements PageableData<T> {
 
 	private List<T> getCurrentPageList() {
 		if (this.currentPageData == null) {
-			int start = this.page * this.pageSize;
-			this.currentPageData = this.data.subList(start, start + this.pageSize);
+			final int start = this.page * this.pageSize;
+			this.currentPageData = this.data.subList(start, Math.min(start + this.pageSize, this.data.size()));
 		}
 		return this.currentPageData;
 	}
