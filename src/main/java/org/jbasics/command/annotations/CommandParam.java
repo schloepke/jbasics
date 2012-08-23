@@ -35,4 +35,10 @@ public @interface CommandParam {
 	String value();
 
 	boolean optional() default false;
+
+	String defaultValue() default "";
+
+	String propertyName() default "";
+
+	String documentation() default "";
 }

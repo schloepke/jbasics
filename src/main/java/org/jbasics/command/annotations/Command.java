@@ -33,4 +33,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Command {
 	String value() default "";
+
+	String documentation() default "";
 }
