@@ -52,8 +52,8 @@ import org.jbasics.checker.ContractViolationException;
  *            The type of the array collection.
  * @since 1.0
  */
-@ThreadSafe
-@ImmutableState
+@ThreadSafe(derived = true)
+@ImmutableState(derived = true)
 public class ArrayCollection<T> implements List<T> {
 	private final T[] data;
 	private final int offset;
