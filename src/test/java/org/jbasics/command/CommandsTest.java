@@ -43,23 +43,23 @@ public class CommandsTest {
 
 	public final static String[] LIST_FILES_ARGS = new String[] {
 			"listFiles",
-			"input=*" };
+			"input=.@*" };
 
 	@Test
 	public void testArgsParsin() {
-		CommandCall split = CommandCall.create(CommandsTest.SPLIT_CALL_ARGS);
-		CommandCall delete = CommandCall.create(CommandsTest.DELETE_CALL_ARGS);
+		final CommandCall split = CommandCall.create(CommandsTest.SPLIT_CALL_ARGS);
+		final CommandCall delete = CommandCall.create(CommandsTest.DELETE_CALL_ARGS);
 		System.out.println("COMMAND> " + split);
 		System.out.println("COMMAND> " + delete);
 	}
 
 	@Test
 	public void testCommandExecution() throws IOException {
-		CommandExecutor e = new CommandExecutorBuilder().add(CommandClassExample.class).build();
+		final CommandExecutor e = new CommandExecutorBuilder().add(CommandClassExample.class).build();
 		e.printCommand(System.out);
-		CommandCall split = CommandCall.create(CommandsTest.SPLIT_CALL_ARGS);
-		CommandCall delete = CommandCall.create(CommandsTest.DELETE_CALL_ARGS);
-		CommandCall listFiles = CommandCall.create(CommandsTest.LIST_FILES_ARGS);
+		final CommandCall split = CommandCall.create(CommandsTest.SPLIT_CALL_ARGS);
+		final CommandCall delete = CommandCall.create(CommandsTest.DELETE_CALL_ARGS);
+		final CommandCall listFiles = CommandCall.create(CommandsTest.LIST_FILES_ARGS);
 		e.execute(split);
 		e.execute(delete);
 		e.execute(listFiles);
