@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- *
+ * 
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,6 +24,8 @@
  */
 package org.jbasics.codec;
 
+import org.jbasics.annotation.ImmutableState;
+import org.jbasics.annotation.ThreadSafe;
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.checker.ContractViolationException;
 import org.jbasics.pattern.coder.Codec;
@@ -32,13 +34,19 @@ import org.jbasics.pattern.coder.Encoder;
 
 /**
  * A {@link Codec} build upon an {@link Encoder} and a {@link Decoder}.
+ * <p>
+ * The guarantee to be thread safe is only guaranteed if the encoder and decoder given are also thread safe. Same
+ * applies to be immutable.
+ * </p>
  * 
  * @param <T> The type of the normal (decoded) representation
  * @param <TEnc> The type of the encoded representation
  * @author Stephan Schloepke
  * @since 1.0
  */
-public class CombinedCodec<T, TEnc> implements Codec<T, TEnc> {
+@ThreadSafe(derived = true)
+@ImmutableState(derived = true)
+public final class CombinedCodec<T, TEnc> implements Codec<T, TEnc> {
 	private final Encoder<T, TEnc> encoder;
 	private final Decoder<T, TEnc> decoder;
 

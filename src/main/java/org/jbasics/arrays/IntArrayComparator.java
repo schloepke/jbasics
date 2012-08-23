@@ -26,6 +26,9 @@ package org.jbasics.arrays;
 
 import java.util.Comparator;
 
+import org.jbasics.annotation.ImmutableState;
+import org.jbasics.annotation.ThreadSafe;
+
 /**
  * Implements the {@link Comparator} interface for int arrays and offers static compare methods.
  * <p>
@@ -42,7 +45,9 @@ import java.util.Comparator;
  * @author Stephan Schloepke
  * @since 1.0
  */
-public class IntArrayComparator implements Comparator<int[]> {
+@ThreadSafe
+@ImmutableState
+public final class IntArrayComparator implements Comparator<int[]> {
 	/**
 	 * The singleton comparator to use as comparator. Use this instead of creating a new instance
 	 * since the comparator does not have any state and multiple instances do not make sense unless
@@ -61,6 +66,7 @@ public class IntArrayComparator implements Comparator<int[]> {
 	 * @see #compareArrays(int[], int[])
 	 * @since 1.0
 	 */
+	@Override
 	public int compare(final int[] x, final int[] y) {
 		return IntArrayComparator.compareArrays(x, y);
 	}
@@ -75,17 +81,17 @@ public class IntArrayComparator implements Comparator<int[]> {
 	 * @since 1.0
 	 */
 	public static int compareArrays(final int[] x, final int[] y) {
-		if (x == null)
+		if (x == null) {
 			return y == null || y.length == 0 ? 0 : -1;
-		else if (y == null)
+		} else if (y == null) {
 			return 1;
-		else if (x.length < y.length)
+		} else if (x.length < y.length) {
 			return -1;
-		else if (x.length > y.length)
+		} else if (x.length > y.length) {
 			return 1;
-		else if (x.length == 1)
+		} else if (x.length == 1) {
 			return x[0] == y[0] ? 0 : x[0] < y[0] ? -1 : 1;
-		else {
+		} else {
 			final int k = x.length - 1;
 			int i = 0;
 			while (i < k && x[i] == y[i]) {
@@ -112,7 +118,9 @@ public class IntArrayComparator implements Comparator<int[]> {
 		if (x != null && x.length > 0) {
 			int i = x.length;
 			while (--i >= 0) {
-				if (x[i] != 0) return false;
+				if (x[i] != 0) {
+					return false;
+				}
 			}
 		}
 		return true;
@@ -188,5 +196,12 @@ public class IntArrayComparator implements Comparator<int[]> {
 	 */
 	public static boolean isNotEqual(final int[] x, final int[] y) {
 		return IntArrayComparator.compareArrays(x, y) != 0;
+	}
+
+	/**
+	 * Do not instantiate this comparator but use {@link IntArrayComparator#COMPARATOR} instead.
+	 */
+	private IntArrayComparator() {
+		// to hinder instantiation
 	}
 }

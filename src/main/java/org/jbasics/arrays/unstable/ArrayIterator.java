@@ -22,24 +22,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.arrays;
+package org.jbasics.arrays.unstable;
 
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
-import org.jbasics.annotation.ImmutableState;
-import org.jbasics.annotation.ThreadSafe;
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.checker.ContractViolationException;
+import org.jbasics.types.sequences.Sequence;
 
 /**
  * Simple {@link Iterator} to iterate over any typed array. While anything of this iterator is
  * immutable the data content given is NOT copied and can be changed by the caller. It is strongly
- * recommended to only use the iterator with constant arrays. Because the data could be changed
- * from outside it is not possible to strictly define this type as {@link ImmutableState} or as
- * being {@link ThreadSafe}. But if the caller guarantees the data given is not modified at all
- * than it is guaranteed that the iterator is {@link ThreadSafe} and has an {@link ImmutableState}.
+ * recommended to only use the iterator with constant arrays or copy them on construction.
+ * <p>
+ * An iterator cannot be thread safe and is also not immutable because it requires to know the current position on the
+ * data. Therefore this iterator is neither thread safe nor is it immutable. It should not be stored other than for the
+ * iteration moment within a single thread and needs to be discarded right after.
+ * </p>
+ * <p>
+ * A much better way to iterator over data with a guarantee to be thread safe and immutable is to use the
+ * {@link Sequence} instead.
+ * </p>
  * 
  * @author Stephan Schloepke
  * @param <T> The type of the data in the array.
@@ -61,7 +66,7 @@ public class ArrayIterator<T> implements Iterator<T>, ListIterator<T> {
 	 *             If data is null.
 	 * @since 1.0
 	 */
-	public ArrayIterator(@SuppressWarnings("unchecked") final T... data) {
+	public ArrayIterator(final T... data) {
 		this.data = ContractCheck.mustNotBeNull(data, "data"); //$NON-NLS-1$
 		this.size = data.length;
 		this.offset = 0;
@@ -141,11 +146,21 @@ public class ArrayIterator<T> implements Iterator<T>, ListIterator<T> {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.util.ListIterator#hasPrevious()
+	 */
 	@Override
 	public boolean hasPrevious() {
 		return this.next >= 0;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.util.ListIterator#previous()
+	 */
 	@Override
 	public T previous() {
 		if (hasPrevious()) {
@@ -155,11 +170,21 @@ public class ArrayIterator<T> implements Iterator<T>, ListIterator<T> {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.util.ListIterator#nextIndex()
+	 */
 	@Override
 	public int nextIndex() {
 		return this.next;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.util.ListIterator#previousIndex()
+	 */
 	@Override
 	public int previousIndex() {
 		return this.next - 1;
@@ -167,17 +192,29 @@ public class ArrayIterator<T> implements Iterator<T>, ListIterator<T> {
 
 	/**
 	 * Optional operation to remove is not supported by this {@link Iterator}.
+	 * 
+	 * @see java.util.Iterator#remove()
 	 */
 	@Override
 	public void remove() {
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * Optional operation to remove is not supported by this {@link Iterator}.
+	 * 
+	 * @see java.util.ListIterator#set(java.lang.Object)
+	 */
 	@Override
 	public void set(final T e) {
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * Optional operation to remove is not supported by this {@link Iterator}.
+	 * 
+	 * @see java.util.ListIterator#add(java.lang.Object)
+	 */
 	@Override
 	public void add(final T e) {
 		throw new UnsupportedOperationException();

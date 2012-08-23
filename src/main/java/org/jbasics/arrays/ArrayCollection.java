@@ -32,6 +32,7 @@ import java.util.ListIterator;
 
 import org.jbasics.annotation.ImmutableState;
 import org.jbasics.annotation.ThreadSafe;
+import org.jbasics.arrays.unstable.ArrayIterator;
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.checker.ContractViolationException;
 
@@ -185,6 +186,11 @@ public class ArrayCollection<T> implements List<T> {
 		return true;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.util.List#indexOf(java.lang.Object)
+	 */
 	@Override
 	public int indexOf(final Object check) {
 		if (check == null) {
@@ -204,6 +210,11 @@ public class ArrayCollection<T> implements List<T> {
 		return -1;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.util.List#lastIndexOf(java.lang.Object)
+	 */
 	@Override
 	public int lastIndexOf(final Object check) {
 		if (check == null) {
@@ -223,16 +234,31 @@ public class ArrayCollection<T> implements List<T> {
 		return -1;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.util.List#listIterator()
+	 */
 	@Override
 	public ListIterator<T> listIterator() {
 		return new ArrayIterator<T>(this.offset, this.size, this.data);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.util.List#listIterator(int)
+	 */
 	@Override
 	public ListIterator<T> listIterator(final int index) {
 		return new ArrayIterator<T>(index, this.offset, this.size, this.data);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.util.List#subList(int, int)
+	 */
 	@Override
 	public List<T> subList(final int fromIndex, final int toIndex) {
 		if (fromIndex < 0 || toIndex + this.offset > this.data.length || fromIndex > toIndex) {
@@ -302,21 +328,41 @@ public class ArrayCollection<T> implements List<T> {
 		throw new UnsupportedOperationException("Unsuported for imutable array collection"); //$NON-NLS-1$
 	}
 
+	/**
+	 * Operation is not supported.
+	 * 
+	 * @see java.util.List#addAll(int, java.util.Collection)
+	 */
 	@Override
 	public boolean addAll(final int index, final Collection<? extends T> c) {
 		throw new UnsupportedOperationException("Unsuported for imutable array collection"); //$NON-NLS-1$
 	}
 
+	/**
+	 * Operation is not supported.
+	 * 
+	 * @see java.util.List#set(int, java.lang.Object)
+	 */
 	@Override
 	public T set(final int index, final T element) {
 		throw new UnsupportedOperationException("Unsuported for imutable array collection"); //$NON-NLS-1$
 	}
 
+	/**
+	 * Operation is not supported.
+	 * 
+	 * @see java.util.List#add(int, java.lang.Object)
+	 */
 	@Override
 	public void add(final int index, final T element) {
 		throw new UnsupportedOperationException("Unsuported for imutable array collection"); //$NON-NLS-1$
 	}
 
+	/**
+	 * Operation is not supported.
+	 * 
+	 * @see java.util.List#remove(int)
+	 */
 	@Override
 	public T remove(final int index) {
 		throw new UnsupportedOperationException("Unsuported for imutable array collection"); //$NON-NLS-1$

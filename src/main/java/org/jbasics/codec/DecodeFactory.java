@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- *
+ * 
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,6 +24,8 @@
  */
 package org.jbasics.codec;
 
+import org.jbasics.annotation.ImmutableState;
+import org.jbasics.annotation.ThreadSafe;
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.checker.ContractViolationException;
 import org.jbasics.pattern.coder.Decoder;
@@ -33,6 +35,10 @@ import org.jbasics.pattern.factory.ParameterFactory;
  * A {@link ParameterFactory} which uses a {@link Decoder} to decode the given
  * content. This is a helpful class when there is a {@link Decoder} used as input where
  * a {@link ParameterFactory} is required.
+ * <p>
+ * The guarantee to be thread safe is only guaranteed if the decoder given is also thread safe. Same applies to be
+ * immutable.
+ * </p>
  * 
  * @author Stephan Schloepke
  * @param <Decoded>
@@ -41,7 +47,9 @@ import org.jbasics.pattern.factory.ParameterFactory;
  *            The encoded type
  * @since 1.0
  */
-public class DecodeFactory<Decoded, Encoded> implements ParameterFactory<Decoded, Encoded> {
+@ThreadSafe(derived = true)
+@ImmutableState(derived = true)
+public final class DecodeFactory<Decoded, Encoded> implements ParameterFactory<Decoded, Encoded> {
 	private final Decoder<Decoded, Encoded> decoder;
 
 	/**
@@ -86,6 +94,7 @@ public class DecodeFactory<Decoded, Encoded> implements ParameterFactory<Decoded
 	 *             Possible thrown if the contract of the used {@link Decoder} is broken.
 	 * @see org.jbasics.pattern.factory.ParameterFactory#create(java.lang.Object)
 	 */
+	@Override
 	public Decoded create(final Encoded encoded) {
 		return this.decoder.decode(encoded);
 	}

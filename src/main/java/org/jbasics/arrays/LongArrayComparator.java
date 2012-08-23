@@ -26,6 +26,9 @@ package org.jbasics.arrays;
 
 import java.util.Comparator;
 
+import org.jbasics.annotation.ImmutableState;
+import org.jbasics.annotation.ThreadSafe;
+
 /**
  * Implements the {@link Comparator} interface for long arrays and offers static compare methods.
  * <p>
@@ -42,7 +45,9 @@ import java.util.Comparator;
  * @author Stephan Schloepke
  * @since 1.0
  */
-public class LongArrayComparator implements Comparator<long[]> {
+@ThreadSafe
+@ImmutableState
+public final class LongArrayComparator implements Comparator<long[]> {
 	/**
 	 * The singleton comparator to use as comparator. Use this instead of creating a new instance
 	 * since the comparator does not have any state and multiple instances do not make sense unless
@@ -61,6 +66,7 @@ public class LongArrayComparator implements Comparator<long[]> {
 	 * @see #compareArrays(long[], long[])
 	 * @since 1.0
 	 */
+	@Override
 	public int compare(final long[] x, final long[] y) {
 		return LongArrayComparator.compareArrays(x, y);
 	}
@@ -75,17 +81,17 @@ public class LongArrayComparator implements Comparator<long[]> {
 	 * @since 1.0
 	 */
 	public static int compareArrays(final long[] x, final long[] y) {
-		if (x == null)
+		if (x == null) {
 			return y == null || y.length == 0 ? 0 : -1;
-		else if (y == null)
+		} else if (y == null) {
 			return 1;
-		else if (x.length < y.length)
+		} else if (x.length < y.length) {
 			return -1;
-		else if (x.length > y.length)
+		} else if (x.length > y.length) {
 			return 1;
-		else if (x.length == 1)
+		} else if (x.length == 1) {
 			return x[0] == y[0] ? 0 : x[0] < y[0] ? -1 : 1;
-		else {
+		} else {
 			final int k = x.length - 1;
 			int i = 0;
 			while (i < k && x[i] == y[i]) {
@@ -112,7 +118,9 @@ public class LongArrayComparator implements Comparator<long[]> {
 		if (x != null && x.length > 0) {
 			int i = x.length;
 			while (--i >= 0) {
-				if (x[i] != 0) return false;
+				if (x[i] != 0) {
+					return false;
+				}
 			}
 		}
 		return true;
@@ -188,5 +196,12 @@ public class LongArrayComparator implements Comparator<long[]> {
 	 */
 	public static boolean isNotEqual(final long[] x, final long[] y) {
 		return LongArrayComparator.compareArrays(x, y) != 0;
+	}
+
+	/**
+	 * Do not instantiate this comparator but use {@link LongArrayComparator#COMPARATOR} instead.
+	 */
+	private LongArrayComparator() {
+		// to hinder instantiation
 	}
 }

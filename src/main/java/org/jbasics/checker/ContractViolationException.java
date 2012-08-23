@@ -29,6 +29,12 @@ import org.jbasics.localize.LocalizedRuntimeException;
 /**
  * Exception indication a violation of a designed contract. Most likely this is thrown by a method indicating that
  * the precondition failed because the given parameters are not correct.
+ * <p>
+ * Exceptions can be seen as immutable and thread safe even they do not fulfill the requirements completely. The stack
+ * trace can be set, exchanged and is mutable. If that happens from different threads it is uncertain what the end
+ * result will be. Since it is not a common practice to change the stack trace it can be seen as immutable and thread
+ * safe.
+ * </p>
  * 
  * @author Stephan Schloepke
  * @since 1.0

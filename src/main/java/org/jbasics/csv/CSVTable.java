@@ -29,7 +29,7 @@ import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.jbasics.arrays.ArrayIterator;
+import org.jbasics.arrays.unstable.ArrayIterator;
 import org.jbasics.net.mediatype.MediaType;
 import org.jbasics.types.tuples.Pair;
 

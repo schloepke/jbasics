@@ -30,7 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.jbasics.arrays.ArrayConstants;
-import org.jbasics.arrays.ArrayIterator;
+import org.jbasics.arrays.unstable.ArrayIterator;
 
 public class CSVRecord implements Iterable<String> {
 	private final String[] fields;

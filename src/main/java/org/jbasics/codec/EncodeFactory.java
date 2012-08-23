@@ -24,6 +24,8 @@
  */
 package org.jbasics.codec;
 
+import org.jbasics.annotation.ImmutableState;
+import org.jbasics.annotation.ThreadSafe;
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.checker.ContractViolationException;
 import org.jbasics.pattern.coder.Encoder;
@@ -33,13 +35,19 @@ import org.jbasics.pattern.factory.ParameterFactory;
  * A {@link ParameterFactory} which uses an {@link Encoder} to encode the given
  * content. This is a helpful class when there is an {@link Encoder} used as input where
  * a {@link ParameterFactory} is required.
+ * <p>
+ * The guarantee to be thread safe is only guaranteed if the encoder given is also thread safe. Same applies to be
+ * immutable.
+ * </p>
  * 
  * @author Stephan Schloepke
  * @param <Decoded> The decoded type
  * @param <Encoded> The encoded type
  * @since 1.0
  */
-public class EncodeFactory<Decoded, Encoded> implements ParameterFactory<Encoded, Decoded> {
+@ThreadSafe(derived = true)
+@ImmutableState(derived = true)
+public final class EncodeFactory<Decoded, Encoded> implements ParameterFactory<Encoded, Decoded> {
 	private final Encoder<Decoded, Encoded> encoder;
 
 	/**
@@ -75,6 +83,7 @@ public class EncodeFactory<Decoded, Encoded> implements ParameterFactory<Encoded
 	 * @throws ContractViolationException Possible thrown if the contract of the used {@link Encoder} is broken.
 	 * @see org.jbasics.pattern.factory.ParameterFactory#create(java.lang.Object)
 	 */
+	@Override
 	public Encoded create(final Decoded decoded) {
 		return this.encoder.encode(decoded);
 	}

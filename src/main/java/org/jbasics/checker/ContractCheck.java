@@ -28,6 +28,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.jbasics.annotation.ImmutableState;
+import org.jbasics.annotation.ThreadSafe;
 import org.jbasics.types.tuples.Range;
 
 /**
@@ -64,6 +66,8 @@ import org.jbasics.types.tuples.Range;
  * @author Stephan Schloepke
  * @since 1.0
  */
+@ThreadSafe
+@ImmutableState
 @SuppressWarnings("nls")
 public final class ContractCheck {
 	private static final String UNKNOWN = "?";
