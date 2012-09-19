@@ -61,7 +61,7 @@ public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Co
 
 	public static <E> Sequence<E> cons(final Sequence<E> seq, final E... elements) {
 		Sequence<E> t = seq.reverse();
-		for (E element : elements) {
+		for (final E element : elements) {
 			t = t.cons(element);
 		}
 		return t.reverse();
@@ -69,7 +69,7 @@ public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Co
 
 	public static <E> Sequence<E> cons(final Sequence<E> seqOne, final Sequence<E> seqTwo) {
 		Sequence<E> t = seqOne.reverse();
-		for (E element : seqTwo) {
+		for (final E element : seqTwo) {
 			t = t.cons(element);
 		}
 		return t.reverse();
@@ -88,7 +88,7 @@ public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Co
 	public static <E> Sequence<E> cons(final Iterable<? extends E> elements) {
 		Sequence<E> result = Sequence.emptySequence();
 		if (elements != null) {
-			for (E element : elements) {
+			for (final E element : elements) {
 				result = result.cons(element);
 			}
 			result = result.reverse();
@@ -161,10 +161,68 @@ public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Co
 
 	public Sequence<T> concat(final Sequence<T> other) {
 		Sequence<T> t = reverse();
-		for (T st : other) {
+		for (final T st : other) {
 			t = t.cons(st);
 		}
 		return t.reverse();
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder temp = new StringBuilder();
+		if (!isEmpty()) {
+			temp.append(this.element);
+			if (this.rest != null && !this.rest.isEmpty()) {
+				temp.append(", ").append(this.rest);
+			}
+		}
+		return temp.toString();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((this.element == null) ? 0 : this.element.hashCode());
+		result = prime * result + ((this.rest == null) ? 0 : this.rest.hashCode());
+		return result;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Sequence)) {
+			return false;
+		}
+		final Sequence other = (Sequence) obj;
+		if (this.element == null) {
+			if (other.element != null) {
+				return false;
+			}
+		} else if (!this.element.equals(other.element)) {
+			return false;
+		}
+		if (this.rest == null) {
+			if (other.rest != null) {
+				return false;
+			}
+		} else if (!this.rest.equals(other.rest)) {
+			return false;
+		}
+		return true;
 	}
 
 }

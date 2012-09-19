@@ -22,27 +22,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.types.strategy;
+package org.jbasics.discover;
 
-import java.util.concurrent.Callable;
+import java.util.Map;
 
+import org.jbasics.annotation.ImmutableState;
+import org.jbasics.annotation.ThreadSafe;
 import org.jbasics.checker.ContractCheck;
-import org.jbasics.pattern.strategy.ContextualCalculateStrategy;
+import org.jbasics.pattern.factory.Factory;
+import org.jbasics.types.sequences.Sequence;
 
-public class ContextualCalculateStrategyCallable<Result, Request, Context> implements Callable<Result> {
-	private final ContextualCalculateStrategy<Result, Request, Context> strategy;
-	private final Request request;
-	private final Context context;
+@ThreadSafe
+@ImmutableState
+public class GenericsMappedInstanceDiscoveryFactory<T> implements Factory<Map<Sequence<Class<?>>, T>> {
+	private final Class<? super T> abstractType;
+	private final Class<?>[] genericParameters;
 
-	public ContextualCalculateStrategyCallable(final Request request, final Context context,
-			final ContextualCalculateStrategy<Result, Request, Context> strategy) {
-		this.request = ContractCheck.mustNotBeNull(request, "request"); //$NON-NLS-1$
-		this.context = ContractCheck.mustNotBeNull(context, "context"); //$NON-NLS-1$
-		this.strategy = ContractCheck.mustNotBeNull(strategy, "strategy"); //$NON-NLS-1$
+	public GenericsMappedInstanceDiscoveryFactory(final Class<? super T> abstractType, final Class<?>... genericParameters) {
+		this.abstractType = ContractCheck.mustNotBeNull(abstractType, "abstractType"); //$NON-NLS-1$
+		this.genericParameters = ContractCheck.mustNotBeNullOrEmpty(genericParameters, "genericParameters"); //$NON-NLS-1$
 	}
 
-	public Result call() {
-		return this.strategy.calculate(this.request, this.context);
+	@Override
+	public Map<Sequence<Class<?>>, T> newInstance() {
+		return ServiceClassDiscovery.discoverGenericsMappedImplementations(this.abstractType, this.genericParameters);
 	}
 
 }

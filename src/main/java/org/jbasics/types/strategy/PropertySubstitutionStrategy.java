@@ -51,7 +51,7 @@ public class PropertySubstitutionStrategy implements SubstitutionStrategy<CharSe
 	private final Pattern pattern;
 	private final int keyGroupNumber;
 	private final int defaultGroupNumber;
-	
+
 	static {
 		// It is critical that the pattern is initialized first because it is already used in the constructor!
 		// Using the initializer allows us to make sure we are always initialized in the right order.
@@ -77,15 +77,15 @@ public class PropertySubstitutionStrategy implements SubstitutionStrategy<CharSe
 			final int keyGroupNumber,
 			final int defaultGroupNumber) {
 		this.valueResolver = ContractCheck.mustNotBeNull(valueResolver, "valueResolver"); //$NON-NLS-1$
-		this.pattern = ContractCheck.mustNotBeNull(pattern, "pattern");
-		this.keyGroupNumber = ContractCheck.mustBeInRange(keyGroupNumber, 1, 10, "keyGroupNumber");
-		this.defaultGroupNumber = ContractCheck.mustBeInRange(defaultGroupNumber, 0, 10, "defaultGroupNumber");
+		this.pattern = ContractCheck.mustNotBeNull(pattern, "pattern"); //$NON-NLS-1$
+		this.keyGroupNumber = ContractCheck.mustBeInRange(keyGroupNumber, 1, 10, "keyGroupNumber"); //$NON-NLS-1$
+		this.defaultGroupNumber = ContractCheck.mustBeInRange(defaultGroupNumber, 0, 10, "defaultGroupNumber"); //$NON-NLS-1$
 	}
 
 	public CharSequence substitute(final CharSequence input) {
 		try {
 			return appendSubstituted(input, null, new StringBuilder());
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw DelegatedException.delegate(e);
 		}
 	}
@@ -93,7 +93,7 @@ public class PropertySubstitutionStrategy implements SubstitutionStrategy<CharSe
 	public CharSequence substitute(final CharSequence input, final Properties defaultValues) {
 		try {
 			return appendSubstituted(input, defaultValues, new StringBuilder());
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw DelegatedException.delegate(e);
 		}
 	}
@@ -101,21 +101,21 @@ public class PropertySubstitutionStrategy implements SubstitutionStrategy<CharSe
 	public <T extends Appendable> T appendSubstituted(final CharSequence request, final Properties defaultValues, final T appendable)
 			throws IOException {
 		try {
-			ContractCheck.mustNotBeNull(appendable, "appendable");
+			ContractCheck.mustNotBeNull(appendable, "appendable"); //$NON-NLS-1$
 			if (request == null || request.length() == 0) {
 				return appendable;
 			}
-			Resolver<String, String> resolver = this.valueResolver.delegate();
+			final Resolver<String, String> resolver = this.valueResolver.delegate();
 			if (resolver == null) {
-				throw new IllegalStateException("Resolver delegate returns null as delegated instance but it is required to be not null");
+				throw new IllegalStateException("Resolver delegate returns null as delegated instance but it is required to be not null"); //$NON-NLS-1$
 			}
-			Matcher m = this.pattern.matcher(request);
+			final Matcher m = this.pattern.matcher(request);
 			int i = 0;
 			while (m.find(i)) {
 				if (i < m.start()) {
 					appendable.append(request, i, m.start());
 				}
-				String key = m.group(this.keyGroupNumber);
+				final String key = m.group(this.keyGroupNumber);
 				String defaultValue = this.defaultGroupNumber > 0 ? m.group(this.defaultGroupNumber) : null;
 				if (defaultValues != null) {
 					defaultValue = defaultValues.getProperty(key, defaultValue);

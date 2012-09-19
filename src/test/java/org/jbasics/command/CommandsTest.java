@@ -43,7 +43,7 @@ public class CommandsTest {
 
 	public final static String[] LIST_FILES_ARGS = new String[] {
 			"listFiles",
-			"input=.@*" };
+			"input=.@.*" };
 
 	@Test
 	public void testArgsParsin() {

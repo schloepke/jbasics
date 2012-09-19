@@ -24,54 +24,14 @@
  */
 package org.jbasics.types.strategy;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.jbasics.checker.ContractCheck;
-import org.jbasics.discover.ServiceClassDiscovery;
-import org.jbasics.exception.DelegatedException;
-import org.jbasics.pattern.factory.Factory;
+import org.jbasics.discover.GenericsMappedInstanceDiscoveryFactory;
 import org.jbasics.pattern.strategy.ContextualCalculateStrategy;
-import org.jbasics.types.builders.MapBuilder;
-import org.jbasics.types.tuples.Pair;
 
-public class ContextualCalculateStrategiesDiscoverFactory<Context> implements
-		Factory<Map<Pair<Class<?>, Class<?>>, ContextualCalculateStrategy<?, ?, Context>>> {
-	private final Class<? extends Context> contextType;
+public class ContextualCalculateStrategiesDiscoverFactory<Context> extends
+		GenericsMappedInstanceDiscoveryFactory<ContextualCalculateStrategy<?, ?, Context>> {
 
 	public ContextualCalculateStrategiesDiscoverFactory(final Class<? extends Context> contextType) {
-		this.contextType = ContractCheck.mustNotBeNull(contextType, "contextType"); //$NON-NLS-1$
+		super(ContextualCalculateStrategy.class, ContractCheck.mustNotBeNull(contextType, "contextType")); //$NON-NLS-1$
 	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Map<Pair<Class<?>, Class<?>>, ContextualCalculateStrategy<?, ?, Context>> newInstance() {
-		try {
-			MapBuilder<Pair<Class<?>, Class<?>>, ContextualCalculateStrategy<?, ?, Context>> builder =
-					new MapBuilder<Pair<Class<?>, Class<?>>, ContextualCalculateStrategy<?, ?, Context>>().immutable();
-			Set<Class<? extends ContextualCalculateStrategy>> temp = ServiceClassDiscovery.discoverClasses(ContextualCalculateStrategy.class);
-			for (Class<? extends ContextualCalculateStrategy> strategyType : temp) {
-				for (Type t : strategyType.getGenericInterfaces()) {
-					if (t instanceof ParameterizedType) {
-						ParameterizedType pt = (ParameterizedType) t;
-						if (pt.getRawType() == ContextualCalculateStrategy.class && pt.getActualTypeArguments()[2] == this.contextType) {
-							Pair<Class<?>, Class<?>> key = new Pair<Class<?>, Class<?>>((Class<?>) pt.getActualTypeArguments()[0], (Class<?>) pt
-									.getActualTypeArguments()[1]);
-							ContextualCalculateStrategy<?, ?, Context> instance = ((Class<ContextualCalculateStrategy<?, ?, Context>>) strategyType)
-									.newInstance();
-							builder.put(key, instance);
-						}
-					}
-				}
-			}
-			return builder.build();
-		} catch (Exception e) {
-			Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Could not discover calculation strategies due to exception", e);
-			throw DelegatedException.delegate(e);
-		}
-	}
-
 }

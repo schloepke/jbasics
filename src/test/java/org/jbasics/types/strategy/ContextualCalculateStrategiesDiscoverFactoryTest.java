@@ -30,28 +30,36 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
+import org.jbasics.discover.GenericsMappedInstanceDiscoveryFactory;
+import org.jbasics.pattern.factory.Factory;
 import org.jbasics.pattern.strategy.ContextualCalculateStrategy;
-import org.jbasics.types.tuples.Pair;
+import org.jbasics.types.sequences.Sequence;
 
 @SuppressWarnings("nls")
 public class ContextualCalculateStrategiesDiscoverFactoryTest {
 
 	@Test
 	public void test() {
-		ContextualCalculateStrategiesDiscoverFactory<SomeDummyContext> factory = new ContextualCalculateStrategiesDiscoverFactory<SomeDummyContext>(
-				SomeDummyContext.class);
-		Map<Pair<Class<?>, Class<?>>, ContextualCalculateStrategy<?, ?, SomeDummyContext>> calculators = factory.newInstance();
+// final ContextualCalculateStrategiesDiscoverFactory<SomeDummyContext> factory = new
+// ContextualCalculateStrategiesDiscoverFactory<SomeDummyContext>(
+// SomeDummyContext.class);
+
+		final Factory<Map<Sequence<Class<?>>, ContextualCalculateStrategy<?, ?, SomeDummyContext>>> factory =
+				new GenericsMappedInstanceDiscoveryFactory<ContextualCalculateStrategy<?, ?, SomeDummyContext>>(ContextualCalculateStrategy.class,
+						null, null, SomeDummyContext.class);
+
+		final Map<Sequence<Class<?>>, ContextualCalculateStrategy<?, ?, SomeDummyContext>> calculators = factory.newInstance();
 		Assert.assertNotNull(calculators);
 		Assert.assertEquals(1, calculators.size());
-		ContextualCalculateStrategy<BigDecimal, Double, SomeDummyContext> calculator =
-				(ContextualCalculateStrategy<BigDecimal, Double, SomeDummyContext>) calculators.get(
-						new Pair<Class<?>, Class<?>>(BigDecimal.class, Double.class));
+		final Sequence<Class<?>> calcKey = Sequence.<Class<?>> cons(BigDecimal.class, Double.class);
+		final ContextualCalculateStrategy<BigDecimal, Double, SomeDummyContext> calculator =
+				(ContextualCalculateStrategy<BigDecimal, Double, SomeDummyContext>) calculators.get(calcKey);
 		Assert.assertNotNull(calculator);
-		SomeDummyContext ctx = new SomeDummyContext();
+		final SomeDummyContext ctx = new SomeDummyContext();
 		ctx.setFactor(BigDecimal.TEN);
-		double input = 12.6;
-		BigDecimal expected = ctx.getFactorNotNull().multiply(BigDecimal.valueOf(input));
-		BigDecimal calculated = calculator.calculate(input, ctx);
+		final double input = 12.6;
+		final BigDecimal expected = ctx.getFactorNotNull().multiply(BigDecimal.valueOf(input));
+		final BigDecimal calculated = calculator.calculate(input, ctx);
 		Assert.assertEquals(0, expected.compareTo(calculated));
 	}
 }

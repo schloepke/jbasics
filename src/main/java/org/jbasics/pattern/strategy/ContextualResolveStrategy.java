@@ -22,9 +22,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.pattern.resolver;
+package org.jbasics.pattern.strategy;
 
-public interface ContextualResolver<ResultType, RequestType, ContextType> {
+public interface ContextualResolveStrategy<ResultType, RequestType, ContextType> {
 
 	ResultType resolve(final RequestType request, final ContextType context);
 

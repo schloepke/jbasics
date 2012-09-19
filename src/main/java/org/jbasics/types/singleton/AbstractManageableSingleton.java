@@ -30,12 +30,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jbasics.event.SynchronizedEventListenerSet;
+import org.jbasics.pattern.delegation.MutableDelegate;
+import org.jbasics.pattern.delegation.ReleasableDelegate;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.pattern.singleton.Singleton;
 import org.jbasics.pattern.singleton.SingletonChangeEvent;
 import org.jbasics.pattern.singleton.VetoableSingletonChangeListener;
 
-public abstract class AbstractManageableSingleton<T> implements Singleton<T> {
+public abstract class AbstractManageableSingleton<T> implements Singleton<T>, ReleasableDelegate<T>, MutableDelegate<T> {
 	protected final Factory<T> factory;
 	private transient Class<?> instanceClass;
 	private SynchronizedEventListenerSet<VetoableSingletonChangeListener> listeners;
@@ -81,9 +83,9 @@ public abstract class AbstractManageableSingleton<T> implements Singleton<T> {
 		} else {
 			if (this.instanceClass == null) {
 				try {
-					Method temp = getFactoryClass().getMethod("create");
+					final Method temp = getFactoryClass().getMethod("create");
 					this.instanceClass = temp.getReturnType();
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					this.instanceClass = Object.class;
 				}
 			}
@@ -92,15 +94,15 @@ public abstract class AbstractManageableSingleton<T> implements Singleton<T> {
 	}
 
 	protected void fireSingletonCreate(final T instance) {
-		Logger logger = Logger.getLogger(this.getClass().getName());
+		final Logger logger = Logger.getLogger(this.getClass().getName());
 		if (logger.isLoggable(Level.FINER)) {
 			logger.logp(Level.FINER, getClass().getName(), "fireSingletonCreate", "Created singleton {0}", instance);
 		}
 		if (this.listeners != null) {
-			Collection<VetoableSingletonChangeListener> listener = this.listeners.getEventListeners();
+			final Collection<VetoableSingletonChangeListener> listener = this.listeners.getEventListeners();
 			if (listener != null && listener.size() > 0) {
-				SingletonChangeEvent event = new SingletonChangeEvent(this);
-				for (VetoableSingletonChangeListener l : listener) {
+				final SingletonChangeEvent event = new SingletonChangeEvent(this);
+				for (final VetoableSingletonChangeListener l : listener) {
 					l.vetoableCreateSingleton(event);
 				}
 			}
@@ -108,15 +110,15 @@ public abstract class AbstractManageableSingleton<T> implements Singleton<T> {
 	}
 
 	protected void fireSingletonSet(final T instance) {
-		Logger logger = Logger.getLogger(this.getClass().getName());
+		final Logger logger = Logger.getLogger(this.getClass().getName());
 		if (logger.isLoggable(Level.FINER)) {
 			logger.logp(Level.FINER, getClass().getName(), "fireSingletonSet", "Set singleton {0}", instance);
 		}
 		if (this.listeners != null) {
-			Collection<VetoableSingletonChangeListener> listener = this.listeners.getEventListeners();
+			final Collection<VetoableSingletonChangeListener> listener = this.listeners.getEventListeners();
 			if (listener.size() > 0) {
-				SingletonChangeEvent event = new SingletonChangeEvent(this);
-				for (VetoableSingletonChangeListener l : listener) {
+				final SingletonChangeEvent event = new SingletonChangeEvent(this);
+				for (final VetoableSingletonChangeListener l : listener) {
 					l.vetoableSingletonSet(event);
 				}
 			}
@@ -124,19 +126,48 @@ public abstract class AbstractManageableSingleton<T> implements Singleton<T> {
 	}
 
 	protected void fireSingletonRemove(final T instance) {
-		Logger logger = Logger.getLogger(this.getClass().getName());
+		final Logger logger = Logger.getLogger(this.getClass().getName());
 		if (logger.isLoggable(Level.FINER)) {
 			logger.logp(Level.FINER, getClass().getName(), "fireSingletonRemove", "Remove singleton {0}", instance);
 		}
 		if (this.listeners != null) {
-			Collection<VetoableSingletonChangeListener> listener = this.listeners.getEventListeners();
+			final Collection<VetoableSingletonChangeListener> listener = this.listeners.getEventListeners();
 			if (listener.size() > 0) {
-				SingletonChangeEvent event = new SingletonChangeEvent(this);
-				for (VetoableSingletonChangeListener l : listener) {
+				final SingletonChangeEvent event = new SingletonChangeEvent(this);
+				for (final VetoableSingletonChangeListener l : listener) {
 					l.vetoableSingletonRemove(event);
 				}
 			}
 		}
 	}
+
+	@Override
+	public T delegate() {
+		return instance();
+	}
+
+	@Override
+	public boolean release() {
+		if (isInstanciated()) {
+			resetInstance();
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean isDelegateSet() {
+		return isInstanciated();
+	}
+
+	public T setDelegate(final T instance) {
+		T temp = null;
+		if (isInstanciated()) {
+			temp = instance;
+		}
+		setInstance(instance);
+		return temp;
+	};
 
 }

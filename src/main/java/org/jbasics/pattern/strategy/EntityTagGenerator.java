@@ -22,27 +22,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.types.strategy;
+package org.jbasics.pattern.strategy;
 
-import java.util.concurrent.Callable;
+public interface EntityTagGenerator<T> {
 
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.pattern.strategy.ContextualCalculateStrategy;
-
-public class ContextualCalculateStrategyCallable<Result, Request, Context> implements Callable<Result> {
-	private final ContextualCalculateStrategy<Result, Request, Context> strategy;
-	private final Request request;
-	private final Context context;
-
-	public ContextualCalculateStrategyCallable(final Request request, final Context context,
-			final ContextualCalculateStrategy<Result, Request, Context> strategy) {
-		this.request = ContractCheck.mustNotBeNull(request, "request"); //$NON-NLS-1$
-		this.context = ContractCheck.mustNotBeNull(context, "context"); //$NON-NLS-1$
-		this.strategy = ContractCheck.mustNotBeNull(strategy, "strategy"); //$NON-NLS-1$
-	}
-
-	public Result call() {
-		return this.strategy.calculate(this.request, this.context);
-	}
+	EntityTag generateEntityTag(final T entity, final boolean mustBeStrong);
 
 }

@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- * 
+ *
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -47,10 +47,11 @@ import org.jbasics.types.sequences.Sequence;
  * </p>
  * 
  * @author Stephan Schloepke
- * @param <T> The type of the data in the array.
+ * @param <T>
+ *            The type of the data in the array.
  * @since 1.0
  */
-public class ArrayIterator<T> implements Iterator<T>, ListIterator<T> {
+public class ArrayIterator<T> implements ListIterator<T> {
 	private final T[] data;
 	private final int offset;
 	private final int size;
@@ -84,8 +85,8 @@ public class ArrayIterator<T> implements Iterator<T>, ListIterator<T> {
 	 */
 	public ArrayIterator(final int offset, final int size, final T[] data) {
 		this.data = ContractCheck.mustNotBeNull(data, "data"); //$NON-NLS-1$
-		this.size = ContractCheck.mustBeInRange(size, 0, this.data.length - offset, "size");
-		this.offset = ContractCheck.mustBeInRange(offset, 0, data.length, "offset");
+		this.size = ContractCheck.mustBeInRange(size, 0, this.data.length - offset, "size"); //$NON-NLS-1$
+		this.offset = ContractCheck.mustBeInRange(offset, 0, data.length, "offset"); //$NON-NLS-1$
 	}
 
 	/**
@@ -102,7 +103,7 @@ public class ArrayIterator<T> implements Iterator<T>, ListIterator<T> {
 		this.data = ContractCheck.mustNotBeNull(data, "data"); //$NON-NLS-1$
 		this.size = data.length;
 		this.offset = 0;
-		this.next = ContractCheck.mustBeInRange(initialIndex, 0, this.size, "initialIndex");
+		this.next = ContractCheck.mustBeInRange(initialIndex, 0, this.size, "initialIndex"); //$NON-NLS-1$
 	}
 
 	/**
@@ -117,14 +118,13 @@ public class ArrayIterator<T> implements Iterator<T>, ListIterator<T> {
 	 */
 	public ArrayIterator(final int initialIndex, final int offset, final int size, final T[] data) {
 		this.data = ContractCheck.mustNotBeNull(data, "data"); //$NON-NLS-1$
-		this.size = ContractCheck.mustBeInRange(size, 0, this.data.length - offset, "size");
-		this.offset = ContractCheck.mustBeInRange(offset, 0, data.length, "offset");
-		this.next = ContractCheck.mustBeInRange(initialIndex, 0, this.size, "initialIndex");
+		this.size = ContractCheck.mustBeInRange(size, 0, this.data.length - offset, "size"); //$NON-NLS-1$
+		this.offset = ContractCheck.mustBeInRange(offset, 0, data.length, "offset"); //$NON-NLS-1$
+		this.next = ContractCheck.mustBeInRange(initialIndex, 0, this.size, "initialIndex"); //$NON-NLS-1$
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.util.Iterator#hasNext()
 	 */
 	@Override
@@ -134,7 +134,6 @@ public class ArrayIterator<T> implements Iterator<T>, ListIterator<T> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.util.Iterator#next()
 	 */
 	@Override
@@ -148,7 +147,6 @@ public class ArrayIterator<T> implements Iterator<T>, ListIterator<T> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.util.ListIterator#hasPrevious()
 	 */
 	@Override
@@ -158,7 +156,6 @@ public class ArrayIterator<T> implements Iterator<T>, ListIterator<T> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.util.ListIterator#previous()
 	 */
 	@Override
@@ -172,7 +169,6 @@ public class ArrayIterator<T> implements Iterator<T>, ListIterator<T> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.util.ListIterator#nextIndex()
 	 */
 	@Override
@@ -182,7 +178,6 @@ public class ArrayIterator<T> implements Iterator<T>, ListIterator<T> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.util.ListIterator#previousIndex()
 	 */
 	@Override
