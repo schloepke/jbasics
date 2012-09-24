@@ -35,7 +35,7 @@ public class ParameterFactoryToFactoryBridge<InstanceType, ParameterType> implem
 	}
 
 	public ParameterFactoryToFactoryBridge(final ParameterFactory<InstanceType, ParameterType> factory, final ParameterType parameter) {
-		this.factory = ContractCheck.mustNotBeNull(this.factory, "factory");
+		this.factory = ContractCheck.mustNotBeNull(factory, "factory");
 		this.paramerter = parameter;
 	}
 
