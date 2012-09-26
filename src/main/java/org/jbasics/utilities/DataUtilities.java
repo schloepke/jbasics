@@ -39,12 +39,14 @@ public final class DataUtilities {
 	/**
 	 * Returns the first non null argument given or null if non of the arguments are non null.
 	 * 
-	 * @param <T> The type to return
-	 * @param ts The elements to scan thru.
+	 * @param <T>
+	 *            The type to return
+	 * @param ts
+	 *            The elements to scan thru.
 	 * @return The first non null element unless all are null than null is returned.
 	 */
 	public static <T> T coalesce(final T... ts) {
-		for (T t : ts) {
+		for (final T t : ts) {
 			if (t != null) {
 				return t;
 			}
@@ -52,4 +54,47 @@ public final class DataUtilities {
 		return null;
 	}
 
+	/**
+	 * Returns true if the enum instance is one of the enum list.
+	 * 
+	 * @param <T>
+	 *            The enum type
+	 * @param instance
+	 *            The instance to check (null always yields false)
+	 * @param enumList
+	 *            The list to check the instance against (null or empty always leads false)
+	 * @return True of the enum instance on of the enum list element.
+	 */
+	public static <T extends Enum<?>> boolean isEnumInList(final T instance, final T... enumList) {
+		if (instance != null && enumList != null && enumList.length > 0) {
+			for (final T temp : enumList) {
+				if (temp == instance) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Returns true if the enum instance is one of the enum list.
+	 * 
+	 * @param <T>
+	 *            The type of the check
+	 * @param instance
+	 *            The instance to check (null always yields false)
+	 * @param enumList
+	 *            The list to check the instance against (null or empty always leads false)
+	 * @return True of the enum instance on of the enum list element.
+	 */
+	public static <T> boolean isInList(final T instance, final T... list) {
+		if (instance != null && list != null && list.length > 0) {
+			for (final T temp : list) {
+				if (temp == instance || temp.equals(instance)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }
