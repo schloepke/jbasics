@@ -40,6 +40,7 @@ import java.util.List;
 import org.jbasics.exception.DelegatedException;
 
 public class CSVParser {
+	private final boolean parseWithHeaders;
 	private final boolean skipEmptyLines;
 	private final char separator;
 
@@ -48,14 +49,19 @@ public class CSVParser {
 	}
 
 	public CSVParser(final char separator) {
-		this(separator, true);
+		this(true, separator, true);
 	}
 
 	public CSVParser(final boolean skipEmptyLines) {
-		this(',', skipEmptyLines);
+		this(true, ',', skipEmptyLines);
 	}
 
 	public CSVParser(final char separator, final boolean skipEmptyLines) {
+		this(true, separator, skipEmptyLines);
+	}
+
+	public CSVParser(final boolean parseWithHeaders, final char separator, final boolean skipEmptyLines) {
+		this.parseWithHeaders = parseWithHeaders;
 		this.separator = separator;
 		this.skipEmptyLines = skipEmptyLines;
 	}
@@ -167,7 +173,11 @@ public class CSVParser {
 		if (reader instanceof Closeable) {
 			((Closeable) reader).close();
 		}
-		return new CSVTable(records);
+		if (this.parseWithHeaders && !records.isEmpty()) {
+			return new CSVTable(null, this.separator, records.get(0), records.subList(1, records.size()).toArray(new CSVRecord[records.size() - 1]));
+		} else {
+			return new CSVTable(null, this.separator, (CSVRecord) null, records.toArray(new CSVRecord[records.size()]));
+		}
 	}
 
 	private enum ParsingState {

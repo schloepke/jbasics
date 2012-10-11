@@ -31,8 +31,9 @@ import java.util.List;
 
 import org.jbasics.arrays.ArrayConstants;
 import org.jbasics.arrays.unstable.ArrayIterator;
+import org.jbasics.pattern.container.Indexed;
 
-public class CSVRecord implements Iterable<String> {
+public class CSVRecord implements Iterable<String>, Indexed<String> {
 	private final String[] fields;
 
 	public CSVRecord(final List<String> fields) {
@@ -110,6 +111,11 @@ public class CSVRecord implements Iterable<String> {
 			}
 		}
 		return appendable;
+	}
+
+	@Override
+	public String getElementAtIndex(final int index) {
+		return getField(index);
 	}
 
 }

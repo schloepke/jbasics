@@ -31,6 +31,8 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import org.jbasics.pattern.coder.Codec;
+import org.jbasics.pattern.coder.Decoder;
+import org.jbasics.pattern.coder.Encoder;
 
 @SuppressWarnings("nls")
 public class XOrCryptCodecTest {
@@ -55,16 +57,90 @@ public class XOrCryptCodecTest {
 	@Test
 	public void testKeyCrypting() {
 		final XOrCryptCodec crypterCodec = new XOrCryptCodec("Protecting the secret is take care by hal", Charset.forName("ISO-8859-1"));
-		final Codec<CharSequence, CharSequence> codec = new CombinedCodec<CharSequence, CharSequence>(
+
+		final ChunkedEncoder chunkedEncoder = new ChunkedEncoder(150, "\n");
+		final Encoder<CharSequence, CharSequence> encoder = new EncoderChain<CharSequence, CharSequence>(
 				new EncoderChain<CharSequence, CharSequence>(
-						new EncoderChain<CharSequence, CharSequence>(crypterCodec, RFC3548Base32Codec.INSTANCE), new ChunkedEncoder(6, "-")),
-				new DecoderChain<CharSequence, CharSequence>(RFC3548Base32Codec.INSTANCE, crypterCodec));
-		final String input = "schls0:MtswkdOkdJicOjhdhuZh27";
-		final String encoded = codec.encode(input).toString().toLowerCase();
+						new EncoderChain<CharSequence, byte[]>(crypterCodec, CompressCodec.SHARED_INSTANCE)
+						, RFC3548Base64Codec.INSTANCE), chunkedEncoder);
+
+		final Decoder<CharSequence, CharSequence> decoder =
+				new DecoderChain<CharSequence, CharSequence>(RFC3548Base64Codec.INSTANCE,
+						new DecoderChain<CharSequence, byte[]>(
+								CompressCodec.SHARED_INSTANCE, crypterCodec));
+
+		final Codec<CharSequence, CharSequence> codec = new CombinedCodec<CharSequence, CharSequence>(encoder, decoder);
+		final String input =
+				"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD" +
+						"http://test.webservices.space.lan/credit-portfolio-model/matrices/PD";
+		final String encoded = codec.encode(input).toString();
 		System.out.println(encoded);
+		System.out.println();
 		final String decoded = codec.decode(encoded).toString();
-		System.out.println(decoded);
+		System.out.println(chunkedEncoder.encode(decoded));
 		Assert.assertEquals(input, decoded);
 	}
-
 }
