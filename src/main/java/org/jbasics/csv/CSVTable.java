@@ -27,10 +27,16 @@ package org.jbasics.csv;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.jbasics.arrays.unstable.ArrayIterator;
 import org.jbasics.net.mediatype.MediaType;
+import org.jbasics.pattern.container.Indexed;
+import org.jbasics.pattern.container.Mapable;
+import org.jbasics.pattern.factory.ParameterFactory;
+import org.jbasics.types.sequences.Sequence;
 import org.jbasics.types.tuples.Pair;
 
 /**
@@ -39,7 +45,7 @@ import org.jbasics.types.tuples.Pair;
  * @author Stephan Schloepke
  * @since 1.0
  */
-public class CSVTable implements Iterable<CSVRecord> {
+public class CSVTable implements Iterable<CSVRecord>, Mapable<Sequence<String>, CSVRecord>, Indexed<CSVRecord> {
 	@SuppressWarnings("unchecked")
 	public static MediaType RFC4180_MEDIA_TYPE = new MediaType("text", "csv");
 	public static Pair<String, String> HEADER_PRESENT = new Pair<String, String>("header", "present");
@@ -51,11 +57,11 @@ public class CSVTable implements Iterable<CSVRecord> {
 	private final char separator;
 
 	public CSVTable(final CSVRecord... records) {
-		this(null, ',', null, records);
+		this(null, ',', (CSVRecord) null, records);
 	}
 
 	public CSVTable(final Collection<CSVRecord> records) {
-		this(null, ',', null, records.toArray(new CSVRecord[records.size()]));
+		this(null, ',', (CSVRecord) null, records.toArray(new CSVRecord[records.size()]));
 	}
 
 	public CSVTable(final String[] headers, final CSVRecord... records) {
@@ -63,8 +69,12 @@ public class CSVTable implements Iterable<CSVRecord> {
 	}
 
 	public CSVTable(final Charset charset, final char separator, final String[] headers, final CSVRecord[] records) {
+		this(charset, separator, headers == null || headers.length == 0 ? null : new CSVRecord(headers), records);
+	}
+
+	public CSVTable(final Charset charset, final char separator, final CSVRecord headers, final CSVRecord[] records) {
 		this.charset = charset == null ? Charset.defaultCharset() : charset;
-		this.headers = headers == null || headers.length == 0 ? null : new CSVRecord(headers);
+		this.headers = headers;
 		this.records = records == null ? new CSVRecord[0] : records;
 		this.separator = separator;
 	}
@@ -85,6 +95,10 @@ public class CSVTable implements Iterable<CSVRecord> {
 		return this.headers != null;
 	}
 
+	public CSVRecord getHeaders() {
+		return this.headers;
+	}
+
 	@SuppressWarnings("unchecked")
 	public MediaType getMediaType() {
 		return CSVTable.RFC4180_MEDIA_TYPE.deriveWithNewParameters(new Pair<String, String>("charset", this.charset.name()),
@@ -97,6 +111,11 @@ public class CSVTable implements Iterable<CSVRecord> {
 
 	public Iterator<CSVRecord> iterator() {
 		return new ArrayIterator<CSVRecord>(this.records);
+	}
+
+	@Override
+	public CSVRecord getElementAtIndex(final int index) {
+		return getRecord(index);
 	}
 
 	public CSVRecord getRecord(final int index) {
@@ -127,6 +146,22 @@ public class CSVTable implements Iterable<CSVRecord> {
 		} catch (final IOException e) {
 			return "Exception in toString: " + e;
 		}
+	}
+
+	public Map<Sequence<String>, CSVRecord> map(final String... columnNames) {
+		return map(new CSVRecordSequenceTransposer(this, columnNames));
+	}
+
+	public Map<Sequence<String>, CSVRecord> map(final int... fields) {
+		return map(new CSVRecordSequenceTransposer(fields));
+	}
+
+	public Map<Sequence<String>, CSVRecord> map(final ParameterFactory<Sequence<String>, CSVRecord> keyFactory) {
+		final Map<Sequence<String>, CSVRecord> result = new HashMap<Sequence<String>, CSVRecord>();
+		for (final CSVRecord record : this.records) {
+			result.put(keyFactory.create(record), record);
+		}
+		return result;
 	}
 
 }

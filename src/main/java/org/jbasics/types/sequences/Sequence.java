@@ -28,7 +28,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.jbasics.checker.ContractCheck;
+import org.jbasics.pattern.factory.ParameterFactory;
 import org.jbasics.pattern.modifer.Concatable;
+import org.jbasics.pattern.strategy.SubstitutionStrategy;
+import org.jbasics.pattern.transpose.Transposer;
 import org.jbasics.types.tuples.Tuple;
 
 /**
@@ -111,7 +114,7 @@ public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Co
 	}
 
 	public Sequence(final T element, final Sequence<T> rest) {
-		this.element = ContractCheck.mustNotBeNull(element, "element"); //$NON-NLS-1$
+		this.element = element;
 		this.rest = rest;
 		this.size = rest != null ? rest.size + 1 : 1;
 	}
@@ -165,6 +168,33 @@ public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Co
 			t = t.cons(st);
 		}
 		return t.reverse();
+	}
+
+	public <NT> Sequence<NT> apply(final Transposer<NT, T> transposer) {
+		ContractCheck.mustNotBeNull(transposer, "transposer"); //$NON-NLS-1$
+		Sequence<NT> result = Sequence.emptySequence();
+		for (final T el : this) {
+			result = result.cons(transposer.transpose(el));
+		}
+		return result.reverse();
+	}
+
+	public <NT> Sequence<NT> apply(final ParameterFactory<NT, T> factory) {
+		ContractCheck.mustNotBeNull(factory, "factory"); //$NON-NLS-1$
+		Sequence<NT> result = Sequence.emptySequence();
+		for (final T el : this) {
+			result = result.cons(factory.create(el));
+		}
+		return result.reverse();
+	}
+
+	public <NT> Sequence<NT> apply(final SubstitutionStrategy<NT, T> substitutionStrategy) {
+		ContractCheck.mustNotBeNull(substitutionStrategy, "substitutionStrategy"); //$NON-NLS-1$
+		Sequence<NT> result = Sequence.emptySequence();
+		for (final T el : this) {
+			result = result.cons(substitutionStrategy.substitute(el));
+		}
+		return result.reverse();
 	}
 
 	@Override
