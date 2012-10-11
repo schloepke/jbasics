@@ -26,9 +26,7 @@ package org.jbasics.configuration.properties;
 
 import java.math.BigDecimal;
 
-import org.jbasics.pattern.factory.ParameterFactory;
-
-public class BigDecimalValueTypeFactory extends ValueTypeFactory implements ParameterFactory<BigDecimal, String> {
+public class BigDecimalValueTypeFactory extends ValueTypeFactory<BigDecimal> {
 	public static final BigDecimalValueTypeFactory SHARED_INSTANCE = new BigDecimalValueTypeFactory();
 
 	@Override

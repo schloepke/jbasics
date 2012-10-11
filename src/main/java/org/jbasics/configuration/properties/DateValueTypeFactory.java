@@ -28,9 +28,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.jbasics.pattern.factory.ParameterFactory;
-
-public class DateValueTypeFactory extends ValueTypeFactory implements ParameterFactory<XMLGregorianCalendar, String> {
+public class DateValueTypeFactory extends ValueTypeFactory<XMLGregorianCalendar> {
 	public static final DateValueTypeFactory SHARED_INSTANCE = new DateValueTypeFactory();
 	private final DatatypeFactory durationFac;
 

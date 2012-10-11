@@ -29,8 +29,6 @@ import java.math.RoundingMode;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jbasics.pattern.factory.ParameterFactory;
-
 /**
  * Factory to create a {@link MathContext} instance from a {@link String}.
  * The given {@link String} is the precision followed by a comma and the rounding mode.
@@ -41,30 +39,51 @@ import org.jbasics.pattern.factory.ParameterFactory;
  * @author Stephan Schlöpke
  * @since 1.0
  */
-public class MathContextValueTypeFactory extends ValueTypeFactory implements ParameterFactory<MathContext, String> {
+public class MathContextValueTypeFactory extends ValueTypeFactory<MathContext> {
 	public final static MathContextValueTypeFactory SHARED_INSTANCE = new MathContextValueTypeFactory();
 	public final static MathContext DEFAULT_MATH_CONTEXT = MathContext.DECIMAL64;
-	public final static Pattern MATH_CONTEXT_PATTERN = Pattern.compile("([0-9]+)(?:\\s*,\\s*([a-zA-Z]+[a-zA-Z0-9_ -]*))?"); //$NON-NLS-1$
+	public final static Pattern MATH_CONTEXT_PATTERN = Pattern
+			.compile("([a-zA-Z]+[a-zA-Z0-9]*)|(?:([0-9]+)(?:\\s*,\\s*([a-zA-Z]+[a-zA-Z0-9_ -]*))?)"); //$NON-NLS-1$
 	private final static Pattern REPLACE_PATTERN = Pattern.compile("-| "); //$NON-NLS-1$
 	private final static EnumValueTypeFactory<RoundingMode> ROUNDING_MODE_FACTORY = new EnumValueTypeFactory<RoundingMode>(RoundingMode.class, true);
+
+	public enum StandardTypes {
+		UNLIMITED(MathContext.UNLIMITED), DECIMAL32(MathContext.DECIMAL32), DECIMAL64(MathContext.DECIMAL64), DECIMAL128(MathContext.DECIMAL128), DECIMAL256(
+				new MathContext(142, RoundingMode.HALF_EVEN)), DECIMAL512(new MathContext(286, RoundingMode.HALF_EVEN));
+
+		public final MathContext ctx;
+
+		private StandardTypes(final MathContext ctx) {
+			this.ctx = ctx;
+		}
+	}
 
 	@Override
 	public MathContext create(final String param) {
 		if (param != null) {
 			final Matcher m = MathContextValueTypeFactory.MATH_CONTEXT_PATTERN.matcher(param);
 			if (m.matches()) {
-				final int precision = Integer.parseInt(m.group(1));
-				final String roundingModeString = m.group(2);
-				if (roundingModeString != null) {
-					final RoundingMode mode = MathContextValueTypeFactory.ROUNDING_MODE_FACTORY.create(MathContextValueTypeFactory.REPLACE_PATTERN
-							.matcher(roundingModeString).replaceAll("_").toUpperCase()); //$NON-NLS-1$
-					if (mode != null) {
-						return new MathContext(precision, mode);
+				if (m.group(1) != null) {
+					try {
+						return StandardTypes.valueOf(m.group(1).toUpperCase()).ctx;
+					} catch (final Exception e) {
+						// do nothing since we return the default one and log that it cannot be parsed
 					}
+				} else {
+					final int precision = Integer.parseInt(m.group(2));
+					final String roundingModeString = m.group(3);
+					if (roundingModeString != null) {
+						final RoundingMode mode = MathContextValueTypeFactory.ROUNDING_MODE_FACTORY
+								.create(MathContextValueTypeFactory.REPLACE_PATTERN.matcher(roundingModeString).replaceAll("_").toUpperCase()); //$NON-NLS-1$
+						if (mode != null) {
+							return new MathContext(precision, mode);
+						}
+					}
+					return new MathContext(precision);
 				}
-				return new MathContext(precision);
 			}
 		}
+		// TODO: Log the incorrect mathcontext
 		return MathContextValueTypeFactory.DEFAULT_MATH_CONTEXT;
 	}
 }

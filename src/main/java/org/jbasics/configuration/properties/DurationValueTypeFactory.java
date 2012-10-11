@@ -28,9 +28,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 
-import org.jbasics.pattern.factory.ParameterFactory;
-
-public class DurationValueTypeFactory extends ValueTypeFactory implements ParameterFactory<Duration, String> {
+public class DurationValueTypeFactory extends ValueTypeFactory<Duration> {
 	public static final DurationValueTypeFactory SHARED_INSTANCE = new DurationValueTypeFactory();
 	private final DatatypeFactory durationFac;
 

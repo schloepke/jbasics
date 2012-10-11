@@ -26,9 +26,7 @@ package org.jbasics.configuration.properties;
 
 import java.net.URI;
 
-import org.jbasics.pattern.factory.ParameterFactory;
-
-public class URIValueTypeFactory extends ValueTypeFactory implements ParameterFactory<URI, String> {
+public class URIValueTypeFactory extends ValueTypeFactory<URI> {
 	public static final URIValueTypeFactory SHARED_INSTANCE = new URIValueTypeFactory();
 
 	@Override

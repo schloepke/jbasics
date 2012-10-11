@@ -24,9 +24,8 @@
  */
 package org.jbasics.configuration.properties;
 
-import org.jbasics.pattern.factory.ParameterFactory;
 
-public class IntValueTypeFactory extends ValueTypeFactory implements ParameterFactory<Integer, String> {
+public class IntValueTypeFactory extends ValueTypeFactory<Integer> {
 	public static final IntValueTypeFactory SHARED_INSTANCE = new IntValueTypeFactory();
 	public static final IntValueTypeFactory SHARED_INSTANCE_HEXADECIMAL = new IntValueTypeFactory(16);
 	public static final IntValueTypeFactory SHARED_INSTANCE_OCTAL = new IntValueTypeFactory(8);

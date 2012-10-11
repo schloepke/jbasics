@@ -24,9 +24,8 @@
  */
 package org.jbasics.configuration.properties;
 
-import org.jbasics.pattern.factory.ParameterFactory;
 
-public class DoubleValueTypeFactory extends ValueTypeFactory implements ParameterFactory<Double, String> {
+public class DoubleValueTypeFactory extends ValueTypeFactory<Double> {
 	public static final DoubleValueTypeFactory SHARED_INSTANCE = new DoubleValueTypeFactory();
 
 	@Override

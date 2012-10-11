@@ -26,9 +26,7 @@ package org.jbasics.configuration.properties;
 
 import java.util.Locale;
 
-import org.jbasics.pattern.factory.ParameterFactory;
-
-public class LocaleValueTypeFactory extends ValueTypeFactory implements ParameterFactory<Locale, String> {
+public class LocaleValueTypeFactory extends ValueTypeFactory<Locale> {
 	public static final LocaleValueTypeFactory SHARED_INSTANCE = new LocaleValueTypeFactory();
 
 	@Override

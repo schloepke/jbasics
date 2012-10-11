@@ -26,9 +26,7 @@ package org.jbasics.configuration.properties;
 
 import java.math.BigInteger;
 
-import org.jbasics.pattern.factory.ParameterFactory;
-
-public class BigIntegerValueTypeFactory extends ValueTypeFactory implements ParameterFactory<BigInteger, String> {
+public class BigIntegerValueTypeFactory extends ValueTypeFactory<BigInteger> {
 	public static final BigIntegerValueTypeFactory SHARED_INSTANCE = new BigIntegerValueTypeFactory();
 
 	@Override

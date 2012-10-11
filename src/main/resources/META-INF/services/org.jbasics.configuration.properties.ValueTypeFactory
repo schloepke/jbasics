@@ -1,0 +1,13 @@
+org.jbasics.configuration.properties.BigDecimalValueTypeFactory
+org.jbasics.configuration.properties.BigIntegerValueTypeFactory
+org.jbasics.configuration.properties.BooleanValueTypeFactory
+org.jbasics.configuration.properties.ClassValueTypeFactory
+org.jbasics.configuration.properties.DateValueTypeFactory
+org.jbasics.configuration.properties.DoubleValueTypeFactory
+org.jbasics.configuration.properties.DurationValueTypeFactory
+org.jbasics.configuration.properties.FloatValueTypeFactory
+org.jbasics.configuration.properties.IntValueTypeFactory
+org.jbasics.configuration.properties.LocaleValueTypeFactory
+org.jbasics.configuration.properties.LongValueTypeFactory
+org.jbasics.configuration.properties.MathContextValueTypeFactory
+org.jbasics.configuration.properties.URIValueTypeFactory

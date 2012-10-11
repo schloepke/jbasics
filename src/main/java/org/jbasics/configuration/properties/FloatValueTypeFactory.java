@@ -24,9 +24,8 @@
  */
 package org.jbasics.configuration.properties;
 
-import org.jbasics.pattern.factory.ParameterFactory;
 
-public class FloatValueTypeFactory extends ValueTypeFactory implements ParameterFactory<Float, String> {
+public class FloatValueTypeFactory extends ValueTypeFactory<Float> {
 	public static final FloatValueTypeFactory SHARED_INSTANCE = new FloatValueTypeFactory();
 
 	@Override
