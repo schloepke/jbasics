@@ -85,12 +85,21 @@ public class ServiceClassDiscovery {
 		return temp == null ? defaultImplementation : temp.asSubclass(abstractClass);
 	}
 
-	@SuppressWarnings({ "unchecked" })
 	public static <T, V extends T> Map<Sequence<Class<?>>, V> discoverGenericsMappedImplementations(final Class<T> abstractType,
 			final Class<?>... genericTypes) {
 		try {
-			final MapBuilder<Sequence<Class<?>>, V> builder = new MapBuilder<Sequence<Class<?>>, V>().immutable();
 			final Set<Class<? extends T>> temp = ServiceClassDiscovery.discoverClasses(abstractType);
+			return ServiceClassDiscovery.transformClasses(abstractType, temp, genericTypes);
+		} catch (final Exception e) {
+			throw DelegatedException.delegate(e);
+		}
+	}
+
+	@SuppressWarnings({ "unchecked" })
+	public static <T, V extends T> Map<Sequence<Class<?>>, V> transformClasses(final Class<T> abstractType, final Set<Class<? extends T>> temp,
+			final Class<?>... genericTypes) {
+		try {
+			final MapBuilder<Sequence<Class<?>>, V> builder = new MapBuilder<Sequence<Class<?>>, V>().immutable();
 			for (final Class<? extends T> possibleStrategyType : temp) {
 				interfaceFor: for (final Type t : possibleStrategyType.getGenericInterfaces()) {
 					if (t instanceof ParameterizedType) {
