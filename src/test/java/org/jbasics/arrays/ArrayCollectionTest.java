@@ -62,7 +62,7 @@ public class ArrayCollectionTest {
 		Assert.assertEquals(8, constructed.size());
 		Assert.assertEquals(5, constructed.lastIndexOf(ArrayCollectionTest.THREE));
 		Assert.assertEquals(-1, constructed.lastIndexOf(ArrayCollectionTest.FOUR));
-		Assert.assertEquals(1, constructed.lastIndexOf(new String(ArrayCollectionTest.TWO.getBytes())));
+		Assert.assertEquals(7, constructed.lastIndexOf(new String(ArrayCollectionTest.TWO.getBytes())));
 		Assert.assertEquals(-1, constructed.lastIndexOf(null));
 		Assert.assertEquals(3, new ArrayCollection<String>(ArrayCollectionTest.ONE_TO_THREE_MULTI_DATA_WITH_NULL).lastIndexOf(null));
 
