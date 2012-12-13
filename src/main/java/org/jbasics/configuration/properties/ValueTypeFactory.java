@@ -28,21 +28,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jbasics.checker.ContractCheck;
-import org.jbasics.discover.ServiceClassDiscovery;
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.factory.ParameterFactory;
-import org.jbasics.types.sequences.Sequence;
 
 @SuppressWarnings("unchecked")
 public final class ValueTypeFactory {
 	private final static Map<Class<?>, ParameterFactory<?, String>> FACTORIES = new HashMap<Class<?>, ParameterFactory<?, String>>();
 	static {
 		try {
-			for (final Map.Entry<Sequence<Class<?>>, ParameterFactory> entry : ServiceClassDiscovery
-					.discoverGenericsMappedImplementations(ValueTypeFactory.class, ParameterFactory.class, null).entrySet()) {
-				ValueTypeFactory.FACTORIES.put(entry.getKey().first(), entry.getValue());
-
-			}
+			//			for (final Map.Entry<Sequence<Class<?>>, ParameterFactory> entry : ServiceClassDiscovery
+			//					.discoverGenericsMappedImplementations(ValueTypeFactory.class, ParameterFactory.class, null).entrySet()) {
+			//				ValueTypeFactory.FACTORIES.put(entry.getKey().first(), entry.getValue());
+			//
+			//			}
 		} catch (final Exception e) {
 			throw DelegatedException.delegate(e);
 		}
