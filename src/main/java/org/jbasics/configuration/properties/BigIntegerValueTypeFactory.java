@@ -26,11 +26,20 @@ package org.jbasics.configuration.properties;
 
 import java.math.BigInteger;
 
-public class BigIntegerValueTypeFactory extends ValueTypeFactory<BigInteger> {
+import org.jbasics.math.NumberConverter;
+import org.jbasics.pattern.factory.ParameterFactory;
+import org.jbasics.types.tuples.Pair;
+
+public class BigIntegerValueTypeFactory implements ParameterFactory<BigInteger, String> {
 	public static final BigIntegerValueTypeFactory SHARED_INSTANCE = new BigIntegerValueTypeFactory();
 
 	@Override
 	public BigInteger create(final String param) {
-		return param == null ? null : new BigInteger(param.trim());
+		if (param != null) {
+			final Pair<String, Integer> trimedRadixPair = NumberConverter.trimAndDetachRadixPrefix(param);
+			return new BigInteger(trimedRadixPair.first(), trimedRadixPair.second().intValue());
+		} else {
+			return null;
+		}
 	}
 }

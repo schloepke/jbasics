@@ -34,12 +34,12 @@ import org.jbasics.pattern.factory.ParameterFactory;
 import org.jbasics.types.sequences.Sequence;
 
 @SuppressWarnings("unchecked")
-public abstract class ValueTypeFactory<T> implements ParameterFactory<T, String> {
-	private final static Map<Class<?>, ValueTypeFactory<?>> FACTORIES = new HashMap<Class<?>, ValueTypeFactory<?>>();
+public final class ValueTypeFactory {
+	private final static Map<Class<?>, ParameterFactory<?, String>> FACTORIES = new HashMap<Class<?>, ParameterFactory<?, String>>();
 	static {
 		try {
-			for (final Map.Entry<Sequence<Class<?>>, ValueTypeFactory> entry : ServiceClassDiscovery.discoverGenericsMappedImplementations(
-					ValueTypeFactory.class, null).entrySet()) {
+			for (final Map.Entry<Sequence<Class<?>>, ParameterFactory> entry : ServiceClassDiscovery
+					.discoverGenericsMappedImplementations(ValueTypeFactory.class, ParameterFactory.class, null).entrySet()) {
 				ValueTypeFactory.FACTORIES.put(entry.getKey().first(), entry.getValue());
 
 			}
@@ -48,15 +48,16 @@ public abstract class ValueTypeFactory<T> implements ParameterFactory<T, String>
 		}
 	}
 
-	public static <T> ParameterFactory<T, String> registerFactory(final Class<T> type, final ValueTypeFactory<T> factory) {
+	public static <T> ParameterFactory<T, String> registerFactory(final Class<T> type, final ParameterFactory<T, String> factory) {
 		final ParameterFactory<T, String> temp = (ParameterFactory<T, String>) ValueTypeFactory.FACTORIES.get(ContractCheck.mustNotBeNull(type,
 				"type"));
 		ValueTypeFactory.FACTORIES.put(type, ContractCheck.mustNotBeNull(factory, "factory"));
 		return temp;
 	}
 
-	public static <T> ValueTypeFactory<T> getFactory(final Class<T> type) {
-		ValueTypeFactory<T> temp = (ValueTypeFactory<T>) ValueTypeFactory.FACTORIES.get(ContractCheck.mustNotBeNull(type, "type"));
+	@SuppressWarnings("rawtypes")
+	public static <T> ParameterFactory<T, String> getFactory(final Class<T> type) {
+		ParameterFactory<T, String> temp = (ParameterFactory<T, String>) ValueTypeFactory.FACTORIES.get(ContractCheck.mustNotBeNull(type, "type"));
 		if (temp == null && Enum.class.isAssignableFrom(type)) {
 			temp = EnumValueTypeFactory.newInstance((Class<? extends Enum>) type);
 			ValueTypeFactory.registerFactory(type, temp);

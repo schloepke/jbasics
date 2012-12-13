@@ -28,8 +28,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jbasics.checker.ContractCheck;
+import org.jbasics.pattern.factory.ParameterFactory;
 
-public class EnumValueTypeFactory<T extends Enum<T>> extends ValueTypeFactory<T> {
+public class EnumValueTypeFactory<T extends Enum<T>> implements ParameterFactory<T, String> {
 	private final boolean allowIllegalValues;
 	private final Class<T> enumClazz;
 

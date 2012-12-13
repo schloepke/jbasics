@@ -24,24 +24,20 @@
  */
 package org.jbasics.configuration.properties;
 
+import org.jbasics.math.NumberConverter;
+import org.jbasics.pattern.factory.ParameterFactory;
+import org.jbasics.types.tuples.Pair;
 
-public class IntValueTypeFactory extends ValueTypeFactory<Integer> {
+public class IntValueTypeFactory implements ParameterFactory<Integer, String> {
 	public static final IntValueTypeFactory SHARED_INSTANCE = new IntValueTypeFactory();
-	public static final IntValueTypeFactory SHARED_INSTANCE_HEXADECIMAL = new IntValueTypeFactory(16);
-	public static final IntValueTypeFactory SHARED_INSTANCE_OCTAL = new IntValueTypeFactory(8);
-	public static final IntValueTypeFactory SHARED_INSTANCE_DUAL = new IntValueTypeFactory(2);
-	private final int radix;
-
-	public IntValueTypeFactory() {
-		this.radix = 10;
-	}
-
-	public IntValueTypeFactory(final int radix) {
-		this.radix = radix;
-	}
 
 	@Override
 	public Integer create(final String param) {
-		return param == null ? null : Integer.valueOf(param, this.radix);
+		if (param != null) {
+			final Pair<String, Integer> trimedRadixPair = NumberConverter.trimAndDetachRadixPrefix(param);
+			return Integer.valueOf(trimedRadixPair.first(), trimedRadixPair.second().intValue());
+		} else {
+			return null;
+		}
 	}
 }

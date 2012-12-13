@@ -24,8 +24,9 @@
  */
 package org.jbasics.configuration.properties;
 
+import org.jbasics.pattern.factory.ParameterFactory;
 
-public class BooleanValueTypeFactory extends ValueTypeFactory<Boolean> {
+public class BooleanValueTypeFactory implements ParameterFactory<Boolean, String> {
 	public static final BooleanValueTypeFactory SHARED_INSTANCE = new BooleanValueTypeFactory();
 	public static final String YES = "yes"; //$NON-NLS-1$
 

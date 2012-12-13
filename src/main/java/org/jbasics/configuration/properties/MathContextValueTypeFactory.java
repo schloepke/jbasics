@@ -29,6 +29,8 @@ import java.math.RoundingMode;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jbasics.pattern.factory.ParameterFactory;
+
 /**
  * Factory to create a {@link MathContext} instance from a {@link String}.
  * The given {@link String} is the precision followed by a comma and the rounding mode.
@@ -39,7 +41,7 @@ import java.util.regex.Pattern;
  * @author Stephan Schlöpke
  * @since 1.0
  */
-public class MathContextValueTypeFactory extends ValueTypeFactory<MathContext> {
+public class MathContextValueTypeFactory implements ParameterFactory<MathContext, String> {
 	public final static MathContextValueTypeFactory SHARED_INSTANCE = new MathContextValueTypeFactory();
 	public final static MathContext DEFAULT_MATH_CONTEXT = MathContext.DECIMAL64;
 	public final static Pattern MATH_CONTEXT_PATTERN = Pattern

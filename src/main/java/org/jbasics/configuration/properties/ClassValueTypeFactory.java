@@ -24,7 +24,9 @@
  */
 package org.jbasics.configuration.properties;
 
-public class ClassValueTypeFactory extends ValueTypeFactory<Class<?>> {
+import org.jbasics.pattern.factory.ParameterFactory;
+
+public class ClassValueTypeFactory implements ParameterFactory<Class<?>, String> {
 	public static final ClassValueTypeFactory SHARED_INSTANCE = new ClassValueTypeFactory();
 
 	@Override

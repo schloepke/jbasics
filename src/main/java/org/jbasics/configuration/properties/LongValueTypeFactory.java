@@ -24,24 +24,20 @@
  */
 package org.jbasics.configuration.properties;
 
+import org.jbasics.math.NumberConverter;
+import org.jbasics.pattern.factory.ParameterFactory;
+import org.jbasics.types.tuples.Pair;
 
-public class LongValueTypeFactory extends ValueTypeFactory<Long> {
+public class LongValueTypeFactory implements ParameterFactory<Long, String> {
 	public static final LongValueTypeFactory SHARED_INSTANCE = new LongValueTypeFactory();
-	public static final LongValueTypeFactory SHARED_INSTANCE_HEXADECIMAL = new LongValueTypeFactory(16);
-	public static final LongValueTypeFactory SHARED_INSTANCE_OCTAL = new LongValueTypeFactory(8);
-	public static final LongValueTypeFactory SHARED_INSTANCE_DUAL = new LongValueTypeFactory(2);
-	private final int radix;
-
-	public LongValueTypeFactory() {
-		this.radix = 10;
-	}
-
-	public LongValueTypeFactory(final int radix) {
-		this.radix = radix;
-	}
 
 	@Override
 	public Long create(final String param) {
-		return param == null ? null : Long.valueOf(param, this.radix);
+		if (param != null) {
+			final Pair<String, Integer> trimedRadixPair = NumberConverter.trimAndDetachRadixPrefix(param);
+			return Long.valueOf(trimedRadixPair.first(), trimedRadixPair.second().intValue());
+		} else {
+			return null;
+		}
 	}
 }
