@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- *
+ * 
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -85,11 +85,16 @@ public class ServiceClassDiscovery {
 		return temp == null ? defaultImplementation : temp.asSubclass(abstractClass);
 	}
 
-	public static <T, V extends T> Map<Sequence<Class<?>>, V> discoverGenericsMappedImplementations(final Class<T> abstractType,
+	public static <T> Map<Sequence<Class<?>>, T> discoverGenericsMappedImplementations(final Class<T> abstractType, final Class<?>... genericTypes) {
+		return ServiceClassDiscovery.discoverGenericsMappedImplementations(abstractType, abstractType, genericTypes);
+
+	}
+
+	public static <T, V> Map<Sequence<Class<?>>, V> discoverGenericsMappedImplementations(final Class<T> abstractType, final Class<V> interfaceType,
 			final Class<?>... genericTypes) {
 		try {
-			final Set<Class<? extends T>> temp = ServiceClassDiscovery.discoverClasses(abstractType);
-			return ServiceClassDiscovery.transformClasses(abstractType, temp, genericTypes);
+			final Set<Class<? extends V>> temp = ServiceClassDiscovery.discoverClasses(interfaceType, abstractType);
+			return ServiceClassDiscovery.transformClasses(interfaceType, temp, genericTypes);
 		} catch (final Exception e) {
 			throw DelegatedException.delegate(e);
 		}
@@ -100,32 +105,39 @@ public class ServiceClassDiscovery {
 			final Class<?>... genericTypes) {
 		try {
 			final MapBuilder<Sequence<Class<?>>, V> builder = new MapBuilder<Sequence<Class<?>>, V>().immutable();
+			registerTypeScanLoop:
 			for (final Class<? extends T> possibleStrategyType : temp) {
-				interfaceFor: for (final Type t : possibleStrategyType.getGenericInterfaces()) {
-					if (t instanceof ParameterizedType) {
-						final ParameterizedType pt = (ParameterizedType) t;
-						if (pt.getRawType() == abstractType && pt.getActualTypeArguments().length == genericTypes.length) {
-							Sequence<Class<?>> key = Sequence.emptySequence();
-							for (int i = 0; i < genericTypes.length; i++) {
-								final Class<?> requestedType = genericTypes[i];
-								final Type genericType = pt.getActualTypeArguments()[i];
-								if (genericType instanceof Class) {
-									if (requestedType == null) {
-										key = key.cons((Class<?>) genericType);
-									} else if (!requestedType.isAssignableFrom((Class<?>) genericType)) {
+				Class<?> currentClass = possibleStrategyType;
+				do {
+					interfaceFor:
+					for (final Type t : possibleStrategyType.getGenericInterfaces()) {
+						if (t instanceof ParameterizedType) {
+							final ParameterizedType pt = (ParameterizedType) t;
+							if (pt.getRawType() == abstractType && pt.getActualTypeArguments().length == genericTypes.length) {
+								Sequence<Class<?>> key = Sequence.emptySequence();
+								for (int i = 0; i < genericTypes.length; i++) {
+									final Class<?> requestedType = genericTypes[i];
+									final Type genericType = pt.getActualTypeArguments()[i];
+									if (genericType instanceof Class) {
+										if (requestedType == null) {
+											key = key.cons((Class<?>) genericType);
+										} else if (!requestedType.isAssignableFrom((Class<?>) genericType)) {
+											break interfaceFor;
+										}
+									} else {
 										break interfaceFor;
 									}
-								} else {
-									break interfaceFor;
 								}
-							}
-							final V instance = ((Class<V>) possibleStrategyType).newInstance();
-							if (!key.isEmpty()) {
-								builder.put(key.reverse(), instance);
+								final V instance = ((Class<V>) possibleStrategyType).newInstance();
+								if (!key.isEmpty()) {
+									builder.put(key.reverse(), instance);
+									break registerTypeScanLoop;
+								}
 							}
 						}
 					}
-				}
+					currentClass = currentClass.getSuperclass();
+				} while (currentClass != null);
 			}
 			return builder.build();
 		} catch (final Exception e) {
@@ -134,12 +146,25 @@ public class ServiceClassDiscovery {
 	}
 
 	public static <T> Set<Class<? extends T>> discoverClasses(final Class<T> abstractClass) throws IOException, ClassNotFoundException {
-		return ServiceClassDiscovery.discoverClasses(abstractClass, ServiceClassDiscovery.getClassLoader(abstractClass));
+		return ServiceClassDiscovery.discoverClasses(abstractClass, abstractClass, null);
 	}
 
 	public static <T> Set<Class<? extends T>> discoverClasses(final Class<T> abstractClass, final ClassLoader loader) throws IOException,
 			ClassNotFoundException {
-		final Set<String> classNames = ServiceClassDiscovery.discoverClassNames(abstractClass, loader);
+		return ServiceClassDiscovery.discoverClasses(abstractClass, abstractClass, loader);
+	}
+
+	public static <T, V> Set<Class<? extends T>> discoverClasses(final Class<T> abstractClass, final Class<V> serviceClass) throws IOException,
+			ClassNotFoundException {
+		return ServiceClassDiscovery.discoverClasses(abstractClass, serviceClass, null);
+	}
+
+	public static <T, V> Set<Class<? extends T>> discoverClasses(final Class<T> abstractClass, final Class<V> serviceClass, ClassLoader loader)
+			throws IOException, ClassNotFoundException {
+		if (loader == null) {
+			loader = ServiceClassDiscovery.getClassLoader(abstractClass);
+		}
+		final Set<String> classNames = ServiceClassDiscovery.discoverClassNames(serviceClass, loader);
 		final Set<Class<? extends T>> classes = new LinkedHashSet<Class<? extends T>>();
 		for (final String className : classNames) {
 			classes.add(Class.forName(className, true, loader).asSubclass(abstractClass));
