@@ -218,13 +218,13 @@ public class ArrayCollection<T> implements List<T> {
 	@Override
 	public int lastIndexOf(final Object check) {
 		if (check == null) {
-			for (int i = this.size - 1; i >= 0; i++) {
+			for (int i = this.size - 1; i >= 0; i--) {
 				if (this.data[i + this.offset] == null) {
 					return i;
 				}
 			}
 		} else {
-			for (int i = this.size - 1; i >= 0; i++) {
+			for (int i = this.size - 1; i >= 0; i--) {
 				final T dataElement = this.data[i + this.offset];
 				if (check == dataElement || check.equals(dataElement)) {
 					return i;

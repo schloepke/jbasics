@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- *
+ * 
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,6 +26,8 @@ package org.jbasics.math;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
+import org.jbasics.types.tuples.Pair;
 
 public class NumberConverter {
 
@@ -62,6 +64,30 @@ public class NumberConverter {
 			return ((BigDecimal) number).toBigInteger();
 		} else {
 			return BigInteger.valueOf(number.longValue());
+		}
+	}
+
+	public static BigInteger toBigInteger(final String number) {
+		if (number == null) {
+			return null;
+		}
+		final Pair<String, Integer> trimedRadixPair = NumberConverter.trimAndDetachRadixPrefix(number);
+		return new BigInteger(trimedRadixPair.first(), trimedRadixPair.second().intValue());
+	}
+
+	public static Pair<String, Integer> trimAndDetachRadixPrefix(final String input) {
+		if (input == null) {
+			return null;
+		}
+		final String temp = input.trim();
+		if (temp.startsWith("0x")) {
+			return new Pair<String, Integer>(temp.substring(2), 16);
+		} else if (temp.startsWith("0")) {
+			return new Pair<String, Integer>(temp.substring(1), 8);
+		} else if (temp.startsWith("0b")) {
+			return new Pair<String, Integer>(temp.substring(2), 2);
+		} else {
+			return new Pair<String, Integer>(temp, 10);
 		}
 	}
 
