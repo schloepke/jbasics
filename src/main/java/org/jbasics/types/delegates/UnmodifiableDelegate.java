@@ -30,6 +30,14 @@ import org.jbasics.pattern.delegation.Delegate;
 public final class UnmodifiableDelegate<T> implements Delegate<T> {
 	public static final Delegate<?> NULL_DELEGATE = new UnmodifiableDelegate<Object>();
 
+	public static final <T> Delegate<T> create(T element) {
+		if (element == null) {
+			return nullDelegate();
+		} else {
+			return new UnmodifiableDelegate<T>(element);
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	public static final <T> Delegate<T> nullDelegate() {
 		return (Delegate<T>) UnmodifiableDelegate.NULL_DELEGATE;

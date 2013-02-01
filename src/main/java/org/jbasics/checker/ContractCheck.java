@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- * 
+ *
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -42,7 +42,7 @@ import org.jbasics.types.tuples.Range;
  * <p>
  * Example:
  * </p>
- * 
+ *
  * <pre>
  * public void setSomething(Object something) {
  *     if (something == null) {
@@ -51,9 +51,9 @@ import org.jbasics.types.tuples.Range;
  *     this.something = something;
  * }
  * </pre>
- * 
+ *
  * Would change to:
- * 
+ *
  * <pre>
  * public void setSomething(Object something) {
  *     this.something = {@link ContractCheck#mustNotBeNull(Object, String)}(something, &quot;something&quot;);
@@ -62,7 +62,7 @@ import org.jbasics.types.tuples.Range;
  * <p>
  * All check methods throw a {@link ContractViolationException} if the check fails.
  * </p>
- * 
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -74,7 +74,7 @@ public final class ContractCheck {
 
 	/**
 	 * Checks if the given instance is not null
-	 * 
+	 *
 	 * @param <T> The type of instance to check
 	 * @param instanceName The name of the instance (should not be null).
 	 * @param instance The instance to check.
@@ -91,7 +91,7 @@ public final class ContractCheck {
 
 	/**
 	 * Checks the supplied instance collection to be not null and not zero length.
-	 * 
+	 *
 	 * @param <T> The type of the instance
 	 * @param collection The instance to check
 	 * @param instanceName The name of the instance (can be null) for the exception message
@@ -112,7 +112,7 @@ public final class ContractCheck {
 
 	/**
 	 * Checks the supplied instance map to be not null and not zero length.
-	 * 
+	 *
 	 * @param <K> The type of the map key
 	 * @param <V> The type of the map value
 	 * @param map The instance to check
@@ -134,7 +134,7 @@ public final class ContractCheck {
 
 	/**
 	 * Checks the supplied instance array to be not null and not zero length.
-	 * 
+	 *
 	 * @param <T> The type of the instance
 	 * @param array The instance to check
 	 * @param instanceName The name of the instance (can be null) for the exception message
@@ -155,7 +155,7 @@ public final class ContractCheck {
 
 	/**
 	 * Checks the supplied instance array to be not null and not zero length.
-	 * 
+	 *
 	 * @param <T> The type of the instance
 	 * @param charSequence The instance to check
 	 * @param instanceName The name of the instance (can be null) for the exception message
@@ -177,7 +177,7 @@ public final class ContractCheck {
 	/**
 	 * Checks if the supplied instance is neither null and not empty after the sequence is trimmed.
 	 * Returns the trimmed instance.
-	 * 
+	 *
 	 * @param charSequence The instance to check and trim
 	 * @param instanceName The name of the instance (can be null) for the exception message
 	 *            generated
@@ -198,7 +198,7 @@ public final class ContractCheck {
 
 	/**
 	 * Checks the supplied instance array to be not null and not zero length.
-	 * 
+	 *
 	 * @param byteArray The instance to check
 	 * @param instanceName The name of the instance (can be null) for the exception message
 	 *            generated
@@ -218,7 +218,7 @@ public final class ContractCheck {
 
 	/**
 	 * Checks if the value is in the range of low and high.
-	 * 
+	 *
 	 * @param intValue The value to check
 	 * @param low The inclusive lower bound which is a valid value.
 	 * @param high The inclusive upper bound which is a valid value.
@@ -237,7 +237,7 @@ public final class ContractCheck {
 
 	/**
 	 * Checks if the value is in the range of low and high.
-	 * 
+	 *
 	 * @param longValue The value to check
 	 * @param low The inclusive lower bound which is a valid value.
 	 * @param high The inclusive upper bound which is a valid value.
@@ -256,7 +256,7 @@ public final class ContractCheck {
 
 	/**
 	 * Checks if the value is in the range of low and high.
-	 * 
+	 *
 	 * @param doubleValue The value to check
 	 * @param low The inclusive lower bound which is a valid value.
 	 * @param high The inclusive upper bound which is a valid value.
@@ -275,7 +275,7 @@ public final class ContractCheck {
 
 	/**
 	 * Checks if the value is not null and in the range of low and high and converts any number to long.
-	 * 
+	 *
 	 * @param numberValue The value to check
 	 * @param low The inclusive lower bound which is a valid value.
 	 * @param high The inclusive upper bound which is a valid value.
@@ -298,7 +298,7 @@ public final class ContractCheck {
 
 	/**
 	 * Checks if the value is not null and in the range of low and high and converts any number to double.
-	 * 
+	 *
 	 * @param numberValue The value to check
 	 * @param low The inclusive lower bound which is a valid value.
 	 * @param high The inclusive upper bound which is a valid value.
@@ -321,7 +321,7 @@ public final class ContractCheck {
 
 	/**
 	 * Checks if the value is in the range of low and high.
-	 * 
+	 *
 	 * @param <T> The type of the {@link Number} to check
 	 * @param <C> The type for the lower and upper bound which is a {@link Comparable} of the type T
 	 * @param numberValue The value to check
@@ -345,7 +345,7 @@ public final class ContractCheck {
 
 	/**
 	 * Checks if the value is in the range of low and high.
-	 * 
+	 *
 	 * @param <T> The type of the {@link Comparable} to check
 	 * @param numberValue The value to check
 	 * @param range The range to check with (if null no check is applied other than the null check)
@@ -366,7 +366,7 @@ public final class ContractCheck {
 
 	/**
 	 * Checks if the value is in the range of low and high or is null.
-	 * 
+	 *
 	 * @param <T> The type of the {@link Number} to check
 	 * @param <C> The type for the lower and upper bound which is a {@link Comparable} of the type T
 	 * @param numberValue The value to check
@@ -391,7 +391,7 @@ public final class ContractCheck {
 	/**
 	 * Checks that the given {@link CharSequence} is either null or not null and matches the given
 	 * pattern (if pattern is not null).
-	 * 
+	 *
 	 * @param <T> The type to check derived from {@link CharSequence}
 	 * @param charSequence The sequence to check
 	 * @param pattern The pattern to check (if null no pattern checking is applied)
@@ -415,7 +415,7 @@ public final class ContractCheck {
 	/**
 	 * Checks that the given {@link CharSequence} is not null and matches the given pattern (if
 	 * pattern is not null).
-	 * 
+	 *
 	 * @param <T> The type to check derived from {@link CharSequence}
 	 * @param charSequence The sequence to check
 	 * @param pattern The pattern to check (if null no pattern checking is applied)
@@ -441,7 +441,7 @@ public final class ContractCheck {
 	 * null the instance must also be null. If the check instance is not null the instance must not
 	 * be null and must be equal to the check instance by applying check.equals(instance). Throws an
 	 * exception when the check is not valid.
-	 * 
+	 *
 	 * @param <T> The type of the instance
 	 * @param instance The instance to check
 	 * @param check The instance to compare with
@@ -468,7 +468,7 @@ public final class ContractCheck {
 	 * If the check is null than instance must be null. If the check is not null than instance must
 	 * not be null and be the same size as check. Returns the instance array if all checks are valid
 	 * and the caller has the guarantee that the size is equal.
-	 * 
+	 *
 	 * @param <T> The type of the array instance
 	 * @param instance The array instance to check
 	 * @param check The array instance to compare the size with
@@ -495,7 +495,7 @@ public final class ContractCheck {
 	/**
 	 * Checks if the given array is not null and of the given check size. If the instance array is not null and also
 	 * the length of the array is of the cheked size the given array is returned and guaranteed to match the check.
-	 * 
+	 *
 	 * @param <T> The type of the array instance
 	 * @param instance The array instance to check
 	 * @param check The size the array needs to have
@@ -517,7 +517,7 @@ public final class ContractCheck {
 	/**
 	 * Checks if the given array is not null and of the given check size. If the instance array is not null and also
 	 * the length of the array is of the cheked size the given array is returned and guaranteed to match the check.
-	 * 
+	 *
 	 * @param <T> The type of the array instance
 	 * @param instance The array instance to check
 	 * @param check The size the array needs to have
@@ -540,7 +540,7 @@ public final class ContractCheck {
 	 * Checks if the given collection is not null and of the given check size. If the instance collection is not null
 	 * and also the size of the collection is of the checked size the given collection is returned and guaranteed to
 	 * match the check.
-	 * 
+	 *
 	 * @param <T> The type of the collection instance
 	 * @param instance The collection instance to check
 	 * @param check The size the collection needs to have
@@ -559,10 +559,22 @@ public final class ContractCheck {
 		return instance;
 	}
 
+	public static void mustEvalToTrue(boolean expression, String expressioName) {
+		if (!expression) {
+			throw new ContractViolationException("mustBeTrue", expressioName != null ? expressioName : ContractCheck.UNKNOWN);
+		}
+	}
+
+	public static void mustEvalToFalse(boolean expression, String expressioName) {
+		if (expression) {
+			throw new ContractViolationException("mustBeTrue", expressioName != null ? expressioName : ContractCheck.UNKNOWN);
+		}
+	}
+
 	/**
 	 * Creates a {@link ContractViolationException} and removes all parts of the {@link ContractCheck} class from the
 	 * stack trace.
-	 * 
+	 *
 	 * @param instanceName
 	 * @return
 	 */
@@ -581,4 +593,5 @@ public final class ContractCheck {
 		}
 		return temp;
 	}
+
 }
