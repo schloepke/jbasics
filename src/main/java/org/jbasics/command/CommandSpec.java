@@ -109,6 +109,8 @@ public class CommandSpec implements ExecuteStrategy<Integer, CommandCall> {
 					temp[i] = value;
 				} else if (String.class.isAssignableFrom(paramType)) {
 					temp[i] = isList ? value.asStrings() : value.mustBeSingle().asString();
+				} else if (Boolean.class.isAssignableFrom(paramType)) {
+					temp[i] = isList ? value.asBoolean() : value.mustBeSingle().asBoolean();
 				} else if (Integer.class.isAssignableFrom(paramType)) {
 					temp[i] = isList ? value.asIntegers() : value.mustBeSingle().asInteger();
 				} else if (Double.class.isAssignableFrom(paramType)) {

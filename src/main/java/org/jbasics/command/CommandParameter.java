@@ -130,6 +130,18 @@ public class CommandParameter implements Extendable<CommandParameter, String>, C
 		return Collections.unmodifiableList(result);
 	}
 
+	public Boolean asBoolean() {
+		return Boolean.valueOf(this.values.first());
+	}
+
+	public List<Boolean> asBooleans() {
+		final List<Boolean> result = new ArrayList<Boolean>(this.values.size());
+		for (final String value : this.values) {
+			result.add(Boolean.valueOf(value));
+		}
+		return Collections.unmodifiableList(result);
+	}
+
 	public Integer asInteger() {
 		return Integer.decode(this.values.first());
 	}
