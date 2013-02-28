@@ -24,6 +24,7 @@
  */
 package org.jbasics.collection;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -50,6 +51,14 @@ public class CollectionUtilities {
 			return Collections.emptySet();
 		} else {
 			return Collections.unmodifiableSet(new HashSet<E>(original));
+		}
+	}
+
+	public static <E> List<E> createUnmodifiableShallowCopy(final List<E> original) {
+		if (original == null || original.isEmpty()) {
+			return Collections.emptyList();
+		} else {
+			return Collections.unmodifiableList(new ArrayList<E>(original));
 		}
 	}
 
