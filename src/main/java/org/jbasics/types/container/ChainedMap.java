@@ -60,7 +60,7 @@ public class ChainedMap<K, V> implements Map<K, V>, Concatable<Map<K, V>>, Deleg
 
 	public ChainedMap(Delegate<Map<K, V>> parentMapDelegate, Map<K, V> map) {
 		this.parentMapDelegate = parentMapDelegate;
-		this.map = map == null ? map : MapFactory.<K, V> unorderedMapFactory().newInstance();
+		this.map = map != null ? map : MapFactory.<K, V> unorderedMapFactory().newInstance();
 	}
 
 	@Override
