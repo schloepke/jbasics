@@ -72,19 +72,22 @@ public class XHTMLStylesheetAttachedXMLProvider implements MessageBodyWriter<XHT
 		this.providers = providers;
 	}
 
+	@Override
 	public long getSize(final XHTMLStylesheetAttachedJAXB<?> t, final Class<?> type, final Type genericType, final Annotation[] annotations,
 			final MediaType mediaType) {
 		return -1;
 	}
 
+	@Override
 	public boolean isWriteable(final Class<?> type, final Type genericType, final Annotation[] annotations, final MediaType mediaType) {
 		return XHTMLStylesheetAttachedJAXB.class.isAssignableFrom(type) && (MediaType.APPLICATION_XHTML_XML_TYPE.equals(mediaType) ||
 				MediaType.APPLICATION_XML_TYPE.equals(mediaType) ||
 				MediaType.TEXT_HTML_TYPE.equals(mediaType) ||
 				MediaType.TEXT_XML_TYPE.equals(mediaType) ||
-				(mediaType != null && mediaType.getSubtype().endsWith("+xml"))); //$NON-NLS-1$
+				mediaType != null && mediaType.getSubtype().endsWith("+xml")); //$NON-NLS-1$
 	}
 
+	@Override
 	public void writeTo(final XHTMLStylesheetAttachedJAXB<?> t, final Class<?> type, final Type genericType, final Annotation[] annotations,
 			final MediaType mediaType,
 			final MultivaluedMap<String, Object> httpHeaders, final OutputStream entityStream) throws IOException, WebApplicationException {
@@ -92,18 +95,18 @@ public class XHTMLStylesheetAttachedXMLProvider implements MessageBodyWriter<XHT
 			final Marshaller marshaller = getMarshaller(t.getEntityType(), mediaType);
 			Charset charset = XHTMLStylesheetAttachedXMLProvider.UTF8;
 			if (mediaType != null) {
-				String temp = mediaType.getParameters().get("charset"); //$NON-NLS-1$
+				final String temp = mediaType.getParameters().get("charset"); //$NON-NLS-1$
 				if (temp != null) {
 					charset = Charset.forName(temp);
 				}
 			}
-			Writer w = new OutputStreamWriter(entityStream, charset);
+			final Writer w = new OutputStreamWriter(entityStream, charset);
 			if (MediaType.APPLICATION_XHTML_XML_TYPE.equals(mediaType) || MediaType.TEXT_HTML_TYPE.equals(mediaType)) {
 				writeToXhtml(t, mediaType, charset, marshaller, w);
 			} else {
 				writeToXml(t, mediaType, charset, marshaller, w);
 			}
-		} catch (JAXBException e) {
+		} catch (final JAXBException e) {
 			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -111,22 +114,22 @@ public class XHTMLStylesheetAttachedXMLProvider implements MessageBodyWriter<XHT
 	private void writeToXhtml(final XHTMLStylesheetAttachedJAXB<?> t, final MediaType mediaType, final Charset charset,
 			final Marshaller marshaller, final Writer w) throws JAXBException, IOException {
 		try {
-			Transformer transformer = TransformerFactory.newInstance().newTransformer(
+			final Transformer transformer = TransformerFactory.newInstance().newTransformer(
 					new StreamSource(t.getLocalResource().openStream(), t.getLocalResource().toExternalForm()));
 			Source source = new JAXBSource(marshaller, t.getEntity());
-			Result result = new StreamResult(w);
+			final Result result = new StreamResult(w);
 			if (t.isHandleXInclude()) {
-				SAXParserFactory factory = SAXParserFactory.newInstance();
+				final SAXParserFactory factory = SAXParserFactory.newInstance();
 				factory.setNamespaceAware(true);
 				factory.setXIncludeAware(true);
-				XMLReader reader = factory.newSAXParser().getXMLReader();
-				ByteArrayOutputStream temp = new ByteArrayOutputStream();
+				final XMLReader reader = factory.newSAXParser().getXMLReader();
+				final ByteArrayOutputStream temp = new ByteArrayOutputStream();
 				marshaller.marshal(t.getEntity(), new OutputStreamWriter(temp));
 				source = new SAXSource(reader, new InputSource(new ByteArrayInputStream(temp.toByteArray())));
 			}
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
 			transformer.transform(source, result);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -134,7 +137,7 @@ public class XHTMLStylesheetAttachedXMLProvider implements MessageBodyWriter<XHT
 	private void writeToXml(final XHTMLStylesheetAttachedJAXB<?> t, final MediaType mediaType, final Charset charset,
 			final Marshaller marshaller, final Writer wIn) throws JAXBException, IOException {
 		try {
-			Object jaxbFragmentProperty = marshaller.getProperty(Marshaller.JAXB_FRAGMENT);
+			final Object jaxbFragmentProperty = marshaller.getProperty(Marshaller.JAXB_FRAGMENT);
 			marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 			Writer w = wIn;
 			ByteArrayOutputStream bos = null;
@@ -154,16 +157,16 @@ public class XHTMLStylesheetAttachedXMLProvider implements MessageBodyWriter<XHT
 			w.write("\" ?>\n\n"); //$NON-NLS-1$
 			marshaller.marshal(t.getEntity(), w);
 			if (bos != null) {
-				Transformer transformer = TransformerFactory.newInstance().newTransformer();
-				SAXParserFactory factory = SAXParserFactory.newInstance();
+				final Transformer transformer = TransformerFactory.newInstance().newTransformer();
+				final SAXParserFactory factory = SAXParserFactory.newInstance();
 				factory.setNamespaceAware(true);
 				factory.setXIncludeAware(true);
-				XMLReader reader = factory.newSAXParser().getXMLReader();
+				final XMLReader reader = factory.newSAXParser().getXMLReader();
 				transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
 				transformer.transform(new SAXSource(reader, new InputSource(new ByteArrayInputStream(bos.toByteArray()))), new StreamResult(wIn));
 			}
 			marshaller.setProperty(Marshaller.JAXB_FRAGMENT, jaxbFragmentProperty);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -179,7 +182,8 @@ public class XHTMLStylesheetAttachedXMLProvider implements MessageBodyWriter<XHT
 			final ContextResolver<JAXBContext> cr = this.providers.getContextResolver(JAXBContext.class, mt);
 			if (cr != null) {
 				context = cr.getContext(type);
-			} else {
+			}
+			if (context == null) {
 				synchronized (XHTMLStylesheetAttachedXMLProvider.JAXB_CONTEXT_CACHE) {
 					context = XHTMLStylesheetAttachedXMLProvider.JAXB_CONTEXT_CACHE.get(type);
 					if (context == null) {

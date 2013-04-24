@@ -25,6 +25,7 @@
 package org.jbasics.types.pools;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -59,13 +60,14 @@ public class BlockingPool<T> implements NewPool<T> {
 	public BlockingPool(final Factory<LifecycleDelegate<T>> instanceFactory, final int maxIdle, final int maxActive, final long maxWait) {
 		this.instanceFactory = ContractCheck.mustNotBeNull(instanceFactory, "instanceFactory"); //$NON-NLS-1$
 		this.maxIdle = maxIdle <= 0 ? BlockingPool.DEFAULT_MAX_IDLE : maxIdle;
-		int maxActiveTemp = maxActive <= 0 ? BlockingPool.DEFAULT_MAX_ACTIVE : maxActive;
+		final int maxActiveTemp = maxActive <= 0 ? BlockingPool.DEFAULT_MAX_ACTIVE : maxActive;
 		this.maxActive = maxIdle > maxActiveTemp ? maxIdle : maxActiveTemp;
 		this.maxWait = maxWait < 0 ? BlockingPool.DEFAULT_MAX_WAIT : maxWait;
 		this.passiveInstances = new ArrayBlockingQueue<LifecycleDelegate<T>>(this.maxIdle);
 		this.managedInstances = new ArrayList<LifecycleDelegate<T>>();
 	}
 
+	@Override
 	public PooledInstance<T> aquire() {
 		if (this.closed) {
 			throw new IllegalStateException("Pool already closed"); //$NON-NLS-1$
@@ -73,6 +75,7 @@ public class BlockingPool<T> implements NewPool<T> {
 		return new PooledDelegate(-1);
 	}
 
+	@Override
 	public PooledInstance<T> aquire(final long timeout) {
 		if (this.closed) {
 			throw new IllegalStateException("Pool already closed"); //$NON-NLS-1$
@@ -80,19 +83,20 @@ public class BlockingPool<T> implements NewPool<T> {
 		return new PooledDelegate(timeout);
 	}
 
+	@Override
 	public void close() {
 		this.closed = true;
-		for (LifecycleDelegate<T> pooled : this.managedInstances) {
+		for (final LifecycleDelegate<T> pooled : this.managedInstances) {
 			try {
 				pooled.passivate();
-			} catch (RuntimeException e) {
+			} catch (final RuntimeException e) {
 				if (this.logger.isLoggable(Level.SEVERE)) {
 					this.logger.log(Level.SEVERE, "Could not passivate pool instance", e); //$NON-NLS-1$
 				}
 			}
 			try {
 				pooled.release();
-			} catch (RuntimeException e) {
+			} catch (final RuntimeException e) {
 				if (this.logger.isLoggable(Level.SEVERE)) {
 					this.logger.log(Level.SEVERE, "Could not release pool instance", e); //$NON-NLS-1$
 				}
@@ -108,27 +112,41 @@ public class BlockingPool<T> implements NewPool<T> {
 			this.timeout = timeout;
 		}
 
+		@Override
 		public boolean release() {
 			if (this.instance != null) {
 				this.instance.passivate();
 				if (!BlockingPool.this.passiveInstances.offer(this.instance)) {
 					this.instance.release();
+					synchronized (BlockingPool.this.managedInstances) {
+						final Iterator<LifecycleDelegate<T>> i = BlockingPool.this.managedInstances.iterator();
+						while (i.hasNext()) {
+							// we want to remove the exact instance NOT the equals checked instance
+							if (this.instance == i.next()) {
+								i.remove();
+								break;
+							}
+						}
+					}
 				}
 				this.instance = null;
 			}
 			return true;
 		}
 
+		@Override
 		public T delegate() {
 			if (BlockingPool.this.closed) {
 				throw new IllegalStateException("Pool already closed and therefor all pooled instance are freed"); //$NON-NLS-1$
 			}
 			if (this.instance == null) {
 				this.instance = BlockingPool.this.passiveInstances.poll();
-				synchronized (BlockingPool.this.managedInstances) {
-					int currentActive = BlockingPool.this.managedInstances.size();
-					if (currentActive < BlockingPool.this.maxActive) {
-						BlockingPool.this.managedInstances.add(this.instance = BlockingPool.this.instanceFactory.newInstance());
+				if (this.instance == null) {
+					synchronized (BlockingPool.this.managedInstances) {
+						final int currentActive = BlockingPool.this.managedInstances.size();
+						if (currentActive < BlockingPool.this.maxActive) {
+							BlockingPool.this.managedInstances.add(this.instance = BlockingPool.this.instanceFactory.newInstance());
+						}
 					}
 				}
 				if (this.instance == null) {
@@ -139,8 +157,11 @@ public class BlockingPool<T> implements NewPool<T> {
 						} else {
 							this.instance = BlockingPool.this.passiveInstances.take();
 						}
-					} catch (InterruptedException e) {
+					} catch (final InterruptedException e) {
 						throw DelegatedException.delegate(e);
+					}
+					if (this.instance == null) {
+						throw new RuntimeException("Pool did not provide an instance to be used within the given time out"); //$NON-NLS-1$
 					}
 				}
 				this.instance.activate();
