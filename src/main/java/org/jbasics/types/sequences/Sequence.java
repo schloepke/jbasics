@@ -33,6 +33,7 @@ import org.jbasics.pattern.modifer.Concatable;
 import org.jbasics.pattern.strategy.SubstitutionStrategy;
 import org.jbasics.pattern.transpose.Transposer;
 import org.jbasics.types.tuples.Tuple;
+import org.jbasics.utilities.DataUtilities;
 
 /**
  * Defines a sequence. This is currently
@@ -48,11 +49,7 @@ public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Co
 		return (Sequence<E>) Sequence.EMPTY_SEQUENCE;
 	}
 
-	public static <E> Sequence<E> cons(final E element, final Sequence<E> sequence) {
-		return new Sequence<E>(element, sequence);
-	}
-
-	public static <E> Sequence<E> cons(final E... elements) {
+	public static <E> Sequence<E> create(final E... elements) {
 		Sequence<E> result = Sequence.emptySequence();
 		if (elements != null && elements.length > 0) {
 			for (int i = elements.length - 1; i >= 0; i--) {
@@ -60,6 +57,14 @@ public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Co
 			}
 		}
 		return result;
+	}
+
+	public static <E> Sequence<E> cons(final E element, final Sequence<E> sequence) {
+		return new Sequence<E>(element, sequence);
+	}
+
+	public static <E> Sequence<E> cons(final E... elements) {
+		return Sequence.create(elements);
 	}
 
 	public static <E> Sequence<E> cons(final Sequence<E> seq, final E... elements) {
@@ -123,9 +128,17 @@ public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Co
 		return this.element;
 	}
 
+	public T car() {
+		return this.first();
+	}
+
 	@SuppressWarnings("unchecked")
 	public Sequence<T> rest() {
-		return this.rest == null ? (Sequence<T>) Sequence.EMPTY_SEQUENCE : this.rest;
+		return DataUtilities.coalesce(this.rest, (Sequence<T>) Sequence.EMPTY_SEQUENCE);
+	}
+
+	public Sequence<T> cdr() {
+		return this.rest();
 	}
 
 	public boolean isEmpty() {
@@ -146,22 +159,27 @@ public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Co
 		return result;
 	}
 
+	@Override
 	public Iterator<T> iterator() {
 		return new SequenceIterator<T>(this);
 	}
 
+	@Override
 	public T left() {
 		return first();
 	}
 
+	@Override
 	public Sequence<T> right() {
 		return rest();
 	}
 
+	@Override
 	public int size() {
 		return this.size;
 	}
 
+	@Override
 	public Sequence<T> concat(final Sequence<T> other) {
 		Sequence<T> t = reverse();
 		for (final T st : other) {
@@ -217,8 +235,8 @@ public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Co
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((this.element == null) ? 0 : this.element.hashCode());
-		result = prime * result + ((this.rest == null) ? 0 : this.rest.hashCode());
+		result = prime * result + (this.element == null ? 0 : this.element.hashCode());
+		result = prime * result + (this.rest == null ? 0 : this.rest.hashCode());
 		return result;
 	}
 
