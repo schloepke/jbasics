@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- *
+ * 
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -128,13 +128,21 @@ public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Co
 		return this.element;
 	}
 
-	public T car() {
-		return this.first();
-	}
-
 	@SuppressWarnings("unchecked")
 	public Sequence<T> rest() {
 		return DataUtilities.coalesce(this.rest, (Sequence<T>) Sequence.EMPTY_SEQUENCE);
+	}
+
+	public T head() {
+		return this.first();
+	}
+
+	public Sequence<T> tail() {
+		return this.rest();
+	}
+
+	public T car() {
+		return this.first();
 	}
 
 	public Sequence<T> cdr() {
@@ -229,6 +237,7 @@ public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Co
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -242,6 +251,7 @@ public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Co
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
