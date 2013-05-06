@@ -11,7 +11,7 @@ Here I list the planned changes and any idea useful for the development of jBasi
 
 - RangeSequence (monoton, isoton and antiton)
 - IS8601 parser and tools (date/time check with jodan?)
-- Date to the command parsing system
+- Date to the command parsing system @done
 - CSV to ColumnMatrix Reader and vise versa + ValueTypeAdapter
 - Extend arbitrary math (go towards strategy impl.)
 - NormalDistribution (in arbitrary math)
