@@ -37,7 +37,7 @@ import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.pattern.factory.ParameterFactory;
 
 public class SystemProperty<ValueType> implements Delegate<ValueType> {
-	private static final ParameterFactory<String, String> STRING_PASS_THRU = new PassThruValueTypeFactory<String>();
+	public static final ParameterFactory<String, String> STRING_PASS_THRU = new PassThruValueTypeFactory<String>();
 
 	private final String name;
 	private final ValueType defaultValue;
@@ -98,7 +98,7 @@ public class SystemProperty<ValueType> implements Delegate<ValueType> {
 	}
 
 	public final ValueType value() {
-		String temp = System.getProperty(this.name);
+		final String temp = System.getProperty(this.name);
 		if (temp == null) {
 			return this.defaultValue;
 		} else {
@@ -106,13 +106,14 @@ public class SystemProperty<ValueType> implements Delegate<ValueType> {
 		}
 	}
 
+	@Override
 	public ValueType delegate() {
 		return value();
 	}
 
 	@Override
 	public String toString() {
-		ValueType temp = value();
+		final ValueType temp = value();
 		return temp != null ? temp.toString() : "#NULL#"; //$NON-NLS-1$
 	}
 
@@ -120,8 +121,8 @@ public class SystemProperty<ValueType> implements Delegate<ValueType> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((this.defaultValue == null) ? 0 : this.defaultValue.hashCode());
-		result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
+		result = prime * result + (this.defaultValue == null ? 0 : this.defaultValue.hashCode());
+		result = prime * result + (this.name == null ? 0 : this.name.hashCode());
 		return result;
 	}
 
@@ -136,7 +137,7 @@ public class SystemProperty<ValueType> implements Delegate<ValueType> {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		SystemProperty<?> other = (SystemProperty<?>) obj;
+		final SystemProperty<?> other = (SystemProperty<?>) obj;
 		if (this.defaultValue == null) {
 			if (other.defaultValue != null) {
 				return false;

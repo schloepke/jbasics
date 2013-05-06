@@ -90,6 +90,10 @@ public class SystemPropertiesBundle extends Properties {
 		return result != null ? result : super.getProperty(key);
 	}
 
+	public SystemProperty<String> getStringProperty(final String name) {
+		return getTypedProperty(name, String.class, SystemProperty.STRING_PASS_THRU);
+	}
+
 	public SystemProperty<URI> getURIProperty(final String name) {
 		return getTypedProperty(name, URI.class, URIValueTypeFactory.SHARED_INSTANCE);
 	}
@@ -135,7 +139,7 @@ public class SystemPropertiesBundle extends Properties {
 	}
 
 	public final <T> SystemProperty<T> getTypedProperty(final String name, final Class<T> type, final ParameterFactory<T, String> typeFactory) {
-		Pair<String, Class<?>> key = new Pair<String, Class<?>>(ContractCheck.mustNotBeNullOrTrimmedEmpty(name, "name"), ContractCheck.mustNotBeNull( //$NON-NLS-1$
+		final Pair<String, Class<?>> key = new Pair<String, Class<?>>(ContractCheck.mustNotBeNullOrTrimmedEmpty(name, "name"), ContractCheck.mustNotBeNull( //$NON-NLS-1$
 				type, "type")); //$NON-NLS-1$
 		SystemProperty<T> result = getSharedTypedProperty(key);
 		if (result == null) {
@@ -161,7 +165,7 @@ public class SystemPropertiesBundle extends Properties {
 			// is a cache and not a singleton collection we are thread safe here
 			this.sharedTypedProperties = new ConcurrentHashMap<Pair<String, Class<?>>, SystemProperty<?>>();
 		}
-		SystemProperty<T> temp = (SystemProperty<T>) this.sharedTypedProperties.putIfAbsent(key, value);
+		final SystemProperty<T> temp = (SystemProperty<T>) this.sharedTypedProperties.putIfAbsent(key, value);
 		return temp == null ? value : temp;
 	}
 
