@@ -37,7 +37,7 @@ import org.jbasics.text.StringUtilities;
 /**
  * A simple factory to generate Tag URIs as outlined by the informal
  * <a href="http://tools.ietf.org/html/rfc4151">RFC 4151</a>.
- * 
+ *
  * @author Stephan Schloepke
  */
 public class TagURIFactory implements ParameterFactory<URI, String>, Extendable<TagURIFactory, String> {
@@ -59,7 +59,7 @@ public class TagURIFactory implements ParameterFactory<URI, String>, Extendable<
 	}
 
 	public static TagURIFactory newInstance(final String authorityName, final int year, final int month, final int dayOfMonth) {
-		Calendar cal = Calendar.getInstance();
+		final Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.YEAR, year);
 		cal.set(Calendar.MONTH, month - 1);
 		cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -73,10 +73,10 @@ public class TagURIFactory implements ParameterFactory<URI, String>, Extendable<
 	public TagURIFactory(final String authorityName, final Date taggingEntityDate, final String... pathSegments) {
 		this.taggingEntityAuthorityName = ContractCheck.mustNotBeNullOrTrimmedEmpty(authorityName, "authorityName"); //$NON-NLS-1$
 		this.taggingEntityAuthorityDate = ContractCheck.mustNotBeNull(taggingEntityDate, "taggingEntityDate"); //$NON-NLS-1$
-		Calendar cal = Calendar.getInstance();
+		final Calendar cal = Calendar.getInstance();
 		cal.setTime(this.taggingEntityAuthorityDate);
-		int d = cal.get(Calendar.DAY_OF_MONTH);
-		int m = cal.get(Calendar.MONTH);
+		final int d = cal.get(Calendar.DAY_OF_MONTH);
+		final int m = cal.get(Calendar.MONTH);
 		String taggingEntity;
 		if (d > 1) {
 			taggingEntity = String.format(Locale.US, "%1$s,%2$tY-%2$tm-%2$td", this.taggingEntityAuthorityName, cal); //$NON-NLS-1$
@@ -95,6 +95,7 @@ public class TagURIFactory implements ParameterFactory<URI, String>, Extendable<
 		}
 	}
 
+	@Override
 	public TagURIFactory extend(final String... additionalPathSegments) {
 		if (additionalPathSegments == null || additionalPathSegments.length == 0) {
 			throw new IllegalArgumentException("Null or zero length array parameter: pathSegment"); //$NON-NLS-1$
@@ -117,10 +118,15 @@ public class TagURIFactory implements ParameterFactory<URI, String>, Extendable<
 		return URI.create(this.base);
 	}
 
-	public URI create(final String specific) {
-		return URI.create(StringUtilities.join(this.pathSegments == null ? TagURIFactory.TAG_PARTS_DELIMITER : TagURIFactory.TAG_PATH_DELIMITER,
-				this.base, ContractCheck.mustNotBeNullOrTrimmedEmpty(specific,
-						specific)));
+	@Override
+	public URI create(String specific) {
+		specific = specific != null ? specific.trim() : "";
+		if (specific.trim().length() == 0) {
+			return URI.create(this.base);
+		} else {
+			return URI.create(StringUtilities.join(this.pathSegments == null ? TagURIFactory.TAG_PARTS_DELIMITER : TagURIFactory.TAG_PATH_DELIMITER,
+					this.base, specific));
+		}
 	}
 
 }
