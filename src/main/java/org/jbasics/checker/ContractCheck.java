@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 
 import org.jbasics.annotation.ImmutableState;
 import org.jbasics.annotation.ThreadSafe;
+import org.jbasics.types.sequences.Sequence;
 import org.jbasics.types.tuples.Range;
 
 /**
@@ -111,15 +112,45 @@ public final class ContractCheck {
 	}
 
 	/**
-	 * Checks the supplied instance map to be not null and not zero length.
-	 *
-	 * @param <K> The type of the map key
-	 * @param <V> The type of the map value
-	 * @param map The instance to check
-	 * @param instanceName The name of the instance (can be null) for the exception message
+	 * Checks the supplied instance collection to be not null and not zero length.
+	 * 
+	 * @param <T>
+	 *            The type of the instance
+	 * @param sequence
+	 *            The instance to check
+	 * @param instanceName
+	 *            The name of the instance (can be null) for the exception message
 	 *            generated
 	 * @return The checked instance array which is guaranteed to be neither null nor zero length.
-	 * @throws ContractViolationException If the array instance to check is null or zero length.
+	 * @throws ContractViolationException
+	 *             If the array instance to check is null or zero length.
+	 * @since 1.0
+	 */
+	public static <T> Sequence<T> mustNotBeNullOrEmpty(final Sequence<T> sequence, final String instanceName) {
+		if (sequence == null) {
+			throw ContractCheck.createNotNullException("mustNotBeNull", instanceName);
+		}
+		if (sequence.size() == 0) {
+			throw new ContractViolationException("mustNotBeEmpty", instanceName != null ? instanceName : ContractCheck.UNKNOWN);
+		}
+		return sequence;
+	}
+
+	/**
+	 * Checks the supplied instance map to be not null and not zero length.
+	 * 
+	 * @param <K>
+	 *            The type of the map key
+	 * @param <V>
+	 *            The type of the map value
+	 * @param map
+	 *            The instance to check
+	 * @param instanceName
+	 *            The name of the instance (can be null) for the exception message
+	 *            generated
+	 * @return The checked instance array which is guaranteed to be neither null nor zero length.
+	 * @throws ContractViolationException
+	 *             If the array instance to check is null or zero length.
 	 * @since 1.0
 	 */
 	public static <K, V> Map<K, V> mustNotBeNullOrEmpty(final Map<K, V> map, final String instanceName) {
@@ -559,13 +590,13 @@ public final class ContractCheck {
 		return instance;
 	}
 
-	public static void mustEvalToTrue(boolean expression, String expressioName) {
+	public static void mustEvalToTrue(final boolean expression, final String expressioName) {
 		if (!expression) {
 			throw new ContractViolationException("mustBeTrue", expressioName != null ? expressioName : ContractCheck.UNKNOWN);
 		}
 	}
 
-	public static void mustEvalToFalse(boolean expression, String expressioName) {
+	public static void mustEvalToFalse(final boolean expression, final String expressioName) {
 		if (expression) {
 			throw new ContractViolationException("mustBeTrue", expressioName != null ? expressioName : ContractCheck.UNKNOWN);
 		}

@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- * 
+ *
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -32,6 +32,7 @@ import org.jbasics.pattern.factory.ParameterFactory;
 import org.jbasics.pattern.modifer.Concatable;
 import org.jbasics.pattern.strategy.SubstitutionStrategy;
 import org.jbasics.pattern.transpose.Transposer;
+import org.jbasics.text.StringUtilities;
 import org.jbasics.types.tuples.Tuple;
 import org.jbasics.utilities.DataUtilities;
 
@@ -57,6 +58,10 @@ public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Co
 			}
 		}
 		return result;
+	}
+
+	public static Sequence<String> split(final String input, final String regex) {
+		return Sequence.create(ContractCheck.mustNotBeNull(input, "input").split(ContractCheck.mustNotBeNullOrTrimmedEmpty(regex, "regex"))); //$NON-NLS-1$//$NON-NLS-2$
 	}
 
 	public static <E> Sequence<E> cons(final E element, final Sequence<E> sequence) {
@@ -196,6 +201,30 @@ public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Co
 		return t.reverse();
 	}
 
+	public Sequence<T> take(final int amount) {
+		final Sequence<T> result = Sequence.emptySequence();
+		Sequence<T> temp = this;
+		for (int i = amount; i > 0; i--) {
+			if (temp.isEmpty()) {
+				break;
+			}
+			result.cons(temp.head());
+			temp = temp.tail();
+		}
+		return result.reverse();
+	}
+
+	public Sequence<T> skip(final int amount) {
+		Sequence<T> temp = this;
+		for (int i = amount; i > 0; i--) {
+			if (temp.isEmpty()) {
+				break;
+			}
+			temp = temp.tail();
+		}
+		return temp;
+	}
+
 	public <NT> Sequence<NT> apply(final Transposer<NT, T> transposer) {
 		ContractCheck.mustNotBeNull(transposer, "transposer"); //$NON-NLS-1$
 		Sequence<NT> result = Sequence.emptySequence();
@@ -223,21 +252,24 @@ public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Co
 		return result.reverse();
 	}
 
+	public String joinToString(final CharSequence separator) {
+		return StringUtilities.joinToString(separator, this);
+	}
+
 	@Override
 	public String toString() {
-		final StringBuilder temp = new StringBuilder();
+		final StringBuilder temp = new StringBuilder().append("{"); //$NON-NLS-1$
 		if (!isEmpty()) {
 			temp.append(this.element);
 			if (this.rest != null && !this.rest.isEmpty()) {
-				temp.append(", ").append(this.rest);
+				temp.append(", ").append(this.rest); //$NON-NLS-1$
 			}
 		}
-		return temp.toString();
+		return temp.append("}").toString(); //$NON-NLS-1$
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -251,7 +283,6 @@ public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Co
 
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
