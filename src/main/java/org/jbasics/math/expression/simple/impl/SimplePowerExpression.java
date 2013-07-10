@@ -22,10 +22,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.math.expression.simple;
+package org.jbasics.math.expression.simple.impl;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
-public interface SimpleSymbolResolver {
-	BigDecimal resolve(String symbol, BigDecimal... parameters);
+import org.jbasics.math.BigDecimalMathLibrary;
+import org.jbasics.math.expression.simple.SimpleExpression;
+
+public class SimplePowerExpression extends SimpleBinaryExpression {
+
+	public SimplePowerExpression(final SimpleExpression lhs, final SimpleExpression rhs) {
+		super(lhs, rhs);
+	}
+
+	@Override
+	protected BigDecimal evalOp(final BigDecimal left, final BigDecimal right, final MathContext mc) {
+		return BigDecimalMathLibrary.pow(left, right).valueToPrecision(mc);
+	}
+
+	@Override
+	public String toString() {
+		return new StringBuilder().append(this.lhs).append("^").append(this.rhs).toString(); //$NON-NLS-1$
+	}
+
 }

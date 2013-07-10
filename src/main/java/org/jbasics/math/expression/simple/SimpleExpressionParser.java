@@ -28,6 +28,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jbasics.math.expression.simple.SimpleExpressionLexer.TokenType;
+import org.jbasics.math.expression.simple.impl.SimpleAddExpression;
+import org.jbasics.math.expression.simple.impl.SimpleDivideExpression;
+import org.jbasics.math.expression.simple.impl.SimpleFunctionCallExpression;
+import org.jbasics.math.expression.simple.impl.SimpleMultiplyExpression;
+import org.jbasics.math.expression.simple.impl.SimpleNumberExpression;
+import org.jbasics.math.expression.simple.impl.SimplePowerExpression;
+import org.jbasics.math.expression.simple.impl.SimpleSubtractExpression;
+import org.jbasics.math.expression.simple.impl.SimpleSymbolExpression;
 
 public class SimpleExpressionParser {
 
@@ -95,7 +103,7 @@ public class SimpleExpressionParser {
 				if (!lexer.isExpectedType(TokenType.RIGHT_BRACE)) {
 					throw new RuntimeException("Function expression is not terminated with a right bracket"); //$NON-NLS-1$
 				}
-				temp = new SimpleFunctionExpression(symbolName, expressionList);
+				temp = new SimpleFunctionCallExpression(symbolName, expressionList);
 			} else {
 				// TO not next again
 				return new SimpleSymbolExpression(symbolName);

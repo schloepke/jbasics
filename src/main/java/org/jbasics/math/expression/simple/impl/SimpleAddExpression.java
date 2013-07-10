@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- *
+ * 
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,37 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.math.expression.simple;
+package org.jbasics.math.expression.simple.impl;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.Collection;
 
-import org.jbasics.checker.ContractCheck;
+import org.jbasics.math.expression.simple.SimpleExpression;
 
-public abstract class SimpleBinaryExpression extends SimpleExpression {
-	protected final SimpleExpression lhs;
-	protected final SimpleExpression rhs;
+public class SimpleAddExpression extends SimpleBinaryExpression {
 
-	public SimpleBinaryExpression(final SimpleExpression lhs, final SimpleExpression rhs) {
-		this.lhs = ContractCheck.mustNotBeNull(lhs, "lhs"); //$NON-NLS-1$
-		this.rhs = ContractCheck.mustNotBeNull(rhs, "rhs"); //$NON-NLS-1$
+	public SimpleAddExpression(final SimpleExpression lhs, final SimpleExpression rhs) {
+		super(lhs, rhs);
 	}
 
 	@Override
-	public BigDecimal eval(final SimpleSymbolResolver resolver, MathContext mc) {
-		if (mc == null) {
-			mc = MathContext.DECIMAL64;
-		}
-		return evalOp(this.lhs.eval(resolver, mc), this.rhs.eval(resolver, mc), mc);
+	protected BigDecimal evalOp(final BigDecimal left, final BigDecimal right, final MathContext mc) {
+		return left.add(right, mc);
 	}
 
 	@Override
-	public <T extends Collection<String>> void collectSymbols(final T collection) {
-		this.lhs.collectSymbols(collection);
-		this.rhs.collectSymbols(collection);
+	public String toString() {
+		return new StringBuilder().append(this.lhs).append(" + ").append(this.rhs).toString(); //$NON-NLS-1$
 	}
-
-	protected abstract BigDecimal evalOp(BigDecimal left, BigDecimal right, MathContext mc);
 
 }
