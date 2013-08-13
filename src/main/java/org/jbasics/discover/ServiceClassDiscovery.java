@@ -44,7 +44,7 @@ import org.jbasics.types.sequences.Sequence;
 
 /**
  * Helper to discover an concrete class for an abstract one base on the java services concept.
- * 
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -113,6 +113,13 @@ public class ServiceClassDiscovery {
 									if (requestedType == null) {
 										key = key.cons((Class<?>) genericType);
 									} else if (!requestedType.isAssignableFrom((Class<?>) genericType)) {
+										break interfaceFor;
+									}
+								} else if(genericType instanceof ParameterizedType) {
+									Class<?> argumentClass = (Class<?>)((ParameterizedType)genericType).getRawType();
+									if (requestedType == null) {
+										key = key.cons(argumentClass);
+									} else if (!requestedType.isAssignableFrom(argumentClass)) {
 										break interfaceFor;
 									}
 								} else {
