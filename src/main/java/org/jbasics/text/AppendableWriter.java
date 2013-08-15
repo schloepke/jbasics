@@ -22,22 +22,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.math.expression.simple;
+package org.jbasics.text;
+
+import java.io.Closeable;
+import java.io.Flushable;
+import java.io.IOException;
+import java.io.Writer;
 
 import org.jbasics.checker.ContractCheck;
-import org.jbasics.math.expression.simple.impl.SimpleFunctionCallExpression;
 
-public class FunctionNotCalledException extends RuntimeException {
-	private static final long serialVersionUID = 1L;
-	private final SimpleFunctionCallExpression functionCall;
+public class AppendableWriter extends Writer {
+	private final Appendable out;
 
-	public FunctionNotCalledException(final String message, final SimpleFunctionCallExpression functionCall) {
-		super(message);
-		this.functionCall = ContractCheck.mustNotBeNull(functionCall, "functionCall");
+	public AppendableWriter(final Appendable out) {
+		this.out = ContractCheck.mustNotBeNull(out, "out");
 	}
 
-	public SimpleFunctionCallExpression getFunctionCall() {
-		return this.functionCall;
+	@Override
+	public void close() throws IOException {
+		if (this.out instanceof Closeable) {
+			((Closeable) this.out).close();
+		}
+	}
+
+	@Override
+	public void flush() throws IOException {
+		if (this.out instanceof Flushable) {
+			((Flushable) this.out).flush();
+		}
+	}
+
+	@Override
+	public void write(final char[] cbuf, final int off, final int len) throws IOException {
+		for (int i = 0; i < len; i++) {
+			this.out.append(cbuf[off + i]);
+		}
 	}
 
 }
