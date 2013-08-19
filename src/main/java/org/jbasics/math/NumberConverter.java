@@ -33,17 +33,17 @@ public class NumberConverter {
 
 	public static BigDecimal toBigDecimal(final Number number) {
 		BigDecimal result = null;
-		if (number == null) {
-			result = null;
-		} else if (number instanceof BigDecimal) {
+		if (number instanceof BigDecimal) {
 			result = (BigDecimal) number;
+		} else if (number instanceof BigRational) {
+			result = ((BigRational) number).decimalValue();
 		} else if (number instanceof Double || number instanceof Float) {
 			result = BigDecimal.valueOf(number.doubleValue());
 		} else if (number instanceof BigInteger) {
 			result = new BigDecimal((BigInteger) number);
 		} else if (number instanceof Long || number instanceof Integer || number instanceof Byte) {
 			result = BigDecimal.valueOf(number.longValue());
-		} else {
+		} else if (number != null) {
 			result = BigDecimal.valueOf(number.doubleValue());
 		}
 		if (BigDecimal.ZERO.compareTo(result) == 0) {
@@ -62,6 +62,8 @@ public class NumberConverter {
 			return (BigInteger) number;
 		} else if (number instanceof BigDecimal) {
 			return ((BigDecimal) number).toBigInteger();
+		} else if (number instanceof BigRational) {
+			return ((BigRational) number).toBigInteger();
 		} else {
 			return BigInteger.valueOf(number.longValue());
 		}

@@ -47,6 +47,8 @@ public class SquareRootIrationalNumber extends BigDecimalIrationalNumber {
 	 */
 	public static final IrationalNumber<BigDecimal> SQUARE_ROOT_OF_2 = new SquareRootIrationalNumber(MathImplConstants.TWO);
 	public static final IrationalNumber<BigDecimal> SQUARE_ROOT_OF_3 = new SquareRootIrationalNumber(MathImplConstants.THREE);
+	public static final IrationalNumber<BigDecimal> SQUARE_ROOT_OF_PI2 = new BigDecimalIrationalNumber(new BigDecimalAlgorithmStrategyChain(
+			PiIrationalNumber.STRATEGY, SquareRootIrationalNumber.STRATEGY), MathImplConstants.TWO);
 
 	public static IrationalNumber<BigDecimal> valueOf(final BigDecimal x) {
 		if (ContractCheck.mustNotBeNull(x, "x").signum() < 0) {
