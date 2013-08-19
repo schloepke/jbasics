@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- *
+ * 
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -41,10 +41,13 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.configuration.properties.DateValueTypeFactory;
 import org.jbasics.configuration.properties.DurationValueTypeFactory;
+import org.jbasics.pattern.factory.ParameterFactory;
 import org.jbasics.pattern.modifer.Concatable;
 import org.jbasics.pattern.modifer.Extendable;
 import org.jbasics.text.StringUtilities;
+import org.jbasics.types.factories.ValueOfStringTypeFactory;
 import org.jbasics.types.sequences.Sequence;
+import org.jbasics.utilities.DataUtilities;
 import org.jbasics.xml.XMLDateConverter;
 
 public class CommandParameter implements Extendable<CommandParameter, String>, Concatable<CommandParameter> {
@@ -54,8 +57,11 @@ public class CommandParameter implements Extendable<CommandParameter, String>, C
 	public static CommandParameter parse(final String input) {
 		final String[] nameValuesPair = ContractCheck.mustNotBeNullOrTrimmedEmpty(input, "input").split("=", 2); //$NON-NLS-1$ //$NON-NLS-2$
 		final String name = nameValuesPair[0];
-		final String[] values = nameValuesPair[1].split(",|;"); //$NON-NLS-1$
-		return new CommandParameter(name, values);
+		return CommandParameter.parseContent(name, nameValuesPair[1]);
+	}
+
+	public static CommandParameter parseContent(final String name, final String unparsedValue) {
+		return new CommandParameter(ContractCheck.mustNotBeNullOrTrimmedEmpty(name, "name"), DataUtilities.coalesce(unparsedValue, "").split(",|;"));
 	}
 
 	public CommandParameter(final String parameterName, final String value) {
@@ -86,10 +92,12 @@ public class CommandParameter implements Extendable<CommandParameter, String>, C
 		return this.values;
 	}
 
+	@Override
 	public CommandParameter extend(final String... addValues) {
 		return new CommandParameter(this.parameterName, Sequence.cons(this.values, addValues));
 	}
 
+	@Override
 	public CommandParameter concat(final CommandParameter other) {
 		return new CommandParameter(this.parameterName, this.values.concat(other.values));
 	}
@@ -277,6 +285,27 @@ public class CommandParameter implements Extendable<CommandParameter, String>, C
 			}
 		}
 		return files;
+	}
+
+	public <T> T asFactoryCreatedValue(final ParameterFactory<T, String> factory) {
+		return ContractCheck.mustNotBeNull(factory, "factory").create(this.values.first());
+	}
+
+	public <T> List<T> asFactoryCreatedValues(final ParameterFactory<T, String> factory) {
+		ContractCheck.mustNotBeNull(factory, "factory");
+		final List<T> result = new ArrayList<T>(this.values.size());
+		for (final String value : this.values) {
+			result.add(factory.create(value));
+		}
+		return Collections.unmodifiableList(result);
+	}
+
+	public <T> T asStaticValueOfMethodValue(final Class<T> type) {
+		return asFactoryCreatedValue(ValueOfStringTypeFactory.getFactoryFor(type));
+	}
+
+	public <T> List<T> asStaticValueOfMethodValues(final Class<T> type) {
+		return asFactoryCreatedValues(ValueOfStringTypeFactory.getFactoryFor(type));
 	}
 
 	@Override
