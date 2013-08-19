@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- * 
+ *
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -102,11 +102,11 @@ public class CommandSpec implements ExecuteStrategy<Integer, CommandCall> {
 			CommandParameter value = cmdCall.getParameters().get(paramSpec.first());
 			if (value == null) {
 				String tempDefaultValue = null;
-				if (commandAnnotation.propertyName() != null) {
-					tempDefaultValue = SystemProperty.stringProperty(commandAnnotation.propertyName(), null).value();
+				if (commandAnnotation.propertyName() != null && commandAnnotation.propertyName().trim().length() > 0) {
+					tempDefaultValue = SystemProperty.stringProperty(commandAnnotation.propertyName().trim(), null).value();
 				}
-				if (tempDefaultValue == null && commandAnnotation.defaultValue() != null) {
-					value = CommandParameter.parseContent(commandAnnotation.value(), commandAnnotation.defaultValue());
+				if (tempDefaultValue == null && commandAnnotation.defaultValue() != null && commandAnnotation.defaultValue().trim().length() > 0) {
+					value = CommandParameter.parseContent(commandAnnotation.value(), commandAnnotation.defaultValue().trim());
 				}
 			}
 			if (value != null) {
