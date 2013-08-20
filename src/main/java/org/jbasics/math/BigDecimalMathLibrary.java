@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- *
+ * 
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,11 +35,12 @@ import org.jbasics.math.impl.ArithmeticGeometricMeanIrationalNumber;
 import org.jbasics.math.impl.CosineIrationalNumber;
 import org.jbasics.math.impl.ExponentialIrationalNumber;
 import org.jbasics.math.impl.GammaFunctionIrationalNumber;
+import org.jbasics.math.impl.GammaIncompleteIrationalNumber;
+import org.jbasics.math.impl.GammaLnFunctionIrationalNumber;
 import org.jbasics.math.impl.GoldenRatioIrationalNumber;
 import org.jbasics.math.impl.HyperbolicCosineIrationalNumber;
 import org.jbasics.math.impl.HyperbolicSineIrationalNumber;
 import org.jbasics.math.impl.HyperbolicTangentIrationalNumber;
-import org.jbasics.math.impl.GammaLnFunctionIrationalNumber;
 import org.jbasics.math.impl.LogIrationalNumber;
 import org.jbasics.math.impl.LogNaturalFunctionIrationalNumber;
 import org.jbasics.math.impl.MathImplConstants;
@@ -52,7 +53,7 @@ import org.jbasics.math.impl.TangentIrationalNumber;
 
 /**
  * Static class holding arbitrary correct decimal functions based on BigDecimal and BigInteger.
- *
+ * 
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -99,37 +100,37 @@ public final class BigDecimalMathLibrary {
 	public final static BigDecimal CONSTANT_TEN = BigDecimal.TEN;
 	/**
 	 * The constant E as {@link IrationalNumber}.
-	 *
+	 * 
 	 * @since 1.0
 	 */
 	public final static IrationalNumber<BigDecimal> E = ExponentialIrationalNumber.E;
 	/**
 	 * The constant PI as {@link IrationalNumber}.
-	 *
+	 * 
 	 * @since 1.0
 	 */
 	public final static IrationalNumber<BigDecimal> PI = PiIrationalNumber.PI;
 	/**
 	 * The constant 2*PI as {@link IrationalNumber}.
-	 *
+	 * 
 	 * @since 1.0
 	 */
 	public final static IrationalNumber<BigDecimal> PI2 = PiIrationalNumber.PI2;
 	/**
 	 * The constant PHI (Golden Ratio) as {@link IrationalNumber}.
-	 *
+	 * 
 	 * @since 1.0
 	 */
 	public final static IrationalNumber<BigDecimal> PHI = GoldenRatioIrationalNumber.PHI;
 	/**
 	 * The constant sqrt(2) as {@link IrationalNumber}.
-	 *
+	 * 
 	 * @since 1.0
 	 */
 	public final static IrationalNumber<BigDecimal> SQRT2 = SquareRootIrationalNumber.SQUARE_ROOT_OF_2;
 	/**
 	 * The constant sqrt(3) as {@link IrationalNumber}.
-	 *
+	 * 
 	 * @since 1.0
 	 */
 	public final static IrationalNumber<BigDecimal> SQRT3 = SquareRootIrationalNumber.SQUARE_ROOT_OF_3;
@@ -146,11 +147,10 @@ public final class BigDecimalMathLibrary {
 	 */
 	public final static IrationalNumber<BigDecimal> SQRT_RECIPROCAL2 = SquareRootReciprocalIrationalNumber.SQUARE_ROOT_RECIPROCAL_OF_2;
 
-
 	/**
 	 * Returns the {@link IrationalNumber} of the calculation e^x. In order to get the result use
 	 * {@link IrationalNumber#valueToPrecision(MathContext)}.
-	 *
+	 * 
 	 * @param x
 	 *            The value for x in e^x.
 	 * @return The result of e^x as {@link IrationalNumber}.
@@ -162,7 +162,7 @@ public final class BigDecimalMathLibrary {
 
 	/**
 	 * Returns x*pi as {@link IrationalNumber}. If x is one or two the constant {@link #PI} or {@link #PI2} is returned.
-	 *
+	 * 
 	 * @param x
 	 *            The factor for PI.
 	 * @return The irational number of x*PI.
@@ -174,7 +174,7 @@ public final class BigDecimalMathLibrary {
 
 	/**
 	 * Returns x*PHI (the golden ratio) as {@link IrationalNumber}. If x is one the constant {@link #PHI} returned.
-	 *
+	 * 
 	 * @param x
 	 *            The factor for PI.
 	 * @return The irational number of x*PHI.
@@ -186,7 +186,7 @@ public final class BigDecimalMathLibrary {
 
 	/**
 	 * Returns the {@link IrationalNumber} which is the square root of x.
-	 *
+	 * 
 	 * @param x
 	 *            The value of which to calculate the square root.
 	 * @return The square root of the supplied number.
@@ -198,7 +198,7 @@ public final class BigDecimalMathLibrary {
 
 	/**
 	 * Calculates the arithmetic mean of the two supplied numbers.
-	 *
+	 * 
 	 * @param a0
 	 *            The first value.
 	 * @param a1
@@ -212,7 +212,7 @@ public final class BigDecimalMathLibrary {
 
 	/**
 	 * Calculates the geometric mean of the two supplied numbers.
-	 *
+	 * 
 	 * @param a0
 	 *            The first value.
 	 * @param a1
@@ -220,14 +220,13 @@ public final class BigDecimalMathLibrary {
 	 * @return The geometric mean of the supplied numbers.
 	 * @since 1.0
 	 */
-	public static IrationalNumber<BigDecimal> geometricMean(final BigDecimal a0, final BigDecimal a1,
-			final MathContext mc) {
+	public static IrationalNumber<BigDecimal> geometricMean(final BigDecimal a0, final BigDecimal a1, final MathContext mc) {
 		return BigDecimalMathLibrary.sqrt(ContractCheck.mustNotBeNull(a0, "a0").multiply(ContractCheck.mustNotBeNull(a1, "a1")));
 	}
 
 	/**
 	 * Calculates the arithmetic geometric mean of the supplied numbers.
-	 *
+	 * 
 	 * @param a
 	 *            The first number.
 	 * @param b
@@ -241,7 +240,7 @@ public final class BigDecimalMathLibrary {
 
 	/**
 	 * Returns the natural logarithm of x (log<sub>e</sub>x)
-	 *
+	 * 
 	 * @param x
 	 *            The value to calculate.
 	 * @return The natural logarithm log<sub>e</sub>x
@@ -253,7 +252,7 @@ public final class BigDecimalMathLibrary {
 
 	/**
 	 * Returns the logarithm of x to base 10 (log<sub>10</sub>x)
-	 *
+	 * 
 	 * @param x
 	 *            The value to calculate.
 	 * @return The decimal logarithm log<sub>10</sub>x
@@ -265,7 +264,7 @@ public final class BigDecimalMathLibrary {
 
 	/**
 	 * Returns the logarithm of x to base 2 (log<sub>2</sub>x)
-	 *
+	 * 
 	 * @param x
 	 *            The value to calculate.
 	 * @return The dual or binary logarithm log<sub>2</sub>x
@@ -277,7 +276,7 @@ public final class BigDecimalMathLibrary {
 
 	/**
 	 * Returns the logarithm of x to base b (log<sub>b</sub>x)
-	 *
+	 * 
 	 * @param x
 	 *            The value to calculate.
 	 * @param b
@@ -292,7 +291,7 @@ public final class BigDecimalMathLibrary {
 	/**
 	 * Calculates the power of x on a. The calculation is processed by using the natural logarithm
 	 * and the e function (f(a,x) = a^x = x * e^ln(a)).
-	 *
+	 * 
 	 * @param a
 	 *            The base
 	 * @param x
@@ -306,7 +305,7 @@ public final class BigDecimalMathLibrary {
 
 	/**
 	 * Returns the sine of x as {@link IrationalNumber}.
-	 *
+	 * 
 	 * @param x
 	 *            The value to calculate the sine for
 	 * @return The sine of x
@@ -318,7 +317,7 @@ public final class BigDecimalMathLibrary {
 
 	/**
 	 * Returns the cosine of x as {@link IrationalNumber}.
-	 *
+	 * 
 	 * @param x
 	 *            The value to calculate the cosine for
 	 * @return The cosine of x
@@ -330,7 +329,7 @@ public final class BigDecimalMathLibrary {
 
 	/**
 	 * Returns the tangent of x as {@link IrationalNumber}.
-	 *
+	 * 
 	 * @param x
 	 *            The value to calculate the tangent for
 	 * @return The tangent of x
@@ -342,7 +341,7 @@ public final class BigDecimalMathLibrary {
 
 	/**
 	 * Returns the arc sine of x as {@link IrationalNumber}.
-	 *
+	 * 
 	 * @param x
 	 *            The value to calculate the arc sine for
 	 * @return The arc sine of x
@@ -354,7 +353,7 @@ public final class BigDecimalMathLibrary {
 
 	/**
 	 * Returns the arc cosine of x as {@link IrationalNumber}.
-	 *
+	 * 
 	 * @param x
 	 *            The value to calculate the arc cosine for
 	 * @return The arc cosine of x
@@ -366,7 +365,7 @@ public final class BigDecimalMathLibrary {
 
 	/**
 	 * Returns the arc tangent of x as {@link IrationalNumber}.
-	 *
+	 * 
 	 * @param x
 	 *            The value to calculate the arc tangent for
 	 * @return The arc tangent of x
@@ -378,7 +377,7 @@ public final class BigDecimalMathLibrary {
 
 	/**
 	 * Returns the hyperbolic sine of x as {@link IrationalNumber}.
-	 *
+	 * 
 	 * @param x
 	 *            The value to calculate the hyperbolic sine for
 	 * @return The hyperbolic sine of x
@@ -390,7 +389,7 @@ public final class BigDecimalMathLibrary {
 
 	/**
 	 * Returns the hyperbolic cosine of x as {@link IrationalNumber}.
-	 *
+	 * 
 	 * @param x
 	 *            The value to calculate the hyperbolic cosine for
 	 * @return The hyperbolic cosine of x
@@ -402,7 +401,7 @@ public final class BigDecimalMathLibrary {
 
 	/**
 	 * Returns the hyperbolic tangent of x as {@link IrationalNumber}.
-	 *
+	 * 
 	 * @param x
 	 *            The value to calculate the hyperbolic tangent for
 	 * @return The hyperbolic tangent of x
@@ -414,7 +413,7 @@ public final class BigDecimalMathLibrary {
 
 	/**
 	 * Returns the gamma function of x
-	 *
+	 * 
 	 * @param x
 	 *            The value to calculate gamma(x)
 	 * @return The gamma value of x
@@ -424,8 +423,19 @@ public final class BigDecimalMathLibrary {
 	}
 
 	/**
+	 * Returns the incomplete gamma function.
+	 * 
+	 * @param x
+	 * @param alpha
+	 * @return
+	 */
+	public static IrationalNumber<BigDecimal> gammaIncomplete(final BigDecimal x, final BigDecimal alpha) {
+		return GammaIncompleteIrationalNumber.valueOf(x, alpha);
+	}
+
+	/**
 	 * Returns the ln(gamma) function value of x.
-	 *
+	 * 
 	 * @param x
 	 *            The value to calculate ln(gamma(x))
 	 * @return The ln(gamma(x)) value of x
