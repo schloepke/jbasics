@@ -43,11 +43,10 @@ public class RegulaFalsi {
 		BigDecimal z, fz;
 		int i = 0;
 		do {
-			i++;
-			final BigDecimal temp = f2.subtract(f1);
-			if (temp.signum() == 0 || i == 16) {
-				System.out.println("We are out");
+			if (i++ > 1000) {
+				throw new RuntimeException("Iteration to look takes to long");
 			}
+			final BigDecimal temp = f2.subtract(f1);
 			z = x1.subtract(x2.subtract(x1).divide(temp, this.mc).multiply(f1, this.mc)).max(BigDecimal.ZERO);
 			fz = NumberConverter.toBigDecimal(this.zeroFunction.calculate(this.mc, z)).subtract(fx, this.mc);
 			if (f1.signum() == fz.signum()) {
