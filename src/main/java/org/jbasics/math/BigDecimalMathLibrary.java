@@ -35,7 +35,6 @@ import org.jbasics.math.impl.ArithmeticGeometricMeanIrationalNumber;
 import org.jbasics.math.impl.CosineIrationalNumber;
 import org.jbasics.math.impl.ExponentialIrationalNumber;
 import org.jbasics.math.impl.GammaFunctionIrationalNumber;
-import org.jbasics.math.impl.GammaIncompleteIrationalNumber;
 import org.jbasics.math.impl.GammaLnFunctionIrationalNumber;
 import org.jbasics.math.impl.GoldenRatioIrationalNumber;
 import org.jbasics.math.impl.HyperbolicCosineIrationalNumber;
@@ -422,16 +421,16 @@ public final class BigDecimalMathLibrary {
 		return GammaFunctionIrationalNumber.valueOf(x);
 	}
 
-	/**
-	 * Returns the incomplete gamma function.
-	 * 
-	 * @param x
-	 * @param alpha
-	 * @return
-	 */
-	public static IrationalNumber<BigDecimal> gammaIncomplete(final BigDecimal x, final BigDecimal alpha) {
-		return GammaIncompleteIrationalNumber.valueOf(x, alpha);
-	}
+	//	/**
+	//	 * Returns the incomplete gamma function.
+	//	 * 
+	//	 * @param x
+	//	 * @param alpha
+	//	 * @return
+	//	 */
+	//	public static IrationalNumber<BigDecimal> gammaIncomplete(final BigDecimal x, final BigDecimal alpha) {
+	//		return GammaIncompleteIrationalNumber.valueOf(x, alpha);
+	//	}
 
 	/**
 	 * Returns the ln(gamma) function value of x.
@@ -440,7 +439,7 @@ public final class BigDecimalMathLibrary {
 	 *            The value to calculate ln(gamma(x))
 	 * @return The ln(gamma(x)) value of x
 	 */
-	public static IrationalNumber<BigDecimal> gammaLn(final BigDecimal x) {
+	public static IrationalNumber<BigDecimal> lnGamma(final BigDecimal x) {
 		return GammaLnFunctionIrationalNumber.valueOf(x);
 	}
 
