@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- *
+ * 
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,7 +26,6 @@ package org.jbasics.math.strategies;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.math.RoundingMode;
 
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.AlgorithmStrategy;
@@ -40,22 +39,20 @@ public class GammaLanczosAlgorithmStrategy implements AlgorithmStrategy<BigDecim
 	}
 
 	@Override
-	public BigDecimal calculate(final MathContext mcResult, final BigDecimal guess, final BigDecimal... xn) {
-		final MathContext mc = new MathContext(mcResult.getPrecision() + 3, RoundingMode.HALF_EVEN);
+	public BigDecimal calculate(final MathContext mc, final BigDecimal guess, final BigDecimal... xn) {
 		BigDecimal x = xn[0];
 		if (BigDecimalMathLibrary.CONSTANT_HALF.compareTo(x) >= 0) {
-			return BigDecimalMathLibrary.PI.valueToPrecision(mc).divide(
-					BigDecimalMathLibrary.sin(BigDecimalMathLibrary.piMultiple(x).valueToPrecision(mc)).valueToPrecision(mc), mc)
+			return BigDecimalMathLibrary.PI.valueToPrecision(mc)
+					.divide(BigDecimalMathLibrary.sin(BigDecimalMathLibrary.piMultiple(x).valueToPrecision(mc)).valueToPrecision(mc), mc)
 					.multiply(calculate(mc, null, BigDecimal.ONE.subtract(x)), mc);
 		} else {
 			x = x.subtract(BigDecimal.ONE);
 			final BigDecimal tmp = this.coefficients.calculate(mc, x);
 			x = x.add(BigDecimalMathLibrary.CONSTANT_HALF);
 			final BigDecimal t = x.add(this.coefficients.getG());
-			final BigDecimal expTxA = BigDecimalMathLibrary.exp(t.negate()).valueToPrecision(mc)
-					.multiply(tmp);
+			final BigDecimal expTxA = BigDecimalMathLibrary.exp(t.negate()).valueToPrecision(mc).multiply(tmp);
 			return BigDecimalMathLibrary.SQRT_PI2.valueToPrecision(mc).multiply(
-					BigDecimalMathLibrary.pow(t, x).valueToPrecision(mc).multiply(expTxA), mcResult);
+					BigDecimalMathLibrary.pow(t, x).valueToPrecision(mc).multiply(expTxA), mc);
 		}
 	}
 
