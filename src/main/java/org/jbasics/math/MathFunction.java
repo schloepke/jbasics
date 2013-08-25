@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- *
+ * 
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,6 +24,7 @@
  */
 package org.jbasics.math;
 
+import java.math.BigDecimal;
 import java.math.MathContext;
 
 /**
@@ -32,7 +33,7 @@ import java.math.MathContext;
  * @author Stephan Schloepke
  * @param <T> The type of the {@link Number} to use
  */
-public interface MathFunction {
+public interface MathFunction<T extends Number> {
 
 	/**
 	 * Calculate f(x) for the given x to the {@link Number} type. The {@link MathContext} used is
@@ -42,16 +43,16 @@ public interface MathFunction {
 	 * @param x The x input value
 	 * @return The value of f(x)
 	 */
-	Number calculate(Number x);
+	T calculate(Number x);
 
 	/**
 	 * Calculate f(x) for the given x to the {@link Number} type.
 	 * 
 	 * @param x The x input value
-	 * @param mc The math context to use internally (Null must be using {@link MathContext#UNLIMITED}).
+	 * @param mc The math context to use internally (Null should be using {@link MathContext#DECIMAL64} as default).
 	 * @return The value of f(x)
 	 */
-	Number calculate(MathContext mc, Number x);
+	T calculate(MathContext mc, Number x);
 
 	/**
 	 * Calculate f(x) for the given x in double type.
@@ -61,4 +62,20 @@ public interface MathFunction {
 	 */
 	double calculate(double x);
 
+	/**
+	 * An abstract base class to use for defining functions with {@link BigDecimal} math.
+	 */
+	public static abstract class AbstractMathFunction<T extends Number> implements MathFunction<T> {
+
+		@Override
+		public double calculate(final double x) {
+			return calculate(null, Double.valueOf(x)).doubleValue();
+		}
+
+		@Override
+		public T calculate(final Number x) {
+			return calculate(null, x);
+		}
+
+	}
 }
