@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.math.approximation;
+package org.jbasics.math.distribution;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -31,9 +31,8 @@ import org.junit.Test;
 
 import org.jbasics.math.MathFunction;
 import org.jbasics.math.NumberConverter;
-import org.jbasics.math.distribution.GammaDistribution;
 
-public class RegularFalsiTest {
+public class GammaDistributionTest {
 
 	private static final MathContext MC = MathContext.DECIMAL128;
 
@@ -43,25 +42,25 @@ public class RegularFalsiTest {
 		//		final GammaDistribution temp = new GammaDistribution(new BigDecimal("0.001656791287361231"), new BigDecimal("165.1983961663414"));
 		final MathFunction<BigDecimal> f = temp.cumulativeDensityFunction();
 		final MathFunction<BigDecimal> rf = temp.inverseCumulativeDensityFunction();
-		System.out.println("36.1125 => " + f.calculate(RegularFalsiTest.MC, new BigDecimal("36.1125")));
+		System.out.println("36.1125 => " + f.calculate(GammaDistributionTest.MC, new BigDecimal("36.1125")));
 		final BigDecimal confidenceLevel = new BigDecimal("0.9990");
 		System.out.println("36.1125 - 0.9990 => "
-				+ NumberConverter.toBigDecimal(f.calculate(RegularFalsiTest.MC, new BigDecimal("36.1125"))).subtract(confidenceLevel));
+				+ NumberConverter.toBigDecimal(f.calculate(GammaDistributionTest.MC, new BigDecimal("36.1125"))).subtract(confidenceLevel));
 
 		System.out.println("----");
-		System.out.println("99.90% => " + rf.calculate(RegularFalsiTest.MC, confidenceLevel));
-		System.out.println("99.91% => " + rf.calculate(RegularFalsiTest.MC, new BigDecimal("0.9991")));
-		System.out.println("99.92% => " + rf.calculate(RegularFalsiTest.MC, new BigDecimal("0.9992")));
-		System.out.println("99.93% => " + rf.calculate(RegularFalsiTest.MC, new BigDecimal("0.9993")));
-		System.out.println("99.94% => " + rf.calculate(RegularFalsiTest.MC, new BigDecimal("0.9994")));
-		System.out.println("99.95% => " + rf.calculate(RegularFalsiTest.MC, new BigDecimal("0.9995")));
-		System.out.println("99.96% => " + rf.calculate(RegularFalsiTest.MC, new BigDecimal("0.9996")));
-		System.out.println("99.97% => " + rf.calculate(RegularFalsiTest.MC, new BigDecimal("0.9997")));
-		System.out.println("99.98% => " + rf.calculate(RegularFalsiTest.MC, new BigDecimal("0.9998")));
-		System.out.println("99.99% => " + rf.calculate(RegularFalsiTest.MC, new BigDecimal("0.9999")));
+		System.out.println("99.90% => " + rf.calculate(GammaDistributionTest.MC, confidenceLevel));
+		System.out.println("99.91% => " + rf.calculate(GammaDistributionTest.MC, new BigDecimal("0.9991")));
+		System.out.println("99.92% => " + rf.calculate(GammaDistributionTest.MC, new BigDecimal("0.9992")));
+		System.out.println("99.93% => " + rf.calculate(GammaDistributionTest.MC, new BigDecimal("0.9993")));
+		System.out.println("99.94% => " + rf.calculate(GammaDistributionTest.MC, new BigDecimal("0.9994")));
+		System.out.println("99.95% => " + rf.calculate(GammaDistributionTest.MC, new BigDecimal("0.9995")));
+		System.out.println("99.96% => " + rf.calculate(GammaDistributionTest.MC, new BigDecimal("0.9996")));
+		System.out.println("99.97% => " + rf.calculate(GammaDistributionTest.MC, new BigDecimal("0.9997")));
+		System.out.println("99.98% => " + rf.calculate(GammaDistributionTest.MC, new BigDecimal("0.9998")));
+		System.out.println("99.99% => " + rf.calculate(GammaDistributionTest.MC, new BigDecimal("0.9999")));
 		System.out.println("----");
-		System.out.println("70.00% => " + rf.calculate(RegularFalsiTest.MC, new BigDecimal("0.7")));
-		System.out.println("50.00% => " + rf.calculate(RegularFalsiTest.MC, new BigDecimal("0.5")));
+		System.out.println("70.00% => " + rf.calculate(GammaDistributionTest.MC, new BigDecimal("0.7")));
+		System.out.println("50.00% => " + rf.calculate(GammaDistributionTest.MC, new BigDecimal("0.5")));
 		System.out.println("----");
 
 		//		final BigDecimal x = new BigDecimal("41.91066527");

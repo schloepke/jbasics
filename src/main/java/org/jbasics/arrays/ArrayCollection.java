@@ -122,6 +122,11 @@ public class ArrayCollection<T> implements List<T> {
 		return this.size == 0;
 	}
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.util.List#get(i)
+     */
 	@Override
 	public T get(final int index) {
 		if (index >= this.size) {
