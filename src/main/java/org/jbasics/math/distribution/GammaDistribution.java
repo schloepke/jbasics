@@ -34,9 +34,7 @@ import org.jbasics.math.BoundedMathFunction;
 import org.jbasics.math.MathFunction;
 import org.jbasics.math.NumberConverter;
 import org.jbasics.math.approximation.NewtonRhapsonApproximation;
-import org.jbasics.math.approximation.NoConvergenceException;
 import org.jbasics.math.approximation.QuickFindZeroRange;
-import org.jbasics.math.approximation.RegulaFalsiApproximation;
 import org.jbasics.math.strategies.GammaIncompleteAlgorithmStrategy;
 import org.jbasics.types.tuples.Range;
 
@@ -145,19 +143,19 @@ public class GammaDistribution implements Distribution<BigDecimal> {
 				@Override
 				public BigDecimal calculate(final MathContext mc, final Number xNum) {
 					final BigDecimal x = NumberConverter.toBigDecimal(xNum);
-					final Range<BigDecimal> startRange = QuickFindZeroRange.findRange(mc, cumulativeDensityFunction(), x, 100, null);
-					try {
-						return new NewtonRhapsonApproximation(cumulativeDensityFunction()).findZero(mc, x,
-								startRange.first().add(startRange.second().subtract(startRange.first())));
-					} catch (final NoConvergenceException e) {
-						try {
-							return new RegulaFalsiApproximation(cumulativeDensityFunction(), true).findZero(mc, x, startRange.first(),
-									startRange.second());
-						} catch (final NoConvergenceException e2) {
-							return new RegulaFalsiApproximation(cumulativeDensityFunction(), false).findZero(mc, x, startRange.first(),
-									startRange.second());
-						}
-					}
+					final Range<BigDecimal> startRange = QuickFindZeroRange.findRange(mc, cumulativeDensityFunction(), x, 500, null);
+					//					try {
+					return new NewtonRhapsonApproximation(cumulativeDensityFunction()).findZero(mc, x,
+							startRange.first().add(startRange.second().subtract(startRange.first())));
+					//					} catch (final NoConvergenceException e) {
+					//						try {
+					//							return new RegulaFalsiApproximation(cumulativeDensityFunction(), true).findZero(mc, x, startRange.first(),
+					//									startRange.second());
+					//						} catch (final NoConvergenceException e2) {
+					//							return new RegulaFalsiApproximation(cumulativeDensityFunction(), false).findZero(mc, x, startRange.first(),
+					//									startRange.second());
+					//						}
+					//					}
 				}
 
 				@Override

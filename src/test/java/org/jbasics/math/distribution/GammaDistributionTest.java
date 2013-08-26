@@ -39,6 +39,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import org.jbasics.math.NumberConverter;
+import org.jbasics.math.approximation.NoConvergenceException;
 
 @RunWith(Parameterized.class)
 public class GammaDistributionTest {
@@ -46,24 +47,17 @@ public class GammaDistributionTest {
 	@Parameters
 	public static Collection<Object[]> testCases() {
 		return Arrays.asList( // Test case following
-				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.1000"),
-						new BigDecimal("3.211165135261786513861400444805458E-34") }, // Test case
-				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.2000"),
-						new BigDecimal("9.264118499337475222043679756342734E-34") }, // Test case
-				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.3000"),
-						new BigDecimal("4.261900235193580123150226221147715E-34") }, // Test case
-				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.4000"),
-						new BigDecimal("7.656406266027028140164903711660076E-34") }, // Test case
-				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.5000"),
-						new BigDecimal("7.532511121485005061495664180951170E-34") }, // Test case
-				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.6000"),
-						new BigDecimal("7.662025203423854589470747527900613E-34") }, // Test case
-				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.7000"),
-						new BigDecimal("9.207743939636807484369939539580259E-34") }, // Test case
+				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.1000"), new BigDecimal("0") }, // Test case
+				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.2000"), new BigDecimal("0") }, // Test case
+				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.3000"), new BigDecimal("0") }, // Test case
+				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.4000"), new BigDecimal("0") }, // Test case
+				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.5000"), new BigDecimal("0") }, // Test case
+				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.6000"), new BigDecimal("0") }, // Test case
+				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.7000"), new BigDecimal("0") }, // Test case
 				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.8000"),
-						new BigDecimal("9.208174396752368285941027393404152E-34") }, // Test case
+						new BigDecimal("6.943877352893170773858300969198355E-114") }, // Test case
 				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.9000"),
-						new BigDecimal("0.0008874607917090580750842921169139590") }, // Test case
+						new BigDecimal("4.167590719449254154939337111283806E-53") }, // Test case
 				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.9990"),
 						new BigDecimal("36.11245895859608440080420101629774") }, // expected 36.1125 if more precise ?
 				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.9991"),
@@ -107,10 +101,15 @@ public class GammaDistributionTest {
 	public void test() {
 		final MathContext mc = MathContext.DECIMAL128;
 		final GammaDistribution temp = new GammaDistribution(this.alpha, this.beta);
-		final BigDecimal calculated = temp.quantile(mc, this.x);
-		System.out.println(this.percentageFormatter.format(this.x) + " => " + calculated + " (" + this.expected + "), cdf("
-				+ calculated.setScale(10, RoundingMode.HALF_UP) + ") = " + temp.cdf(mc, calculated).setScale(4, RoundingMode.HALF_UP));
-		Assert.assertEquals(this.expected, calculated);
+		try {
+			final BigDecimal calculated = temp.quantile(mc, this.x);
+			System.out.println(this.percentageFormatter.format(this.x) + " => " + calculated + " (" + this.expected + "), cdf("
+					+ calculated.setScale(10, RoundingMode.HALF_UP) + ") = " + temp.cdf(mc, calculated).setScale(4, RoundingMode.HALF_UP));
+			Assert.assertEquals(this.expected, calculated);
+		} catch (final NoConvergenceException e) {
+			System.out.println(this.percentageFormatter.format(this.x) + " => no convergence (" + e.getMessage() + ")");
+			Assert.fail("No convergence");
+		}
 	}
 
 }
