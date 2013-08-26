@@ -138,22 +138,23 @@ public class GammaDistribution implements Distribution<BigDecimal> {
 		return this.cumulativeDensityFunction;
 	}
 
+	@Override
 	public MathFunction<BigDecimal> inverseCumulativeDensityFunction() {
 		if (this.inverseCumulativeDensityFunction == null) {
 			this.inverseCumulativeDensityFunction = new BoundedMathFunction.AbstractBoundedMathFunction<BigDecimal>() {
 				@Override
 				public BigDecimal calculate(final MathContext mc, final Number xNum) {
 					final BigDecimal x = NumberConverter.toBigDecimal(xNum);
-					final Range<BigDecimal> startRange = QuickFindZeroRange.findRange(mc, cumulativeDensityFunction(), x);
+					final Range<BigDecimal> startRange = QuickFindZeroRange.findRange(mc, cumulativeDensityFunction(), x, 100, null);
 					try {
 						return new NewtonRhapsonApproximation(cumulativeDensityFunction()).findZero(mc, x,
 								startRange.first().add(startRange.second().subtract(startRange.first())));
 					} catch (final NoConvergenceException e) {
 						try {
-							return new RegulaFalsiApproximation(cumulativeDensityFunction(), false).findZero(mc, x, startRange.first(),
+							return new RegulaFalsiApproximation(cumulativeDensityFunction(), true).findZero(mc, x, startRange.first(),
 									startRange.second());
 						} catch (final NoConvergenceException e2) {
-							return new RegulaFalsiApproximation(cumulativeDensityFunction(), true).findZero(mc, x, startRange.first(),
+							return new RegulaFalsiApproximation(cumulativeDensityFunction(), false).findZero(mc, x, startRange.first(),
 									startRange.second());
 						}
 					}

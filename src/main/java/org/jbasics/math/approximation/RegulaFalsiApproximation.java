@@ -29,8 +29,8 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 
 import org.jbasics.checker.ContractCheck;
-import org.jbasics.math.BoundedMathFunction;
 import org.jbasics.math.MathFunction;
+import org.jbasics.math.MathFunctionHelper;
 import org.jbasics.math.NumberConverter;
 
 public class RegulaFalsiApproximation {
@@ -59,7 +59,8 @@ public class RegulaFalsiApproximation {
 		BigDecimal f2 = NumberConverter.toBigDecimal(this.zeroFunction.calculate(mc, x2)).subtract(fx, mc);
 		BigDecimal z, fz;
 		for (int i = 1000; i > 0; i--) {
-			z = fitToBoundaries(this.zeroFunction, x1.subtract(x2.subtract(x1, mc).divide(f2.subtract(f1, mc), mc).multiply(f1, mc), mc));
+			z = MathFunctionHelper.fitToBoundaries(this.zeroFunction,
+					x1.subtract(x2.subtract(x1, mc).divide(f2.subtract(f1, mc), mc).multiply(f1, mc), mc));
 			fz = NumberConverter.toBigDecimal(this.zeroFunction.calculate(mc, z)).subtract(fx, mc);
 			if (f1.signum() == fz.signum()) {
 				x1 = z;
@@ -87,7 +88,7 @@ public class RegulaFalsiApproximation {
 			if (temp.signum() == 0) {
 				throw new NoConvergenceException("Near zero derivation at x=" + x1);
 			}
-			z = fitToBoundaries(this.zeroFunction, x1.subtract(x2.subtract(x1).divide(temp, mc).multiply(f1, mc)));
+			z = MathFunctionHelper.fitToBoundaries(this.zeroFunction, x1.subtract(x2.subtract(x1).divide(temp, mc).multiply(f1, mc)));
 			fz = NumberConverter.toBigDecimal(this.zeroFunction.calculate(mc, z)).subtract(fx, mc);
 			if (f1.signum() == fz.signum()) {
 				f1 = f1.multiply(f2.divide(f2.add(fz), mc));
@@ -106,17 +107,4 @@ public class RegulaFalsiApproximation {
 		throw new NoConvergenceException("Approximation search does not converge within the maximum iterations");
 	}
 
-	private BigDecimal fitToBoundaries(final MathFunction<?> func, BigDecimal xn1) {
-		if (func instanceof BoundedMathFunction) {
-			BigDecimal t = NumberConverter.toBigDecimal(((BoundedMathFunction<?>) func).lowerBoundery());
-			if (t != null) {
-				xn1 = xn1.max(t);
-			}
-			t = NumberConverter.toBigDecimal(((BoundedMathFunction<?>) func).upperBoundery());
-			if (t != null) {
-				xn1 = xn1.min(t);
-			}
-		}
-		return xn1;
-	}
 }

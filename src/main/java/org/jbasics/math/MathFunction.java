@@ -34,6 +34,7 @@ import java.math.MathContext;
  * @param <T> The type of the {@link Number} to use
  */
 public interface MathFunction<T extends Number> {
+	public static final MathContext DEFAULT_MATH_CONTEXT = MathContext.DECIMAL64;
 
 	/**
 	 * Calculate f(x) for the given x to the {@link Number} type. The {@link MathContext} used is
@@ -49,7 +50,8 @@ public interface MathFunction<T extends Number> {
 	 * Calculate f(x) for the given x to the {@link Number} type.
 	 * 
 	 * @param x The x input value
-	 * @param mc The math context to use internally (Null should be using {@link MathContext#DECIMAL64} as default).
+	 * @param mc The math context to use internally (Null should be using {@link MathContext#DECIMAL64} as default or a
+	 *            better one).
 	 * @return The value of f(x)
 	 */
 	T calculate(MathContext mc, Number x);

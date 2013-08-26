@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- *
+ * 
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,8 +28,8 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 
 import org.jbasics.math.BigDecimalMathLibrary;
-import org.jbasics.math.BoundedMathFunction;
 import org.jbasics.math.MathFunction;
+import org.jbasics.math.MathFunctionHelper;
 import org.jbasics.math.NumberConverter;
 import org.jbasics.types.tuples.Range;
 import org.jbasics.utilities.DataUtilities;
@@ -48,8 +48,8 @@ public class QuickFindZeroRange {
 		BigDecimal f1, f2;
 		int i = tries;
 		do {
-			x1 = QuickFindZeroRange.fitToBoundaries(function, x1);
-			x2 = QuickFindZeroRange.fitToBoundaries(function, x2);
+			x1 = MathFunctionHelper.fitToBoundaries(function, x1);
+			x2 = MathFunctionHelper.fitToBoundaries(function, x2);
 			f1 = NumberConverter.toBigDecimal(function.calculate(mc, x1)).subtract(fx);
 			f2 = NumberConverter.toBigDecimal(function.calculate(mc, x2)).subtract(fx);
 			if (f1.signum() == 0) {
@@ -65,7 +65,7 @@ public class QuickFindZeroRange {
 			m = m.multiply(m, mc);
 		} while (i-- > 0);
 		for (i = tries; i > 0; i--) {
-			final BigDecimal x3 = QuickFindZeroRange
+			final BigDecimal x3 = MathFunctionHelper
 					.fitToBoundaries(function, x1.add(x2.subtract(x1, mc).divide(BigDecimalMathLibrary.CONSTANT_TWO)));
 			final BigDecimal f3 = NumberConverter.toBigDecimal(function.calculate(mc, x3)).subtract(fx);
 			if (f3.signum() == 0) {
@@ -79,20 +79,6 @@ public class QuickFindZeroRange {
 			}
 		}
 		return new Range<BigDecimal>(x1, true, x2, true);
-	}
-
-	private static BigDecimal fitToBoundaries(final MathFunction<?> func, BigDecimal xn1) {
-		if (func instanceof BoundedMathFunction) {
-			BigDecimal t = NumberConverter.toBigDecimal(((BoundedMathFunction<?>) func).lowerBoundery());
-			if (t != null) {
-				xn1 = xn1.max(t);
-			}
-			t = NumberConverter.toBigDecimal(((BoundedMathFunction<?>) func).upperBoundery());
-			if (t != null) {
-				xn1 = xn1.min(t);
-			}
-		}
-		return xn1;
 	}
 
 }
