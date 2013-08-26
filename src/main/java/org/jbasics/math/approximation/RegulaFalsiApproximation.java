@@ -32,6 +32,7 @@ import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.MathFunction;
 import org.jbasics.math.MathFunctionHelper;
 import org.jbasics.math.NumberConverter;
+import org.jbasics.math.exception.NoConvergenceException;
 
 public class RegulaFalsiApproximation {
 	private final MathFunction<?> zeroFunction;

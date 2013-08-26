@@ -31,6 +31,7 @@ import java.math.RoundingMode;
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.MathFunction;
 import org.jbasics.math.MathFunctionHelper;
+import org.jbasics.math.exception.NoConvergenceException;
 import org.jbasics.utilities.DataUtilities;
 
 public class NewtonRhapsonApproximation {
