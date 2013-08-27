@@ -31,20 +31,58 @@ import org.jbasics.pattern.coder.Codec;
 import org.jbasics.text.StringUtilities;
 import org.jbasics.types.sequences.ArrayCharacterSequence;
 
+/**
+ * Codec for the RFC3548 base 16 coding. This is one of the three codecs defined
+ * in the RFC3548. The codec is also known as the hex codec because it results.
+ * in two character hex values for one byte.
+ * 
+ * @author Stephan Schloepke
+ * @since 1.0
+ */
 public class RFC3548Base16Codec implements Codec<byte[], CharSequence> {
+	/**
+	 * The alphabet used for coding and decoding
+	 * 
+	 * @since 1.0
+	 */
 	public static final String BASE16_ALPHABET = "0123456789ABCDEF"; //$NON-NLS-1$
+	/**
+	 * The shared instance of the codec
+	 * 
+	 * @since 1.0
+	 */
 	public static final RFC3548Base16Codec INSTANCE = new RFC3548Base16Codec();
 
+	/**
+	 * Returns the input block size used for encoding.
+	 * 
+	 * @return The input block size
+	 * @since 1.0
+	 */
 	public int getInputBlockSize() {
 		return 1;
 	}
 
+	/**
+	 * Returns the output block size used for encoding
+	 * 
+	 * @return The output block size
+	 * @since 1.0
+	 */
 	public int getOutputBlockSize() {
 		return 2;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.jbasics.pattern.coder.Encoder#encode(java.lang.Object)
+	 */
+	@Override
 	public CharSequence encode(final byte[] input) {
-		if (input == null || input.length == 0) return StringUtilities.EMPTY_STRING;
+		if (input == null || input.length == 0) {
+			return StringUtilities.EMPTY_STRING;
+		}
 		final char[] result = new char[input.length * 2];
 		for (int i = 0, j = 0; i < input.length; i++, j += 2) {
 			result[j] = RFC3548Base16Codec.BASE16_ALPHABET.charAt(input[i] >> 4 & 0x0f);
@@ -53,8 +91,16 @@ public class RFC3548Base16Codec implements Codec<byte[], CharSequence> {
 		return new ArrayCharacterSequence(result);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.jbasics.pattern.coder.Decoder#decode(java.lang.Object)
+	 */
+	@Override
 	public byte[] decode(final CharSequence input) {
-		if (input == null || input.length() == 0) return ArrayConstants.ZERO_LENGTH_BYTE_ARRAY;
+		if (input == null || input.length() == 0) {
+			return ArrayConstants.ZERO_LENGTH_BYTE_ARRAY;
+		}
 		final ByteArrayOutputStream data = new ByteArrayOutputStream(input.length() / 2);
 		boolean flip = false;
 		byte value = 0;

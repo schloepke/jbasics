@@ -101,7 +101,7 @@ public final class ArithmeticArchitecture {
 	/**
 	 * Private constructor to hinder instantiation.
 	 */
-	protected ArithmeticArchitecture() {
+	private ArithmeticArchitecture() {
 		// To hinder anyone to instantiate this type.
 	}
 }

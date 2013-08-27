@@ -59,6 +59,7 @@ public final class EncodeFactory<Decoded, Encoded> implements ParameterFactory<E
 	 * @param encoder The decoder to use (MUST NOT be null).
 	 * @throws ContractViolationException If the decoder is null.
 	 * @return The {@link EncodeFactory} for the supplied {@link Encoder}.
+	 * @since 1.0
 	 */
 	public static <Enc, Dec> EncodeFactory<Enc, Dec> createForEncoder(final Encoder<Enc, Dec> encoder) {
 		return new EncodeFactory<Enc, Dec>(encoder);
@@ -82,6 +83,7 @@ public final class EncodeFactory<Decoded, Encoded> implements ParameterFactory<E
 	 * @param param The decoded content to encode with this factory (Parameter contract is defined by the encoderâ).
 	 * @throws ContractViolationException Possible thrown if the contract of the used {@link Encoder} is broken.
 	 * @see org.jbasics.pattern.factory.ParameterFactory#create(java.lang.Object)
+	 * @since 1.0
 	 */
 	@Override
 	public Encoded create(final Decoded decoded) {

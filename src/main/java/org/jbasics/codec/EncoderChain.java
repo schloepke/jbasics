@@ -36,6 +36,11 @@ import org.jbasics.pattern.coder.Encoder;
  * The guarantee to be thread safe is only guaranteed if the decoder given is also thread safe. Same applies to be
  * immutable.
  * </p>
+ * 
+ * @author Stephan Schloepke
+ * @since 1.0
+ * @param <T> The decoded type
+ * @param <TEnc> The encoded type
  */
 @ThreadSafe(derived = true)
 @ImmutableState(derived = true)
@@ -45,11 +50,25 @@ public final class EncoderChain<T, TEnc> implements Encoder<T, TEnc> {
 	@SuppressWarnings("rawtypes")
 	private final Encoder second;
 
+	/**
+	 * Creates a encoder chain where the first encoder encodes and gives the encoded into the
+	 * second encoder.
+	 * 
+	 * @param first The first encoder (must not be null)
+	 * @param second the second encoder (must not be null)
+	 * @param <X> The intermediate type between first and second encoder.
+	 * @since 1.0
+	 */
 	public <X> EncoderChain(final Encoder<T, X> first, final Encoder<X, TEnc> second) {
 		this.first = first;
 		this.second = second;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.jbasics.pattern.coder.Encoder#encode(java.lang.Object)
+	 */
 	@Override
 	@SuppressWarnings("unchecked")
 	public TEnc encode(final T input) {

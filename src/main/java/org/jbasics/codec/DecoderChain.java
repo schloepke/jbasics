@@ -37,6 +37,8 @@ import org.jbasics.pattern.coder.Decoder;
  * immutable.
  * </p>
  * 
+ * @author Stephan Schloepke
+ * @since 1.0
  * @param <T> The decoded type
  * @param <TEnc> The encoded type
  */
@@ -55,6 +57,7 @@ public final class DecoderChain<T, TEnc> implements Decoder<T, TEnc> {
 	 * @param first The first decoder (must not be null)
 	 * @param second the second decoder (must not be null)
 	 * @param <X> The intermediate type between first and second decoder.
+	 * @since 1.0
 	 */
 	public <X> DecoderChain(final Decoder<X, TEnc> first, final Decoder<T, X> second) {
 		this.first = ContractCheck.mustNotBeNull(first, "first");
