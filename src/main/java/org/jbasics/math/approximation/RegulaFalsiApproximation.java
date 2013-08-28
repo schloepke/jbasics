@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- * 
+ *
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -33,36 +33,63 @@ import org.jbasics.math.MathFunction;
 import org.jbasics.math.MathFunctionHelper;
 import org.jbasics.math.NumberConverter;
 import org.jbasics.math.exception.NoConvergenceException;
+import org.jbasics.types.tuples.Range;
+import org.jbasics.utilities.DataUtilities;
 
-public class RegulaFalsiApproximation {
-	private final MathFunction<?> zeroFunction;
+public class RegulaFalsiApproximation implements Approximation {
+	private final MathFunction<?> function;
 	private final boolean extendedVersion;
+	private final int maxIterations;
 
-	public RegulaFalsiApproximation(final MathFunction<?> zeroFunction, final boolean extendedVersion) {
-		this.zeroFunction = ContractCheck.mustNotBeNull(zeroFunction, "zeroFunction");
-		this.extendedVersion = extendedVersion;
+	public RegulaFalsiApproximation(final MathFunction<?> function, final boolean extendedVersion) {
+		this(function, extendedVersion, 100);
 	}
 
-	public BigDecimal findZero(final MathContext mc, final BigDecimal fx, final BigDecimal xMin, final BigDecimal xMax) {
+	public RegulaFalsiApproximation(final MathFunction<?> function, final boolean extendedVersion, final int maxIterations) {
+		this.function = ContractCheck.mustNotBeNull(function, "function"); //$NON-NLS-1$
+		this.extendedVersion = extendedVersion;
+		this.maxIterations = Math.min(5000, Math.max(10, maxIterations));
+	}
+
+	@Override
+	public ApproximatedResult approximate(final MathContext mcIn, final BigDecimal c, final Range<BigDecimal> range) {
+		BigDecimal xMin, xMax;
+		xMin = BigDecimal.ZERO;
+		xMax = BigDecimal.TEN;
+		if (range != null) {
+			if (range.first() != null) {
+				xMin = range.first();
+				if (range.second() == null) {
+					xMax = xMin.add(xMax);
+				} else {
+					xMax = range.second();
+				}
+			} else if (range.second() != null) {
+				xMin = range.second().subtract(xMax);
+				xMax = range.second();
+			}
+		}
+		final MathContext mc = DataUtilities.coalesce(mcIn, MathContext.DECIMAL64);
 		final BigDecimal epsilon = BigDecimal.ONE.scaleByPowerOfTen(1 - mc.getPrecision());
 		if (this.extendedVersion) {
-			return findZeroExtended(new MathContext(mc.getPrecision() + 5, RoundingMode.HALF_EVEN), fx, xMin, xMax, epsilon).round(mc);
+			return findZeroExtended(mc, c, xMin, xMax, epsilon);
 		} else {
-			return findZeroStandard(new MathContext(mc.getPrecision() + 5, RoundingMode.HALF_EVEN), fx, xMin, xMax, epsilon).round(mc);
+			return findZeroStandard(mc, c, xMin, xMax, epsilon);
 		}
 	}
 
-	private BigDecimal findZeroStandard(final MathContext mc, final BigDecimal fx, final BigDecimal xMin, final BigDecimal xMax,
+	private ApproximatedResult findZeroStandard(final MathContext mcIn, final BigDecimal fx, final BigDecimal xMin, final BigDecimal xMax,
 			final BigDecimal epsilon) {
+		final MathContext mc = new MathContext(mcIn.getPrecision() + 5, RoundingMode.HALF_EVEN);
 		BigDecimal x1 = xMin;
 		BigDecimal x2 = xMax;
-		BigDecimal f1 = NumberConverter.toBigDecimal(this.zeroFunction.calculate(mc, x1)).subtract(fx, mc);
-		BigDecimal f2 = NumberConverter.toBigDecimal(this.zeroFunction.calculate(mc, x2)).subtract(fx, mc);
+		BigDecimal f1 = NumberConverter.toBigDecimal(this.function.calculate(mc, x1)).subtract(fx, mc);
+		BigDecimal f2 = NumberConverter.toBigDecimal(this.function.calculate(mc, x2)).subtract(fx, mc);
 		BigDecimal z, fz;
-		for (int i = 1000; i > 0; i--) {
-			z = MathFunctionHelper.fitToBoundaries(this.zeroFunction,
+		for (int i = this.maxIterations; i > 0; i--) {
+			z = MathFunctionHelper.fitToBoundaries(this.function,
 					x1.subtract(x2.subtract(x1, mc).divide(f2.subtract(f1, mc), mc).multiply(f1, mc), mc));
-			fz = NumberConverter.toBigDecimal(this.zeroFunction.calculate(mc, z)).subtract(fx, mc);
+			fz = NumberConverter.toBigDecimal(this.function.calculate(mc, z)).subtract(fx, mc);
 			if (f1.signum() == fz.signum()) {
 				x1 = z;
 				f1 = fz;
@@ -71,26 +98,27 @@ public class RegulaFalsiApproximation {
 				f2 = fz;
 			}
 			if (x2.subtract(x1).abs().compareTo(epsilon) <= 0 || fz.abs().compareTo(epsilon) <= 0) {
-				return z;
+				return new ApproximatedResult(this.maxIterations - i - 1, z.round(mcIn), x1.round(mcIn), x2.round(mcIn));
 			}
 		}
-		throw new NoConvergenceException("Approximation search does not converge within the maximum iterations");
+		throw new NoConvergenceException("Approximation search does not converge within the maximum iterations"); //$NON-NLS-1$
 	}
 
-	private BigDecimal findZeroExtended(final MathContext mc, final BigDecimal fx, final BigDecimal xMin, final BigDecimal xMax,
+	private ApproximatedResult findZeroExtended(final MathContext mcIn, final BigDecimal fx, final BigDecimal xMin, final BigDecimal xMax,
 			final BigDecimal epsilon) {
+		final MathContext mc = new MathContext(mcIn.getPrecision() + 5, RoundingMode.HALF_EVEN);
 		BigDecimal x1 = xMin;
 		BigDecimal x2 = xMax;
-		BigDecimal f1 = NumberConverter.toBigDecimal(this.zeroFunction.calculate(mc, x1)).subtract(fx, mc);
-		BigDecimal f2 = NumberConverter.toBigDecimal(this.zeroFunction.calculate(mc, x2)).subtract(fx, mc);
+		BigDecimal f1 = NumberConverter.toBigDecimal(this.function.calculate(mc, x1)).subtract(fx, mc);
+		BigDecimal f2 = NumberConverter.toBigDecimal(this.function.calculate(mc, x2)).subtract(fx, mc);
 		BigDecimal z, fz;
-		for (int i = 100; i > 0; i--) {
+		for (int i = this.maxIterations; i > 0; i--) {
 			final BigDecimal temp = f2.subtract(f1);
 			if (temp.signum() == 0) {
-				throw new NoConvergenceException("Near zero derivation at x=" + x1);
+				throw new NoConvergenceException("Near zero derivation at x=" + x1); //$NON-NLS-1$
 			}
-			z = MathFunctionHelper.fitToBoundaries(this.zeroFunction, x1.subtract(x2.subtract(x1).divide(temp, mc).multiply(f1, mc)));
-			fz = NumberConverter.toBigDecimal(this.zeroFunction.calculate(mc, z)).subtract(fx, mc);
+			z = MathFunctionHelper.fitToBoundaries(this.function, x1.subtract(x2.subtract(x1).divide(temp, mc).multiply(f1, mc)));
+			fz = NumberConverter.toBigDecimal(this.function.calculate(mc, z)).subtract(fx, mc);
 			if (f1.signum() == fz.signum()) {
 				f1 = f1.multiply(f2.divide(f2.add(fz), mc));
 				x2 = z;
@@ -102,10 +130,10 @@ public class RegulaFalsiApproximation {
 				f2 = fz;
 			}
 			if (x2.subtract(x1).abs().compareTo(epsilon) <= 0 || fz.abs().compareTo(epsilon) <= 0) {
-				return z;
+				return new ApproximatedResult(this.maxIterations - i - 1, z.round(mcIn), x1.round(mcIn), x2.round(mcIn));
 			}
 		}
-		throw new NoConvergenceException("Approximation search does not converge within the maximum iterations");
+		throw new NoConvergenceException("Approximation search does not converge within the maximum iterations"); //$NON-NLS-1$
 	}
 
 }

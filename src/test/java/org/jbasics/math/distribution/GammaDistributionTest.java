@@ -52,8 +52,10 @@ public class GammaDistributionTest {
 				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.3000"), new BigDecimal("0") }, // Test case
 				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.4000"), new BigDecimal("0") }, // Test case
 				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.5000"), new BigDecimal("0") }, // Test case
-				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.6000"), new BigDecimal("0") }, // Test case
-				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.7000"), new BigDecimal("0") }, // Test case
+				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.6000"),
+						new BigDecimal("2.467117101104591010708558040686719E-262") }, // Test case
+				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.7000"),
+						new BigDecimal("8.647046097099858373078550983324371E-183") }, // Test case
 				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.8000"),
 						new BigDecimal("6.943877352893170773858300969198355E-114") }, // Test case
 				new Object[] { new BigDecimal("0.000841625"), new BigDecimal("173.0983576"), new BigDecimal("0.9000"),
@@ -104,7 +106,8 @@ public class GammaDistributionTest {
 		try {
 			final BigDecimal calculated = temp.quantile(mc, this.x);
 			System.out.println(this.percentageFormatter.format(this.x) + " => " + calculated + " (" + this.expected + "), cdf("
-					+ calculated.setScale(10, RoundingMode.HALF_UP) + ") = " + temp.cdf(mc, calculated).setScale(4, RoundingMode.HALF_UP));
+					+ calculated.setScale(Math.min(calculated.scale(), 10), RoundingMode.HALF_UP) + ") = "
+					+ temp.cdf(mc, calculated).setScale(4, RoundingMode.HALF_UP));
 			Assert.assertEquals(this.expected, calculated);
 		} catch (final NoConvergenceException e) {
 			System.out.println(this.percentageFormatter.format(this.x) + " => no convergence (" + e.getMessage() + ")");

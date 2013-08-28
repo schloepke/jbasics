@@ -22,23 +22,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.math.exception;
+package org.jbasics.math.approximation;
 
-/**
- * A calculation result is either a {@link PositiveInfinityException} or a {@link NegativInfinityException}.
- * 
- * @author Stephan Schloepke
- * @since 1.0
- */
-public class InfinityException extends ArithmeticException {
-	private static final long serialVersionUID = 20130826L;
+import java.math.BigDecimal;
+import java.math.MathContext;
 
-	public InfinityException() {
-		super();
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.types.tuples.Range;
+
+public class ChainedApproximation implements Approximation {
+	private final Approximation[] chain;
+
+	public ChainedApproximation(final Approximation... chain) {
+		this.chain = ContractCheck.mustNotBeNullOrEmpty(chain, "chain"); //$NON-NLS-1$
 	}
 
-	public InfinityException(final String message) {
-		super(message);
+	@Override
+	public ApproximatedResult approximate(final MathContext mc, final BigDecimal c, final Range<BigDecimal> range) {
+		ApproximatedResult result = null;
+		for (final Approximation a : this.chain) {
+			if (result == null) {
+				result = a.approximate(mc, c, range);
+			} else if (result.getApproximationRange() != null) {
+				result = a.approximate(mc, c, result.getApproximationRange());
+			} else {
+				final BigDecimal temp = result.getApproximatedValue();
+				result = a.approximate(mc, c, Range.create(temp, true, temp.add(temp.ulp()), true));
+			}
+		}
+		return result;
 	}
 
 }

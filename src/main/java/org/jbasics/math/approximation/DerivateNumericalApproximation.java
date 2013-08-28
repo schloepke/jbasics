@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- * 
+ *
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -52,10 +52,11 @@ public class DerivateNumericalApproximation implements BoundedMathFunction<BigDe
 	 * implements {@link BoundedMathFunction} the boundaries of the function will hold as well for the
 	 * derivation of the function.
 	 * 
-	 * @param function The function to derive (must NOT be null)
+	 * @param function
+	 *            The function to derive (must NOT be null)
 	 */
 	public DerivateNumericalApproximation(final MathFunction<?> function) {
-		this.function = ContractCheck.mustNotBeNull(function, "function");
+		this.function = ContractCheck.mustNotBeNull(function, "function"); //$NON-NLS-1$
 		if (function instanceof BoundedMathFunction<?>) {
 			this.lowerBoundary = NumberConverter.toBigDecimal(((BoundedMathFunction<?>) function).lowerBoundery());
 			this.upperBoundary = NumberConverter.toBigDecimal(((BoundedMathFunction<?>) function).upperBoundery());
@@ -66,7 +67,7 @@ public class DerivateNumericalApproximation implements BoundedMathFunction<BigDe
 	}
 
 	public DerivateNumericalApproximation(final MathFunction<?> function, final BigDecimal lowerBoundary, final BigDecimal upperBoundary) {
-		this.function = ContractCheck.mustNotBeNull(function, "function");
+		this.function = ContractCheck.mustNotBeNull(function, "function"); //$NON-NLS-1$
 		this.lowerBoundary = lowerBoundary;
 		this.upperBoundary = upperBoundary;
 	}
@@ -115,7 +116,6 @@ public class DerivateNumericalApproximation implements BoundedMathFunction<BigDe
 
 	@Override
 	public BigDecimal upperBoundery() {
-		// TODO Auto-generated method stub
 		return this.upperBoundary;
 	}
 

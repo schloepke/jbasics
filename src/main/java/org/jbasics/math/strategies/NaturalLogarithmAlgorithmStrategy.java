@@ -36,26 +36,27 @@ public class NaturalLogarithmAlgorithmStrategy implements AlgorithmStrategy<BigD
 		this(null);
 	}
 
-	public NaturalLogarithmAlgorithmStrategy(AlgorithmStrategy<BigDecimal> exponentialFunction) {
+	public NaturalLogarithmAlgorithmStrategy(final AlgorithmStrategy<BigDecimal> exponentialFunction) {
 		this.exponentialFunction = exponentialFunction != null ? exponentialFunction : new ExponentialTaylerAlgorithmStrategy();
 	}
 
-	public BigDecimal calculate(MathContext mc, BigDecimal guess, BigDecimal... xn) {
+	@Override
+	public BigDecimal calculate(final MathContext mc, final BigDecimal guess, final BigDecimal... xn) {
 		if (xn == null || xn.length != 1) {
 			throw new IllegalArgumentException("Illegal amount of arguments supplied (required 1, got " + (xn == null ? 0 : xn.length) + ")");
 		}
-		BigDecimal x = xn[0];
+		final BigDecimal x = xn[0];
 		if (x.signum() <= 0) {
 			throw new ArithmeticException("Logarithm of zero or negative number cannot be calculated"); //$NON-NLS-1$
 		}
 		if (BigDecimal.ONE.compareTo(x) == 0) {
 			return BigDecimal.ZERO;
 		}
-		BigDecimal result = guess != null ? guess : new BigDecimal(Math.log(x.doubleValue()), mc);
+		BigDecimal result = guess != null ? guess : new BigDecimal(Math.log(Math.max(x.doubleValue(), Double.MIN_NORMAL)), mc);
 		BigDecimal oldResult;
 		do {
 			oldResult = result;
-			BigDecimal temp = this.exponentialFunction.calculate(mc, null, result.negate()).multiply(x, mc).subtract(BigDecimal.ONE);
+			final BigDecimal temp = this.exponentialFunction.calculate(mc, null, result.negate()).multiply(x, mc).subtract(BigDecimal.ONE);
 			result = result.add(temp);
 		} while (oldResult.round(mc).subtract(result.round(mc)).signum() != 0);
 		return result.round(mc);

@@ -24,6 +24,15 @@
  */
 package org.jbasics.math.exception;
 
+import org.jbasics.math.AlgorithmStrategy;
+import org.jbasics.math.approximation.Approximation;
+
+/**
+ * An {@link Approximation} or an {@link AlgorithmStrategy} did not convergate to a result.
+ * 
+ * @author Stephan Schloepke
+ * @since 1.0
+ */
 public class NoConvergenceException extends ArithmeticException {
 
 	private static final long serialVersionUID = 20130819L;

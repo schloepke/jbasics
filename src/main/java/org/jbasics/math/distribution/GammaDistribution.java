@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- * 
+ *
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -31,21 +31,24 @@ import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.BigDecimalMathLibrary;
 import org.jbasics.math.BoundedMathFunction;
+import org.jbasics.math.IrationalNumber;
 import org.jbasics.math.MathFunction;
 import org.jbasics.math.NumberConverter;
+import org.jbasics.math.approximation.Approximation;
+import org.jbasics.math.approximation.BiSectionApproximation;
+import org.jbasics.math.approximation.ChainedApproximation;
 import org.jbasics.math.approximation.NewtonRhapsonApproximation;
-import org.jbasics.math.approximation.QuickFindZeroRange;
 import org.jbasics.math.strategies.GammaIncompleteAlgorithmStrategy;
-import org.jbasics.types.tuples.Range;
 
 public class GammaDistribution implements Distribution<BigDecimal> {
-	private static final BigDecimal LOW_BOUND_ALL_FUNC = BigDecimal.ZERO;
-	private static final BigDecimal UPPER_BOUND_ALL_FUNC = null; //BigDecimal.ONE.scaleByPowerOfTen(6);
+	protected static final BigDecimal LOW_BOUND_ALL_FUNC = BigDecimal.ZERO;
+	protected static final BigDecimal UPPER_BOUND_ALL_FUNC = null; // BigDecimal.ONE.scaleByPowerOfTen(6);
 
-	private final AlgorithmStrategy<BigDecimal> P_STRATEGY = new GammaIncompleteAlgorithmStrategy();
+	protected final AlgorithmStrategy<BigDecimal> P_STRATEGY = new GammaIncompleteAlgorithmStrategy();
 
-	private final BigDecimal alpha;
-	private final BigDecimal beta;
+	protected final BigDecimal alpha;
+	protected final BigDecimal beta;
+	protected final IrationalNumber<BigDecimal> lnGammaAlpha;
 
 	private MathFunction<BigDecimal> probabilityDensityFunction;
 	private MathFunction<BigDecimal> inverseProbabilityDensityFunction;
@@ -55,6 +58,7 @@ public class GammaDistribution implements Distribution<BigDecimal> {
 	public GammaDistribution(final BigDecimal alpha, final BigDecimal beta) {
 		this.alpha = alpha;
 		this.beta = beta;
+		this.lnGammaAlpha = BigDecimalMathLibrary.lnGamma(GammaDistribution.this.alpha);
 	}
 
 	@Override
@@ -64,13 +68,13 @@ public class GammaDistribution implements Distribution<BigDecimal> {
 				@Override
 				public BigDecimal calculate(final MathContext mc, final Number xNum) {
 					final BigDecimal x = NumberConverter.toBigDecimal(xNum);
-					if (ContractCheck.mustNotBeNull(x, "x").signum() <= 0) {
+					if (ContractCheck.mustNotBeNull(x, "x").signum() <= 0) { //$NON-NLS-1$
 						return BigDecimal.ZERO;
 					}
-					return BigDecimalMathLibrary.pow(GammaDistribution.this.beta, GammaDistribution.this.alpha).valueToPrecision(mc)
-							.divide(BigDecimalMathLibrary.gamma(GammaDistribution.this.alpha).valueToPrecision(mc), mc)
-							.multiply(BigDecimalMathLibrary.pow(x, GammaDistribution.this.alpha.subtract(BigDecimal.ONE)).valueToPrecision(mc), mc)
-							.multiply(BigDecimalMathLibrary.exp(GammaDistribution.this.beta.negate().multiply(x, mc)).valueToPrecision(mc), mc);
+					final BigDecimal xDivBeta = x.divide(GammaDistribution.this.beta, mc);
+					return BigDecimalMathLibrary.exp(GammaDistribution.this.alpha.multiply(BigDecimalMathLibrary.ln(xDivBeta).valueToPrecision(mc))
+							.subtract(GammaDistribution.this.lnGammaAlpha.valueToPrecision(mc)).subtract(xDivBeta)).valueToPrecision(mc)
+							.divide(x, mc);
 				}
 			};
 		}
@@ -84,7 +88,7 @@ public class GammaDistribution implements Distribution<BigDecimal> {
 				@Override
 				public BigDecimal calculate(final MathContext mc, final Number xNum) {
 					final BigDecimal x = NumberConverter.toBigDecimal(xNum);
-					if (ContractCheck.mustNotBeNull(x, "x").signum() <= 0) {
+					if (ContractCheck.mustNotBeNull(x, "x").signum() <= 0) { //$NON-NLS-1$
 						return BigDecimal.ZERO;
 					}
 					return BigDecimalMathLibrary
@@ -140,22 +144,12 @@ public class GammaDistribution implements Distribution<BigDecimal> {
 	public MathFunction<BigDecimal> inverseCumulativeDensityFunction() {
 		if (this.inverseCumulativeDensityFunction == null) {
 			this.inverseCumulativeDensityFunction = new BoundedMathFunction.AbstractBoundedMathFunction<BigDecimal>() {
+				private final Approximation approximator = new ChainedApproximation(new BiSectionApproximation(cumulativeDensityFunction(), 1500,
+						300, true), new NewtonRhapsonApproximation(cumulativeDensityFunction(), probabilityDensityFunction()));
+
 				@Override
 				public BigDecimal calculate(final MathContext mc, final Number xNum) {
-					final BigDecimal x = NumberConverter.toBigDecimal(xNum);
-					final Range<BigDecimal> startRange = QuickFindZeroRange.findRange(mc, cumulativeDensityFunction(), x, 500, null);
-					//					try {
-					return new NewtonRhapsonApproximation(cumulativeDensityFunction()).findZero(mc, x,
-							startRange.first().add(startRange.second().subtract(startRange.first())));
-					//					} catch (final NoConvergenceException e) {
-					//						try {
-					//							return new RegulaFalsiApproximation(cumulativeDensityFunction(), true).findZero(mc, x, startRange.first(),
-					//									startRange.second());
-					//						} catch (final NoConvergenceException e2) {
-					//							return new RegulaFalsiApproximation(cumulativeDensityFunction(), false).findZero(mc, x, startRange.first(),
-					//									startRange.second());
-					//						}
-					//					}
+					return this.approximator.approximate(mc, NumberConverter.toBigDecimal(xNum), null).getApproximatedValue();
 				}
 
 				@Override
