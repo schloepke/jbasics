@@ -56,17 +56,28 @@ public final class CombinedCodec<T, TEnc> implements Codec<T, TEnc> {
 	 * @param encoder The {@link Encoder} to use (MUST not be null)
 	 * @param decoder The {@link Decoder} to use (MUST not be null)
 	 * @throws ContractViolationException If the contract is broken (either encoder or decoder is null)
+	 * @since 1.0
 	 */
 	public CombinedCodec(final Encoder<T, TEnc> encoder, final Decoder<T, TEnc> decoder) {
 		this.encoder = ContractCheck.mustNotBeNull(encoder, "encoder");
 		this.decoder = ContractCheck.mustNotBeNull(decoder, "decoder");
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.jbasics.pattern.coder.Encoder#encode(java.lang.Object)
+	 */
 	@Override
 	public TEnc encode(final T input) {
 		return this.encoder.encode(input);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.jbasics.pattern.coder.Decoder#decode(java.lang.Object)
+	 */
 	@Override
 	public T decode(final TEnc encodedInput) {
 		return this.decoder.decode(encodedInput);

@@ -65,6 +65,7 @@ public final class DecodeFactory<Decoded, Encoded> implements ParameterFactory<D
 	 * @throws ContractViolationException
 	 *             If the decoder is null.
 	 * @return The {@link DecodeFactory} for the supplied {@link Decoder}.
+	 * @since 1.0
 	 */
 	public static <Enc, Dec> DecodeFactory<Enc, Dec> createForDecoder(final Decoder<Enc, Dec> decoder) {
 		return new DecodeFactory<Enc, Dec>(decoder);
@@ -93,6 +94,7 @@ public final class DecodeFactory<Decoded, Encoded> implements ParameterFactory<D
 	 * @throws ContractViolationException
 	 *             Possible thrown if the contract of the used {@link Decoder} is broken.
 	 * @see org.jbasics.pattern.factory.ParameterFactory#create(java.lang.Object)
+	 * @since 1.0
 	 */
 	@Override
 	public Decoded create(final Encoded encoded) {

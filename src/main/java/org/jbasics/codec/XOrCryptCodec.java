@@ -1,19 +1,19 @@
 /*
- * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- *
+ * g * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
+ * 
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -56,13 +56,14 @@ public class XOrCryptCodec implements Codec<CharSequence, byte[]> {
 		this.xorSource = xorSource == null || xorSource.length == 0 ? null : xorSource;
 	}
 
+	@Override
 	public byte[] encode(final CharSequence decoded) {
-		ByteBuffer bytes = this.charset.encode(CharBuffer.wrap(decoded));
-		byte[] b = new byte[bytes.limit() + 1];
+		final ByteBuffer bytes = this.charset.encode(CharBuffer.wrap(decoded));
+		final byte[] b = new byte[bytes.limit() + 1];
 		bytes.get(b, 1, bytes.limit());
-		int seed = Math.abs((int) (Math.random() * 983) % 109) + 13;
+		final int seed = Math.abs((int) (Math.random() * 983) % 109) + 13;
 		b[0] = (byte) seed;
-		Random r = new Random(seed);
+		final Random r = new Random(seed);
 		if (this.xorSource != null) {
 			for (int i = 1; i < b.length; i++) {
 				b[i] = (byte) (b[i] ^ this.xorSource[r.nextInt(this.xorSource.length)]);
@@ -75,10 +76,11 @@ public class XOrCryptCodec implements Codec<CharSequence, byte[]> {
 		return b;
 	}
 
+	@Override
 	public CharSequence decode(final byte[] encoded) {
-		ByteBuffer b = ByteBuffer.allocate(encoded.length - 1);
-		int seed = encoded[0];
-		Random r = new Random(seed);
+		final ByteBuffer b = ByteBuffer.allocate(encoded.length - 1);
+		final int seed = encoded[0];
+		final Random r = new Random(seed);
 		if (this.xorSource != null) {
 			for (int i = 1; i < encoded.length; i++) {
 				b.put((byte) (encoded[i] ^ this.xorSource[r.nextInt(this.xorSource.length)]));
