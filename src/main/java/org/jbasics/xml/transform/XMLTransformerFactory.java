@@ -47,8 +47,8 @@ public class XMLTransformerFactory implements Factory<Transformer>, ParameterFac
 		this(null);
 	}
 
-	public XMLTransformerFactory(final Delegate<TransformerFactory> tranformerFactoryDelegate) {
-		this.transformerFactoryDelegate = this.transformerFactoryDelegate != null ? tranformerFactoryDelegate :
+	public XMLTransformerFactory(final Delegate<TransformerFactory> transformerFactoryDelegate) {
+		this.transformerFactoryDelegate = transformerFactoryDelegate != null ? transformerFactoryDelegate :
 				XMLTransformerFactory.DEFAULT_TRANSFORMER_FACTORY_DELEGATE;
 	}
 
