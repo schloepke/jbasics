@@ -38,6 +38,10 @@
 		<url>http://github.com/schloepke/jbasics/issues</url>
 	</issueManagement>
 
+	<properties>
+		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+	</properties>
+
 	<developers>
 		<developer>
 			<id>schloepke</id>
@@ -114,6 +118,7 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
+					<encoding>ISO-8859-1</encoding>
 				</configuration>
 			</plugin>
 			<plugin>

@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- * 
+ *
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,27 +22,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.pattern.container;
+package org.jbasics.xml.xhtml;
 
-public interface Stack<E> extends Iterable<E> {
+import java.io.IOException;
+import java.util.Map;
 
-	E push(E element);
+import org.junit.Test;
 
-	E pop();
+import org.jbasics.xml.xhtml.XHTMLStandardEntityMapper;
 
-	E[] pop(int count);
+public class XHTMLStandardEntityMapperTest {
 
-	E peek();
+	@Test
+	public void listAllEntities() throws IOException {
+		for (final Map.Entry<String, String> entity : XHTMLStandardEntityMapper.XHTML_STANDARD_ENTITY_MAP.entrySet()) {
+			System.out.append(entity.getKey() + " = '" + entity.getValue() + "'").append("\n");
+		}
+	}
 
-	E peek(int depth);
-
-	int depth();
-
-	int size();
-
-	boolean isEmpty();
-
-	E replace(E value);
-
-	E replace(int depth, E value);
 }
