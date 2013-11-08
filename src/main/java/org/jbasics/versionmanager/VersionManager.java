@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.factory.Factory;
@@ -36,7 +38,10 @@ import org.jbasics.pattern.singleton.Singleton;
 import org.jbasics.types.singleton.SingletonInstance;
 
 public class VersionManager {
+	private static final Logger LOGGER = Logger.getLogger(VersionManager.class.getName());
+
 	public static final Singleton<VersionManager> SINGLETON = new SingletonInstance<VersionManager>(new Factory<VersionManager>() {
+		@Override
 		public VersionManager newInstance() {
 			return new VersionManager();
 		}
@@ -52,11 +57,17 @@ public class VersionManager {
 	public VersionInformation getVersion(final VersionIdentifier identifier) {
 		VersionInformation temp = this.versions.get(ContractCheck.mustNotBeNull(identifier, "identifier"));
 		if (temp == null) {
+			if (VersionManager.LOGGER.isLoggable(Level.FINE)) {
+				VersionManager.LOGGER.log(Level.FINE, "Trying to find version information for {0}", identifier); //$NON-NLS-1$
+			}
 			temp = findVersionInformation(identifier);
 			if (temp == null) {
+				if (VersionManager.LOGGER.isLoggable(Level.FINE)) {
+					VersionManager.LOGGER.log(Level.FINE, "No version information found for {0}", identifier); //$NON-NLS-1$
+				}
 				temp = new VersionInformation(identifier);
 			}
-			VersionInformation tempConflicted = this.versions.putIfAbsent(identifier, temp);
+			final VersionInformation tempConflicted = this.versions.putIfAbsent(identifier, temp);
 			if (tempConflicted != null) {
 				temp = tempConflicted;
 			}
@@ -65,14 +76,18 @@ public class VersionManager {
 	}
 
 	protected VersionManager() {
+		if (VersionManager.LOGGER.isLoggable(Level.FINE)) {
+			VersionManager.LOGGER.fine("Creating a new instace of version manager"); //$NON-NLS-1$
+		}
 		this.versions = new ConcurrentHashMap<VersionIdentifier, VersionInformation>();
 		this.resolvers = new ArrayList<Resolver<VersionInformation, VersionIdentifier>>();
 		this.resolvers.add(new MavenVersionResolver());
+		this.resolvers.add(new VersionsResourceResolver());
 	}
 
 	protected VersionInformation findVersionInformation(final VersionIdentifier identifier) {
 		VersionInformation result = null;
-		for (Resolver<VersionInformation, VersionIdentifier> resolver : this.resolvers) {
+		for (final Resolver<VersionInformation, VersionIdentifier> resolver : this.resolvers) {
 			result = resolver.resolve(identifier, result);
 		}
 		return result;

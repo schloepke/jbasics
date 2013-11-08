@@ -24,7 +24,12 @@
  */
 package org.jbasics.enviroment;
 
+import java.io.IOException;
 import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.exception.ResourceNotFoundException;
@@ -33,9 +38,9 @@ public final class JVMEnviroment {
 
 	public static ClassLoader getContextClassLoader() {
 		try {
-			ClassLoader result = Thread.currentThread().getContextClassLoader();
+			final ClassLoader result = Thread.currentThread().getContextClassLoader();
 			return result != null ? result : JVMEnviroment.class.getClassLoader();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return JVMEnviroment.class.getClassLoader();
 		}
 	}
@@ -45,11 +50,28 @@ public final class JVMEnviroment {
 	}
 
 	public static URL getNotNullResource(final String resourceName) {
-		URL temp = JVMEnviroment.getResource(resourceName);
+		final URL temp = JVMEnviroment.getResource(resourceName);
 		if (temp == null) {
 			throw new ResourceNotFoundException(resourceName);
 		}
 		return temp;
 	}
 
+	public static List<URL> getResources(final String resourceName) {
+		try {
+			return Collections.list(JVMEnviroment.getContextClassLoader().getResources(
+					ContractCheck.mustNotBeNullOrTrimmedEmpty(resourceName, "resourceName"))); //$NON-NLS-1$
+		} catch (final IOException e) {
+			return Collections.emptyList();
+		}
+	}
+
+	public static List<URL> getClassPathList() {
+		final ClassLoader loader = JVMEnviroment.getContextClassLoader();
+		if (loader instanceof URLClassLoader) {
+			return Arrays.asList(((URLClassLoader) loader).getURLs());
+		} else {
+			return Collections.emptyList();
+		}
+	}
 }

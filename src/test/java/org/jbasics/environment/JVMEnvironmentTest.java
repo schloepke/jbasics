@@ -22,23 +22,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.versionmanager;
+package org.jbasics.environment;
 
-import junit.framework.Assert;
+import java.util.Collection;
 
 import org.junit.Test;
 
-import org.jbasics.testing.Java14LoggingTestCase;
+import org.jbasics.enviroment.JVMEnviroment;
 
-@SuppressWarnings("nls")
-public class VersionManagerTest extends Java14LoggingTestCase {
+public class JVMEnvironmentTest {
 
 	@Test
-	public void testVersion() {
-		final VersionInformation info = VersionManager.instance().getVersion(new VersionIdentifier("org.jbasics", "jbasics-test"));
-		Assert.assertNotNull("Version info object should not be null", info);
-		Assert.assertFalse("Version should not be unknown", info.isUnknown());
-		Assert.assertEquals("Version is not correct", "0.2.11", info.getVersion());
+	public void test() {
+		System.out.println("\nClasspath:\n---------------------\n");
+		printCollection(JVMEnviroment.getClassPathList());
+		System.out.println("\nManifest:\n---------------------\n");
+		printCollection(JVMEnviroment.getResources("META-INF/MANIFEST.MF"));
+	}
+
+	private void printCollection(final Collection<?> collection) {
+		for (final Object element : collection) {
+			System.out.println(element);
+		}
 	}
 
 }

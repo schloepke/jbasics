@@ -27,6 +27,7 @@ package org.jbasics.versionmanager;
 import org.jbasics.checker.ContractCheck;
 
 public class VersionIdentifier {
+	private static final String TO_STRING_SEPARATOR = ":"; //$NON-NLS-1$
 	private final String group;
 	private final String artifact;
 	private final String classifier;
@@ -57,9 +58,9 @@ public class VersionIdentifier {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((this.artifact == null) ? 0 : this.artifact.hashCode());
-		result = prime * result + ((this.classifier == null) ? 0 : this.classifier.hashCode());
-		result = prime * result + ((this.group == null) ? 0 : this.group.hashCode());
+		result = prime * result + (this.artifact == null ? 0 : this.artifact.hashCode());
+		result = prime * result + (this.classifier == null ? 0 : this.classifier.hashCode());
+		result = prime * result + (this.group == null ? 0 : this.group.hashCode());
 		return result;
 	}
 
@@ -70,7 +71,7 @@ public class VersionIdentifier {
 		} else if (obj == null || !(obj instanceof VersionIdentifier)) {
 			return false;
 		}
-		VersionIdentifier other = (VersionIdentifier) obj;
+		final VersionIdentifier other = (VersionIdentifier) obj;
 		if (!this.group.equals(other.group)) {
 			return false;
 		} else if (!this.artifact.equals(other.artifact)) {
@@ -83,6 +84,15 @@ public class VersionIdentifier {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder temp = new StringBuilder().append(this.group).append(VersionIdentifier.TO_STRING_SEPARATOR).append(this.artifact);
+		if (this.classifier != null) {
+			temp.append(VersionIdentifier.TO_STRING_SEPARATOR).append(this.classifier);
+		}
+		return temp.toString();
 	}
 
 }
