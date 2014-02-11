@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- * 
+ *
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -39,7 +39,7 @@ public class ShuffleListTransposer<T> implements SubstitutionStrategy<List<T>, L
 	public static final ShuffleListTransposer<?> IMMUTABLE = new ShuffleListTransposer<Object>(false);
 	public static final ShuffleListTransposer<?> MUTABLE = new ShuffleListTransposer<Object>(true);
 
-	private final RandomNumberSequence<? extends Number> randomNumberSequence;
+	private final RandomNumberSequence<Double> randomNumberSequence;
 
 	@SuppressWarnings("unchecked")
 	public static <T> ShuffleListTransposer<T> mutableTransposer() {
@@ -58,7 +58,7 @@ public class ShuffleListTransposer<T> implements SubstitutionStrategy<List<T>, L
 		this(null, false, ListFactory.<T> randomAccessListFactory());
 	}
 
-	public ShuffleListTransposer(final RandomNumberSequence<Integer> randomNumberSequence) {
+	public ShuffleListTransposer(final RandomNumberSequence<Double> randomNumberSequence) {
 		this(randomNumberSequence, false, ListFactory.<T> randomAccessListFactory());
 	}
 
@@ -66,7 +66,7 @@ public class ShuffleListTransposer<T> implements SubstitutionStrategy<List<T>, L
 		this(null, mutable, ListFactory.<T> randomAccessListFactory());
 	}
 
-	public ShuffleListTransposer(final RandomNumberSequence<Integer> randomNumberSequence, final boolean mutable) {
+	public ShuffleListTransposer(final RandomNumberSequence<Double> randomNumberSequence, final boolean mutable) {
 		this(randomNumberSequence, mutable, ListFactory.<T> randomAccessListFactory());
 	}
 
@@ -74,7 +74,7 @@ public class ShuffleListTransposer<T> implements SubstitutionStrategy<List<T>, L
 		this(null, false, listFactory);
 	}
 
-	public ShuffleListTransposer(final RandomNumberSequence<Integer> randomNumberSequence, final Factory<List<T>> listFactory) {
+	public ShuffleListTransposer(final RandomNumberSequence<Double> randomNumberSequence, final Factory<List<T>> listFactory) {
 		this(randomNumberSequence, false, listFactory);
 	}
 
@@ -82,7 +82,8 @@ public class ShuffleListTransposer<T> implements SubstitutionStrategy<List<T>, L
 		this(null, mutable, listFactory);
 	}
 
-	public ShuffleListTransposer(final RandomNumberSequence<Integer> randomNumberSequence, final boolean mutable, final Factory<List<T>> listFactory) {
+	public ShuffleListTransposer(final RandomNumberSequence<Double> randomNumberSequence, final boolean mutable,
+			final Factory<List<T>> listFactory) {
 		this.randomNumberSequence = randomNumberSequence == null ? new JavaRandomNumberSequence() : randomNumberSequence;
 		this.mutable = mutable;
 		this.listFactory = ContractCheck.mustNotBeNull(listFactory, "listFactory"); //$NON-NLS-1$
