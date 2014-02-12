@@ -36,15 +36,25 @@ import java.util.List;
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.transpose.Transposer;
 
-public class InterleaveTransposer<T> implements Transposer<List<T>, Collection<Iterable<T>>> {
+@SuppressWarnings("unchecked")
+public class InterleaveTransposer<T> implements Transposer<List<T>, Collection<? extends Iterable<T>>> {
+	private static final InterleaveTransposer<?> SHARED_INSTANCE = new InterleaveTransposer<Object>(1);
 	private final int amountToTakeEach;
 
-	public static <T> List<T> interleaveTranspose(final Iterable<T>... input) {
-		return new InterleaveTransposer<T>().transpose(Arrays.asList(input));
+	public static <T> List<T> interleave(final Iterable<T>... input) {
+		return ((InterleaveTransposer<T>) InterleaveTransposer.SHARED_INSTANCE).transpose(Arrays.asList(input));
 	}
 
-	public static <T> List<T> interleaveTranspose(final Collection<Iterable<T>> input) {
-		return new InterleaveTransposer<T>().transpose(input);
+	public static <T> List<T> interleave(final Collection<? extends Iterable<T>> input) {
+		return ((InterleaveTransposer<T>) InterleaveTransposer.SHARED_INSTANCE).transpose(input);
+	}
+
+	public static <T> List<T> interleave(final int amountToTakeEach, final Iterable<T>... input) {
+		return new InterleaveTransposer<T>(amountToTakeEach).transpose(Arrays.asList(input));
+	}
+
+	public static <T> List<T> interleave(final int amountToTakeEach, final Collection<? extends Iterable<T>> input) {
+		return new InterleaveTransposer<T>(amountToTakeEach).transpose(input);
 	}
 
 	public InterleaveTransposer() {
@@ -56,7 +66,7 @@ public class InterleaveTransposer<T> implements Transposer<List<T>, Collection<I
 	}
 
 	@Override
-	public List<T> transpose(final Collection<Iterable<T>> input) {
+	public List<T> transpose(final Collection<? extends Iterable<T>> input) {
 		if (input == null || input.size() == 0) {
 			return Collections.emptyList();
 		}
