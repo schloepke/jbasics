@@ -24,27 +24,21 @@
  */
 package org.jbasics.types.transpose;
 
-import java.util.Map;
-
-import org.jbasics.pattern.factory.Factory;
+import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.factory.ParameterFactory;
+import org.jbasics.types.tuples.Pair;
+import org.jbasics.types.tuples.Tuple;
 
-public class MapTransposer<K, V> extends KeyValueTransposer<K, V, V> {
+public class KeyFactoryToKeyValueFactoryAdapter<K, V> implements ParameterFactory<Tuple<K, V>, V> {
+	private final ParameterFactory<K, V> keyFactory;
 
-	public MapTransposer(final ParameterFactory<K, V> keyFactory, final boolean ordered, final boolean mutable) {
-		super(new KeyFactoryToKeyValueFactoryAdapter<K, V>(keyFactory), ordered, mutable);
+	public KeyFactoryToKeyValueFactoryAdapter(final ParameterFactory<K, V> keyFactory) {
+		this.keyFactory = ContractCheck.mustNotBeNull(keyFactory, "keyFactory");
 	}
 
-	public MapTransposer(final ParameterFactory<K, V> keyFactory, final boolean ordered) {
-		super(new KeyFactoryToKeyValueFactoryAdapter<K, V>(keyFactory), ordered);
-	}
-
-	public MapTransposer(final ParameterFactory<K, V> keyFactory, final Factory<Map<K, V>> mapFactory, final boolean mutable) {
-		super(new KeyFactoryToKeyValueFactoryAdapter<K, V>(keyFactory), mapFactory, mutable);
-	}
-
-	public MapTransposer(final ParameterFactory<K, V> keyFactory) {
-		super(new KeyFactoryToKeyValueFactoryAdapter<K, V>(keyFactory));
+	@Override
+	public Tuple<K, V> create(final V param) {
+		return new Pair<K, V>(this.keyFactory.create(param), param);
 	}
 
 }

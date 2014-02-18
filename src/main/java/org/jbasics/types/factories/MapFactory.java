@@ -71,10 +71,11 @@ public class MapFactory<K, V> implements Factory<Map<K, V>> {
 	 *            True and the factory creates a {@link Set} implementation
 	 *            remaining the order of the elements added.
 	 */
-	public MapFactory(boolean ordered) {
+	public MapFactory(final boolean ordered) {
 		this.ordered = ordered;
 	}
 
+	@Override
 	public Map<K, V> newInstance() {
 		if (this.ordered) {
 			return CollectionsFactory.instance().newOrderedMapInstance();
@@ -85,12 +86,12 @@ public class MapFactory<K, V> implements Factory<Map<K, V>> {
 
 	@SuppressWarnings("unchecked")
 	public static <K, V> MapFactory<K, V> unorderedMapFactory() {
-		return (MapFactory<K, V>) MAP_FACTORY;
+		return (MapFactory<K, V>) MapFactory.MAP_FACTORY;
 	}
 
 	@SuppressWarnings("unchecked")
 	public static <K, V> MapFactory<K, V> orderedMapFactory() {
-		return (MapFactory<K, V>) ORDERED_MAP_FACTORY;
+		return (MapFactory<K, V>) MapFactory.ORDERED_MAP_FACTORY;
 	}
 
 }

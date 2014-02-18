@@ -22,29 +22,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.types.transpose;
+package org.jbasics.types.factories;
 
-import java.util.Map;
+import java.util.Comparator;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.jbasics.pattern.factory.Factory;
-import org.jbasics.pattern.factory.ParameterFactory;
 
-public class MapTransposer<K, V> extends KeyValueTransposer<K, V, V> {
+public class SortedMapFactory<K, V> implements Factory<SortedMap<K, V>> {
+	private final static SortedMapFactory<?, ?> SHARED_INSTANCE = new SortedMapFactory<Object, Object>();
 
-	public MapTransposer(final ParameterFactory<K, V> keyFactory, final boolean ordered, final boolean mutable) {
-		super(new KeyFactoryToKeyValueFactoryAdapter<K, V>(keyFactory), ordered, mutable);
+	private final Comparator<K> comparator;
+
+	public static <K, V> SortedMapFactory<K, V> create(final Comparator<K> comparator) {
+		return new SortedMapFactory<K, V>(comparator);
 	}
 
-	public MapTransposer(final ParameterFactory<K, V> keyFactory, final boolean ordered) {
-		super(new KeyFactoryToKeyValueFactoryAdapter<K, V>(keyFactory), ordered);
+	public SortedMapFactory() {
+		this(null);
 	}
 
-	public MapTransposer(final ParameterFactory<K, V> keyFactory, final Factory<Map<K, V>> mapFactory, final boolean mutable) {
-		super(new KeyFactoryToKeyValueFactoryAdapter<K, V>(keyFactory), mapFactory, mutable);
+	public SortedMapFactory(final Comparator<K> comparator) {
+		this.comparator = comparator;
 	}
 
-	public MapTransposer(final ParameterFactory<K, V> keyFactory) {
-		super(new KeyFactoryToKeyValueFactoryAdapter<K, V>(keyFactory));
+	@Override
+	public SortedMap<K, V> newInstance() {
+		if (this.comparator != null) {
+			return new TreeMap<K, V>(this.comparator);
+		} else {
+			return new TreeMap<K, V>();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <K extends Comparable<K>, V> SortedMapFactory<K, V> sortedMapFactory() {
+		return (SortedMapFactory<K, V>) SortedMapFactory.SHARED_INSTANCE;
 	}
 
 }
