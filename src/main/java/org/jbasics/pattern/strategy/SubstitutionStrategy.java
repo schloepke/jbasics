@@ -25,6 +25,13 @@
 package org.jbasics.pattern.strategy;
 
 public interface SubstitutionStrategy<OutputType, InputType> {
+    public static class PassThru<T> implements SubstitutionStrategy<T, T>{
+        @Override
+        public T substitute(T input) {
+            return input;
+        }
+    }
+    public static PassThru<String> STRING_PASS_THRU = new PassThru<String>();
 
 	OutputType substitute(InputType input);
 }

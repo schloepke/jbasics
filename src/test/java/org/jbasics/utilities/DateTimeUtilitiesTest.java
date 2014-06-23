@@ -40,10 +40,39 @@ import org.jbasics.types.tuples.Pair;
 public class DateTimeUtilitiesTest extends Java14LoggingTestCase {
 
 	@Test
+	public void testLeapYear() {
+		final Date from = DateTimeUtilities.createDate(2014, 4, 8);
+		final Date to = DateTimeUtilities.createDate(2020, 2, 28);
+		System.out.println(getLeapDaysInPeriod(from, to));
+	}
+
+	public int getLeapDaysInPeriod(final Date from, final Date to) {
+		int days = 0;
+		final Calendar c = Calendar.getInstance();
+		c.setTime(from);
+		final int yearFrom = c.get(Calendar.YEAR);
+		c.setTime(to);
+		final int yearTo = c.get(Calendar.YEAR);
+		c.set(Calendar.DAY_OF_MONTH, 29);
+		c.set(Calendar.MONTH, 1);
+		for (int i = yearFrom - yearFrom % 4; i <= yearTo; i += 4) {
+			if (i % 100 == 0 && i % 400 != 0) {
+				continue;
+			}
+			c.set(Calendar.YEAR, i);
+			final Date temp = c.getTime();
+			if (temp.before(to) && !temp.before(from)) {
+				days++;
+			}
+		}
+		return days;
+	}
+
+	@Test
 	public void testStripTime() {
 		for (int i = 0; i < 100; i++) {
-			Calendar cal = Calendar.getInstance(Locale.GERMAN);
-			Calendar gmtCal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+			final Calendar cal = Calendar.getInstance(Locale.GERMAN);
+			final Calendar gmtCal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 
 			Date cet = createTestDateTime(cal, 0);
 			Date gmt = createTestDateTime(gmtCal, 0);
@@ -66,7 +95,7 @@ public class DateTimeUtilitiesTest extends Java14LoggingTestCase {
 
 	@Test
 	public void testWeekRange() {
-		Pair<Date, Date> temp = DateTimeUtilities.getCalendarWeekRange(2010, 43);
+		final Pair<Date, Date> temp = DateTimeUtilities.getCalendarWeekRange(2010, 43);
 		this.logger.log(Level.INFO, "Range for 2010-W43 is [{0,date,yyyy'-'MM'-'dd' 'HH:mm:ss'Z'Z}, {1,date,yyyy'-'MM'-'dd' 'HH:mm:ss'Z'Z}]",
 				new Object[] { temp.left(), temp.right() });
 	}
@@ -103,5 +132,6 @@ public class DateTimeUtilitiesTest extends Java14LoggingTestCase {
 		cal.add(Calendar.DAY_OF_MONTH, addDays);
 		return cal.getTime();
 	}
+
 
 }

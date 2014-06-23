@@ -37,8 +37,10 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.factory.ParameterFactory;
+import org.jbasics.pattern.strategy.SubstitutionStrategy;
 import org.jbasics.text.StringUtilities;
 import org.jbasics.types.tuples.Pair;
+import org.jbasics.utilities.DataUtilities;
 
 /**
  * The {@link SystemPropertiesBundle} is a specialized form of the {@link Properties} with the extension that
@@ -61,6 +63,7 @@ public class SystemPropertiesBundle extends Properties {
 	private static final long serialVersionUID = 1L;
 	private final String prefix;
 	private transient ConcurrentMap<Pair<String, Class<?>>, SystemProperty<?>> sharedTypedProperties;
+    private final SubstitutionStrategy<String, String> substitutionStrategy;
 
 	public SystemPropertiesBundle() {
 		this(null, null);
@@ -75,11 +78,16 @@ public class SystemPropertiesBundle extends Properties {
 	}
 
 	public SystemPropertiesBundle(final String prefix, final Properties defaults) {
-		super(defaults);
-		this.prefix = prefix;
+		this(prefix, defaults, null);
 	}
 
-	@Override
+    public SystemPropertiesBundle(final String prefix, final Properties defaults, SubstitutionStrategy<String, String> substitutionStrategy) {
+        super(defaults);
+        this.prefix = prefix;
+        this.substitutionStrategy = DataUtilities.coalesce(substitutionStrategy, SubstitutionStrategy.STRING_PASS_THRU);
+    }
+
+    @Override
 	public String getProperty(final String key) {
 		String result = null;
 		if (this.prefix != null) {
@@ -144,7 +152,7 @@ public class SystemPropertiesBundle extends Properties {
 		SystemProperty<T> result = getSharedTypedProperty(key);
 		if (result == null) {
 			result = addSharedTypedProperty(key, new SystemProperty<T>(name, typeFactory, ContractCheck.mustNotBeNull(typeFactory, "typeFactory") //$NON-NLS-1$
-					.create(super.getProperty(name))));
+					.create(substitutionStrategy.substitute(super.getProperty(name))), this.substitutionStrategy));
 		}
 		return result;
 	}
