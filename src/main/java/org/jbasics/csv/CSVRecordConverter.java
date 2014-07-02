@@ -24,14 +24,14 @@
  */
 package org.jbasics.csv;
 
+import org.jbasics.pattern.container.Indexed;
+import org.jbasics.pattern.transpose.Transposer;
+import org.jbasics.utilities.DataUtilities;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.jbasics.pattern.container.Indexed;
-import org.jbasics.pattern.transpose.Transposer;
-import org.jbasics.utilities.DataUtilities;
 
 public class CSVRecordConverter implements Transposer<CSVRecord, Indexed<String>> {
 	private final static Integer EMPTY = Integer.valueOf(-1);
@@ -82,5 +82,4 @@ public class CSVRecordConverter implements Transposer<CSVRecord, Indexed<String>
 	protected String[] postProcess(final String[] columns) {
 		return columns;
 	}
-
 }

@@ -30,16 +30,15 @@ public class SomeDummyContext {
 
 	private BigDecimal factor;
 
-	public void setFactor(final BigDecimal factor) {
-		this.factor = factor;
-	}
-
 	public BigDecimal getFactor() {
 		return this.factor;
+	}
+
+	public void setFactor(final BigDecimal factor) {
+		this.factor = factor;
 	}
 
 	public BigDecimal getFactorNotNull() {
 		return this.factor == null ? BigDecimal.ONE : this.factor;
 	}
-
 }

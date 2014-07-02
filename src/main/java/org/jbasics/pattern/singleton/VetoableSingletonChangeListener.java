@@ -34,5 +34,4 @@ public interface VetoableSingletonChangeListener extends VetoableEventListener {
 	void vetoableSingletonSet(SingletonChangeEvent event) throws VetoException;
 
 	void vetoableSingletonRemove(SingletonChangeEvent event) throws VetoException;
-
 }

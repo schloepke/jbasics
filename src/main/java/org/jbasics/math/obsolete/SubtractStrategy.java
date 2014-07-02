@@ -89,5 +89,4 @@ public class SubtractStrategy implements Callable<int[]> {
 //		}
 		return result;
 	}
-
 }

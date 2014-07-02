@@ -24,14 +24,14 @@
  */
 package org.jbasics.command;
 
+import org.jbasics.command.annotations.Command;
+import org.jbasics.command.annotations.CommandParam;
+import org.jbasics.command.annotations.Commands;
+
 import java.io.File;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
-
-import org.jbasics.command.annotations.Command;
-import org.jbasics.command.annotations.CommandParam;
-import org.jbasics.command.annotations.Commands;
 
 @SuppressWarnings("nls")
 @Commands("TestCommands")
@@ -39,24 +39,24 @@ public class CommandClassExample {
 
 	@Command
 	public static Integer split(@CommandParam("portfolio") final Collection<String> portfolio,
-			@CommandParam("destination") final URI destination,
-			@CommandParam("stress") final List<Integer> stress) {
+								@CommandParam("destination") final URI destination,
+								@CommandParam("stress") final List<Integer> stress) {
 		System.out.println("split(" + portfolio + ", " + destination + ", " + stress + ")");
 		return Integer.valueOf(200);
 	}
 
 	@Command
 	public static Integer process(@CommandParam(value = "portfolio", optional = true) final CommandParameter portfolio,
-			@CommandParam("destination") final CommandParameter destination,
-			@CommandParam("stress") final CommandParameter stress) {
+								  @CommandParam("destination") final CommandParameter destination,
+								  @CommandParam("stress") final CommandParameter stress) {
 		System.out.println("process");
 		return Integer.valueOf(200);
 	}
 
 	@Command
 	public static Integer join(@CommandParam("portfolio") final CommandParameter portfolio,
-			@CommandParam("destination") final CommandParameter destination,
-			@CommandParam("stress") final CommandParameter stress) {
+							   @CommandParam("destination") final CommandParameter destination,
+							   @CommandParam("stress") final CommandParameter stress) {
 		System.out.println("join");
 		return Integer.valueOf(200);
 	}

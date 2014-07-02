@@ -27,5 +27,4 @@ package org.jbasics.pattern.instance;
 public interface NamespaceInstance {
 
 	String namespace();
-
 }

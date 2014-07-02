@@ -24,13 +24,13 @@
  */
 package org.jbasics.csv;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.jbasics.pattern.factory.ParameterFactory;
 import org.jbasics.pattern.transpose.Transposer;
 import org.jbasics.types.sequences.Sequence;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CSVRecordSequenceTransposer implements Transposer<Sequence<String>, CSVRecord>, ParameterFactory<Sequence<String>, CSVRecord> {
 	private final int[] indexes;
@@ -52,16 +52,21 @@ public class CSVRecordSequenceTransposer implements Transposer<Sequence<String>,
 			}
 			j++;
 		}
-		for (; i > 0;) {
+		for (; i > 0; ) {
 			this.indexes[--i] = -1;
 		}
 	}
 
 	public CSVRecordSequenceTransposer(final int... indexes) {
 		this.indexes = new int[indexes.length];
-		for (int i = 0, j = indexes.length; j > 0;) {
+		for (int i = 0, j = indexes.length; j > 0; ) {
 			this.indexes[i++] = indexes[--j];
 		}
+	}
+
+	@Override
+	public Sequence<String> create(final CSVRecord param) {
+		return transpose(param);
 	}
 
 	@Override
@@ -72,10 +77,4 @@ public class CSVRecordSequenceTransposer implements Transposer<Sequence<String>,
 		}
 		return result;
 	}
-
-	@Override
-	public Sequence<String> create(final CSVRecord param) {
-		return transpose(param);
-	}
-
 }

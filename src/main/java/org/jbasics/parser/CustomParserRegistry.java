@@ -24,12 +24,10 @@
  */
 package org.jbasics.parser;
 
-import java.util.Map;
-
 import javax.xml.namespace.QName;
+import java.util.Map;
 
 public interface CustomParserRegistry {
 
 	CustomParser getCustomParser(QName element, Map<QName, String> attributes);
-
 }

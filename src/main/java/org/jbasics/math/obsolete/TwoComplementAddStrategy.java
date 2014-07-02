@@ -24,7 +24,6 @@
  */
 package org.jbasics.math.obsolete;
 
-
 public class TwoComplementAddStrategy {
 
 	@SuppressWarnings("all" /* we want to re assign the parameter to lower stack usage and local varss */)
@@ -47,7 +46,7 @@ public class TwoComplementAddStrategy {
 		int i = x.length;
 		int xi, yi, sum;
 		boolean carry = complement;
-		while(--j >= 0) {
+		while (--j >= 0) {
 			xi = complementX ? ~x[--i] : x[--i];
 			yi = complement ? ~y[j] : y[j];
 			if (carry) {
@@ -85,5 +84,4 @@ public class TwoComplementAddStrategy {
 		}
 		return result;
 	}
-
 }

@@ -24,8 +24,12 @@
  */
 package org.jbasics.codec;
 
-import java.io.StringReader;
-import java.io.StringWriter;
+import org.jbasics.exception.DelegatedException;
+import org.jbasics.pattern.coder.Codec;
+import org.jbasics.pattern.factory.Factory;
+import org.jbasics.xml.transform.XMLTransformerFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -33,26 +37,20 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-
-import org.jbasics.exception.DelegatedException;
-import org.jbasics.pattern.coder.Codec;
-import org.jbasics.pattern.factory.Factory;
-import org.jbasics.xml.transform.XMLTransformerFactory;
+import java.io.StringReader;
+import java.io.StringWriter;
 
 /**
- * A {@link Codec} implementing the parsing of a string into a DOM {@link Document} and vise versa.
- * Use this code in places where a coded is required and you want to decode a XML string into a DOM {@link Document}.
- * 
+ * A {@link Codec} implementing the parsing of a string into a DOM {@link Document} and vise versa. Use this code in
+ * places where a coded is required and you want to decode a XML string into a DOM {@link Document}.
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
 public class DOMDocumentCodec implements Codec<Document, String> {
 	/**
 	 * The shared instance of the coded with the default {@link XMLTransformerFactory#SHARED_INSTANCE}
-	 * 
+	 *
 	 * @since 1.0
 	 */
 	public static final DOMDocumentCodec SHARED_INSTANCE = new DOMDocumentCodec();
@@ -61,7 +59,7 @@ public class DOMDocumentCodec implements Codec<Document, String> {
 
 	/**
 	 * Creates the {@link DOMDocumentCodec} with the default {@link XMLTransformerFactory}.
-	 * 
+	 *
 	 * @since 1.0
 	 */
 	public DOMDocumentCodec() {
@@ -69,9 +67,9 @@ public class DOMDocumentCodec implements Codec<Document, String> {
 	}
 
 	/**
-	 * Creates the {@link DOMDocumentCodec} with the given {@link Transformer} {@link Factory} or using the
-	 * default {@link XMLTransformerFactory} if null.
-	 * 
+	 * Creates the {@link DOMDocumentCodec} with the given {@link Transformer} {@link Factory} or using the default
+	 * {@link XMLTransformerFactory} if null.
+	 *
 	 * @param transformerFactory The transformer factory to use or {@link XMLTransformerFactory} as default if null.
 	 */
 	public DOMDocumentCodec(final Factory<Transformer> transformerFactory) {
@@ -111,5 +109,4 @@ public class DOMDocumentCodec implements Codec<Document, String> {
 			throw DelegatedException.delegate(e);
 		}
 	}
-
 }

@@ -24,9 +24,9 @@
  */
 package org.jbasics.parser;
 
-import java.lang.reflect.Method;
-
 import org.jbasics.pattern.builder.Builder;
+
+import java.lang.reflect.Method;
 
 public class BuilderState {
 	private final Builder<?> builder;
@@ -46,5 +46,4 @@ public class BuilderState {
 			throw new RuntimeException(e);
 		}
 	}
-
 }

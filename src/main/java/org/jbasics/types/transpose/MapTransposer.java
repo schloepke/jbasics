@@ -24,10 +24,10 @@
  */
 package org.jbasics.types.transpose;
 
-import java.util.Map;
-
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.pattern.factory.ParameterFactory;
+
+import java.util.Map;
 
 public class MapTransposer<K, V> extends KeyValueTransposer<K, V, V> {
 
@@ -46,5 +46,4 @@ public class MapTransposer<K, V> extends KeyValueTransposer<K, V, V> {
 	public MapTransposer(final ParameterFactory<K, V> keyFactory) {
 		super(new KeyFactoryToKeyValueFactoryAdapter<K, V>(keyFactory));
 	}
-
 }

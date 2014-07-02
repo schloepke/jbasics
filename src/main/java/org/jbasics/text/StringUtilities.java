@@ -24,11 +24,11 @@
  */
 package org.jbasics.text;
 
-import java.io.IOException;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.transpose.Transposer;
+
+import java.io.IOException;
 
 public final class StringUtilities {
 	public static final String EMPTY_STRING = "".intern(); //$NON-NLS-1$
@@ -107,7 +107,7 @@ public final class StringUtilities {
 
 	@SuppressWarnings("unchecked")
 	public static final <T> String joinToString(final CharSequence delimiter, Transposer<String, T> transposer, final Iterable<T> texts,
-			final boolean includeEmpty) {
+												final boolean includeEmpty) {
 		ContractCheck.mustNotBeNullOrEmpty(delimiter, "delimiter"); //$NON-NLS-1$
 		if (texts == null) {
 			return StringUtilities.EMPTY_STRING;
@@ -189,7 +189,7 @@ public final class StringUtilities {
 	}
 
 	public static final <T extends Appendable> T appendMultipleTimesWithDelimiter(final T appendable, final int amount, final CharSequence element,
-			final CharSequence delimiter, final CharSequence prefix, final CharSequence suffix) {
+																				  final CharSequence delimiter, final CharSequence prefix, final CharSequence suffix) {
 		try {
 			ContractCheck.mustNotBeNull(appendable, "appendable"); //$NON-NLS-1$
 			if (prefix != null) {
@@ -231,5 +231,4 @@ public final class StringUtilities {
 	public static String maxLength(final int length, final String input) {
 		return input.length() > length ? input.substring(0, length) : input;
 	}
-
 }

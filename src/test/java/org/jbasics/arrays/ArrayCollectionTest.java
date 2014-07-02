@@ -24,25 +24,25 @@
  */
 package org.jbasics.arrays;
 
-import java.util.Arrays;
-
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.Arrays;
 
 public class ArrayCollectionTest {
 	private static final String ONE = "1One";
 	private static final String TWO = "2Two";
 	private static final String THREE = "3Three";
-	private static final String FOUR = "4Four";
-	private static final String[] ONE_TO_THREE_DATA = new String[] { ArrayCollectionTest.ONE, ArrayCollectionTest.TWO, ArrayCollectionTest.THREE };
-	private static final String[] ONE_TO_THREE_DATA_WITH_NULL = new String[] { ArrayCollectionTest.ONE, ArrayCollectionTest.TWO,
-			ArrayCollectionTest.THREE, null };
-	private static final String[] ONE_TO_THREE_MULTI_DATA = new String[] { ArrayCollectionTest.ONE, ArrayCollectionTest.TWO,
+	private static final String[] ONE_TO_THREE_DATA = new String[]{ArrayCollectionTest.ONE, ArrayCollectionTest.TWO, ArrayCollectionTest.THREE};
+	private static final String[] ONE_TO_THREE_DATA_WITH_NULL = new String[]{ArrayCollectionTest.ONE, ArrayCollectionTest.TWO,
+			ArrayCollectionTest.THREE, null};
+	private static final String[] ONE_TO_THREE_MULTI_DATA = new String[]{ArrayCollectionTest.ONE, ArrayCollectionTest.TWO,
 			ArrayCollectionTest.THREE, ArrayCollectionTest.TWO, ArrayCollectionTest.ONE, ArrayCollectionTest.THREE, ArrayCollectionTest.ONE,
-			ArrayCollectionTest.TWO };
-	private static final String[] ONE_TO_THREE_MULTI_DATA_WITH_NULL = new String[] { ArrayCollectionTest.ONE, ArrayCollectionTest.TWO,
+			ArrayCollectionTest.TWO};
+	private static final String[] ONE_TO_THREE_MULTI_DATA_WITH_NULL = new String[]{ArrayCollectionTest.ONE, ArrayCollectionTest.TWO,
 			ArrayCollectionTest.THREE, null, ArrayCollectionTest.TWO, ArrayCollectionTest.ONE, ArrayCollectionTest.THREE, ArrayCollectionTest.ONE,
-			ArrayCollectionTest.TWO };
+			ArrayCollectionTest.TWO};
+	private static final String FOUR = "4Four";
 
 	@Test
 	public void testConstructuion() {
@@ -89,7 +89,6 @@ public class ArrayCollectionTest {
 		Assert.assertEquals(7, constructed.lastIndexOf(new String(ArrayCollectionTest.TWO.getBytes())));
 		Assert.assertEquals(-1, constructed.lastIndexOf(null));
 		Assert.assertEquals(3, new ArrayCollection<String>(ArrayCollectionTest.ONE_TO_THREE_MULTI_DATA_WITH_NULL).lastIndexOf(null));
-
 	}
 
 	@Test

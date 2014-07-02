@@ -29,5 +29,4 @@ public interface MutableDelegate<T> extends Delegate<T> {
 	T setDelegate(T delegate);
 
 	boolean isDelegateSet();
-
 }

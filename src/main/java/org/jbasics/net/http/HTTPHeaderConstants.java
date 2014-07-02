@@ -25,10 +25,9 @@
 package org.jbasics.net.http;
 
 /**
- * Class holding the names of the HTTP/1.1 defined header names.
- * A deeper specification you can find at <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html">RFC2616
- * Section 14</a>.
- * 
+ * Class holding the names of the HTTP/1.1 defined header names. A deeper specification you can find at <a
+ * href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html">RFC2616 Section 14</a>.
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -64,7 +63,8 @@ public final class HTTPHeaderConstants {
 	 */
 	public static final String AGE_HEADER = "Age"; //$NON-NLS-1$
 	/**
-	 * Allow header (see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.7">RFC Section 14.7</a>).
+	 * Allow header (see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.7">RFC Section
+	 * 14.7</a>).
 	 */
 	public static final String ALLOW_HEADER = "Allow"; //$NON-NLS-1$
 	/**
@@ -93,8 +93,8 @@ public final class HTTPHeaderConstants {
 	 */
 	public static final String CONTENT_LANGUAGE_HEADER = "Content-Language"; //$NON-NLS-1$
 	/**
-	 * Content length header (see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.13">RFC
-	 * Section 14.13</a>).
+	 * Content length header (see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.13">RFC Section
+	 * 14.13</a>).
 	 */
 	public static final String CONTENT_LENGTH_HEADER = "Content-Length"; //$NON-NLS-1$
 	/**
@@ -269,5 +269,4 @@ public final class HTTPHeaderConstants {
 	 * An encoding where the data is compressed by the zip / defalte method.
 	 */
 	public static final String DEFLATE_ENCODING = "deflate"; //$NON-NLS-1$
-
 }

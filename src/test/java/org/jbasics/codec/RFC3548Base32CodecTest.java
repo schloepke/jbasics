@@ -24,49 +24,47 @@
  */
 package org.jbasics.codec;
 
-import java.util.Arrays;
-import java.util.Collection;
-
+import org.jbasics.arrays.ArrayConstants;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import org.jbasics.arrays.ArrayConstants;
+import java.util.Arrays;
+import java.util.Collection;
 
 @RunWith(Parameterized.class)
 public class RFC3548Base32CodecTest {
-	@Parameters
-	public static Collection<Object[]> parameters() {
-		return Arrays.asList(new Object[][] {
-				{ "", "", "" },
-				{ "Hello World", "JBSWY1DPEBLW42TMMQ======", "JBSWY1DPEBLW42TMMQAAAAAA" },
-				{ "a", "ME======", "MEAAAAAA" },
-				{ "aB", "MFBA====", "MFBAAAAA" },
-				{ "aBc", "MFBGG===", "MFBGGAAA" },
-				{ "aBcD", "MFBGGRA=", "MFBGGRAA" },
-				{ "aBcDe", "MFBGGRDF", "MFBGGRDF" },
-				{ "aBcDeF", "MFBGGRDFIY======", "MFBGGRDFIYAAAAAA" },
-				{ "aBcDeFg", "MFBGGRDFIZTQ====", "MFBGGRDFIZTQAAAA" },
-				{ "aBcDeFgH", "MFBGGRDFIZTUQ===", "MFBGGRDFIZTUQAAA" },
-				{ "aBcDeFgHi", "MFBGGRDFIZTUQ0I=", "MFBGGRDFIZTUQ0IA" },
-				{ "aBcDeFgHiJ", "MFBGGRDFIZTUQ0KK", "MFBGGRDFIZTUQ0KK" },
-				{ "A brown fox jumps over the yellow fence", "IEQGE2TPO3XCAZTPPAQGU3LNOBZSA11WMVZCA3DIMUQHSZLMNRXXOIDGMVXGGZI=",
-						"IEQGE2TPO3XCAZTPPAQGU3LNOBZSA11WMVZCA3DIMUQHSZLMNRXXOIDGMVXGGZIA" },
-				{ "Somthing gotta go", "KNXW03DINFXGOIDHN30HIYJAM3XQ====", "KNXW03DINFXGOIDHN30HIYJAM3XQAAAA" },
-				{ "Is this onl me or are there bugs?", "JFZSA3DINFZSA11ONQQG0ZJAN3ZCAYLSMUQHI0DFOJSSAYTVM3ZT4===",
-						"JFZSA3DINFZSA11ONQQG0ZJAN3ZCAYLSMUQHI0DFOJSSAYTVM3ZT4AAA" }, { "user:pass", "OVZWK2R0OBQXG2Y=", "OVZWK2R0OBQXG2YA" } });
-	}
-
 	private final String testData;
 	private final String expectedCoded;
 	private final String expectedCodedNoPadding;
-
 	public RFC3548Base32CodecTest(final String testData, final String expectedCoded, final String expectedCodedNoPadding) {
 		this.testData = testData;
 		this.expectedCoded = expectedCoded;
 		this.expectedCodedNoPadding = expectedCodedNoPadding;
+	}
+
+	@Parameters
+	public static Collection<Object[]> parameters() {
+		return Arrays.asList(new Object[][]{
+				{"", "", ""},
+				{"Hello World", "JBSWY1DPEBLW42TMMQ======", "JBSWY1DPEBLW42TMMQAAAAAA"},
+				{"a", "ME======", "MEAAAAAA"},
+				{"aB", "MFBA====", "MFBAAAAA"},
+				{"aBc", "MFBGG===", "MFBGGAAA"},
+				{"aBcD", "MFBGGRA=", "MFBGGRAA"},
+				{"aBcDe", "MFBGGRDF", "MFBGGRDF"},
+				{"aBcDeF", "MFBGGRDFIY======", "MFBGGRDFIYAAAAAA"},
+				{"aBcDeFg", "MFBGGRDFIZTQ====", "MFBGGRDFIZTQAAAA"},
+				{"aBcDeFgH", "MFBGGRDFIZTUQ===", "MFBGGRDFIZTUQAAA"},
+				{"aBcDeFgHi", "MFBGGRDFIZTUQ0I=", "MFBGGRDFIZTUQ0IA"},
+				{"aBcDeFgHiJ", "MFBGGRDFIZTUQ0KK", "MFBGGRDFIZTUQ0KK"},
+				{"A brown fox jumps over the yellow fence", "IEQGE2TPO3XCAZTPPAQGU3LNOBZSA11WMVZCA3DIMUQHSZLMNRXXOIDGMVXGGZI=",
+						"IEQGE2TPO3XCAZTPPAQGU3LNOBZSA11WMVZCA3DIMUQHSZLMNRXXOIDGMVXGGZIA"},
+				{"Somthing gotta go", "KNXW03DINFXGOIDHN30HIYJAM3XQ====", "KNXW03DINFXGOIDHN30HIYJAM3XQAAAA"},
+				{"Is this onl me or are there bugs?", "JFZSA3DINFZSA11ONQQG0ZJAN3ZCAYLSMUQHI0DFOJSSAYTVM3ZT4===",
+						"JFZSA3DINFZSA11ONQQG0ZJAN3ZCAYLSMUQHI0DFOJSSAYTVM3ZT4AAA"}, {"user:pass", "OVZWK2R0OBQXG2Y=", "OVZWK2R0OBQXG2YA"}});
 	}
 
 	@Test

@@ -24,11 +24,11 @@
  */
 package org.jbasics.math.polynom;
 
-import java.math.MathContext;
-import java.util.Arrays;
-
 import org.jbasics.math.BigRational;
 import org.jbasics.math.MathFunction;
+
+import java.math.MathContext;
+import java.util.Arrays;
 
 public class Polynom implements MathFunction, Comparable<Polynom> {
 	private final BigRational[] coefficients;
@@ -58,6 +58,10 @@ public class Polynom implements MathFunction, Comparable<Polynom> {
 		return this.coefficients.length - 1;
 	}
 
+	public BigRational calculate(final Number x) {
+		return calculate(BigRational.valueOf(x));
+	}
+
 	public BigRational calculate(final BigRational x) {
 		if (this.coefficients.length == 0) {
 			return BigRational.ZERO;
@@ -70,10 +74,6 @@ public class Polynom implements MathFunction, Comparable<Polynom> {
 			}
 			return result.reduce();
 		}
-	}
-
-	public BigRational calculate(final Number x) {
-		return calculate(BigRational.valueOf(x));
 	}
 
 	public BigRational calculate(final MathContext mc, final Number x) {
@@ -134,35 +134,13 @@ public class Polynom implements MathFunction, Comparable<Polynom> {
 		return new RationalFunction(this, q);
 	}
 
-	@Override
-	public String toString() {
-		StringBuilder temp = new StringBuilder();
-		for (int i = this.coefficients.length - 1; i >= 0; i--) {
-			BigRational ax = this.coefficients[i];
-			if (ax.signum() != 0) {
-				if (temp.length() > 0) {
-					if (ax.signum() >= 0) {
-						temp.append("+"); //$NON-NLS-1$
-					}
-				}
-				temp.append(ax);
-				if (i > 1) {
-					temp.append("x^").append(i); //$NON-NLS-1$
-				} else if (i == 1) {
-					temp.append("x"); //$NON-NLS-1$
-				}
-			}
-		}
-		return temp.toString();
-	}
-
 	public int compareTo(Polynom o) {
 		if (o == null) {
 			return -1;
 		} else if (this.coefficients.length != o.coefficients.length) {
 			return this.coefficients.length - o.coefficients.length;
 		} else {
-			for(int i = this.coefficients.length - 1; i >= 0; i--) {
+			for (int i = this.coefficients.length - 1; i >= 0; i--) {
 				int temp = this.coefficients[i].compareTo(o.coefficients[i]);
 				if (temp != 0) {
 					return temp;
@@ -188,4 +166,25 @@ public class Polynom implements MathFunction, Comparable<Polynom> {
 		}
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder temp = new StringBuilder();
+		for (int i = this.coefficients.length - 1; i >= 0; i--) {
+			BigRational ax = this.coefficients[i];
+			if (ax.signum() != 0) {
+				if (temp.length() > 0) {
+					if (ax.signum() >= 0) {
+						temp.append("+"); //$NON-NLS-1$
+					}
+				}
+				temp.append(ax);
+				if (i > 1) {
+					temp.append("x^").append(i); //$NON-NLS-1$
+				} else if (i == 1) {
+					temp.append("x"); //$NON-NLS-1$
+				}
+			}
+		}
+		return temp.toString();
+	}
 }

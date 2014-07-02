@@ -27,5 +27,4 @@ package org.jbasics.pattern.strategy;
 public interface CalculateStrategy<Result, Request> {
 
 	Result calculate(Request request);
-
 }

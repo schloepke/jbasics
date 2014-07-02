@@ -24,18 +24,17 @@
  */
 package org.jbasics.math;
 
+import org.jbasics.math.impl.ExponentialIrationalNumber;
+import org.jbasics.testing.Java14LoggingTestCase;
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
-
-import org.junit.Assert;
-import org.junit.Test;
-
-import org.jbasics.math.impl.ExponentialIrationalNumber;
-import org.jbasics.testing.Java14LoggingTestCase;
 
 public class BigRationalTest extends Java14LoggingTestCase {
 
@@ -493,10 +492,10 @@ public class BigRationalTest extends Java14LoggingTestCase {
 		this.logger.info("Econst = " + BigDecimalMathLibrary.exp(startX).valueToPrecision(MathContext.DECIMAL128));
 		this.logger.info("Ecalc  = "
 				+ results[steps - 1].reduce().pow(64).multiply(
-						BigRational.valueOf(
-								BigRationalTest.E.valueToPrecision(new MathContext(MathContext.DECIMAL128.getPrecision() + 3,
-										MathContext.DECIMAL128.getRoundingMode()))).pow(intPart.intValue()))
-						.decimalValue(MathContext.DECIMAL128));
+				BigRational.valueOf(
+						BigRationalTest.E.valueToPrecision(new MathContext(MathContext.DECIMAL128.getPrecision() + 3,
+								MathContext.DECIMAL128.getRoundingMode()))).pow(intPart.intValue()))
+				.decimalValue(MathContext.DECIMAL128));
 		BigInteger t = faculty.denominator();
 		long scale = 0;
 		while (t.signum() != 0) {

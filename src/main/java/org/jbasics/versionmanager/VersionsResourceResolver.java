@@ -24,6 +24,14 @@
  */
 package org.jbasics.versionmanager;
 
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.enviroment.JVMEnviroment;
+import org.jbasics.exception.DelegatedException;
+import org.jbasics.pattern.resolver.Resolver;
+import org.jbasics.types.builders.MapBuilder;
+import org.jbasics.types.tuples.Pair;
+import org.jbasics.utilities.DataUtilities;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -33,22 +41,12 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.enviroment.JVMEnviroment;
-import org.jbasics.exception.DelegatedException;
-import org.jbasics.pattern.resolver.Resolver;
-import org.jbasics.types.builders.MapBuilder;
-import org.jbasics.types.tuples.Pair;
-import org.jbasics.utilities.DataUtilities;
-
 public class VersionsResourceResolver implements Resolver<VersionInformation, VersionIdentifier> {
-	private static final Logger LOGGER = Logger.getLogger(VersionsResourceResolver.class.getName());
-
 	public static final String DEFAULT_RESOURCE_NAME = "version-info.properties"; //$NON-NLS-1$
 	public static final String GROUP_PROPERTY = "groupId"; //$NON-NLS-1$
 	public static final String ARTIFACT_PROPERTY = "artifactId"; //$NON-NLS-1$
 	public static final String VERSION_PROPERTY = "version"; //$NON-NLS-1$
-
+	private static final Logger LOGGER = Logger.getLogger(VersionsResourceResolver.class.getName());
 	private final String resourceName;
 	private final Map<VersionIdentifier, VersionInformation> versions;
 
@@ -59,29 +57,6 @@ public class VersionsResourceResolver implements Resolver<VersionInformation, Ve
 	public VersionsResourceResolver(final String resourceName) {
 		this.resourceName = DataUtilities.coalesce(resourceName, VersionsResourceResolver.DEFAULT_RESOURCE_NAME);
 		this.versions = VersionsResourceResolver.scanVersions(this.resourceName);
-	}
-
-	public String getResourceName() {
-		return this.resourceName;
-	}
-
-	@Override
-	public VersionInformation resolve(final VersionIdentifier request, final VersionInformation defaultResult) {
-		if (VersionsResourceResolver.LOGGER.isLoggable(Level.FINE)) {
-			VersionsResourceResolver.LOGGER.log(Level.FINE, "Trying to resolve version information for {0}", request); //$NON-NLS-1$
-		}
-		final VersionInformation result = this.versions.get(request);
-		if(result == null) {
-			if (VersionsResourceResolver.LOGGER.isLoggable(Level.FINE)) {
-				VersionsResourceResolver.LOGGER.log(Level.FINE, "Could not resolve any version information for {0}", request); //$NON-NLS-1$
-			}
-			return defaultResult;
-		}
-		if (VersionsResourceResolver.LOGGER.isLoggable(Level.FINE)) {
-			VersionsResourceResolver.LOGGER.log(Level.FINE, "Found version information for {0} with version", //$NON-NLS-1$
-					new Object[] { request, result.getVersion() });
-		}
-		return result;
 	}
 
 	public static Map<VersionIdentifier, VersionInformation> scanVersions(final String resourceName) {
@@ -105,7 +80,7 @@ public class VersionsResourceResolver implements Resolver<VersionInformation, Ve
 					VersionsResourceResolver.LOGGER.log(Level.FINEST, "Scanned {0} without result", resourceURL); //$NON-NLS-1$
 				} else {
 					VersionsResourceResolver.LOGGER.log(Level.FINEST,
-							"Scanned {0} and found {1}={2}", new Object[] { resourceURL, temp.first(), temp.second().getVersion() }); //$NON-NLS-1$
+							"Scanned {0} and found {1}={2}", new Object[]{resourceURL, temp.first(), temp.second().getVersion()}); //$NON-NLS-1$
 				}
 			}
 			builder.putConditional(temp != null, temp);
@@ -140,7 +115,28 @@ public class VersionsResourceResolver implements Resolver<VersionInformation, Ve
 				}
 			}
 		}
-
 	}
 
+	public String getResourceName() {
+		return this.resourceName;
+	}
+
+	@Override
+	public VersionInformation resolve(final VersionIdentifier request, final VersionInformation defaultResult) {
+		if (VersionsResourceResolver.LOGGER.isLoggable(Level.FINE)) {
+			VersionsResourceResolver.LOGGER.log(Level.FINE, "Trying to resolve version information for {0}", request); //$NON-NLS-1$
+		}
+		final VersionInformation result = this.versions.get(request);
+		if (result == null) {
+			if (VersionsResourceResolver.LOGGER.isLoggable(Level.FINE)) {
+				VersionsResourceResolver.LOGGER.log(Level.FINE, "Could not resolve any version information for {0}", request); //$NON-NLS-1$
+			}
+			return defaultResult;
+		}
+		if (VersionsResourceResolver.LOGGER.isLoggable(Level.FINE)) {
+			VersionsResourceResolver.LOGGER.log(Level.FINE, "Found version information for {0} with version", //$NON-NLS-1$
+					new Object[]{request, result.getVersion()});
+		}
+		return result;
+	}
 }

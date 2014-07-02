@@ -24,13 +24,12 @@
  */
 package org.jbasics.net.mail;
 
-import java.util.Properties;
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.pattern.factory.Factory;
 
 import javax.mail.Authenticator;
 import javax.mail.Session;
-
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.pattern.factory.Factory;
+import java.util.Properties;
 
 public class JavaMailSessionFactory implements Factory<Session> {
 	private static final String MAIL_SMTP_HOST_PROPERTY = "mail.smtp.host"; //$NON-NLS-1$
@@ -42,6 +41,15 @@ public class JavaMailSessionFactory implements Factory<Session> {
 		this((Properties) null, null, false);
 	}
 
+	public JavaMailSessionFactory(final Properties properties, final Authenticator authenticator, final boolean useDefaultSession) {
+		this.properties = new Properties();
+		if (properties != null && !properties.isEmpty()) {
+			this.properties.putAll(properties);
+		}
+		this.authenticator = authenticator;
+		this.useDefaultSession = useDefaultSession;
+	}
+
 	public JavaMailSessionFactory(final boolean useDefaultSession) {
 		this((Properties) null, null, useDefaultSession);
 	}
@@ -50,15 +58,15 @@ public class JavaMailSessionFactory implements Factory<Session> {
 		this(smtpHost, null, false);
 	}
 
-	public JavaMailSessionFactory(final String smtpHost, final boolean useDefaultSession) {
-		this(smtpHost, null, useDefaultSession);
-	}
-
 	public JavaMailSessionFactory(final String smtpHost, final Authenticator authenticator, final boolean useDefaultSession) {
 		this.properties = new Properties();
 		this.properties.put(JavaMailSessionFactory.MAIL_SMTP_HOST_PROPERTY, ContractCheck.mustNotBeNullOrTrimmedEmpty(smtpHost, "smtpHost")); //$NON-NLS-1$
 		this.authenticator = authenticator;
 		this.useDefaultSession = useDefaultSession;
+	}
+
+	public JavaMailSessionFactory(final String smtpHost, final boolean useDefaultSession) {
+		this(smtpHost, null, useDefaultSession);
 	}
 
 	public JavaMailSessionFactory(final Properties properties) {
@@ -69,15 +77,6 @@ public class JavaMailSessionFactory implements Factory<Session> {
 		this(properties, null, useDefaultSession);
 	}
 
-	public JavaMailSessionFactory(final Properties properties, final Authenticator authenticator, final boolean useDefaultSession) {
-		this.properties = new Properties();
-		if (properties != null && !properties.isEmpty()) {
-			this.properties.putAll(properties);
-		}
-		this.authenticator = authenticator;
-		this.useDefaultSession = useDefaultSession;
-	}
-
 	@Override
 	public Session newInstance() {
 		if (this.useDefaultSession) {
@@ -86,5 +85,4 @@ public class JavaMailSessionFactory implements Factory<Session> {
 			return Session.getInstance(this.properties, this.authenticator);
 		}
 	}
-
 }

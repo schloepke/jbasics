@@ -31,15 +31,15 @@ import org.jbasics.annotation.ThreadSafe;
  * A simple helper to try and determine if the underlying JVM is a 32 bit or a 64 bit one.
  * <p>
  * It is wise to never depend on the underlying JVM architecture. However in some cases it is easier to have an
- * algorithm written based on Integers rather than using Longs when you are running on a 32 bit JVM. For such cases this
- * is a way to determine what JVM we are running on.
+ * algorithm written based on Integers rather than using Longs when you are running on a 32 bit JVM. For such cases
+ * this is a way to determine what JVM we are running on.
+ * </p><p>
+ * It should be noted however that currently the detection is not quite perfect. It will work fine on all SUN
+ * JVMs or derived ones (Mac OS X JVM for example). In cases that the system property "sun.arch.data.model" is
+ * not set we look at the JVM Name and only consider the JVM as beeing 64 bit if a 64 is contained in the name
+ * somewhere.
  * </p>
- * <p>
- * It should be noted however that currently the detection is not quite perfect. It will work fine on all SUN JVMs or
- * derived ones (Mac OS X JVM for example). In cases that the system property "sun.arch.data.model" is not set we look
- * at the JVM Name and only consider the JVM as beeing 64 bit if a 64 is contained in the name somewhere.
- * </p>
- * 
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -79,9 +79,17 @@ public final class ArithmeticArchitecture {
 	}
 
 	/**
+	 * Private constructor to hinder instantiation.
+	 */
+	private ArithmeticArchitecture() {
+		// To hinder anyone to instantiate this type.
+	}
+
+	/**
 	 * Returns true if the architecture uses 32 bit integer arithmetic.
-	 * 
+	 *
 	 * @return True if the architecture uses 32 bit integer arithmetic.
+	 *
 	 * @since 1.0
 	 */
 	public static boolean is32Bit() {
@@ -90,18 +98,12 @@ public final class ArithmeticArchitecture {
 
 	/**
 	 * Returns true if the architecture uses 64 bit integer arithmetic.
-	 * 
+	 *
 	 * @return True if the architecture uses 64 bit integer arithmetic.
+	 *
 	 * @since 1.0
 	 */
 	public static boolean is64Bit() {
 		return ArithmeticArchitecture.JVM64BIT;
-	}
-
-	/**
-	 * Private constructor to hinder instantiation.
-	 */
-	private ArithmeticArchitecture() {
-		// To hinder anyone to instantiate this type.
 	}
 }

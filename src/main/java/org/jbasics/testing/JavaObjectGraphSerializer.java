@@ -24,38 +24,20 @@
  */
 package org.jbasics.testing;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
+import org.jbasics.checker.ContractCheck;
+
+import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jbasics.checker.ContractCheck;
-
 /**
- * Simple Helper to serialize java object graphs which are {@link Serializable}.
- * <p>
- * In order to use the helper you need to instantiate it. The helper itself is fully thread safe and
- * can easily be used as a singleton. However the logging used needs to be thread safe as well since
- * the helper does use a private attribute of the logger instance. Since Java Logging is used there
- * should be no problem involved.
- * </p>
- * <p>
- * The easiest way to use the helper is to create one use it and destroy it right away (unless you
- * serialize more than one graph at a time).
- * </p>
- * <p>
- * Example:<br />
- * {@code new JavaObjectGraphSerializer().serialize(instance, new File(filename))}
- * </p>
- * 
+ * Simple Helper to serialize java object graphs which are {@link Serializable}. <p> In order to use the helper you need
+ * to instantiate it. The helper itself is fully thread safe and can easily be used as a singleton. However the logging
+ * used needs to be thread safe as well since the helper does use a private attribute of the logger instance. Since Java
+ * Logging is used there should be no problem involved. </p> <p> The easiest way to use the helper is to create one use
+ * it and destroy it right away (unless you serialize more than one graph at a time). </p> <p> Example:<br /> {@code new
+ * JavaObjectGraphSerializer().serialize(instance, new File(filename))} </p>
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -64,13 +46,13 @@ public final class JavaObjectGraphSerializer {
 	private final Logger logger = Logger.getLogger(JavaObjectGraphSerializer.class.getName());
 
 	/**
-	 * Serialize the given object graph to the file name in the directory. If any of the supplied
-	 * arguments is null no serialization takes place and false is returned. If serialization
-	 * completed successfully true is returned.
-	 * 
+	 * Serialize the given object graph to the file name in the directory. If any of the supplied arguments is null no
+	 * serialization takes place and false is returned. If serialization completed successfully true is returned.
+	 *
 	 * @param objectGraph The object graph
-	 * @param directory The directory to serialize the file to
-	 * @param fileName The filename to create in the directory
+	 * @param directory   The directory to serialize the file to
+	 * @param fileName    The filename to create in the directory
+	 *
 	 * @return True if the serialization was successful otherwise false
 	 */
 	public boolean serialize(Object objectGraph, File directory, String fileName) {
@@ -83,28 +65,6 @@ public final class JavaObjectGraphSerializer {
 		}
 		try {
 			return serialize(objectGraph, new FileOutputStream(new File(directory, fileName)));
-		} catch (FileNotFoundException e) {
-			if (this.logger.isLoggable(LOG_LEVEL)) {
-				Logger.getLogger(JavaObjectGraphSerializer.class.getName()).log(LOG_LEVEL, "Could not serialize due to exception", e);
-			}
-			return false;
-		}
-	}
-
-	public boolean serialize(Object objectGraph, File outputFile) {
-		if (objectGraph == null || outputFile == null) {
-			if (this.logger.isLoggable(LOG_LEVEL)) {
-				Logger.getLogger(JavaObjectGraphSerializer.class.getName()).log(LOG_LEVEL,
-						"Skiping serialization since either object or output fule is null");
-			}
-			return false;
-		}
-		try {
-			boolean temp = serialize(objectGraph, new FileOutputStream(outputFile));
-			if (this.logger.isLoggable(LOG_LEVEL)) {
-				Logger.getLogger(JavaObjectGraphSerializer.class.getName()).log(Level.INFO, "Java Object Graph serilized to " + outputFile);
-			}
-			return temp;
 		} catch (FileNotFoundException e) {
 			if (this.logger.isLoggable(LOG_LEVEL)) {
 				Logger.getLogger(JavaObjectGraphSerializer.class.getName()).log(LOG_LEVEL, "Could not serialize due to exception", e);
@@ -142,20 +102,34 @@ public final class JavaObjectGraphSerializer {
 		}
 	}
 
+	public boolean serialize(Object objectGraph, File outputFile) {
+		if (objectGraph == null || outputFile == null) {
+			if (this.logger.isLoggable(LOG_LEVEL)) {
+				Logger.getLogger(JavaObjectGraphSerializer.class.getName()).log(LOG_LEVEL,
+						"Skiping serialization since either object or output fule is null");
+			}
+			return false;
+		}
+		try {
+			boolean temp = serialize(objectGraph, new FileOutputStream(outputFile));
+			if (this.logger.isLoggable(LOG_LEVEL)) {
+				Logger.getLogger(JavaObjectGraphSerializer.class.getName()).log(Level.INFO, "Java Object Graph serilized to " + outputFile);
+			}
+			return temp;
+		} catch (FileNotFoundException e) {
+			if (this.logger.isLoggable(LOG_LEVEL)) {
+				Logger.getLogger(JavaObjectGraphSerializer.class.getName()).log(LOG_LEVEL, "Could not serialize due to exception", e);
+			}
+			return false;
+		}
+	}
+
 	public <T> T deserialize(Class<T> type, File directory, String fileName) {
 		try {
 			return deserialize(type, new FileInputStream(new File(ContractCheck.mustNotBeNull(directory, "directory"), ContractCheck.mustNotBeNull(
 					fileName, "fileName"))));
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException("File not found " + fileName + " in directory " + directory, e);
-		}
-	}
-
-	public <T> T deserialize(Class<T> type, File file) {
-		try {
-			return deserialize(type, new FileInputStream(ContractCheck.mustNotBeNull(file, "file")));
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException("File not found " + file, e);
 		}
 	}
 
@@ -179,4 +153,11 @@ public final class JavaObjectGraphSerializer {
 		}
 	}
 
+	public <T> T deserialize(Class<T> type, File file) {
+		try {
+			return deserialize(type, new FileInputStream(ContractCheck.mustNotBeNull(file, "file")));
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException("File not found " + file, e);
+		}
+	}
 }

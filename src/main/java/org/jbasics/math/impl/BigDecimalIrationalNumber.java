@@ -24,19 +24,19 @@
  */
 package org.jbasics.math.impl;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-import java.util.concurrent.atomic.AtomicMarkableReference;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.IrationalNumber;
 import org.jbasics.math.MemorizedIrationalNumber;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.util.concurrent.atomic.AtomicMarkableReference;
+
 /**
  * Implements the {@link IrationalNumber} and memorizes the most precise result.
- * 
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -47,20 +47,19 @@ public class BigDecimalIrationalNumber implements MemorizedIrationalNumber<BigDe
 	 */
 	private final BigDecimal[] xn;
 	/**
-	 * Holds the calculated memorized value with the mark indicating if the value is a final exakt
-	 * result.
+	 * Holds the calculated memorized value with the mark indicating if the value is a final exakt result.
 	 */
 	private final AtomicMarkableReference<BigDecimal> value;
 
 	/**
-	 * Create an {@link BigDecimalIrationalNumber} with the given x as input and no initial value.
-	 * The first calculation will be delayed until the value is accessed with
-	 * {@link IrationalNumber#valueToPrecision(MathContext)}.
-	 * 
-	 * @param x The input value of the algorithm (if the algorithm requires more input values these
-	 *            needs to be stored separately. Be aware that while this implementation memorized
-	 *            the result thread safe any other calculation value might not be thread safe. So
-	 *            all input variables should be considered constant like the x value is).
+	 * Create an {@link BigDecimalIrationalNumber} with the given x as input and no initial value. The first calculation
+	 * will be delayed until the value is accessed with {@link IrationalNumber#valueToPrecision(MathContext)}.
+	 *
+	 * @param x The input value of the algorithm (if the algorithm requires more input values these needs to be stored
+	 *          separately. Be aware that while this implementation memorized the result thread safe any other
+	 *          calculation value might not be thread safe. So all input variables should be considered constant like
+	 *          the x value is).
+	 *
 	 * @since 1.0
 	 */
 	protected BigDecimalIrationalNumber(AlgorithmStrategy<BigDecimal> algorithm, BigDecimal... xn) {
@@ -68,14 +67,15 @@ public class BigDecimalIrationalNumber implements MemorizedIrationalNumber<BigDe
 	}
 
 	/**
-	 * Create an {@link BigDecimalIrationalNumber} with the given x as input and the optional
-	 * initial value as initial value of the calculation.
-	 * 
-	 * @param x The input value of the algorithm (if the algorithm requires more input values these
-	 *            needs to be stored separately. Be aware that while this implementation memorized
-	 *            the result thread safe any other calculation value might not be thread safe. So
-	 *            all input variables should be considered constant like the x value is).
+	 * Create an {@link BigDecimalIrationalNumber} with the given x as input and the optional initial value as initial
+	 * value of the calculation.
+	 *
+	 * @param x       The input value of the algorithm (if the algorithm requires more input values these needs to be
+	 *                stored separately. Be aware that while this implementation memorized the result thread safe any
+	 *                other calculation value might not be thread safe. So all input variables should be considered
+	 *                constant like the x value is).
 	 * @param initial The initial value to use.
+	 *
 	 * @since 1.0
 	 */
 	protected BigDecimalIrationalNumber(BigDecimal initial, AlgorithmStrategy<BigDecimal> algorithm, BigDecimal... xn) {
@@ -125,5 +125,4 @@ public class BigDecimalIrationalNumber implements MemorizedIrationalNumber<BigDe
 	public boolean isExact() {
 		return this.value.isMarked();
 	}
-
 }

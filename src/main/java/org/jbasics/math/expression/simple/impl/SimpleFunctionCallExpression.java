@@ -24,13 +24,13 @@
  */
 package org.jbasics.math.expression.simple.impl;
 
-import java.math.BigDecimal;
-import java.util.Collection;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.math.expression.simple.SimpleExpression;
 import org.jbasics.math.expression.simple.SimpleExpressionContext;
+
+import java.math.BigDecimal;
+import java.util.Collection;
 
 public class SimpleFunctionCallExpression extends SimpleExpression {
 	private final String functionName;
@@ -68,6 +68,13 @@ public class SimpleFunctionCallExpression extends SimpleExpression {
 	}
 
 	@Override
+	public <T extends Collection<String>> void collectSymbols(final T collection) {
+		for (final SimpleExpression e : this.parameterExpressions) {
+			e.collectSymbols(collection);
+		}
+	}
+
+	@Override
 	public String toString() {
 		final StringBuilder b = new StringBuilder();
 		b.append(this.functionName).append("(");
@@ -82,12 +89,4 @@ public class SimpleFunctionCallExpression extends SimpleExpression {
 		}
 		return b.append(")").toString();
 	}
-
-	@Override
-	public <T extends Collection<String>> void collectSymbols(final T collection) {
-		for (final SimpleExpression e : this.parameterExpressions) {
-			e.collectSymbols(collection);
-		}
-	}
-
 }

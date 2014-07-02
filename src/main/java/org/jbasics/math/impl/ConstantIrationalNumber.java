@@ -24,15 +24,15 @@
  */
 package org.jbasics.math.impl;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.IrationalNumber;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+
 /**
  * Holds a constant number offering the {@link IrationalNumber} interface.
- * 
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -41,9 +41,9 @@ public final class ConstantIrationalNumber implements IrationalNumber<BigDecimal
 
 	/**
 	 * Create a constant {@link IrationalNumber} with the given value (must not be null).
-	 * 
-	 * @param value The constant value to return by the {@link IrationalNumber} interface (must not
-	 *            be null).
+	 *
+	 * @param value The constant value to return by the {@link IrationalNumber} interface (must not be null).
+	 *
 	 * @throws IllegalArgumentException when the given value is null.
 	 * @since 1.0
 	 */
@@ -58,5 +58,4 @@ public final class ConstantIrationalNumber implements IrationalNumber<BigDecimal
 	public BigDecimal valueToPrecision(MathContext mc) {
 		return this.value;
 	}
-
 }

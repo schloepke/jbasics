@@ -24,6 +24,13 @@
  */
 package org.jbasics.testing;
 
+import org.junit.runner.Runner;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Suite;
+import org.junit.runners.model.FrameworkMethod;
+import org.junit.runners.model.InitializationError;
+import org.junit.runners.model.TestClass;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -32,22 +39,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.runner.Runner;
-import org.junit.runners.Parameterized.Parameters;
-import org.junit.runners.Suite;
-import org.junit.runners.model.FrameworkMethod;
-import org.junit.runners.model.InitializationError;
-import org.junit.runners.model.TestClass;
-
 public class ParallelizedParameterized extends Suite {
-
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target(ElementType.TYPE)
-	public @interface ParallelizedConfig {
-		int threads() default 10;
-
-		long timeout() default 15;
-	}
 
 	public ParallelizedParameterized(final Class<?> type) throws Throwable {
 		super(type, new ArrayList<Runner>());
@@ -84,4 +76,11 @@ public class ParallelizedParameterized extends Suite {
 		return new ParameterizedTestRunner(testClass.getJavaClass(), tests.get(i), i);
 	}
 
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.TYPE)
+	public @interface ParallelizedConfig {
+		int threads() default 10;
+
+		long timeout() default 15;
+	}
 }

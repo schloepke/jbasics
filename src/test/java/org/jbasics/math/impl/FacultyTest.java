@@ -24,6 +24,10 @@
  */
 package org.jbasics.math.impl;
 
+import org.jbasics.math.BigRational;
+import org.jbasics.math.IrationalNumber;
+import org.junit.Test;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -31,12 +35,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
-
-import org.jbasics.math.BigRational;
-import org.jbasics.math.IrationalNumber;
-import org.jbasics.math.impl.ExponentialIrationalNumber;
-import org.jbasics.math.impl.Faculty;
-import org.junit.Test;
 
 public class FacultyTest {
 
@@ -72,11 +70,10 @@ public class FacultyTest {
 		} while (i < 100);
 		result = result.reduce();
 		System.out.println(f.toString().length());
-		System.out.println("---\n"+result);
-		System.out.println("S:"+(result.numerator().toString().length()+result.denominator().toString().length()));
+		System.out.println("---\n" + result);
+		System.out.println("S:" + (result.numerator().toString().length() + result.denominator().toString().length()));
 		MathContext mc = new MathContext(100);
 		System.out.println(E.valueToPrecision(mc));
 		System.out.println(result.decimalValue(mc));
 	}
-
 }

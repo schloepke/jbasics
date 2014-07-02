@@ -27,5 +27,4 @@ package org.jbasics.pattern.transpose;
 public interface ElementFilter<E> {
 
 	boolean isElementFiltered(E element);
-
 }

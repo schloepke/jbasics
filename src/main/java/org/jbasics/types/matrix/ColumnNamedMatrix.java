@@ -24,6 +24,10 @@
  */
 package org.jbasics.types.matrix;
 
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.pattern.transpose.Transposer;
+import org.jbasics.text.StringUtilities;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,10 +35,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.pattern.transpose.Transposer;
-import org.jbasics.text.StringUtilities;
 
 public class ColumnNamedMatrix<T> implements Iterable<List<T>> {
 	private final String[] columns;
@@ -70,28 +70,12 @@ public class ColumnNamedMatrix<T> implements Iterable<List<T>> {
 		return this.columns[columnIndex];
 	}
 
-	public int getColumnIndex(final String columnName) {
-		String temp = ContractCheck.mustNotBeNullOrEmpty(columnName, "columnName").intern(); //$NON-NLS-1$
-		for (int i = 0; i < this.columns.length; i++) {
-			if (temp == this.columns[i]) {
-				return i;
-			}
-		}
-		return -1;
-	}
-
 	public Iterator<List<T>> iterator() {
 		return this.rows.iterator();
 	}
 
 	public ColumnNamedMatrix<T> appendRow(final T... data) {
 		this.rows.add(Arrays.asList(ContractCheck.mustMatchSizeAndNotBeNull(data, this.columns.length, "data")));
-		this.currentRow = this.rows.size() - 1;
-		return this;
-	}
-
-	public ColumnNamedMatrix<T> appendRow(final List<T> data) {
-		this.rows.add(new ArrayList<T>(ContractCheck.mustMatchSizeAndNotBeNull(data, this.columns.length, "data")));
 		this.currentRow = this.rows.size() - 1;
 		return this;
 	}
@@ -120,16 +104,16 @@ public class ColumnNamedMatrix<T> implements Iterable<List<T>> {
 		return this;
 	}
 
-	public boolean hasNextRow() {
-		return !this.rows.isEmpty() && (this.currentRow < this.rows.size() - 1);
-	}
-
 	public ColumnNamedMatrix<T> nextRow() {
 		if (!hasNextRow()) {
 			throw new NoSuchElementException();
 		}
 		this.currentRow++;
 		return this;
+	}
+
+	public boolean hasNextRow() {
+		return !this.rows.isEmpty() && (this.currentRow < this.rows.size() - 1);
 	}
 
 	public int getRow() {
@@ -144,6 +128,10 @@ public class ColumnNamedMatrix<T> implements Iterable<List<T>> {
 		return this;
 	}
 
+	public ColumnNamedMatrix<T> setCell(final String column, final int row, final T value) {
+		return setCell(getColumnIndex(column), row, value);
+	}
+
 	public ColumnNamedMatrix<T> setCell(final int column, final int row, final T value) {
 		if (row < 0 || column < 0 || column >= this.columns.length || row >= this.rows.size()) {
 			throw new NoSuchElementException();
@@ -152,8 +140,14 @@ public class ColumnNamedMatrix<T> implements Iterable<List<T>> {
 		return this;
 	}
 
-	public ColumnNamedMatrix<T> setCell(final String column, final int row, final T value) {
-		return setCell(getColumnIndex(column), row, value);
+	public int getColumnIndex(final String columnName) {
+		String temp = ContractCheck.mustNotBeNullOrEmpty(columnName, "columnName").intern(); //$NON-NLS-1$
+		for (int i = 0; i < this.columns.length; i++) {
+			if (temp == this.columns[i]) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	public ColumnNamedMatrix<T> setCellIfColumnExists(final String column, final int row, final T value) {
@@ -182,12 +176,12 @@ public class ColumnNamedMatrix<T> implements Iterable<List<T>> {
 		}
 	}
 
-	public T getCell(final int column, final int row) {
-		return this.rows.get(row).get(column);
-	}
-
 	public T getCell(final String column, final int row) {
 		return getCell(getColumnIndex(column), row);
+	}
+
+	public T getCell(final int column, final int row) {
+		return this.rows.get(row).get(column);
 	}
 
 	public T getCellInCurrentRow(final int column) {
@@ -198,22 +192,12 @@ public class ColumnNamedMatrix<T> implements Iterable<List<T>> {
 		return getCell(getColumnIndex(column), this.currentRow);
 	}
 
-	public void setValueToStringTransposer(final Transposer<String, T> valueToStringTransposer) {
-		this.valueToStringTransposer = valueToStringTransposer;
-	}
-
 	public Transposer<String, T> getValueToStringTransposer() {
 		return this.valueToStringTransposer;
 	}
 
-	@Override
-	public String toString() {
-		StringBuilder temp = new StringBuilder();
-		temp.append(StringUtilities.join(", ", this.columns)).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
-		for (List<T> row : this.rows) {
-			temp.append(StringUtilities.joinToString(", ", this.valueToStringTransposer, row)).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-		return temp.toString();
+	public void setValueToStringTransposer(final Transposer<String, T> valueToStringTransposer) {
+		this.valueToStringTransposer = valueToStringTransposer;
 	}
 
 	/*
@@ -241,6 +225,16 @@ public class ColumnNamedMatrix<T> implements Iterable<List<T>> {
 		}
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder temp = new StringBuilder();
+		temp.append(StringUtilities.join(", ", this.columns)).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
+		for (List<T> row : this.rows) {
+			temp.append(StringUtilities.joinToString(", ", this.valueToStringTransposer, row)).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
+		return temp.toString();
+	}
+
 	public ColumnNamedMatrix<String> diffMatrix(final ColumnNamedMatrix<?> input) {
 		ColumnNamedMatrix<String> result = new ColumnNamedMatrix<String>(this.columns);
 		int maxRows = Math.max(this.rows.size(), input.rows.size());
@@ -252,6 +246,12 @@ public class ColumnNamedMatrix<T> implements Iterable<List<T>> {
 			}
 		}
 		return result;
+	}
+
+	public ColumnNamedMatrix<T> appendRow(final List<T> data) {
+		this.rows.add(new ArrayList<T>(ContractCheck.mustMatchSizeAndNotBeNull(data, this.columns.length, "data")));
+		this.currentRow = this.rows.size() - 1;
+		return this;
 	}
 
 	private List<String> diffLine(final List<?> lhs, final List<?> rhs) {
@@ -267,5 +267,4 @@ public class ColumnNamedMatrix<T> implements Iterable<List<T>> {
 		}
 		return result;
 	}
-
 }

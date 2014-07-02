@@ -24,11 +24,11 @@
  */
 package org.jbasics.types.factories;
 
+import org.jbasics.pattern.factory.Factory;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-
-import org.jbasics.pattern.factory.Factory;
 
 public class ReflectionFactory<T> implements Factory<T> {
 	public static final String DEFAULT_FACTORY_METHOD_NAME = "newInstance";
@@ -40,8 +40,10 @@ public class ReflectionFactory<T> implements Factory<T> {
 	}
 
 	public ReflectionFactory(Class<T> type, String factoryMethodName) {
-		if (type == null || factoryMethodName == null) { throw new IllegalArgumentException(
-				"Null parameter: type | factoryMethodName"); }
+		if (type == null || factoryMethodName == null) {
+			throw new IllegalArgumentException(
+					"Null parameter: type | factoryMethodName");
+		}
 		this.type = type;
 		Method factoryMethod = null;
 		try {
@@ -67,13 +69,13 @@ public class ReflectionFactory<T> implements Factory<T> {
 			}
 		}
 	}
-	
+
 	public static <T> Factory<T> create(Class<T> input) {
 		return new ReflectionFactory<T>(input);
 	}
 
 	@SuppressWarnings("unchecked")
-    public T newInstance() {
+	public T newInstance() {
 		try {
 			if (this.staticFactoryMethod != null) {
 				return (T) this.staticFactoryMethod.invoke(null);
@@ -92,5 +94,4 @@ public class ReflectionFactory<T> implements Factory<T> {
 			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
-
 }

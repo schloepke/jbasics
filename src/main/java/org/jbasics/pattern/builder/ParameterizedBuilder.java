@@ -32,5 +32,4 @@ public interface ParameterizedBuilder<BuildType, ParameterType> extends Builder<
 	 * @return The completly build instance.
 	 */
 	BuildType build(ParameterType... parameters);
-
 }

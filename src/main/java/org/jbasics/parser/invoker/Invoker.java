@@ -29,5 +29,4 @@ import javax.xml.namespace.QName;
 public interface Invoker<InstanceType, DataType> {
 
 	void invoke(InstanceType instance, QName name, DataType data);
-
 }

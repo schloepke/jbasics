@@ -29,5 +29,4 @@ import javax.persistence.EntityManager;
 public interface TransactionRunnable {
 
 	void runTransactional(EntityManager em);
-
 }

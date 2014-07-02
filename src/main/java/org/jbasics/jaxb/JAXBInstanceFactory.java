@@ -24,17 +24,16 @@
  */
 package org.jbasics.jaxb;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URL;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.net.URLMappingFactory;
 import org.jbasics.pattern.factory.Factory;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.File;
+import java.net.URI;
+import java.net.URL;
 
 public class JAXBInstanceFactory<T> implements Factory<T> {
 	private final JAXBUnmarshallerPool pool;
@@ -64,5 +63,4 @@ public class JAXBInstanceFactory<T> implements Factory<T> {
 			this.pool.release(um);
 		}
 	}
-
 }

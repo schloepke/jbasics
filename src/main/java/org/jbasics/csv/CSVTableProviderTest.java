@@ -24,14 +24,12 @@
  */
 package org.jbasics.csv;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import junit.framework.Assert;
+import org.junit.Test;
 
 import javax.ws.rs.core.MediaType;
-
-import junit.framework.Assert;
-
-import org.junit.Test;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 public class CSVTableProviderTest {
 	String commaEasy = "A,B,C,D\na,b,c,d\n1,2,3,4";
@@ -66,5 +64,4 @@ public class CSVTableProviderTest {
 		CSVTable temp = this.provider.readFrom(CSVTable.class, null, null, MediaType.valueOf("text/csv;header=present"), null, new ByteArrayInputStream(content.getBytes()));
 		return temp.getSeparator() == ';';
 	}
-
 }

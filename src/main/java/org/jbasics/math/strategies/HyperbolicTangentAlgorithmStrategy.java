@@ -24,21 +24,16 @@
  */
 package org.jbasics.math.strategies;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-
 import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.impl.MathImplConstants;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+
 /**
- * The Hyperbolic Tangent function algorithm.
- * <p>
- * Hyperbolic Tangent is defined as:
- * <p style="margin-left: 2 em">
- * tanh(x) = (e<sup>x</sup> - 1) / (e<sup>-x</sup> + 1)
- * </p>
- * </p>
- * 
+ * The Hyperbolic Tangent function algorithm. <p> Hyperbolic Tangent is defined as: <p style="margin-left: 2 em">
+ * tanh(x) = (e<sup>x</sup> - 1) / (e<sup>-x</sup> + 1) </p> </p>
+ *
  * @author Stephan Schloepke
  */
 public class HyperbolicTangentAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
@@ -62,5 +57,4 @@ public class HyperbolicTangentAlgorithmStrategy implements AlgorithmStrategy<Big
 		BigDecimal exp2X = this.exp.calculate(mc, null, xn[0].multiply(MathImplConstants.TWO, mc));
 		return exp2X.subtract(BigDecimal.ONE).divide(exp2X.add(BigDecimal.ONE), mc);
 	}
-
 }

@@ -24,24 +24,21 @@
  */
 package org.jbasics.types.transpose;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.xml.datatype.XMLGregorianCalendar;
-
 import junit.framework.Assert;
-
 import org.jbasics.xml.XMLDateConverter;
 import org.junit.Test;
+
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.util.Date;
+import java.util.List;
 
 public class ArrayTransposerTest {
 
 	@Test
 	public void testSimple() {
-		Date[] input = new Date[] { new Date(), new Date(), new Date() };
+		Date[] input = new Date[]{new Date(), new Date(), new Date()};
 		ArrayTransposer<XMLGregorianCalendar, Date> t = new ArrayTransposer<XMLGregorianCalendar, Date>(XMLDateConverter.TO_XML_DATE_FACTORY);
 		List<XMLGregorianCalendar> output = t.transpose(input);
 		Assert.assertEquals(input.length, output.size());
 	}
-
 }

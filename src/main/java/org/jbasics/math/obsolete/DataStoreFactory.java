@@ -24,12 +24,7 @@
  */
 package org.jbasics.math.obsolete;
 
-
 public class DataStoreFactory {
-
-	public static DataStorage<?> create() {
-		return new IntegerMagnitude();
-	}
 
 	public static DataStorage<?> create(int value) {
 		if (value == 0) {
@@ -37,6 +32,10 @@ public class DataStoreFactory {
 		} else {
 			return new IntegerMagnitude(value);
 		}
+	}
+
+	public static DataStorage<?> create() {
+		return new IntegerMagnitude();
 	}
 
 	public static DataStorage<?> create(long value) {
@@ -50,5 +49,4 @@ public class DataStoreFactory {
 	public static DataStorage<?> create(byte[] value) {
 		return new IntegerMagnitude(value);
 	}
-
 }

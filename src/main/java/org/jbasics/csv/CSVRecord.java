@@ -24,14 +24,14 @@
  */
 package org.jbasics.csv;
 
+import org.jbasics.arrays.ArrayConstants;
+import org.jbasics.arrays.unstable.ArrayIterator;
+import org.jbasics.pattern.container.Indexed;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-
-import org.jbasics.arrays.ArrayConstants;
-import org.jbasics.arrays.unstable.ArrayIterator;
-import org.jbasics.pattern.container.Indexed;
 
 public class CSVRecord implements Iterable<String>, Indexed<String> {
 	private final String[] fields;
@@ -61,6 +61,11 @@ public class CSVRecord implements Iterable<String>, Indexed<String> {
 		return this.fields.length;
 	}
 
+	@Override
+	public String getElementAtIndex(final int index) {
+		return getField(index);
+	}
+
 	public String getField(final int index) {
 		return this.fields[index];
 	}
@@ -76,11 +81,6 @@ public class CSVRecord implements Iterable<String>, Indexed<String> {
 			appendValue(field, appendable, separator);
 		}
 		return appendable;
-	}
-
-	@Override
-	public String toString() {
-		return Arrays.toString(this.fields);
 	}
 
 	private Appendable appendValue(final String value, final Appendable appendable, final char separator) throws IOException {
@@ -114,8 +114,7 @@ public class CSVRecord implements Iterable<String>, Indexed<String> {
 	}
 
 	@Override
-	public String getElementAtIndex(final int index) {
-		return getField(index);
+	public String toString() {
+		return Arrays.toString(this.fields);
 	}
-
 }

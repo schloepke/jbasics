@@ -29,9 +29,73 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class TimeProfile {
-	private final int iterations;
 	private static Map<String, Area> marked;
 	private static long fixup;
+	private final int iterations;
+
+	public TimeProfile(int iterations) {
+		if (iterations < 1) {
+			this.iterations = 1;
+		} else {
+			this.iterations = iterations;
+		}
+	}
+
+	public static void areaStart(String name) {
+		long tmp = System.currentTimeMillis();
+		if (marked == null) {
+			return;
+		}
+		Area a = marked.get(name);
+		if (a == null) {
+			a = new Area();
+			marked.put(name, a);
+		}
+		a.start();
+		fixup += System.currentTimeMillis() - tmp;
+	}
+
+	public static void areaStop(String name) {
+		long tmp = System.currentTimeMillis();
+		if (marked == null) {
+			return;
+		}
+		Area a = marked.get(name);
+		if (a == null) {
+			throw new IllegalStateException("Area not started so cannot stop " + name);
+		}
+		a.stop(tmp);
+		fixup += System.currentTimeMillis() - tmp;
+	}
+
+	public Result profile(Callable<?> proband) {
+		try {
+			proband.call();
+		} catch (Exception e) {
+			// ignore
+		}
+		marked = new HashMap<String, Area>();
+		fixup = 0;
+		long start = System.currentTimeMillis();
+		for (int i = this.iterations; i > 0; i--) {
+			try {
+				proband.call();
+			} catch (Exception e) {
+				// ignore
+			}
+		}
+		long end = System.currentTimeMillis();
+		double total = (end - start - fixup) / (double) this.iterations;
+		Map<String, Double> markedResult = null;
+		if (!marked.isEmpty()) {
+			markedResult = new HashMap<String, Double>();
+			for (Map.Entry<String, Area> area : marked.entrySet()) {
+				double areaTotal = area.getValue().getRuntime(end) / (double) this.iterations;
+				markedResult.put(area.getKey(), Double.valueOf(Math.ceil(areaTotal * 1000) / 1000));
+			}
+		}
+		return new Result(total, markedResult);
+	}
 
 	public static class Area {
 		private long running;
@@ -67,7 +131,7 @@ public class TimeProfile {
 				return this.running + (System.currentTimeMillis() - this.start);
 			}
 		}
-		
+
 		public long getRuntime(long time) {
 			if (this.start == 0) {
 				return this.running;
@@ -75,22 +139,21 @@ public class TimeProfile {
 				return this.running + (time - this.start);
 			}
 		}
-		
 	}
 
 	public static class Result {
 		private final double total;
 		private final Map<String, Double> areas;
-		
+
 		public Result(double total, Map<String, Double> areas) {
 			this.total = total;
 			this.areas = areas;
 		}
-		
+
 		public double getTotal() {
 			return this.total;
 		}
-		
+
 		public String toString() {
 			StringBuilder t = new StringBuilder();
 			t.append(this.total).append("ms");
@@ -104,72 +167,5 @@ public class TimeProfile {
 			}
 			return t.toString();
 		}
-		
 	}
-	
-	
-	public TimeProfile(int iterations) {
-		if (iterations < 1) {
-			this.iterations = 1;
-		} else {
-			this.iterations = iterations;
-		}
-	}
-
-	public Result profile(Callable<?> proband) {
-		try {
-			proband.call();
-		} catch (Exception e) {
-			// ignore
-		}
-		marked = new HashMap<String, Area>();
-		fixup = 0;
-		long start = System.currentTimeMillis();
-		for (int i = this.iterations; i > 0; i--) {
-			try {
-				proband.call();
-			} catch (Exception e) {
-				// ignore
-			}
-		}
-		long end = System.currentTimeMillis();
-		double total = (end - start - fixup)  / (double) this.iterations;
-		Map<String, Double> markedResult = null;
-		if (!marked.isEmpty()) {
-			markedResult = new HashMap<String, Double>();
-			for(Map.Entry<String, Area> area : marked.entrySet()) {
-				double areaTotal = area.getValue().getRuntime(end) / (double) this.iterations;
-				markedResult.put(area.getKey(), Double.valueOf(Math.ceil(areaTotal * 1000) / 1000));
-			}
-		}
-		return new Result(total, markedResult);
-	}
-
-	public static void areaStart(String name) {
-		long tmp = System.currentTimeMillis();
-		if (marked == null) {
-			return;
-		}
-		Area a = marked.get(name);
-		if (a == null) {
-			a = new Area();
-			marked.put(name, a);
-		}
-		a.start();
-		fixup += System.currentTimeMillis() - tmp;
-	}
-
-	public static void areaStop(String name) {
-		long tmp = System.currentTimeMillis();
-		if (marked == null) {
-			return;
-		}
-		Area a = marked.get(name);
-		if (a == null) {
-			throw new IllegalStateException("Area not started so cannot stop " + name);
-		}
-		a.stop(tmp);
-		fixup += System.currentTimeMillis() - tmp;
-	}
-
 }

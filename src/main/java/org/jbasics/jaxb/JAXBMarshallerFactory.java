@@ -24,36 +24,36 @@
  */
 package org.jbasics.jaxb;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.validation.Schema;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.types.delegates.LazySoftReferenceDelegate;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.validation.Schema;
+
 public class JAXBMarshallerFactory implements Factory<Marshaller> {
 	private final Delegate<JAXBContext> jaxbContextDelegate;
 	private final Schema schema;
+
+	public JAXBMarshallerFactory(final Delegate<JAXBContext> contextDelegate) {
+		this(contextDelegate, null);
+	}
 
 	public JAXBMarshallerFactory(final Delegate<JAXBContext> contextDelegate, final Schema schema) {
 		this.jaxbContextDelegate = ContractCheck.mustNotBeNull(contextDelegate, "contextDelegate"); //$NON-NLS-1$
 		this.schema = schema;
 	}
 
-	public JAXBMarshallerFactory(final Delegate<JAXBContext> contextDelegate) {
-		this(contextDelegate, null);
+	public JAXBMarshallerFactory(final Factory<JAXBContext> contextFactory) {
+		this(contextFactory, null);
 	}
 
 	public JAXBMarshallerFactory(final Factory<JAXBContext> contextFactory, final Schema schema) {
 		this(new LazySoftReferenceDelegate<JAXBContext>(ContractCheck.mustNotBeNull(contextFactory, "contextFactory")), schema); //$NON-NLS-1$
-	}
-
-	public JAXBMarshallerFactory(final Factory<JAXBContext> contextFactory) {
-		this(contextFactory, null);
 	}
 
 	public Marshaller newInstance() {

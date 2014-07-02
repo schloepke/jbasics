@@ -27,5 +27,4 @@ package org.jbasics.pattern.modifer;
 public interface Concatable<T> {
 
 	T concat(T other);
-
 }

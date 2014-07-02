@@ -24,11 +24,11 @@
  */
 package org.jbasics.math.approximation;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.types.tuples.Range;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
 
 public class ChainedApproximation implements Approximation {
 	private final Approximation[] chain;
@@ -52,5 +52,4 @@ public class ChainedApproximation implements Approximation {
 		}
 		return result;
 	}
-
 }

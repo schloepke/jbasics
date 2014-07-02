@@ -33,5 +33,4 @@ public class CommandsScanner {
 	public void scan(final Package packageName) {
 		throw new UnsupportedOperationException("Not yet implemented"); //$NON-NLS-1$
 	}
-
 }

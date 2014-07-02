@@ -25,18 +25,14 @@
 package org.jbasics.types.sequences;
 
 /**
- * {@link CharSequence} which is based on an array of characters without copying or modifying the array.
- * <p>
- * Because this {@link CharSequence} does not alter or copy the array the caller needs to be sure that the character array is not altered from
- * outside. If so this {@link CharSequence} would change it's behavior. The benefit of this {@link CharSequence} is that a portion of a char array can
- * be used as sequence offering additional sub sequences without the need to clone or copy the char array. This is useful when the array is quite
- * large and only a portion needs to be used as sequence.
- * </p>
- * <p>
- * In case one requires a {@link CharSequence} with the guarantee that it cannot be altered from the outside ones it is created java offers the quite
- * useful class {@link String} for this.
- * </p>
- * 
+ * {@link CharSequence} which is based on an array of characters without copying or modifying the array. <p> Because
+ * this {@link CharSequence} does not alter or copy the array the caller needs to be sure that the character array is
+ * not altered from outside. If so this {@link CharSequence} would change it's behavior. The benefit of this {@link
+ * CharSequence} is that a portion of a char array can be used as sequence offering additional sub sequences without the
+ * need to clone or copy the char array. This is useful when the array is quite large and only a portion needs to be
+ * used as sequence. </p> <p> In case one requires a {@link CharSequence} with the guarantee that it cannot be altered
+ * from the outside ones it is created java offers the quite useful class {@link String} for this. </p>
+ *
  * @author Stephan Schloepke
  */
 public class ArrayCharacterSequence implements CharSequence {
@@ -46,7 +42,7 @@ public class ArrayCharacterSequence implements CharSequence {
 
 	/**
 	 * Creates an {@link CharSequence} for the given character array using the whole array.
-	 * 
+	 *
 	 * @param characters The characters
 	 */
 	public ArrayCharacterSequence(final char[] characters) {
@@ -55,10 +51,11 @@ public class ArrayCharacterSequence implements CharSequence {
 
 	/**
 	 * Create a {@link CharSequence} for the given characters starting at the given offset with the given length.
-	 * 
+	 *
 	 * @param characters The array (must not be null).
-	 * @param offset The offset in the array (must be in the range of the array length).
-	 * @param length The length to use (must be in the range of the array length without the the offset (offset + length < chars.length).
+	 * @param offset     The offset in the array (must be in the range of the array length).
+	 * @param length     The length to use (must be in the range of the array length without the the offset (offset +
+	 *                   length < chars.length).
 	 */
 	public ArrayCharacterSequence(final char[] characters, final int offset, final int length) {
 		if (characters == null) {
@@ -76,10 +73,23 @@ public class ArrayCharacterSequence implements CharSequence {
 	}
 
 	/**
+	 * Returns the length of this {@link CharSequence}.
+	 *
+	 * @return The length
+	 *
+	 * @see CharSequence#length()
+	 */
+	public int length() {
+		return this.length;
+	}
+
+	/**
 	 * Returns the character at the given index.
-	 * 
+	 *
 	 * @param index The index.
+	 *
 	 * @return The character at the index.
+	 *
 	 * @throws IndexOutOfBoundsException If the index is out of range.
 	 * @see CharSequence#charAt(int)
 	 */
@@ -91,21 +101,13 @@ public class ArrayCharacterSequence implements CharSequence {
 	}
 
 	/**
-	 * Returns the length of this {@link CharSequence}.
-	 * 
-	 * @return The length
-	 * @see CharSequence#length()
-	 */
-	public int length() {
-		return this.length;
-	}
-
-	/**
 	 * Returns a sub {@link CharSequence} starting at the start and up to the end.
-	 * 
+	 *
 	 * @param start The start index (must be in range).
-	 * @param end The end index (must be in range and is exclusive).
+	 * @param end   The end index (must be in range and is exclusive).
+	 *
 	 * @return A {@link CharSequence} representing a sub sequence of this {@link CharSequence}.
+	 *
 	 * @throws IndexOutOfBoundsException If the start or end is out of the index.
 	 * @see CharSequence#subSequence(int, int)
 	 */
@@ -121,13 +123,13 @@ public class ArrayCharacterSequence implements CharSequence {
 
 	/**
 	 * Returns a string as of {@link CharSequence#toString()} contract.
-	 * 
+	 *
 	 * @return A {@link String} of this {@link CharSequence}
+	 *
 	 * @see CharSequence#toString()
 	 */
 	@Override
 	public String toString() {
 		return new String(this.characters, this.offset, this.length);
 	}
-
 }

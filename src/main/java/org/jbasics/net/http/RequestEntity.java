@@ -24,6 +24,8 @@
  */
 package org.jbasics.net.http;
 
+import org.jbasics.net.mediatype.MediaType;
+
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -31,64 +33,61 @@ import java.io.OutputStream;
 import java.io.Writer;
 import java.util.Locale;
 
-import org.jbasics.net.mediatype.MediaType;
-
 /**
  * Represents the base for an entity send over PUT or POST. The headers are embedded in the entity.
- * 
+ *
  * @param <T> The type of the request entity.
+ *
  * @author Stephan Schloepke
  */
 public abstract class RequestEntity<T> extends RequestHeaders {
 
 	/**
 	 * Must be implemented to return the media type of the content.
-	 * 
+	 *
 	 * @return The media type of the content sent.
 	 */
 	public abstract MediaType getContentType();
 
 	/**
 	 * Returns the length of the content or null if not known.
-	 * 
+	 *
 	 * @return The length of the content or null if not known.
 	 */
 	public abstract int getContentLength();
 
 	/**
 	 * Returns the locale of the content or null if not known.
-	 * 
+	 *
 	 * @return The locale of the content or null if not known.
 	 */
 	public abstract Locale getContentLanguage();
 
 	/**
 	 * Returns the encoding of the content (not the character set encoding but encodings like gzip, deflate, identity).
-	 * 
+	 *
 	 * @return Returns the encoding or null if not specified.
 	 */
 	public abstract String getContentEncoding();
 
 	/**
 	 * Returns the MD5 hash of the content or null if no hash is specified.
-	 * 
+	 *
 	 * @return The MD5 hash of the content or null if no hash is specified.
 	 */
 	public abstract byte[] getContentMD5();
 
 	/**
-	 * Must be implemented to serialize the entity data.
-	 * <p>
-	 * It is import to realize that if an implementor wraps this {@link OutputStream} in a {@link Writer} or any buffered stream like the
-	 * {@link BufferedOutputStream} or the {@link BufferedWriter} the implementor needs to make sure that the stream or writer is flushed. It is also
-	 * required that if the content length returns a value other than zero that EXACTLY that amount of bytes need to be written to the output or an
-	 * exception is raised. In case of a compressed result the content length usually cannot be known at the time producing the header so the content
-	 * length should return a value of zero.
-	 * </p>
-	 * 
+	 * Must be implemented to serialize the entity data. <p> It is import to realize that if an implementor wraps this
+	 * {@link OutputStream} in a {@link Writer} or any buffered stream like the {@link BufferedOutputStream} or the
+	 * {@link BufferedWriter} the implementor needs to make sure that the stream or writer is flushed. It is also
+	 * required that if the content length returns a value other than zero that EXACTLY that amount of bytes need to be
+	 * written to the output or an exception is raised. In case of a compressed result the content length usually cannot
+	 * be known at the time producing the header so the content length should return a value of zero. </p>
+	 *
 	 * @param out The output stream to write to.
+	 *
 	 * @throws IOException If an IO error occurred.
 	 */
 	public abstract void serializeEntity(OutputStream out) throws IOException;
-
 }

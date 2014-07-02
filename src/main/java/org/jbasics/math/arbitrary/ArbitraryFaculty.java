@@ -24,7 +24,6 @@
  */
 package org.jbasics.math.arbitrary;
 
-
 public class ArbitraryFaculty {
 	private final int facultyStep;
 	private int current;
@@ -50,7 +49,6 @@ public class ArbitraryFaculty {
 		if (this.current == 0) {
 			this.value = ArbitraryInteger.ONE;
 			this.current++;
-
 		} else {
 			for (int k = this.facultyStep; k > 0; k--) {
 				this.value = this.value.multiply(ArbitraryInteger.valueOf(this.current++));
@@ -70,5 +68,4 @@ public class ArbitraryFaculty {
 	public ArbitraryInteger currentValue() {
 		return this.value;
 	}
-
 }

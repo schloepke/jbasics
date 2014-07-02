@@ -24,11 +24,10 @@
  */
 package org.jbasics.xml;
 
-import java.util.Date;
+import org.jbasics.pattern.factory.ParameterFactory;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.jbasics.pattern.factory.ParameterFactory;
+import java.util.Date;
 
 public final class XMLDateConverter {
 	public static final XMLDateFactory XML_DATE_FACTORY = new XMLDateFactory();
@@ -52,15 +51,8 @@ public final class XMLDateConverter {
 		return XMLDateConverter.XML_DATE_FACTORY.create(date);
 	}
 
-	public static Date convert(final XMLGregorianCalendar xmlDate) {
-		if (xmlDate == null) {
-			return null;
-		}
-		return xmlDate.toGregorianCalendar().getTime();
-	}
-
 	public static XMLGregorianCalendar convertDateTime(final int year, final int month, final int dayOfMonth, final int hour, final int minute,
-			final int second, final int tz) {
+													   final int second, final int tz) {
 		return XMLDateConverter.XML_DATE_FACTORY.createDateTime(year, month, dayOfMonth, hour, minute, second, tz);
 	}
 
@@ -83,9 +75,10 @@ public final class XMLDateConverter {
 	/**
 	 * Incorrectly written method name should be {@link #convert(XMLGregorianCalendar)} instead.
 	 *
-	 * @param xmlDate
-	 *            The xml date
+	 * @param xmlDate The xml date
+	 *
 	 * @return The converted date
+	 *
 	 * @deprecated
 	 */
 	@Deprecated
@@ -93,4 +86,10 @@ public final class XMLDateConverter {
 		return XMLDateConverter.convert(xmlDate);
 	}
 
+	public static Date convert(final XMLGregorianCalendar xmlDate) {
+		if (xmlDate == null) {
+			return null;
+		}
+		return xmlDate.toGregorianCalendar().getTime();
+	}
 }

@@ -24,13 +24,12 @@
  */
 package org.jbasics.math.obsolete;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-
-import org.jbasics.math.IrationalNumber;
 import org.jbasics.math.impl.ExponentialIrationalNumber;
 import org.jbasics.testing.Java14LoggingTestCase;
 import org.junit.Test;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
 
 public class TaylorFunctionTest extends Java14LoggingTestCase {
 
@@ -39,19 +38,18 @@ public class TaylorFunctionTest extends Java14LoggingTestCase {
 		MathContext mc = new MathContext(30);
 		long time = System.currentTimeMillis();
 		TaylorFunction temp = new TaylorFunction(1);
-		for(int i = 2; i < 40; i++) {
+		for (int i = 2; i < 40; i++) {
 			temp.extend(i);
 		}
 		BigDecimal result = temp.value().decimalValue(mc);
 		long used = System.currentTimeMillis() - time;
-		this.logger.info("Result:  "+result);
-		this.logger.info("... "+used+"ms");
+		this.logger.info("Result:  " + result);
+		this.logger.info("... " + used + "ms");
 		time = System.currentTimeMillis();
 		ExponentialIrationalNumber.E.valueToPrecision(mc);
 		used = System.currentTimeMillis() - time;
-		this.logger.info("Compare: "+ExponentialIrationalNumber.E.valueToPrecision(mc));
-		this.logger.info("... "+used+"ms");
-		this.logger.info("Distance: "+ExponentialIrationalNumber.E.valueToPrecision(mc).subtract(result).toEngineeringString());
+		this.logger.info("Compare: " + ExponentialIrationalNumber.E.valueToPrecision(mc));
+		this.logger.info("... " + used + "ms");
+		this.logger.info("Distance: " + ExponentialIrationalNumber.E.valueToPrecision(mc).subtract(result).toEngineeringString());
 	}
-
 }

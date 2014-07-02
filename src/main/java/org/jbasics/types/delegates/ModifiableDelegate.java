@@ -37,14 +37,13 @@ public final class ModifiableDelegate<T> implements MutableDelegate<T> {
 		return this.delegate;
 	}
 
-	public boolean isDelegateSet() {
-		return this.delegate != null;
-	}
-
 	public T setDelegate(final T delegate) {
 		T temp = this.delegate;
 		this.delegate = delegate;
 		return temp;
 	}
 
+	public boolean isDelegateSet() {
+		return this.delegate != null;
+	}
 }

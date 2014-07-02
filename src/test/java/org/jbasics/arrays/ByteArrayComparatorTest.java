@@ -77,9 +77,9 @@ public class ByteArrayComparatorTest {
 		Assert.assertEquals(-1, ByteArrayComparator.compareArrays(this.lessThanBase, this.base));
 		Assert.assertEquals(-1, ByteArrayComparator.compareArrays(ArrayConstants.ZERO_LENGTH_BYTE_ARRAY, this.base));
 		// single element compare
-		Assert.assertEquals(0, ByteArrayComparator.compareArrays(new byte[] { 10 }, new byte[] { 10 }));
-		Assert.assertEquals(1, ByteArrayComparator.compareArrays(new byte[] { 10 }, new byte[] { 8 }));
-		Assert.assertEquals(-1, ByteArrayComparator.compareArrays(new byte[] { 8 }, new byte[] { 10 }));
+		Assert.assertEquals(0, ByteArrayComparator.compareArrays(new byte[]{10}, new byte[]{10}));
+		Assert.assertEquals(1, ByteArrayComparator.compareArrays(new byte[]{10}, new byte[]{8}));
+		Assert.assertEquals(-1, ByteArrayComparator.compareArrays(new byte[]{8}, new byte[]{10}));
 	}
 
 	@Test

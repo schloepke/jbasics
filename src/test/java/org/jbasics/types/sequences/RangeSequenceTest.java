@@ -24,10 +24,9 @@
  */
 package org.jbasics.types.sequences;
 
+import org.jbasics.types.tuples.Range;
 import org.junit.Assert;
 import org.junit.Test;
-
-import org.jbasics.types.tuples.Range;
 
 public class RangeSequenceTest {
 	@Test

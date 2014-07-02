@@ -24,13 +24,13 @@
  */
 package org.jbasics.text;
 
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.utilities.DataUtilities;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.utilities.DataUtilities;
 
 public class JavaUtilLoggingWriter extends Writer {
 	private final Logger logger;
@@ -42,6 +42,15 @@ public class JavaUtilLoggingWriter extends Writer {
 
 	public JavaUtilLoggingWriter(final String loggerName) {
 		this(Logger.getLogger(ContractCheck.mustNotBeNullOrTrimmedEmpty(loggerName, "loggerName")));
+	}
+
+	public JavaUtilLoggingWriter(final Logger logger) {
+		this(logger, null);
+	}
+
+	public JavaUtilLoggingWriter(final Logger logger, final Level level) {
+		this.logger = ContractCheck.mustNotBeNull(logger, "logger");
+		this.level = DataUtilities.coalesce(level, Level.INFO);
 	}
 
 	public JavaUtilLoggingWriter(final String loggerName, final Level level) {
@@ -56,15 +65,6 @@ public class JavaUtilLoggingWriter extends Writer {
 		this(Logger.getLogger(ContractCheck.mustNotBeNull(loggerType, "loggerType").getName()), level);
 	}
 
-	public JavaUtilLoggingWriter(final Logger logger) {
-		this(logger, null);
-	}
-
-	public JavaUtilLoggingWriter(final Logger logger, final Level level) {
-		this.logger = ContractCheck.mustNotBeNull(logger, "logger");
-		this.level = DataUtilities.coalesce(level, Level.INFO);
-	}
-
 	@Override
 	public void write(final char[] cbuf, final int off, final int len) throws IOException {
 		if (this.logger.isLoggable(this.level)) {
@@ -73,13 +73,12 @@ public class JavaUtilLoggingWriter extends Writer {
 	}
 
 	@Override
-	public void close() throws IOException {
-		// Nothing to do hence we only send stuff to logger
-	}
-
-	@Override
 	public void flush() throws IOException {
 		// Nothing to do hence we only send stuff to logger
 	}
 
+	@Override
+	public void close() throws IOException {
+		// Nothing to do hence we only send stuff to logger
+	}
 }

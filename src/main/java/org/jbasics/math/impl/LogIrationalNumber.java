@@ -24,21 +24,20 @@
  */
 package org.jbasics.math.impl;
 
-import java.math.BigDecimal;
-
 import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.IrationalNumber;
 import org.jbasics.math.strategies.LogarithmAlgorithmStrategy;
 
+import java.math.BigDecimal;
+
 public class LogIrationalNumber extends BigDecimalIrationalNumber {
 	private static final AlgorithmStrategy<BigDecimal> STRATEGY = new LogarithmAlgorithmStrategy();
-
-	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x, BigDecimal base) {
-		return new LogIrationalNumber(x, base);
-	}
 
 	private LogIrationalNumber(BigDecimal x, BigDecimal base) {
 		super(STRATEGY, x, base);
 	}
 
+	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x, BigDecimal base) {
+		return new LogIrationalNumber(x, base);
+	}
 }

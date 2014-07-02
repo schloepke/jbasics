@@ -24,15 +24,15 @@
  */
 package org.jbasics.math.strategies;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-
 import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.IrationalNumber;
 import org.jbasics.math.impl.MathImplConstants;
 import org.jbasics.math.impl.SquareRootIrationalNumber;
 import org.jbasics.math.impl.SquareRootReciprocalIrationalNumber;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 public class PiAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
 
@@ -59,5 +59,4 @@ public class PiAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
 			return pi.multiply(xn[0], mc);
 		}
 	}
-
 }

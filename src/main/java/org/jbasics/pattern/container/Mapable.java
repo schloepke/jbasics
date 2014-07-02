@@ -24,12 +24,11 @@
  */
 package org.jbasics.pattern.container;
 
-import java.util.Map;
-
 import org.jbasics.pattern.factory.ParameterFactory;
+
+import java.util.Map;
 
 public interface Mapable<K, V> {
 
 	Map<K, V> map(ParameterFactory<K, V> keyFactory);
-
 }

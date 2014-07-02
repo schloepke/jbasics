@@ -41,12 +41,8 @@ public class PropertyMethodTypeInfo {
 	private final Type valueType;
 	private PropertyMethodTypeInfo counterpart;
 
-	public enum CollectionType {
-		NONE, COLLECTION, LIST, SET, MAP;
-	}
-
 	private PropertyMethodTypeInfo(final Method method, final boolean getMethod, final CollectionType collectionType, final Type keyType,
-			final Type valueType) {
+								   final Type valueType) {
 		if (method == null || collectionType == null || valueType == null) {
 			throw new IllegalArgumentException("Null parameter: method | collectionType | valueType");
 		}
@@ -60,101 +56,6 @@ public class PropertyMethodTypeInfo {
 		this.collectionType = collectionType;
 		this.keyType = keyType;
 		this.valueType = valueType;
-	}
-
-	public Object invokePut(final Object instance, final Object key, final Object value) throws InvocationTargetException, IllegalAccessException {
-		if (isGetMethod()) {
-			if (isMapType()) {
-				Map temp = (Map) this.method.invoke(instance);
-				return temp.put(key, value);
-			} else if (isCollectionType()) {
-				Collection temp = (Collection) this.method.invoke(instance);
-				return temp.add(value);
-			} else {
-				throw new UnsupportedOperationException("invoking a set method on a get type info cannot be done");
-			}
-		} else if (isMapType()) {
-			return this.method.invoke(instance, key, value);
-		} else {
-			return this.method.invoke(instance, value);
-		}
-	}
-
-	public Object invokeSetOrAdd(final Object instance, final Object value) throws InvocationTargetException, IllegalAccessException {
-		if (isMapType()) {
-			throw new UnsupportedOperationException("Trying to invoke set on a map type invoker. Use invokePut with the key instead.");
-		}
-		if (!isGetMethod()) {
-			return this.method.invoke(instance, value);
-		} else if (this.counterpart != null) {
-			return this.counterpart.invokeSetOrAdd(instance, value);
-		} else {
-			throw new UnsupportedOperationException("invoking a set method on a get type info cannot be done");
-		}
-	}
-
-	public Object invokeGet(final Object instance) throws InvocationTargetException, IllegalAccessException {
-		if (isGetMethod()) {
-			return this.method.invoke(instance);
-		} else if (this.counterpart != null) {
-			return this.counterpart.invokeGet(instance);
-		} else {
-			throw new UnsupportedOperationException("invoking a get method on a get type info cannot be done");
-		}
-	}
-
-	public Method getMethod() {
-		return this.method;
-	}
-
-	public boolean isGetMethod() {
-		return this.getMethod;
-	}
-
-	public Type getKeyType() {
-		return this.keyType;
-	}
-
-	public Type getValueType() {
-		return this.valueType;
-	}
-
-	public CollectionType getCollectionType() {
-		return this.collectionType;
-	}
-
-	public boolean isSingleValueType() {
-		return this.collectionType == CollectionType.NONE;
-	}
-
-	public boolean isCollectionType() {
-		return this.collectionType == CollectionType.COLLECTION || this.collectionType == CollectionType.LIST
-				|| this.collectionType == CollectionType.SET;
-	}
-
-	public boolean isListType() {
-		return this.collectionType == CollectionType.LIST;
-	}
-
-	public boolean isSetType() {
-		return this.collectionType == CollectionType.SET;
-	}
-
-	public boolean isMapType() {
-		return this.collectionType == CollectionType.MAP;
-	}
-
-	public boolean isCompatible(final PropertyMethodTypeInfo checkWith) {
-		if (checkWith != null) {
-			if (isMapType()) {
-				return checkWith.isMapType() && getKeyType().equals(checkWith.getKeyType()) && getValueType().equals(checkWith.getValueType());
-			} else if (isCollectionType()) {
-				return !checkWith.isMapType() && getValueType().equals(checkWith.getValueType());
-			} else if (isSingleValueType()) {
-				return checkWith.isSingleValueType() && getValueType().equals(checkWith.getValueType());
-			}
-		}
-		return true;
 	}
 
 	public static PropertyMethodTypeInfo createCompatibleCounterpart(final Method method, final PropertyMethodTypeInfo counterpart) {
@@ -201,6 +102,23 @@ public class PropertyMethodTypeInfo {
 		}
 	}
 
+	public boolean isCompatible(final PropertyMethodTypeInfo checkWith) {
+		if (checkWith != null) {
+			if (isMapType()) {
+				return checkWith.isMapType() && getKeyType().equals(checkWith.getKeyType()) && getValueType().equals(checkWith.getValueType());
+			} else if (isCollectionType()) {
+				return !checkWith.isMapType() && getValueType().equals(checkWith.getValueType());
+			} else if (isSingleValueType()) {
+				return checkWith.isSingleValueType() && getValueType().equals(checkWith.getValueType());
+			}
+		}
+		return true;
+	}
+
+	public boolean isGetMethod() {
+		return this.getMethod;
+	}
+
 	private static PropertyMethodTypeInfo resolveValueType(final Method method, final boolean getMethod, final Class<?>... types) {
 		if (types.length == 1) {
 			// Works for the case that we have a single set type or the return type
@@ -220,8 +138,29 @@ public class PropertyMethodTypeInfo {
 		}
 	}
 
+	public boolean isMapType() {
+		return this.collectionType == CollectionType.MAP;
+	}
+
+	public Type getKeyType() {
+		return this.keyType;
+	}
+
+	public Type getValueType() {
+		return this.valueType;
+	}
+
+	public boolean isCollectionType() {
+		return this.collectionType == CollectionType.COLLECTION || this.collectionType == CollectionType.LIST
+				|| this.collectionType == CollectionType.SET;
+	}
+
+	public boolean isSingleValueType() {
+		return this.collectionType == CollectionType.NONE;
+	}
+
 	private static PropertyMethodTypeInfo resolveCollectionType(final Method method, final boolean getMethod,
-			final Class<? extends Collection<?>> collectionType) {
+																final Class<? extends Collection<?>> collectionType) {
 		ParameterizedType temp = PropertyMethodTypeInfo.findGenericInterface(collectionType, Collection.class);
 		if (temp == null) {
 			throw new RuntimeException("Cannot introspec collection type");
@@ -269,4 +208,64 @@ public class PropertyMethodTypeInfo {
 		return null;
 	}
 
+	public Object invokePut(final Object instance, final Object key, final Object value) throws InvocationTargetException, IllegalAccessException {
+		if (isGetMethod()) {
+			if (isMapType()) {
+				Map temp = (Map) this.method.invoke(instance);
+				return temp.put(key, value);
+			} else if (isCollectionType()) {
+				Collection temp = (Collection) this.method.invoke(instance);
+				return temp.add(value);
+			} else {
+				throw new UnsupportedOperationException("invoking a set method on a get type info cannot be done");
+			}
+		} else if (isMapType()) {
+			return this.method.invoke(instance, key, value);
+		} else {
+			return this.method.invoke(instance, value);
+		}
+	}
+
+	public Object invokeSetOrAdd(final Object instance, final Object value) throws InvocationTargetException, IllegalAccessException {
+		if (isMapType()) {
+			throw new UnsupportedOperationException("Trying to invoke set on a map type invoker. Use invokePut with the key instead.");
+		}
+		if (!isGetMethod()) {
+			return this.method.invoke(instance, value);
+		} else if (this.counterpart != null) {
+			return this.counterpart.invokeSetOrAdd(instance, value);
+		} else {
+			throw new UnsupportedOperationException("invoking a set method on a get type info cannot be done");
+		}
+	}
+
+	public Object invokeGet(final Object instance) throws InvocationTargetException, IllegalAccessException {
+		if (isGetMethod()) {
+			return this.method.invoke(instance);
+		} else if (this.counterpart != null) {
+			return this.counterpart.invokeGet(instance);
+		} else {
+			throw new UnsupportedOperationException("invoking a get method on a get type info cannot be done");
+		}
+	}
+
+	public Method getMethod() {
+		return this.method;
+	}
+
+	public CollectionType getCollectionType() {
+		return this.collectionType;
+	}
+
+	public boolean isListType() {
+		return this.collectionType == CollectionType.LIST;
+	}
+
+	public boolean isSetType() {
+		return this.collectionType == CollectionType.SET;
+	}
+
+	public enum CollectionType {
+		NONE, COLLECTION, LIST, SET, MAP;
+	}
 }

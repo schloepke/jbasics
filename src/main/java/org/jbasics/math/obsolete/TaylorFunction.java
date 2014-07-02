@@ -24,16 +24,16 @@
  */
 package org.jbasics.math.obsolete;
 
-import java.math.BigInteger;
-
 import org.jbasics.math.BigRational;
+
+import java.math.BigInteger;
 
 public class TaylorFunction {
 	private BigRational current;
 	private BigInteger faculty;
 	private long facultyIndex;
 	@SuppressWarnings("unused")
-    private int facultyScale;
+	private int facultyScale;
 
 	public TaylorFunction(int n) {
 		this.current = BigRational.ONE;
@@ -49,12 +49,11 @@ public class TaylorFunction {
 		}
 	}
 
-	public BigRational value() {
-		return this.current;
-	}
-	
 	protected BigRational calculateNext(BigRational current, long i, BigInteger faculty) {
 		return current.extend(i).addNumerator(BigInteger.ONE);
 	}
 
+	public BigRational value() {
+		return this.current;
+	}
 }

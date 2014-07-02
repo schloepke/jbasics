@@ -24,12 +24,11 @@
  */
 package org.jbasics.parser.invoker;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import org.jbasics.checker.ContractCheck;
 
 import javax.xml.namespace.QName;
-
-import org.jbasics.checker.ContractCheck;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 @SuppressWarnings("unchecked")
 public class ElementInvoker<T, E> implements Invoker<T, E> {
@@ -45,6 +44,10 @@ public class ElementInvoker<T, E> implements Invoker<T, E> {
 		this.dataClass = (Class<E>) params[0];
 	}
 
+	public static <T, E> ElementInvoker<T, E> createInvoker(Class<T> instanceType, Class<E> dataType, Method method) {
+		return new ElementInvoker<T, E>(method);
+	}
+
 	public void invoke(T instance, QName name, E data) {
 		try {
 			this.method.invoke(instance, this.dataClass.cast(data));
@@ -54,9 +57,4 @@ public class ElementInvoker<T, E> implements Invoker<T, E> {
 			throw new RuntimeException(e);
 		}
 	}
-
-	public static <T, E> ElementInvoker<T, E> createInvoker(Class<T> instanceType, Class<E> dataType, Method method) {
-		return new ElementInvoker<T, E>(method);
-	}
-
 }

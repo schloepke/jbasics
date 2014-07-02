@@ -30,23 +30,16 @@ import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.pattern.delegation.ReleasableDelegate;
 
 /**
- * A {@link Delegate} which will lazy construct the instance for the given instance type.
- * <p>
- * It is very helpful when it is required to construct an instance based on a type but at the same time it should be
- * possible to also use an already created instance. In such a case the method signature requests a {@link Delegate} for
- * type T and you can use {@link UnmodifiableDelegate} for an already constructed instance or
- * {@link LazyInstanciationDelegate} if you want to lazy construct the instance based on type.
- * </p>
- * <p>
- * The instance for the given type will be created first time when the method {@link #delegate()} is called. Any
- * possible {@link Exception} thrown is converted to a {@link RuntimeException} by using the {@link DelegatedException}
- * concept.
- * </p>
- * <p>
- * It is also possible to release the constructed instance again with {@link #release()}. In such a case the next call
- * to {@link #delegate()} will construct a new instance.
- * </p>
- * 
+ * A {@link Delegate} which will lazy construct the instance for the given instance type. <p> It is very helpful when it
+ * is required to construct an instance based on a type but at the same time it should be possible to also use an
+ * already created instance. In such a case the method signature requests a {@link Delegate} for type T and you can use
+ * {@link UnmodifiableDelegate} for an already constructed instance or {@link LazyInstanciationDelegate} if you want to
+ * lazy construct the instance based on type. </p> <p> The instance for the given type will be created first time when
+ * the method {@link #delegate()} is called. Any possible {@link Exception} thrown is converted to a {@link
+ * RuntimeException} by using the {@link DelegatedException} concept. </p> <p> It is also possible to release the
+ * constructed instance again with {@link #release()}. In such a case the next call to {@link #delegate()} will
+ * construct a new instance. </p>
+ *
  * @param <T> The Instance type
  */
 public class LazyInstanciationDelegate<T> implements ReleasableDelegate<T> {
@@ -55,7 +48,7 @@ public class LazyInstanciationDelegate<T> implements ReleasableDelegate<T> {
 
 	/**
 	 * Create a delegate for the given instance type.
-	 * 
+	 *
 	 * @param instanceType The type of the instance to construct (must not be null).
 	 */
 	public LazyInstanciationDelegate(final Class<? extends T> instanceType) {
@@ -81,5 +74,4 @@ public class LazyInstanciationDelegate<T> implements ReleasableDelegate<T> {
 			return false;
 		}
 	}
-
 }

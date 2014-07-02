@@ -43,5 +43,4 @@ public class CommandExecutionException extends RuntimeException {
 	public CommandCall getCommand() {
 		return this.command;
 	}
-
 }

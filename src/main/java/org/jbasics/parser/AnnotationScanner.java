@@ -24,22 +24,7 @@
  */
 package org.jbasics.parser;
 
-import java.lang.reflect.Method;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import javax.xml.namespace.QName;
-
-import org.jbasics.parser.annotations.AnyAttribute;
-import org.jbasics.parser.annotations.AnyElement;
-import org.jbasics.parser.annotations.Attribute;
-import org.jbasics.parser.annotations.Comment;
-import org.jbasics.parser.annotations.Content;
-import org.jbasics.parser.annotations.Element;
-import org.jbasics.parser.annotations.ElementBuilder;
-import org.jbasics.parser.annotations.ElementImplementor;
-import org.jbasics.parser.annotations.ElementImplementors;
-import org.jbasics.parser.annotations.QualifiedName;
+import org.jbasics.parser.annotations.*;
 import org.jbasics.parser.invoker.AttributeInvoker;
 import org.jbasics.parser.invoker.ContentInvoker;
 import org.jbasics.parser.invoker.ElementInvoker;
@@ -50,6 +35,11 @@ import org.jbasics.pattern.builder.ReflectionBuilderFactory;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.types.factories.ReflectionFactory;
 import org.jbasics.types.tuples.Pair;
+
+import javax.xml.namespace.QName;
+import java.lang.reflect.Method;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public class AnnotationScanner {
@@ -82,7 +72,7 @@ public class AnnotationScanner {
 	}
 
 	private Pair<QName, ParsingInfoBuilder> scanElementImplementor(ParsingInfoBuilder builder,
-			ElementImplementor implementor) {
+																   ElementImplementor implementor) {
 		QName name = new QName(implementor.namespace(), implementor.localName());
 		Class<?> clazz = implementor.builderClass();
 		return new Pair<QName, ParsingInfoBuilder>(name, scan(builder, clazz));
@@ -104,7 +94,7 @@ public class AnnotationScanner {
 	}
 
 	private ParsingInfoBuilder scanType(ParsingInfoBuilder builder, Class<? extends Builder> builderType,
-			Factory<? extends Builder> builderFactory) {
+										Factory<? extends Builder> builderFactory) {
 		assert builderType != null;
 		builder.setBuilderType(builderType);
 		if (builderFactory != null) {
@@ -141,7 +131,7 @@ public class AnnotationScanner {
 	}
 
 	private void processContent(ParsingInfoBuilder builder, Class<? extends Builder> builderType, Method m,
-			Content contentElement) {
+								Content contentElement) {
 		if (contentElement.mixed()) {
 			throw new UnsupportedOperationException("Mixed content is not yet implemented");
 		} else {
@@ -149,12 +139,12 @@ public class AnnotationScanner {
 		}
 	}
 
-    private void processComment(ParsingInfoBuilder builder, Class<? extends Builder> builderType, Method m, Comment commentElement) {
-    	builder.setCommentInvoker(ContentInvoker.createInvoker(builderType, m));
-    }
+	private void processComment(ParsingInfoBuilder builder, Class<? extends Builder> builderType, Method m, Comment commentElement) {
+		builder.setCommentInvoker(ContentInvoker.createInvoker(builderType, m));
+	}
 
 	private ParsingInfoBuilder processAttribute(ParsingInfoBuilder builder, Class<? extends Builder> builderType,
-			Method m, Attribute directAttribute, AnyAttribute anyAttribute) {
+												Method m, Attribute directAttribute, AnyAttribute anyAttribute) {
 		assert m != null && (directAttribute != null || anyAttribute != null);
 		if (directAttribute != null) {
 			QName qualifiedName = new QName(directAttribute.namespace(), directAttribute.name());
@@ -166,7 +156,7 @@ public class AnnotationScanner {
 	}
 
 	private ParsingInfoBuilder processElement(ParsingInfoBuilder builder, Method m, Element directElement,
-			AnyElement anyElement) {
+											  AnyElement anyElement) {
 		assert m != null && (directElement != null || anyElement != null);
 		Class<?>[] params = m.getParameterTypes();
 		Class<?> type = null;
@@ -234,5 +224,4 @@ public class AnnotationScanner {
 		}
 		return false;
 	}
-
 }

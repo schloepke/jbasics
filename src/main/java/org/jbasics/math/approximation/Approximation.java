@@ -24,13 +24,15 @@
  */
 package org.jbasics.math.approximation;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.types.tuples.Range;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+
 public interface Approximation {
+
+	ApproximatedResult approximate(MathContext mc, BigDecimal c, Range<BigDecimal> range);
 
 	static class ApproximatedResult {
 		private final int usedIterations;
@@ -41,15 +43,15 @@ public interface Approximation {
 			this(usedIterations, approximatedValue, null);
 		}
 
-		public ApproximatedResult(final int usedIterations, final BigDecimal approximatedValue, final BigDecimal lastKnownRangeStart,
-				final BigDecimal lastKnownRangeEnd) {
-			this(usedIterations, approximatedValue, new Range<BigDecimal>(lastKnownRangeStart, true, lastKnownRangeEnd, true));
-		}
-
 		public ApproximatedResult(final int usedIterations, final BigDecimal approximatedValue, final Range<BigDecimal> approximationRange) {
 			this.usedIterations = usedIterations;
 			this.approximatedValue = ContractCheck.mustNotBeNull(approximatedValue, "approximatedValue"); //$NON-NLS-1$
 			this.approximationRange = approximationRange;
+		}
+
+		public ApproximatedResult(final int usedIterations, final BigDecimal approximatedValue, final BigDecimal lastKnownRangeStart,
+								  final BigDecimal lastKnownRangeEnd) {
+			this(usedIterations, approximatedValue, new Range<BigDecimal>(lastKnownRangeStart, true, lastKnownRangeEnd, true));
 		}
 
 		public int getUsedIterations() {
@@ -81,9 +83,5 @@ public interface Approximation {
 			}
 			return b.toString();
 		}
-
 	}
-
-	ApproximatedResult approximate(MathContext mc, BigDecimal c, Range<BigDecimal> range);
-
 }

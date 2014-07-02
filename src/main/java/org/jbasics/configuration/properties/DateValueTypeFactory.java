@@ -24,11 +24,11 @@
  */
 package org.jbasics.configuration.properties;
 
+import org.jbasics.pattern.factory.ParameterFactory;
+
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.jbasics.pattern.factory.ParameterFactory;
 
 public class DateValueTypeFactory implements ParameterFactory<XMLGregorianCalendar, String> {
 	public static final DateValueTypeFactory SHARED_INSTANCE = new DateValueTypeFactory();

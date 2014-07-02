@@ -24,6 +24,12 @@
  */
 package org.jbasics.versionmanager;
 
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.pattern.factory.Factory;
+import org.jbasics.pattern.resolver.Resolver;
+import org.jbasics.pattern.singleton.Singleton;
+import org.jbasics.types.singleton.SingletonInstance;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,24 +37,26 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.pattern.factory.Factory;
-import org.jbasics.pattern.resolver.Resolver;
-import org.jbasics.pattern.singleton.Singleton;
-import org.jbasics.types.singleton.SingletonInstance;
-
 public class VersionManager {
-	private static final Logger LOGGER = Logger.getLogger(VersionManager.class.getName());
-
 	public static final Singleton<VersionManager> SINGLETON = new SingletonInstance<VersionManager>(new Factory<VersionManager>() {
 		@Override
 		public VersionManager newInstance() {
 			return new VersionManager();
 		}
 	});
-
+	private static final Logger LOGGER = Logger.getLogger(VersionManager.class.getName());
 	private final ConcurrentMap<VersionIdentifier, VersionInformation> versions;
 	private final List<Resolver<VersionInformation, VersionIdentifier>> resolvers;
+
+	protected VersionManager() {
+		if (VersionManager.LOGGER.isLoggable(Level.FINE)) {
+			VersionManager.LOGGER.fine("Creating a new instace of version manager"); //$NON-NLS-1$
+		}
+		this.versions = new ConcurrentHashMap<VersionIdentifier, VersionInformation>();
+		this.resolvers = new ArrayList<Resolver<VersionInformation, VersionIdentifier>>();
+		this.resolvers.add(new MavenVersionResolver());
+		this.resolvers.add(new VersionsResourceResolver());
+	}
 
 	public static VersionManager instance() {
 		return VersionManager.SINGLETON.instance();
@@ -75,16 +83,6 @@ public class VersionManager {
 		return temp;
 	}
 
-	protected VersionManager() {
-		if (VersionManager.LOGGER.isLoggable(Level.FINE)) {
-			VersionManager.LOGGER.fine("Creating a new instace of version manager"); //$NON-NLS-1$
-		}
-		this.versions = new ConcurrentHashMap<VersionIdentifier, VersionInformation>();
-		this.resolvers = new ArrayList<Resolver<VersionInformation, VersionIdentifier>>();
-		this.resolvers.add(new MavenVersionResolver());
-		this.resolvers.add(new VersionsResourceResolver());
-	}
-
 	protected VersionInformation findVersionInformation(final VersionIdentifier identifier) {
 		VersionInformation result = null;
 		for (final Resolver<VersionInformation, VersionIdentifier> resolver : this.resolvers) {
@@ -92,5 +90,4 @@ public class VersionManager {
 		}
 		return result;
 	}
-
 }

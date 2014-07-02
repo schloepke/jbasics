@@ -24,9 +24,9 @@
  */
 package org.jbasics.versionmanager;
 
-import java.util.Date;
-
 import org.jbasics.checker.ContractCheck;
+
+import java.util.Date;
 
 public class VersionInformation {
 	public final static String UNKNOWN_VERSION = "#UNKNOWN#".intern(); //$NON-NLS-1$
@@ -40,17 +40,17 @@ public class VersionInformation {
 		this(identifier, null, null, null, null);
 	}
 
-	public VersionInformation(final VersionIdentifier identifier, final String version) {
-		this(identifier, version, null, null, null);
-	}
-
 	public VersionInformation(final VersionIdentifier identifier, final String version, final Long buildNumber,
-			final Date buildTimestamp, final Boolean buildSnapshot) {
+							  final Date buildTimestamp, final Boolean buildSnapshot) {
 		this.identifier = ContractCheck.mustNotBeNull(identifier, "identifier"); //$NON-NLS-1$
 		this.version = version == null ? VersionInformation.UNKNOWN_VERSION : version.trim();
 		this.buildNumber = buildNumber;
 		this.buildTimestamp = buildTimestamp;
 		this.buildSnapshot = buildSnapshot != null ? Boolean.valueOf(buildSnapshot.booleanValue()) : null;
+	}
+
+	public VersionInformation(final VersionIdentifier identifier, final String version) {
+		this(identifier, version, null, null, null);
 	}
 
 	public VersionIdentifier getIdentifier() {
@@ -84,5 +84,4 @@ public class VersionInformation {
 	public Boolean getBuildSnapshot() {
 		return this.buildSnapshot;
 	}
-
 }

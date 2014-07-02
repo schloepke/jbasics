@@ -25,29 +25,31 @@
 package org.jbasics.math;
 
 /**
- * Extension to the interface {@link IrationalNumber} which can be used to access the information
- * what the current memorized precision is and if the the memorized number is the an exact result.
- * 
- * @author Stephan Schloepke
+ * Extension to the interface {@link IrationalNumber} which can be used to access the information what the current
+ * memorized precision is and if the the memorized number is the an exact result.
+ *
  * @param <T> The type of the number.
+ *
+ * @author Stephan Schloepke
  * @since 1.0
  */
 public interface MemorizedIrationalNumber<T> extends IrationalNumber<T> {
 
 	/**
 	 * Returns the current precision if a result is memorized.
-	 * 
+	 *
 	 * @return The current precision of the memorized number or zero if no number is memorized.
+	 *
 	 * @since 1.0
 	 */
 	int precision();
 
 	/**
 	 * Returns true if the memorized number is an exact number or not.
-	 * 
+	 *
 	 * @return True if the memorized number is exact.
+	 *
 	 * @since 1.0
 	 */
 	boolean isExact();
-
 }

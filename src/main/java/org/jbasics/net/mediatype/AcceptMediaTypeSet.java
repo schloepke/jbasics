@@ -24,6 +24,8 @@
  */
 package org.jbasics.net.mediatype;
 
+import org.jbasics.checker.ContractCheck;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Comparator;
@@ -32,21 +34,15 @@ import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.jbasics.checker.ContractCheck;
-
 /**
- * Container to hold {@link AcceptMediaTypeRange} instances to match against them in order importance.
- * <p>
+ * Container to hold {@link AcceptMediaTypeRange} instances to match against them in order importance. <p>
  * MediaTypeRanges which are accepted are sorted based on their qualify factor (accept media type range parameter q).
- * </p>
- * <p>
- * This set is meant to actually query what is accepted by a server. After parsing the accept parameters of a request
- * or a head request you can use {@link #matchClosest(MediaType, MediaType...)} in order to match the closest media
- * type of those given. If multiple media types would match with the same qualify factor there is no guarantee which
- * is returned. In case that media types are preferred the best way is to first try to match the closest of the
- * preferred media types and if non matches than match with all available. 
- * </p>
- * 
+ * </p> <p> This set is meant to actually query what is accepted by a server. After parsing the accept parameters of a
+ * request or a head request you can use {@link #matchClosest(MediaType, MediaType...)} in order to match the closest
+ * media type of those given. If multiple media types would match with the same qualify factor there is no guarantee
+ * which is returned. In case that media types are preferred the best way is to first try to match the closest of the
+ * preferred media types and if non matches than match with all available. </p>
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -62,7 +58,21 @@ public class AcceptMediaTypeSet implements SortedSet<AcceptMediaTypeRange>, Seri
 
 	/**
 	 * Add the accept media type string to the accepted media types.
-	 * 
+	 *
+	 * @param acceptMediaTypeStrings The string to add.
+	 */
+	public void add(final String... acceptMediaTypeStrings) {
+		if (acceptMediaTypeStrings == null) {
+			return;
+		}
+		for (String temp : acceptMediaTypeStrings) {
+			add(temp);
+		}
+	}
+
+	/**
+	 * Add the accept media type string to the accepted media types.
+	 *
 	 * @param acceptMediaTypeStrings The string to add.
 	 */
 	public void add(final String acceptMediaTypeString) {
@@ -76,22 +86,8 @@ public class AcceptMediaTypeSet implements SortedSet<AcceptMediaTypeRange>, Seri
 	}
 
 	/**
-	 * Add the accept media type string to the accepted media types.
-	 * 
-	 * @param acceptMediaTypeStrings The string to add.
-	 */
-	public void add(final String... acceptMediaTypeStrings) {
-		if (acceptMediaTypeStrings == null) {
-			return;
-		}
-		for (String temp : acceptMediaTypeStrings) {
-			add(temp);
-		}
-	}
-
-	/**
 	 * Add the enumeration to the accepted media types.
-	 * 
+	 *
 	 * @param acceptMediaTypeStrings The enumeration of accept header strings.
 	 */
 	public void add(final Enumeration<String> acceptMediaTypeStrings) {
@@ -105,7 +101,7 @@ public class AcceptMediaTypeSet implements SortedSet<AcceptMediaTypeRange>, Seri
 
 	/**
 	 * Add the collection of accepted media type strings.
-	 * 
+	 *
 	 * @param acceptMediaTypeStrings A collection of media type strings.
 	 */
 	public void add(Collection<String> acceptMediaTypeStrings) {
@@ -119,12 +115,12 @@ public class AcceptMediaTypeSet implements SortedSet<AcceptMediaTypeRange>, Seri
 
 	/**
 	 * Returns the closest match of the given list of media types or if non matches the default one.
-	 * 
-	 * @param defaultType The default type returned if non of the list matches (can be null for no
-	 *            default). This one is NOT checked against the accepted media types if you want to
-	 *            check that this one is accepted put it in the list to check and set the default to
-	 *            null.
-	 * @param list The list of media types to check and find the best accepted one.
+	 *
+	 * @param defaultType The default type returned if non of the list matches (can be null for no default). This one is
+	 *                    NOT checked against the accepted media types if you want to check that this one is accepted
+	 *                    put it in the list to check and set the default to null.
+	 * @param list        The list of media types to check and find the best accepted one.
+	 *
 	 * @return The best accepted Media type or the default if non matches.
 	 */
 	public MediaType matchClosest(final MediaType defaultType, final MediaType... list) {
@@ -154,10 +150,10 @@ public class AcceptMediaTypeSet implements SortedSet<AcceptMediaTypeRange>, Seri
 
 	/*
 	 * (non-Javadoc)
-	 * @see java.util.SortedSet#first()
+	 * @see java.util.SortedSet#subSet(java.lang.Object, java.lang.Object)
 	 */
-	public AcceptMediaTypeRange first() {
-		return this.acceptMediaTypes.first();
+	public SortedSet<AcceptMediaTypeRange> subSet(AcceptMediaTypeRange fromElement, AcceptMediaTypeRange toElement) {
+		return this.acceptMediaTypes.subSet(fromElement, toElement);
 	}
 
 	/*
@@ -170,22 +166,6 @@ public class AcceptMediaTypeSet implements SortedSet<AcceptMediaTypeRange>, Seri
 
 	/*
 	 * (non-Javadoc)
-	 * @see java.util.SortedSet#last()
-	 */
-	public AcceptMediaTypeRange last() {
-		return this.acceptMediaTypes.last();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see java.util.SortedSet#subSet(java.lang.Object, java.lang.Object)
-	 */
-	public SortedSet<AcceptMediaTypeRange> subSet(AcceptMediaTypeRange fromElement, AcceptMediaTypeRange toElement) {
-		return this.acceptMediaTypes.subSet(fromElement, toElement);
-	}
-
-	/*
-	 * (non-Javadoc)
 	 * @see java.util.SortedSet#tailSet(java.lang.Object)
 	 */
 	public SortedSet<AcceptMediaTypeRange> tailSet(AcceptMediaTypeRange fromElement) {
@@ -194,42 +174,26 @@ public class AcceptMediaTypeSet implements SortedSet<AcceptMediaTypeRange>, Seri
 
 	/*
 	 * (non-Javadoc)
-	 * @see java.util.Set#add(java.lang.Object)
+	 * @see java.util.SortedSet#first()
 	 */
-	public boolean add(AcceptMediaTypeRange acceptMediaType) {
-		return this.acceptMediaTypes.add(acceptMediaType);
+	public AcceptMediaTypeRange first() {
+		return this.acceptMediaTypes.first();
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see java.util.Set#addAll(java.util.Collection)
+	 * @see java.util.SortedSet#last()
 	 */
-	public boolean addAll(Collection<? extends AcceptMediaTypeRange> collection) {
-		return this.acceptMediaTypes.addAll(collection);
+	public AcceptMediaTypeRange last() {
+		return this.acceptMediaTypes.last();
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see java.util.Set#clear()
+	 * @see java.util.Set#size()
 	 */
-	public void clear() {
-		this.acceptMediaTypes.clear();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see java.util.Set#contains(java.lang.Object)
-	 */
-	public boolean contains(Object acceptMediaType) {
-		return this.acceptMediaTypes.contains(acceptMediaType);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see java.util.Set#containsAll(java.util.Collection)
-	 */
-	public boolean containsAll(Collection<?> collection) {
-		return this.acceptMediaTypes.containsAll(collection);
+	public int size() {
+		return this.acceptMediaTypes.size();
 	}
 
 	/*
@@ -242,42 +206,18 @@ public class AcceptMediaTypeSet implements SortedSet<AcceptMediaTypeRange>, Seri
 
 	/*
 	 * (non-Javadoc)
+	 * @see java.util.Set#contains(java.lang.Object)
+	 */
+	public boolean contains(Object acceptMediaType) {
+		return this.acceptMediaTypes.contains(acceptMediaType);
+	}
+
+	/*
+	 * (non-Javadoc)
 	 * @see java.util.Set#iterator()
 	 */
 	public Iterator<AcceptMediaTypeRange> iterator() {
 		return this.acceptMediaTypes.iterator();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see java.util.Set#remove(java.lang.Object)
-	 */
-	public boolean remove(Object acceptMediaType) {
-		return this.acceptMediaTypes.remove(acceptMediaType);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see java.util.Set#removeAll(java.util.Collection)
-	 */
-	public boolean removeAll(Collection<?> collection) {
-		return this.acceptMediaTypes.removeAll(collection);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see java.util.Set#retainAll(java.util.Collection)
-	 */
-	public boolean retainAll(Collection<?> collection) {
-		return this.acceptMediaTypes.retainAll(collection);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see java.util.Set#size()
-	 */
-	public int size() {
-		return this.acceptMediaTypes.size();
 	}
 
 	/*
@@ -296,4 +236,59 @@ public class AcceptMediaTypeSet implements SortedSet<AcceptMediaTypeRange>, Seri
 		return this.acceptMediaTypes.toArray(array);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see java.util.Set#add(java.lang.Object)
+	 */
+	public boolean add(AcceptMediaTypeRange acceptMediaType) {
+		return this.acceptMediaTypes.add(acceptMediaType);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.util.Set#remove(java.lang.Object)
+	 */
+	public boolean remove(Object acceptMediaType) {
+		return this.acceptMediaTypes.remove(acceptMediaType);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.util.Set#containsAll(java.util.Collection)
+	 */
+	public boolean containsAll(Collection<?> collection) {
+		return this.acceptMediaTypes.containsAll(collection);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.util.Set#addAll(java.util.Collection)
+	 */
+	public boolean addAll(Collection<? extends AcceptMediaTypeRange> collection) {
+		return this.acceptMediaTypes.addAll(collection);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.util.Set#retainAll(java.util.Collection)
+	 */
+	public boolean retainAll(Collection<?> collection) {
+		return this.acceptMediaTypes.retainAll(collection);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.util.Set#removeAll(java.util.Collection)
+	 */
+	public boolean removeAll(Collection<?> collection) {
+		return this.acceptMediaTypes.removeAll(collection);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.util.Set#clear()
+	 */
+	public void clear() {
+		this.acceptMediaTypes.clear();
+	}
 }

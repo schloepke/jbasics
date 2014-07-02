@@ -24,13 +24,13 @@
  */
 package org.jbasics.utilities;
 
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.types.tuples.Range;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.types.tuples.Range;
 
 public class DateTimeUtilities {
 
@@ -39,7 +39,7 @@ public class DateTimeUtilities {
 		return DateTimeUtilities.stripTimepart(dateTime, null);
 	}
 
-	@SuppressWarnings({ "unchecked" })
+	@SuppressWarnings({"unchecked"})
 	public static <T extends Date> T stripTimepart(final T dateTime, TimeZone zone) {
 		// we want to clone the original input in order to not modify the mutable input
 		T result = (T) ContractCheck.mustNotBeNull(dateTime, "dateTime").clone(); //$NON-NLS-1$
@@ -58,14 +58,6 @@ public class DateTimeUtilities {
 
 	public static Range<Date> getCalendarWeekRange(final int year, final int week) {
 		return DateTimeUtilities.getCalendarWeekRange(year, week, -5000, 5000, null);
-	}
-
-	public static Range<Date> getCalendarWeekRange(final int year, final int week, final Locale locale) {
-		return DateTimeUtilities.getCalendarWeekRange(year, week, -5000, 5000, locale);
-	}
-
-	public static Range<Date> getCalendarWeekRange(final int year, final int week, final int minYear, final int maxYear) {
-		return DateTimeUtilities.getCalendarWeekRange(year, week, minYear, maxYear, null);
 	}
 
 	public static Range<Date> getCalendarWeekRange(final int year, final int week, final int minYear, final int maxYear, final Locale locale) {
@@ -89,6 +81,14 @@ public class DateTimeUtilities {
 		cal.set(Calendar.MINUTE, 59);
 		cal.set(Calendar.SECOND, 59);
 		return Range.create(new Date(startMillis), new Date(cal.getTimeInMillis()));
+	}
+
+	public static Range<Date> getCalendarWeekRange(final int year, final int week, final Locale locale) {
+		return DateTimeUtilities.getCalendarWeekRange(year, week, -5000, 5000, locale);
+	}
+
+	public static Range<Date> getCalendarWeekRange(final int year, final int week, final int minYear, final int maxYear) {
+		return DateTimeUtilities.getCalendarWeekRange(year, week, minYear, maxYear, null);
 	}
 
 	public static Range<Integer> getMonthRangeOf(final Range<Date> dateRange) {
@@ -124,10 +124,6 @@ public class DateTimeUtilities {
 		return DateTimeUtilities.getMonthOf(year, week, false, null);
 	}
 
-	public static int getMonthOf(final int year, final int week, final boolean endMonth) {
-		return DateTimeUtilities.getMonthOf(year, week, endMonth, null);
-	}
-
 	public static int getMonthOf(final int year, final int week, final boolean endMonth, final Locale locale) {
 		Calendar cal = null;
 		if (locale != null) {
@@ -149,16 +145,12 @@ public class DateTimeUtilities {
 		return cal.get(Calendar.MONTH);
 	}
 
+	public static int getMonthOf(final int year, final int week, final boolean endMonth) {
+		return DateTimeUtilities.getMonthOf(year, week, endMonth, null);
+	}
+
 	public static int getMonthOf(final Date date) {
 		return DateTimeUtilities.getFieldOf(date, Calendar.MONTH, null);
-	}
-
-	public static int getMonthOf(final Date date, final Locale locale) {
-		return DateTimeUtilities.getFieldOf(date, Calendar.MONTH, locale);
-	}
-
-	public static int getFieldOf(final Date date, final int field) {
-		return DateTimeUtilities.getFieldOf(date, field, null);
 	}
 
 	public static int getFieldOf(final Date date, final int field, final Locale locale) {
@@ -174,17 +166,20 @@ public class DateTimeUtilities {
 		return cal.get(field);
 	}
 
+	public static int getMonthOf(final Date date, final Locale locale) {
+		return DateTimeUtilities.getFieldOf(date, Calendar.MONTH, locale);
+	}
+
+	public static int getFieldOf(final Date date, final int field) {
+		return DateTimeUtilities.getFieldOf(date, field, null);
+	}
+
 	public static final Date createDate(final int year, final int month, final int day) {
 		return DateTimeUtilities.fillOrCreateCalendar(year, month, day, 0, 0, 0, 0, null).getTime();
 	}
 
-	public static final Date createDateTime(final int year, final int month, final int day, final int hour, final int minute, final int second,
-			final int millisecond) {
-		return DateTimeUtilities.fillOrCreateCalendar(year, month, day, hour, minute, second, millisecond, null).getTime();
-	}
-
 	public static final Calendar fillOrCreateCalendar(final int year, final int month, final int day, final int hour, final int minute,
-			final int second, final int millisecond, final Calendar calendar) {
+													  final int second, final int millisecond, final Calendar calendar) {
 		Calendar cal = calendar == null ? Calendar.getInstance() : calendar;
 		cal.set(Calendar.YEAR, year);
 		cal.set(Calendar.MONTH,
@@ -200,6 +195,11 @@ public class DateTimeUtilities {
 		cal.set(Calendar.MILLISECOND, ContractCheck.mustBeInRange(millisecond, cal.getActualMinimum(Calendar.MILLISECOND),
 				cal.getActualMaximum(Calendar.MILLISECOND), "millisecond")); //$NON-NLS-1$
 		return cal;
+	}
+
+	public static final Date createDateTime(final int year, final int month, final int day, final int hour, final int minute, final int second,
+											final int millisecond) {
+		return DateTimeUtilities.fillOrCreateCalendar(year, month, day, hour, minute, second, millisecond, null).getTime();
 	}
 
 	public static Date convertWindowsFiletime(final long filetime) {
@@ -218,5 +218,4 @@ public class DateTimeUtilities {
 		cal.set(Calendar.MILLISECOND, (int) temp);
 		return cal.getTime();
 	}
-
 }

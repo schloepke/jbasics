@@ -30,13 +30,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.METHOD })
+@Target({ElementType.METHOD})
 public @interface Attribute {
 
 	String namespace() default "";
 
 	String name();
-	
-	boolean required() default false;
 
+	boolean required() default false;
 }

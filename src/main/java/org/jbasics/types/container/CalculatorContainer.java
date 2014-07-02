@@ -24,17 +24,17 @@
  */
 package org.jbasics.types.container;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Map;
-import java.util.Set;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.discover.ServiceClassDiscovery;
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.strategy.ContextualCalculateStrategy;
 import org.jbasics.types.builders.MapBuilder;
 import org.jbasics.types.tuples.Pair;
+
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Map;
+import java.util.Set;
 
 public class CalculatorContainer {
 	private final Map<Pair<Class<?>, Class<?>>, ContextualCalculateStrategy<?, ?, CalculatorContainer>> strategies;
@@ -43,22 +43,7 @@ public class CalculatorContainer {
 		this.strategies = loadCalculators();
 	}
 
-	@SuppressWarnings("unchecked")
-	public <Response, Request> ContextualCalculateStrategy<Response, Request, CalculatorContainer> getStrategy(final Class<Request> requestType,
-			final Class<Response> responseType) {
-		return (ContextualCalculateStrategy<Response, Request, CalculatorContainer>) this.strategies.get(new Pair<Class<Response>, Class<Request>>(
-				responseType, requestType));
-	}
-
-	public <Response, Request> Response calculate(final Request request, final Class<Response> responseType) {
-		@SuppressWarnings("unchecked")
-		ContextualCalculateStrategy<Response, Request, CalculatorContainer> strategy = getStrategy(
-				(Class<Request>) ContractCheck.mustNotBeNull(request, "request").getClass(), //$NON-NLS-1$
-				ContractCheck.mustNotBeNull(responseType, "responseType")); //$NON-NLS-1$
-		return strategy == null ? null : strategy.calculate(request, this);
-	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes", "unchecked"})
 	private Map<Pair<Class<?>, Class<?>>, ContextualCalculateStrategy<?, ?, CalculatorContainer>> loadCalculators() {
 		try {
 			MapBuilder<Pair<Class<?>, Class<?>>, ContextualCalculateStrategy<?, ?, CalculatorContainer>> builder =
@@ -85,4 +70,18 @@ public class CalculatorContainer {
 		}
 	}
 
+	public <Response, Request> Response calculate(final Request request, final Class<Response> responseType) {
+		@SuppressWarnings("unchecked")
+		ContextualCalculateStrategy<Response, Request, CalculatorContainer> strategy = getStrategy(
+				(Class<Request>) ContractCheck.mustNotBeNull(request, "request").getClass(), //$NON-NLS-1$
+				ContractCheck.mustNotBeNull(responseType, "responseType")); //$NON-NLS-1$
+		return strategy == null ? null : strategy.calculate(request, this);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <Response, Request> ContextualCalculateStrategy<Response, Request, CalculatorContainer> getStrategy(final Class<Request> requestType,
+																											   final Class<Response> responseType) {
+		return (ContextualCalculateStrategy<Response, Request, CalculatorContainer>) this.strategies.get(new Pair<Class<Response>, Class<Request>>(
+				responseType, requestType));
+	}
 }

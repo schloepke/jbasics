@@ -24,10 +24,9 @@
  */
 package org.jbasics.parser.deprecated;
 
+import javax.xml.namespace.QName;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import javax.xml.namespace.QName;
 
 public class InvokerInfo {
 	private final Method method;
@@ -41,22 +40,6 @@ public class InvokerInfo {
 		this.method = method;
 		this.valueType = valueType;
 		this.withQNameParameter = withQNameParameter;
-	}
-
-	public void invoke(Object instance, QName name, Object value) throws InvocationTargetException, IllegalAccessException {
-		if (this.withQNameParameter) {
-			this.method.invoke(instance, name, value);
-		} else {
-			this.method.invoke(instance, value);
-		}
-	}
-
-	public Method getMethod() {
-		return this.method;
-	}
-
-	public Class<?> getValueType() {
-		return this.valueType;
 	}
 
 	public static InvokerInfo create(Method method) {
@@ -74,4 +57,19 @@ public class InvokerInfo {
 		throw new RuntimeException("Method signature must be one of 'public T methodName(DataType value)' or 'public T methodName(QName name , DataType value)'");
 	}
 
+	public void invoke(Object instance, QName name, Object value) throws InvocationTargetException, IllegalAccessException {
+		if (this.withQNameParameter) {
+			this.method.invoke(instance, name, value);
+		} else {
+			this.method.invoke(instance, value);
+		}
+	}
+
+	public Method getMethod() {
+		return this.method;
+	}
+
+	public Class<?> getValueType() {
+		return this.valueType;
+	}
 }

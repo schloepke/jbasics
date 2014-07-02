@@ -24,24 +24,22 @@
  */
 package org.jbasics.jaxrs;
 
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.exception.DelegatedException;
+
+import javax.xml.bind.JAXBElement;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 
-import javax.xml.bind.JAXBElement;
-
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.exception.DelegatedException;
-
 /**
- * Attach an XSLT style sheet link to the provided JAXB entity.
- * <p>
- * Depending on the used media type the style sheet is attached as link or the XML document is transformed to XHTML. The style sheet must produce
- * XHTML since the message body writer is meant for a web browser.
- * </p>
- * 
- * @author Stephan Schloepke
+ * Attach an XSLT style sheet link to the provided JAXB entity. <p> Depending on the used media type the style sheet is
+ * attached as link or the XML document is transformed to XHTML. The style sheet must produce XHTML since the message
+ * body writer is meant for a web browser. </p>
+ *
  * @param <T> The entity type (must be either a JAXBElement<?> or a type which is an JAXB XML Root element)
+ *
+ * @author Stephan Schloepke
  */
 public class XHTMLStylesheetAttachedJAXB<T> {
 	private final URI stylesheet;
@@ -50,22 +48,20 @@ public class XHTMLStylesheetAttachedJAXB<T> {
 	private final boolean handleXInclude;
 
 	/**
-	 * Create a {@link XHTMLStylesheetAttachedJAXB} instance for the given style sheet link and the given
-	 * JAXB entity.
-	 * 
+	 * Create a {@link XHTMLStylesheetAttachedJAXB} instance for the given style sheet link and the given JAXB entity.
+	 *
 	 * @param stylesheet The style sheet link to use (MUST not be null)
-	 * @param entity The JAXB entity (MUST not be null)
+	 * @param entity     The JAXB entity (MUST not be null)
 	 */
 	public XHTMLStylesheetAttachedJAXB(final URI stylesheet, final T entity, final boolean handleXInclude) {
 		this(stylesheet, entity, null, handleXInclude);
 	}
 
 	/**
-	 * Create a {@link XHTMLStylesheetAttachedJAXB} instance for the given style sheet link and the given
-	 * JAXB entity.
-	 * 
-	 * @param stylesheet The style sheet link to use (MUST not be null)
-	 * @param entity The JAXB entity (MUST not be null)
+	 * Create a {@link XHTMLStylesheetAttachedJAXB} instance for the given style sheet link and the given JAXB entity.
+	 *
+	 * @param stylesheet    The style sheet link to use (MUST not be null)
+	 * @param entity        The JAXB entity (MUST not be null)
 	 * @param localResource The URL of the local resource to use in case of a server side transform (MAY be null)
 	 */
 	public XHTMLStylesheetAttachedJAXB(final URI stylesheet, final T entity, final URL localResource, final boolean handleXInclude) {
@@ -86,17 +82,8 @@ public class XHTMLStylesheetAttachedJAXB<T> {
 	}
 
 	/**
-	 * Returns the never null style sheet uri.
-	 * 
-	 * @return The style sheet URI (never null)
-	 */
-	public URI getStylesheet() {
-		return this.stylesheet;
-	}
-
-	/**
 	 * Returns the never null JAXB entity.
-	 * 
+	 *
 	 * @return The JAXB entity (never null)
 	 */
 	public T getEntity() {
@@ -108,12 +95,13 @@ public class XHTMLStylesheetAttachedJAXB<T> {
 	}
 
 	/**
-	 * Returns the resource to use when transforming locally. If not set by
-	 * constructor it will return the style sheet URI as URL.
-	 * 
+	 * Returns the resource to use when transforming locally. If not set by constructor it will return the style sheet
+	 * URI as URL.
+	 *
 	 * @return The server side URL to use for transformation.
+	 *
 	 * @throws DelegatedException If the style sheet URI cannot be dereferenced the {@link MalformedURLException} is
-	 *             thrown as {@link DelegatedException}.
+	 *                            thrown as {@link DelegatedException}.
 	 */
 	public URL getLocalResource() {
 		if (this.localResource == null) {
@@ -127,8 +115,17 @@ public class XHTMLStylesheetAttachedJAXB<T> {
 	}
 
 	/**
+	 * Returns the never null style sheet uri.
+	 *
+	 * @return The style sheet URI (never null)
+	 */
+	public URI getStylesheet() {
+		return this.stylesheet;
+	}
+
+	/**
 	 * Returns the never null type of the JAXB entity
-	 * 
+	 *
 	 * @return The type of the JAXB entity (never null).
 	 */
 	public Class<?> getEntityType() {
@@ -138,5 +135,4 @@ public class XHTMLStylesheetAttachedJAXB<T> {
 			return this.entity.getClass();
 		}
 	}
-
 }

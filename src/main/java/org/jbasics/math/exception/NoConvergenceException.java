@@ -29,7 +29,7 @@ import org.jbasics.math.approximation.Approximation;
 
 /**
  * An {@link Approximation} or an {@link AlgorithmStrategy} did not convergate to a result.
- * 
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -44,5 +44,4 @@ public class NoConvergenceException extends ArithmeticException {
 	public NoConvergenceException(final String message) {
 		super(message);
 	}
-
 }

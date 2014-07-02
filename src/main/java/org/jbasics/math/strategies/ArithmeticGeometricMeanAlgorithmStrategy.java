@@ -24,12 +24,12 @@
  */
 package org.jbasics.math.strategies;
 
+import org.jbasics.math.AlgorithmStrategy;
+import org.jbasics.math.impl.MathImplConstants;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-
-import org.jbasics.math.AlgorithmStrategy;
-import org.jbasics.math.impl.MathImplConstants;
 
 public class ArithmeticGeometricMeanAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
 	private final AlgorithmStrategy<BigDecimal> squareRoot;
@@ -60,5 +60,4 @@ public class ArithmeticGeometricMeanAlgorithmStrategy implements AlgorithmStrate
 		} while (a.compareTo(b) != 0);
 		return a.round(mc);
 	}
-
 }

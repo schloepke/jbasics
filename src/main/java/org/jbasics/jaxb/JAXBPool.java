@@ -24,12 +24,12 @@
  */
 package org.jbasics.jaxb;
 
+import org.jbasics.checker.ContractCheck;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
-
-import org.jbasics.checker.ContractCheck;
 
 public class JAXBPool {
 	private final JAXBMarshallerPool marshallerPoolDelegate;
@@ -41,23 +41,23 @@ public class JAXBPool {
 		this.unmarshallerPoolDelegate = new JAXBUnmarshallerPool(temp);
 	}
 
+	public JAXBPool(final String contextPath) {
+		this(contextPath, null);
+	}
+
 	public JAXBPool(final String contextPath, final Schema schema) {
 		JAXBContextFactory temp = new JAXBContextFactory(ContractCheck.mustNotBeNullOrTrimmedEmpty(contextPath, "contextPath")); //$NON-NLS-1$
 		this.marshallerPoolDelegate = new JAXBMarshallerPool(temp, schema);
 		this.unmarshallerPoolDelegate = new JAXBUnmarshallerPool(temp);
 	}
 
-	public JAXBPool(final String contextPath) {
-		this(contextPath, null);
+	public JAXBPool(final JAXBContext context) {
+		this(context, null);
 	}
 
 	public JAXBPool(final JAXBContext context, final Schema schema) {
 		this.marshallerPoolDelegate = new JAXBMarshallerPool(ContractCheck.mustNotBeNull(context, "context"), schema); //$NON-NLS-1$
 		this.unmarshallerPoolDelegate = new JAXBUnmarshallerPool(context);
-	}
-
-	public JAXBPool(final JAXBContext context) {
-		this(context, null);
 	}
 
 	public Marshaller aquireMarshaller() {
@@ -75,5 +75,4 @@ public class JAXBPool {
 	public boolean releaseUnmarshaller(final Unmarshaller unmarshaller) {
 		return this.unmarshallerPoolDelegate.release(unmarshaller);
 	}
-
 }

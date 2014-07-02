@@ -28,30 +28,27 @@ import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.delegation.Delegate;
 
 /**
- * An exception container to hold an exception which is only delegated. The real
- * exception stack trace is taken and used rather than creating the one for the
- * delegated.
- * <p>
- * A {@link DelegatedException} is always a {@link RuntimeException} since the main case is to rethrow an exception as
- * {@link RuntimeException} which was a checked exception before.
+ * An exception container to hold an exception which is only delegated. The real exception stack trace is taken and used
+ * rather than creating the one for the delegated. <p> A {@link DelegatedException} is always a {@link RuntimeException}
+ * since the main case is to rethrow an exception as {@link RuntimeException} which was a checked exception before.
  * </p>
- * 
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
 public final class DelegatedException extends RuntimeException implements Delegate<Throwable> {
 	private static final long serialVersionUID = 8127831096870654601L;
 
+	private DelegatedException(final Throwable t) {
+		super(ContractCheck.mustNotBeNull(t, "t").getMessage(), t); //$NON-NLS-1$
+		setStackTrace(t.getStackTrace());
+	}
+
 	public static DelegatedException delegate(final Throwable t) {
 		if (t instanceof DelegatedException) {
 			return (DelegatedException) t;
 		}
 		return new DelegatedException(t);
-	}
-
-	private DelegatedException(final Throwable t) {
-		super(ContractCheck.mustNotBeNull(t, "t").getMessage(), t); //$NON-NLS-1$
-		setStackTrace(t.getStackTrace());
 	}
 
 	public Throwable delegate() {

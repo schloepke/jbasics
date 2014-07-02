@@ -24,6 +24,8 @@
  */
 package org.jbasics.csv;
 
+import org.jbasics.exception.DelegatedException;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,8 +39,6 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbasics.exception.DelegatedException;
-
 public class CSVParser {
 	private final boolean parseWithHeaders;
 	private final boolean skipEmptyLines;
@@ -48,22 +48,22 @@ public class CSVParser {
 		this(true);
 	}
 
-	public CSVParser(final char separator) {
-		this(true, separator, true);
-	}
-
 	public CSVParser(final boolean skipEmptyLines) {
 		this(true, ',', skipEmptyLines);
-	}
-
-	public CSVParser(final char separator, final boolean skipEmptyLines) {
-		this(true, separator, skipEmptyLines);
 	}
 
 	public CSVParser(final boolean parseWithHeaders, final char separator, final boolean skipEmptyLines) {
 		this.parseWithHeaders = parseWithHeaders;
 		this.separator = separator;
 		this.skipEmptyLines = skipEmptyLines;
+	}
+
+	public CSVParser(final char separator) {
+		this(true, separator, true);
+	}
+
+	public CSVParser(final char separator, final boolean skipEmptyLines) {
+		this(true, separator, skipEmptyLines);
 	}
 
 	public CSVTable parse(final URL location) throws IOException {
@@ -80,20 +80,12 @@ public class CSVParser {
 		return parse(connection.getInputStream());
 	}
 
-	public CSVTable parse(final InputStream in) throws IOException {
-		return parse(new InputStreamReader(in));
-	}
-
 	public CSVTable parse(final InputStream in, final Charset charset) throws IOException {
 		return parse(new InputStreamReader(in, charset));
 	}
 
-	public CSVTable parse(final String input) {
-		try {
-			return parse(new StringReader(input));
-		} catch (final IOException e) {
-			throw DelegatedException.delegate(e);
-		}
+	public CSVTable parse(final InputStream in) throws IOException {
+		return parse(new InputStreamReader(in));
 	}
 
 	public CSVTable parse(final Readable reader) throws IOException {
@@ -177,6 +169,14 @@ public class CSVParser {
 			return new CSVTable(null, this.separator, records.get(0), records.subList(1, records.size()).toArray(new CSVRecord[records.size() - 1]));
 		} else {
 			return new CSVTable(null, this.separator, (CSVRecord) null, records.toArray(new CSVRecord[records.size()]));
+		}
+	}
+
+	public CSVTable parse(final String input) {
+		try {
+			return parse(new StringReader(input));
+		} catch (final IOException e) {
+			throw DelegatedException.delegate(e);
 		}
 	}
 

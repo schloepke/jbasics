@@ -31,5 +31,4 @@ public interface Tuple<A, B> {
 	B right();
 
 	int size();
-	
 }

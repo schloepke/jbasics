@@ -24,16 +24,16 @@
  */
 package org.jbasics.xml.transform;
 
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerFactory;
-
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.pattern.factory.ParameterFactory;
 import org.jbasics.types.delegates.LazySoftReferenceDelegate;
+
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
 
 public class XMLTransformerFactory implements Factory<Transformer>, ParameterFactory<Transformer, Source> {
 	public final static XMLTransformerFactory SHARED_INSTANCE = new XMLTransformerFactory();
@@ -53,15 +53,6 @@ public class XMLTransformerFactory implements Factory<Transformer>, ParameterFac
 	}
 
 	@Override
-	public Transformer newInstance() {
-		try {
-			return this.transformerFactoryDelegate.delegate().newTransformer();
-		} catch (final TransformerConfigurationException e) {
-			throw DelegatedException.delegate(e);
-		}
-	}
-
-	@Override
 	public Transformer create(final Source templateSource) {
 		if (templateSource == null) {
 			return newInstance();
@@ -74,4 +65,12 @@ public class XMLTransformerFactory implements Factory<Transformer>, ParameterFac
 		}
 	}
 
+	@Override
+	public Transformer newInstance() {
+		try {
+			return this.transformerFactoryDelegate.delegate().newTransformer();
+		} catch (final TransformerConfigurationException e) {
+			throw DelegatedException.delegate(e);
+		}
+	}
 }

@@ -24,13 +24,13 @@
  */
 package org.jbasics.csv;
 
-import java.nio.charset.Charset;
-import java.util.Collection;
-import java.util.List;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.builder.Builder;
 import org.jbasics.types.factories.CollectionsFactory;
+
+import java.nio.charset.Charset;
+import java.util.Collection;
+import java.util.List;
 
 public class CSVFileBuilder implements Builder<CSVTable> {
 	private final List<String> headers;
@@ -46,15 +46,15 @@ public class CSVFileBuilder implements Builder<CSVTable> {
 		this(charset, ',');
 	}
 
-	public CSVFileBuilder(final char separator) {
-		this(null, separator);
-	}
-
 	public CSVFileBuilder(final Charset charset, final char separator) {
 		this.headers = CollectionsFactory.instance().newListInstance();
 		this.records = CollectionsFactory.instance().newListInstance();
 		this.charset = charset;
 		this.separator = separator;
+	}
+
+	public CSVFileBuilder(final char separator) {
+		this(null, separator);
 	}
 
 	public void reset() {
@@ -97,5 +97,4 @@ public class CSVFileBuilder implements Builder<CSVTable> {
 		// TODO: fill in
 		return this;
 	}
-
 }

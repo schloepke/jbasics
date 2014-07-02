@@ -24,12 +24,12 @@
  */
 package org.jbasics.math.expression.simple.impl;
 
-import java.math.BigDecimal;
-import java.util.Collection;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.expression.simple.SimpleExpression;
 import org.jbasics.math.expression.simple.SimpleExpressionContext;
+
+import java.math.BigDecimal;
+import java.util.Collection;
 
 public class SimpleSymbolExpression extends SimpleExpression {
 	private final String symbol;
@@ -48,6 +48,11 @@ public class SimpleSymbolExpression extends SimpleExpression {
 	}
 
 	@Override
+	public <T extends Collection<String>> void collectSymbols(final T collection) {
+		ContractCheck.mustNotBeNull(collection, "collection").add(this.symbol); //$NON-NLS-1$
+	}
+
+	@Override
 	public String toString() {
 		if (Character.isJavaIdentifierStart(this.symbol.charAt(0))) {
 			return this.symbol;
@@ -55,10 +60,4 @@ public class SimpleSymbolExpression extends SimpleExpression {
 			return "$" + this.symbol; //$NON-NLS-1$
 		}
 	}
-
-	@Override
-	public <T extends Collection<String>> void collectSymbols(final T collection) {
-		ContractCheck.mustNotBeNull(collection, "collection").add(this.symbol); //$NON-NLS-1$
-	}
-
 }

@@ -26,7 +26,7 @@ package org.jbasics.math.exception;
 
 /**
  * A calculation result is positive infitiy.
- * 
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -40,5 +40,4 @@ public class PositiveInfinityException extends InfinityException {
 	public PositiveInfinityException(final String message) {
 		super(message);
 	}
-
 }

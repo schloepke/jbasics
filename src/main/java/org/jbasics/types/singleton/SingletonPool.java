@@ -24,15 +24,15 @@
  */
 package org.jbasics.types.singleton;
 
+import org.jbasics.pattern.factory.Factory;
+import org.jbasics.pattern.singleton.Singleton;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.jbasics.pattern.factory.Factory;
-import org.jbasics.pattern.singleton.Singleton;
 
 public final class SingletonPool {
 	private static final Map<Class<?>, Singleton<?>> INSTANCES = new HashMap<Class<?>, Singleton<?>>();
@@ -47,7 +47,7 @@ public final class SingletonPool {
 			try {
 				Method factoryMethod = instanceClass.getMethod("factory");
 				if (factoryMethod != null && factoryMethod.getModifiers() == Modifier.STATIC
-				        && Factory.class.isAssignableFrom(factoryMethod.getReturnType())) {
+						&& Factory.class.isAssignableFrom(factoryMethod.getReturnType())) {
 					factory = (Factory<T>) factoryMethod.invoke(null);
 				}
 			} catch (NoSuchMethodException e) {
@@ -67,6 +67,12 @@ public final class SingletonPool {
 		return temp;
 	}
 
+	public <T> void registerSingleton(final Class<T> singletonClass, final Factory<T> factory) {
+		if (!SingletonPool.isSingletonRegistered(singletonClass)) {
+			SingletonPool.registerSingleton(singletonClass, new SingletonInstance<T>(factory));
+		}
+	}
+
 	public static boolean isSingletonRegistered(final Class<?> singletonClass) {
 		return SingletonPool.INSTANCES.containsKey(singletonClass);
 	}
@@ -79,18 +85,11 @@ public final class SingletonPool {
 		}
 	}
 
-	public <T> void registerSingleton(final Class<T> singletonClass, final Factory<T> factory) {
-		if (!SingletonPool.isSingletonRegistered(singletonClass)) {
-			SingletonPool.registerSingleton(singletonClass, new SingletonInstance<T>(factory));
-		}
-	}
-
 	public <T> void registerThreadSingleton(final Class<T> singletonClass, final Factory<T> factory) {
 		if (!SingletonPool.isSingletonRegistered(singletonClass)) {
 			SingletonPool.registerSingleton(singletonClass, new SingletonThreadInstance<T>(factory));
 		}
 	}
-
 }
 
 class GenericInstanceFactory<T> implements Factory<T> {
@@ -114,5 +113,4 @@ class GenericInstanceFactory<T> implements Factory<T> {
 			throw new RuntimeException("Cannot instanciate singleton", e);
 		}
 	}
-
 }

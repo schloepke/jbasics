@@ -24,16 +24,15 @@
  */
 package org.jbasics.types.strategy;
 
-import java.math.BigDecimal;
-import java.util.Map;
-
-import org.junit.Assert;
-import org.junit.Test;
-
 import org.jbasics.discover.GenericsMappedInstanceDiscoveryFactory;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.pattern.strategy.ContextualCalculateStrategy;
 import org.jbasics.types.sequences.Sequence;
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.math.BigDecimal;
+import java.util.Map;
 
 @SuppressWarnings("nls")
 public class ContextualCalculateStrategiesDiscoverFactoryTest {
@@ -51,7 +50,7 @@ public class ContextualCalculateStrategiesDiscoverFactoryTest {
 		final Map<Sequence<Class<?>>, ContextualCalculateStrategy<?, ?, SomeDummyContext>> calculators = factory.newInstance();
 		Assert.assertNotNull(calculators);
 		Assert.assertEquals(1, calculators.size());
-		final Sequence<Class<?>> calcKey = Sequence.<Class<?>> cons(BigDecimal.class, Double.class);
+		final Sequence<Class<?>> calcKey = Sequence.<Class<?>>cons(BigDecimal.class, Double.class);
 		final ContextualCalculateStrategy<BigDecimal, Double, SomeDummyContext> calculator =
 				(ContextualCalculateStrategy<BigDecimal, Double, SomeDummyContext>) calculators.get(calcKey);
 		Assert.assertNotNull(calculator);

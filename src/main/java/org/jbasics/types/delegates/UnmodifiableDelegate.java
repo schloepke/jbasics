@@ -29,6 +29,15 @@ import org.jbasics.pattern.delegation.Delegate;
 
 public final class UnmodifiableDelegate<T> implements Delegate<T> {
 	public static final Delegate<?> NULL_DELEGATE = new UnmodifiableDelegate<Object>();
+	private final T delegate;
+
+	private UnmodifiableDelegate() {
+		this.delegate = null;
+	}
+
+	public UnmodifiableDelegate(final T delegate) {
+		this.delegate = ContractCheck.mustNotBeNull(delegate, "delegate"); //$NON-NLS-1$
+	}
 
 	public static final <T> Delegate<T> create(T element) {
 		if (element == null) {
@@ -43,18 +52,7 @@ public final class UnmodifiableDelegate<T> implements Delegate<T> {
 		return (Delegate<T>) UnmodifiableDelegate.NULL_DELEGATE;
 	}
 
-	private final T delegate;
-
-	private UnmodifiableDelegate() {
-		this.delegate = null;
-	}
-
-	public UnmodifiableDelegate(final T delegate) {
-		this.delegate = ContractCheck.mustNotBeNull(delegate, "delegate"); //$NON-NLS-1$
-	}
-
 	public T delegate() {
 		return this.delegate;
 	}
-
 }

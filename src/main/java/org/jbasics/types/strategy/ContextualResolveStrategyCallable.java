@@ -24,10 +24,10 @@
  */
 package org.jbasics.types.strategy;
 
-import java.util.concurrent.Callable;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.strategy.ContextualResolveStrategy;
+
+import java.util.concurrent.Callable;
 
 public class ContextualResolveStrategyCallable<Result, Request, Context> implements Callable<Result> {
 	private final ContextualResolveStrategy<Result, Request, Context> strategy;
@@ -35,7 +35,7 @@ public class ContextualResolveStrategyCallable<Result, Request, Context> impleme
 	private final Context context;
 
 	public ContextualResolveStrategyCallable(final Request request, final Context context,
-			final ContextualResolveStrategy<Result, Request, Context> strategy) {
+											 final ContextualResolveStrategy<Result, Request, Context> strategy) {
 		this.request = ContractCheck.mustNotBeNull(request, "request"); //$NON-NLS-1$
 		this.context = ContractCheck.mustNotBeNull(context, "context"); //$NON-NLS-1$
 		this.strategy = ContractCheck.mustNotBeNull(strategy, "strategy"); //$NON-NLS-1$
@@ -44,5 +44,4 @@ public class ContextualResolveStrategyCallable<Result, Request, Context> impleme
 	public Result call() {
 		return this.strategy.resolve(this.request, this.context);
 	}
-
 }

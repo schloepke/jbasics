@@ -24,71 +24,67 @@
  */
 package org.jbasics.math.impl;
 
-import java.math.BigDecimal;
-
 import org.jbasics.math.IrationalNumber;
 
+import java.math.BigDecimal;
+
 /**
- * These constants are used internally for the calculation algorithms. Even it is marked internally
- * all constants are public and can be used from outside. However it is not guaranteed that they
- * stay in here for all time. While external interfaces usually stay compatible internal can change
- * from version to version without notice.
- * 
+ * These constants are used internally for the calculation algorithms. Even it is marked internally all constants are
+ * public and can be used from outside. However it is not guaranteed that they stay in here for all time. While external
+ * interfaces usually stay compatible internal can change from version to version without notice.
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
 public class MathImplConstants {
 	/**
 	 * The constant 2.
-	 * 
+	 *
 	 * @since 1.0
 	 */
 	public static final BigDecimal TWO = BigDecimal.valueOf(2);
 	/**
 	 * The constant 3.
-	 * 
+	 *
 	 * @since 1.0
 	 */
 	public static final BigDecimal THREE = BigDecimal.valueOf(3);
 	/**
 	 * The constant 1/2.
-	 * 
+	 *
 	 * @since 1.0
 	 */
 	public static final BigDecimal HALF = new BigDecimal("0.5");
 	/**
 	 * The constant 1/4.
-	 * 
+	 *
 	 * @since 1.0
 	 */
 	public static final BigDecimal QUARTER = new BigDecimal("0.25");
 	/**
-	 * An initial constant used to initialize the PI irational number. The number is exakt with
-	 * precision 32.
-	 * 
+	 * An initial constant used to initialize the PI irational number. The number is exakt with precision 32.
+	 *
 	 * @since 1.0
 	 */
 	public static final BigDecimal PI_INITIAL = new BigDecimal("3.1415926535897932384626433832795");
 	/**
-	 * An initial constant used to initialize the 2*PI irational number. The number is exakt with
-	 * precision 32.
-	 * 
+	 * An initial constant used to initialize the 2*PI irational number. The number is exakt with precision 32.
+	 *
 	 * @since 1.0
 	 */
 	public static final BigDecimal PI2_INITIAL = new BigDecimal("6.2831853071795864769252867665590");
 
 	/**
 	 * The number zero as irational number used in the algorithms to return zero.
-	 * 
+	 *
 	 * @since 1.0
 	 */
 	public static final IrationalNumber<BigDecimal> IRATIONAL_ZERO = new ConstantIrationalNumber(BigDecimal.ZERO);
 
 	/**
 	 * The number zero as irational number used in the algorithms to return zero.
-	 * 
+	 *
 	 * @since 1.0
 	 */
 	public static final IrationalNumber<BigDecimal> IRATIONAL_ONE = new ConstantIrationalNumber(BigDecimal.ONE);
-
 }

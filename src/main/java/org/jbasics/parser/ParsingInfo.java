@@ -24,15 +24,14 @@
  */
 package org.jbasics.parser;
 
-import java.util.Map;
-
-import javax.xml.namespace.QName;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.parser.invoker.Invoker;
 import org.jbasics.pattern.builder.Builder;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.types.tuples.Pair;
+
+import javax.xml.namespace.QName;
+import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public class ParsingInfo {
@@ -60,9 +59,9 @@ public class ParsingInfo {
 	}
 
 	protected ParsingInfo(Factory<? extends Builder> builderFactory, Invoker<?, QName> qualifiedNameInvoker,
-	        Map<QName, Invoker<?, String>> attributeInvokers, Invoker<?, String> defaultAttributeInvoker,
-	        Map<QName, Pair<ParsingInfo, Invoker<?, ?>>> elementInvokers, Pair<ParsingInfo, Invoker<?, ?>> defaultElementInvoker,
-	        Invoker<?, String> contentInvoker, Invoker<?, String> commentInvoker) {
+						  Map<QName, Invoker<?, String>> attributeInvokers, Invoker<?, String> defaultAttributeInvoker,
+						  Map<QName, Pair<ParsingInfo, Invoker<?, ?>>> elementInvokers, Pair<ParsingInfo, Invoker<?, ?>> defaultElementInvoker,
+						  Invoker<?, String> contentInvoker, Invoker<?, String> commentInvoker) {
 		this.builderFactory = ContractCheck.mustNotBeNull(builderFactory, "builderFactory");
 		this.qualifiedNameInvoker = qualifiedNameInvoker;
 		this.attributeInvokers = attributeInvokers;
@@ -109,9 +108,8 @@ public class ParsingInfo {
 	public Invoker<?, String> getContentInvoker() {
 		return this.contentInvoker;
 	}
-	
-    public Invoker<?, String> getCommentInvoker() {
-	    return this.commentInvoker;
-    }
 
+	public Invoker<?, String> getCommentInvoker() {
+		return this.commentInvoker;
+	}
 }

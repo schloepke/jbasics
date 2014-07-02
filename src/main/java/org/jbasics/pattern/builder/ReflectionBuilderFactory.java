@@ -24,12 +24,12 @@
  */
 package org.jbasics.pattern.builder;
 
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.pattern.factory.Factory;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.pattern.factory.Factory;
 
 public final class ReflectionBuilderFactory<BuildType> implements Factory<Builder<BuildType>> {
 	public static final String BUILDER_FACTORY_METHOD_NAME = "newBuilder"; //$NON-NLS-1$
@@ -46,6 +46,10 @@ public final class ReflectionBuilderFactory<BuildType> implements Factory<Builde
 		} catch (NoSuchMethodException e) {
 			throw new RuntimeException("No \"public static newBuilder()\" factory method on type " + buildType); //$NON-NLS-1$
 		}
+	}
+
+	public static <T> ReflectionBuilderFactory<T> createFactory(final Class<T> type) {
+		return new ReflectionBuilderFactory<T>(type);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -67,9 +71,4 @@ public final class ReflectionBuilderFactory<BuildType> implements Factory<Builde
 	public Class<? extends Builder> getBuilderClass() {
 		return this.staticFactoryMethod.getReturnType().asSubclass(Builder.class);
 	}
-
-	public static <T> ReflectionBuilderFactory<T> createFactory(final Class<T> type) {
-		return new ReflectionBuilderFactory<T>(type);
-	}
-
 }

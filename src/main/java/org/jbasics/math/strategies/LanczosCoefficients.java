@@ -24,13 +24,13 @@
  */
 package org.jbasics.math.strategies;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-
 import org.jbasics.math.BigRational;
 import org.jbasics.math.MathFunction;
 import org.jbasics.math.NumberConverter;
 import org.jbasics.utilities.DataUtilities;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
 
 public class LanczosCoefficients implements MathFunction<BigDecimal> {
 	public static final LanczosCoefficients LAN_COEF6 = new LanczosCoefficients(5, //
@@ -108,5 +108,4 @@ public class LanczosCoefficients implements MathFunction<BigDecimal> {
 	public double calculate(final double x) {
 		return calculate(Double.valueOf(x)).doubleValue();
 	}
-
 }

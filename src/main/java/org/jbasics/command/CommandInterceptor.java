@@ -29,5 +29,4 @@ public interface CommandInterceptor {
 	boolean beforeExecutingCommand(CommandCall command);
 
 	int afterExecutingCommand(CommandCall command, int result);
-
 }

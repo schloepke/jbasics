@@ -29,5 +29,4 @@ import org.jbasics.pattern.visitor.Visitor;
 public interface CompositeVisitor<T> extends Visitor {
 
 	void visit(Composite<T> element);
-
 }

@@ -24,9 +24,6 @@
  */
 package org.jbasics.types.transpose;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.JavaRandomNumberSequence;
 import org.jbasics.math.RandomNumberSequence;
@@ -35,39 +32,37 @@ import org.jbasics.pattern.strategy.SubstitutionStrategy;
 import org.jbasics.pattern.transpose.Transposer;
 import org.jbasics.types.factories.ListFactory;
 
+import java.util.Collections;
+import java.util.List;
+
 public class ShuffleListTransposer<T> implements SubstitutionStrategy<List<T>, List<? extends T>>, Transposer<List<T>, List<? extends T>> {
 	public static final ShuffleListTransposer<?> IMMUTABLE = new ShuffleListTransposer<Object>(false);
 	public static final ShuffleListTransposer<?> MUTABLE = new ShuffleListTransposer<Object>(true);
 
 	private final RandomNumberSequence<Double> randomNumberSequence;
-
-	@SuppressWarnings("unchecked")
-	public static <T> ShuffleListTransposer<T> mutableTransposer() {
-		return (ShuffleListTransposer<T>) ShuffleListTransposer.MUTABLE;
-	}
-
-	@SuppressWarnings("unchecked")
-	public static <T> ShuffleListTransposer<T> immutableTransposer() {
-		return (ShuffleListTransposer<T>) ShuffleListTransposer.IMMUTABLE;
-	}
-
 	private final boolean mutable;
 	private final Factory<List<T>> listFactory;
 
 	public ShuffleListTransposer() {
-		this(null, false, ListFactory.<T> randomAccessListFactory());
+		this(null, false, ListFactory.<T>randomAccessListFactory());
+	}
+
+	public ShuffleListTransposer(final RandomNumberSequence<Double> randomNumberSequence, final boolean mutable, final Factory<List<T>> listFactory) {
+		this.randomNumberSequence = randomNumberSequence == null ? new JavaRandomNumberSequence() : randomNumberSequence;
+		this.mutable = mutable;
+		this.listFactory = ContractCheck.mustNotBeNull(listFactory, "listFactory"); //$NON-NLS-1$
 	}
 
 	public ShuffleListTransposer(final RandomNumberSequence<Double> randomNumberSequence) {
-		this(randomNumberSequence, false, ListFactory.<T> randomAccessListFactory());
+		this(randomNumberSequence, false, ListFactory.<T>randomAccessListFactory());
 	}
 
 	public ShuffleListTransposer(final boolean mutable) {
-		this(null, mutable, ListFactory.<T> randomAccessListFactory());
+		this(null, mutable, ListFactory.<T>randomAccessListFactory());
 	}
 
 	public ShuffleListTransposer(final RandomNumberSequence<Double> randomNumberSequence, final boolean mutable) {
-		this(randomNumberSequence, mutable, ListFactory.<T> randomAccessListFactory());
+		this(randomNumberSequence, mutable, ListFactory.<T>randomAccessListFactory());
 	}
 
 	public ShuffleListTransposer(final Factory<List<T>> listFactory) {
@@ -82,16 +77,25 @@ public class ShuffleListTransposer<T> implements SubstitutionStrategy<List<T>, L
 		this(null, mutable, listFactory);
 	}
 
-	public ShuffleListTransposer(final RandomNumberSequence<Double> randomNumberSequence, final boolean mutable, final Factory<List<T>> listFactory) {
-		this.randomNumberSequence = randomNumberSequence == null ? new JavaRandomNumberSequence() : randomNumberSequence;
-		this.mutable = mutable;
-		this.listFactory = ContractCheck.mustNotBeNull(listFactory, "listFactory"); //$NON-NLS-1$
+	@SuppressWarnings("unchecked")
+	public static <T> ShuffleListTransposer<T> mutableTransposer() {
+		return (ShuffleListTransposer<T>) ShuffleListTransposer.MUTABLE;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> ShuffleListTransposer<T> immutableTransposer() {
+		return (ShuffleListTransposer<T>) ShuffleListTransposer.IMMUTABLE;
+	}
+
+	@Override
+	public List<T> substitute(final List<? extends T> input) {
+		return transpose(input);
 	}
 
 	@Override
 	public List<T> transpose(final List<? extends T> input) {
 		if (input == null || input.isEmpty()) {
-			return this.mutable ? this.listFactory.newInstance() : Collections.<T> emptyList();
+			return this.mutable ? this.listFactory.newInstance() : Collections.<T>emptyList();
 		}
 		final List<T> result = this.listFactory.newInstance();
 		final List<T> temp = this.listFactory.newInstance();
@@ -102,10 +106,4 @@ public class ShuffleListTransposer<T> implements SubstitutionStrategy<List<T>, L
 		}
 		return this.mutable ? result : Collections.unmodifiableList(result);
 	}
-
-	@Override
-	public List<T> substitute(final List<? extends T> input) {
-		return transpose(input);
-	}
-
 }

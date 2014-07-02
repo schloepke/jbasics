@@ -25,40 +25,52 @@
 package org.jbasics.math.arbitrary;
 
 public interface ArbitraryNumber {
-	
+
 	// converting
-	
+
 	Number toNumber();
 
 	// Value checks
-	
+
 	int signum();
+
 	boolean isNegativ();
+
 	boolean isPositiv();
+
 	boolean isZero();
-	
+
 	// Unary operations
 
 	ArbitraryNumber abs();
+
 	ArbitraryNumber negate();
+
 	ArbitraryNumber reciprocal();
+
 	ArbitraryNumber square();
 
 	ArbitraryNumber increment();
+
 	ArbitraryNumber decrement();
-	
+
 	// Binary integer operations
-	
+
 	ArbitraryNumber add(ArbitraryInteger summand);
+
 	ArbitraryNumber subtract(ArbitraryInteger subtrahend);
+
 	ArbitraryNumber multiply(ArbitraryInteger factor);
+
 	ArbitraryNumber divide(ArbitraryInteger divisor);
-	
+
 	// Binary rational operations
-	
+
 	ArbitraryNumber add(ArbitraryRational summand);
+
 	ArbitraryNumber subtract(ArbitraryRational subtrahend);
+
 	ArbitraryNumber multiply(ArbitraryRational factor);
+
 	ArbitraryNumber divide(ArbitraryRational divisor);
-	
 }

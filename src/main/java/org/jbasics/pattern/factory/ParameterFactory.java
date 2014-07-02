@@ -27,5 +27,4 @@ package org.jbasics.pattern.factory;
 public interface ParameterFactory<InstanceType, ParameterType> {
 
 	InstanceType create(ParameterType param);
-
 }

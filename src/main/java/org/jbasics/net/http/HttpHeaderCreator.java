@@ -24,12 +24,12 @@
  */
 package org.jbasics.net.http;
 
-import java.io.UnsupportedEncodingException;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.codec.RFC3548Base64Codec;
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.types.tuples.Pair;
+
+import java.io.UnsupportedEncodingException;
 
 public final class HttpHeaderCreator {
 	public static final String URL_ENCODE_CHARSET = "UTF-8"; //$NON-NLS-1$
@@ -53,5 +53,4 @@ public final class HttpHeaderCreator {
 			throw DelegatedException.delegate(e);
 		}
 	}
-
 }

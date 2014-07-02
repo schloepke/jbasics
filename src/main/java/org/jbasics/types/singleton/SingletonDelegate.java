@@ -38,5 +38,4 @@ public class SingletonDelegate<T> implements Delegate<T> {
 	public T delegate() {
 		return this.singleton.instance();
 	}
-
 }

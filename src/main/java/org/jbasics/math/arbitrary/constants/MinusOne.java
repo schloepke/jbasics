@@ -48,16 +48,16 @@ public class MinusOne implements ArbitraryNumber {
 		return -1;
 	}
 
-	public boolean isZero() {
-		return false;
+	public boolean isNegativ() {
+		return true;
 	}
 
 	public boolean isPositiv() {
 		return false;
 	}
 
-	public boolean isNegativ() {
-		return true;
+	public boolean isZero() {
+		return false;
 	}
 
 	// Unary operations
@@ -77,11 +77,11 @@ public class MinusOne implements ArbitraryNumber {
 	public ArbitraryNumber square() {
 		return One.INSTANCE;
 	}
-	
+
 	public ArbitraryNumber increment() {
 		return Zero.INSTANCE;
 	}
-	
+
 	public ArbitraryNumber decrement() {
 		return ArbitraryInteger.valueOf(-2);
 	}
@@ -92,15 +92,7 @@ public class MinusOne implements ArbitraryNumber {
 		return summand.decrement();
 	}
 
-	public ArbitraryNumber add(ArbitraryRational summand) {
-		return summand.decrement();
-	}
-
 	public ArbitraryNumber subtract(ArbitraryInteger subtrahend) {
-		return subtract(subtrahend).negate().decrement();
-	}
-
-	public ArbitraryNumber subtract(ArbitraryRational subtrahend) {
 		return subtract(subtrahend).negate().decrement();
 	}
 
@@ -108,16 +100,23 @@ public class MinusOne implements ArbitraryNumber {
 		return factor.negate();
 	}
 
-	public ArbitraryNumber multiply(ArbitraryRational factor) {
-		return factor.negate();
-	}
-
 	public ArbitraryNumber divide(ArbitraryInteger divisor) {
 		return divisor.reciprocal().negate();
+	}
+
+	public ArbitraryNumber add(ArbitraryRational summand) {
+		return summand.decrement();
+	}
+
+	public ArbitraryNumber subtract(ArbitraryRational subtrahend) {
+		return subtract(subtrahend).negate().decrement();
+	}
+
+	public ArbitraryNumber multiply(ArbitraryRational factor) {
+		return factor.negate();
 	}
 
 	public ArbitraryNumber divide(ArbitraryRational divisor) {
 		return divisor.reciprocal().negate();
 	}
-
 }

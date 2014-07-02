@@ -24,11 +24,11 @@
  */
 package org.jbasics.types.container;
 
+import org.jbasics.pattern.container.PageableData;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
-import org.jbasics.pattern.container.PageableData;
 
 public class PagedList<T> implements PageableData<T> {
 	private final List<T> data;
@@ -38,11 +38,19 @@ public class PagedList<T> implements PageableData<T> {
 
 	public PagedList(final int pageSize, final List<T> data) {
 		this.pageSize = pageSize < 0 ? 0 : pageSize;
-		this.data = data == null ? Collections.<T> emptyList() : Collections.unmodifiableList(data);
+		this.data = data == null ? Collections.<T>emptyList() : Collections.unmodifiableList(data);
 	}
 
 	public Iterator<T> iterator() {
 		return getCurrentPageList().iterator();
+	}
+
+	private List<T> getCurrentPageList() {
+		if (this.currentPageData == null) {
+			final int start = this.page * this.pageSize;
+			this.currentPageData = this.data.subList(start, Math.min(start + this.pageSize, this.data.size()));
+		}
+		return this.currentPageData;
 	}
 
 	public boolean firstPage() {
@@ -115,13 +123,4 @@ public class PagedList<T> implements PageableData<T> {
 	public int pageSize() {
 		return this.pageSize;
 	}
-
-	private List<T> getCurrentPageList() {
-		if (this.currentPageData == null) {
-			final int start = this.page * this.pageSize;
-			this.currentPageData = this.data.subList(start, Math.min(start + this.pageSize, this.data.size()));
-		}
-		return this.currentPageData;
-	}
-
 }

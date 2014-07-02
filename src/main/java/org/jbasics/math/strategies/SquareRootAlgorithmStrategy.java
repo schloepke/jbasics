@@ -24,11 +24,11 @@
  */
 package org.jbasics.math.strategies;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-
 import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.impl.MathImplConstants;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
 
 public class SquareRootAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
 
@@ -52,5 +52,4 @@ public class SquareRootAlgorithmStrategy implements AlgorithmStrategy<BigDecimal
 		} while (result.subtract(oldResult, mc).signum() != 0);
 		return BigDecimal.ONE.divide(result, mc).stripTrailingZeros();
 	}
-
 }

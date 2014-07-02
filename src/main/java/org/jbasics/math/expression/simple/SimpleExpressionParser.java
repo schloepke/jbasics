@@ -24,9 +24,6 @@
  */
 package org.jbasics.math.expression.simple;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jbasics.math.expression.simple.SimpleExpressionLexer.TokenType;
 import org.jbasics.math.expression.simple.impl.SimpleAddExpression;
 import org.jbasics.math.expression.simple.impl.SimpleDivideExpression;
@@ -36,6 +33,9 @@ import org.jbasics.math.expression.simple.impl.SimpleNumberExpression;
 import org.jbasics.math.expression.simple.impl.SimplePowerExpression;
 import org.jbasics.math.expression.simple.impl.SimpleSubtractExpression;
 import org.jbasics.math.expression.simple.impl.SimpleSymbolExpression;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SimpleExpressionParser {
 

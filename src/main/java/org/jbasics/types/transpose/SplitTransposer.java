@@ -24,14 +24,14 @@
  */
 package org.jbasics.types.transpose;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.pattern.transpose.ElementFilter;
 import org.jbasics.pattern.transpose.Transposer;
 import org.jbasics.types.tuples.Pair;
+
+import java.util.Collection;
+import java.util.Collections;
 
 public class SplitTransposer<E> implements Transposer<Pair<Collection<E>, Collection<E>>, Collection<E>> {
 	private final boolean mutable;
@@ -49,7 +49,7 @@ public class SplitTransposer<E> implements Transposer<Pair<Collection<E>, Collec
 			if (this.mutable) {
 				return new Pair<Collection<E>, Collection<E>>(this.collectionFactory.newInstance(), this.collectionFactory.newInstance());
 			} else {
-				return new Pair<Collection<E>, Collection<E>>(Collections.<E> emptyList(), Collections.<E> emptyList());
+				return new Pair<Collection<E>, Collection<E>>(Collections.<E>emptyList(), Collections.<E>emptyList());
 			}
 		}
 		Collection<E> left = this.collectionFactory.newInstance();

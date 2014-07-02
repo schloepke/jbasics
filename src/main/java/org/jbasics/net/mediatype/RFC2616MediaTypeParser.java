@@ -24,21 +24,18 @@
  */
 package org.jbasics.net.mediatype;
 
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.types.tuples.Pair;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.types.tuples.Pair;
-
 /**
- * Functions to parse media types, media type ranges and accept media types as defined in RFC2616.
- * <p>
- * Typically this is not used directly but instead the {@code valueOf(String)} methods of the
- * corresponding type.
- * </p>
- * 
+ * Functions to parse media types, media type ranges and accept media types as defined in RFC2616. <p> Typically this is
+ * not used directly but instead the {@code valueOf(String)} methods of the corresponding type. </p>
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -66,8 +63,9 @@ public final class RFC2616MediaTypeParser {
 
 	/**
 	 * Parse a media type range as defined in RFC2616.
-	 * 
+	 *
 	 * @param mediaTypeRange The string representation of a media type range.
+	 *
 	 * @return The media type range.
 	 */
 	public static MediaTypeRange parseMediaTypeRange(final String mediaTypeRange) {
@@ -87,11 +85,12 @@ public final class RFC2616MediaTypeParser {
 
 	/**
 	 * Parses a media type from its string representation as of RFC 2616.
-	 * 
+	 *
 	 * @param mediaTypeString The media type string to parse.
+	 *
 	 * @return The parsed Media Type.
-	 * @throws IllegalArgumentException If the media type is malformed and does not comply to RFC
-	 *             2616.
+	 *
+	 * @throws IllegalArgumentException If the media type is malformed and does not comply to RFC 2616.
 	 */
 	public static MediaType parseMediaType(final String mediaTypeString) {
 		ContractCheck.mustNotBeNullOrEmpty(mediaTypeString, "mediaTypeString");
@@ -109,16 +108,14 @@ public final class RFC2616MediaTypeParser {
 	}
 
 	/**
-	 * Parses the given parameter string in key value pairs.
-	 * <p>
-	 * The parameters are "key=value" pairs separated by ";". The give parameter string may be null
-	 * in which case an empty array of key value pairs is returned. Also if a section between two
-	 * semicolons does not have any chars other than spaces it is ignored. a leading semicolon is
-	 * ignored in order to ease the parsing of media types where the semicolon itself is the
-	 * separator from the mime type section.
-	 * </p>
-	 * 
+	 * Parses the given parameter string in key value pairs. <p> The parameters are "key=value" pairs separated by ";".
+	 * The give parameter string may be null in which case an empty array of key value pairs is returned. Also if a
+	 * section between two semicolons does not have any chars other than spaces it is ignored. a leading semicolon is
+	 * ignored in order to ease the parsing of media types where the semicolon itself is the separator from the mime
+	 * type section. </p>
+	 *
 	 * @param parameterListString The string with the parameter list to parse.
+	 *
 	 * @return An array of key value parameters.
 	 */
 	public static Pair<String, String>[] parseParameterList(final String parameterListString) {
@@ -140,8 +137,9 @@ public final class RFC2616MediaTypeParser {
 
 	/**
 	 * Parse the given string into a key value pair. The format of the string is key=value.
-	 * 
+	 *
 	 * @param parameterString The string to parse.
+	 *
 	 * @return The key value pair.
 	 */
 	public static Pair<String, String> parseParameter(final String parameterString) {
@@ -161,8 +159,9 @@ public final class RFC2616MediaTypeParser {
 
 	/**
 	 * Parse the given accept string into an {@link AcceptMediaTypeRange}.
-	 * 
+	 *
 	 * @param acceptString The string to parse.
+	 *
 	 * @return The parsed instance.
 	 */
 	public static AcceptMediaTypeRange parseAcceptMediaTypeEntry(final String acceptString) {
@@ -178,8 +177,8 @@ public final class RFC2616MediaTypeParser {
 			throw new IllegalArgumentException("Accept media type " + acceptString + " does not comply to RFC2616");
 		}
 	}
-	
-	public static AcceptMediaTypeSet parseAcceptMediaTypes(String...acceptMediaTypeStrings) {
+
+	public static AcceptMediaTypeSet parseAcceptMediaTypes(String... acceptMediaTypeStrings) {
 		AcceptMediaTypeSet result = new AcceptMediaTypeSet();
 		for (String temp : ContractCheck.mustNotBeNullOrEmpty(acceptMediaTypeStrings, "acceptMediaTypeStrings")) {
 			String[] splits = temp.split(",");
@@ -192,5 +191,4 @@ public final class RFC2616MediaTypeParser {
 		}
 		return result;
 	}
-
 }

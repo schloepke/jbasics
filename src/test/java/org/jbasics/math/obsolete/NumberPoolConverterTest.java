@@ -24,12 +24,11 @@
  */
 package org.jbasics.math.obsolete;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 import java.math.BigInteger;
 
-import org.jbasics.math.obsolete.NumberPoolConverter;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 public class NumberPoolConverterTest {
 	private static final BigInteger TEST_NORMAL = BigInteger.valueOf(1024);
@@ -50,5 +49,4 @@ public class NumberPoolConverterTest {
 		test = new BigInteger(javaStore);
 		assertEquals(TEST_HUGE, test);
 	}
-
 }

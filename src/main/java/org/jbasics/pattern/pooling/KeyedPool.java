@@ -31,5 +31,4 @@ public interface KeyedPool<K, T> {
 	PooledInstance<T> aquire(K key, long timeout);
 
 	void close();
-
 }

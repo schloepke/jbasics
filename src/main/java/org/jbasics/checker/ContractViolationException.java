@@ -27,15 +27,12 @@ package org.jbasics.checker;
 import org.jbasics.localize.LocalizedRuntimeException;
 
 /**
- * Exception indication a violation of a designed contract. Most likely this is thrown by a method indicating that
- * the precondition failed because the given parameters are not correct.
- * <p>
- * Exceptions can be seen as immutable and thread safe even they do not fulfill the requirements completely. The stack
- * trace can be set, exchanged and is mutable. If that happens from different threads it is uncertain what the end
- * result will be. Since it is not a common practice to change the stack trace it can be seen as immutable and thread
- * safe.
- * </p>
- * 
+ * Exception indication a violation of a designed contract. Most likely this is thrown by a method indicating that the
+ * precondition failed because the given parameters are not correct. <p> Exceptions can be seen as immutable and thread
+ * safe even they do not fulfill the requirements completely. The stack trace can be set, exchanged and is mutable. If
+ * that happens from different threads it is uncertain what the end result will be. Since it is not a common practice to
+ * change the stack trace it can be seen as immutable and thread safe. </p>
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -43,9 +40,9 @@ import org.jbasics.localize.LocalizedRuntimeException;
 public final class ContractViolationException extends LocalizedRuntimeException {
 	/**
 	 * The given message key for the {@link LocalizedRuntimeException} and the arguments.
-	 * 
+	 *
 	 * @param messageKey The localization message key.
-	 * @param arguments The arguments to use for the localized message.
+	 * @param arguments  The arguments to use for the localized message.
 	 */
 	public ContractViolationException(final String messageKey, final Object... arguments) {
 		super(ContractCheck.class, messageKey, arguments);

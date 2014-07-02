@@ -29,37 +29,40 @@ import java.math.MathContext;
 
 /**
  * Represents the most simple function f(x).
- * 
- * @author Stephan Schloepke
+ *
  * @param <T> The type of the {@link Number} to use
+ *
+ * @author Stephan Schloepke
  */
 public interface MathFunction<T extends Number> {
 	public static final MathContext DEFAULT_MATH_CONTEXT = MathContext.DECIMAL64;
 
 	/**
-	 * Calculate f(x) for the given x to the {@link Number} type. The {@link MathContext} used is
-	 * {@link MathContext#UNLIMITED} and can lead to an Exception if the function contains a non terminating
-	 * calculation.
-	 * 
+	 * Calculate f(x) for the given x to the {@link Number} type. The {@link MathContext} used is {@link
+	 * MathContext#UNLIMITED} and can lead to an Exception if the function contains a non terminating calculation.
+	 *
 	 * @param x The x input value
+	 *
 	 * @return The value of f(x)
 	 */
 	T calculate(Number x);
 
 	/**
 	 * Calculate f(x) for the given x to the {@link Number} type.
-	 * 
-	 * @param x The x input value
+	 *
+	 * @param x  The x input value
 	 * @param mc The math context to use internally (Null should be using {@link MathContext#DECIMAL64} as default or a
-	 *            better one).
+	 *           better one).
+	 *
 	 * @return The value of f(x)
 	 */
 	T calculate(MathContext mc, Number x);
 
 	/**
 	 * Calculate f(x) for the given x in double type.
-	 * 
+	 *
 	 * @param x The x input value
+	 *
 	 * @return The value of f(x)
 	 */
 	double calculate(double x);
@@ -70,14 +73,13 @@ public interface MathFunction<T extends Number> {
 	public static abstract class AbstractMathFunction<T extends Number> implements MathFunction<T> {
 
 		@Override
-		public double calculate(final double x) {
-			return calculate(null, Double.valueOf(x)).doubleValue();
-		}
-
-		@Override
 		public T calculate(final Number x) {
 			return calculate(null, x);
 		}
 
+		@Override
+		public double calculate(final double x) {
+			return calculate(null, Double.valueOf(x)).doubleValue();
+		}
 	}
 }

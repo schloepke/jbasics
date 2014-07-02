@@ -26,7 +26,7 @@ package org.jbasics.math.exception;
 
 /**
  * A calculation result is either a {@link PositiveInfinityException} or a {@link NegativInfinityException}.
- * 
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -40,5 +40,4 @@ public class InfinityException extends ArithmeticException {
 	public InfinityException(final String message) {
 		super(message);
 	}
-
 }

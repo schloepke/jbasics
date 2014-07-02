@@ -24,19 +24,19 @@
  */
 package org.jbasics.types.builders;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.builder.Builder;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.types.factories.ListFactory;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 public class ListBuilder<E> implements Builder<List<E>> {
 	private final Factory<List<E>> listFactory;
-	private boolean mutable = false;
 	private final List<E> list;
+	private boolean mutable = false;
 
 	public ListBuilder() {
 		this.listFactory = ListFactory.randomAccessListFactory();
@@ -75,14 +75,13 @@ public class ListBuilder<E> implements Builder<List<E>> {
 		return this;
 	}
 
+	public void reset() {
+		this.list.clear();
+	}
+
 	public List<E> build() {
 		List<E> result = this.listFactory.newInstance();
 		result.addAll(this.list);
 		return this.mutable ? result : Collections.unmodifiableList(result);
 	}
-
-	public void reset() {
-		this.list.clear();
-	}
-
 }

@@ -24,13 +24,12 @@
  */
 package org.jbasics.math.arbitrary;
 
-import java.math.BigInteger;
-import java.util.Random;
-
+import org.jbasics.testing.Java14LoggingTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
-import org.jbasics.testing.Java14LoggingTestCase;
+import java.math.BigInteger;
+import java.util.Random;
 
 public class ArbitraryIntegerTest extends Java14LoggingTestCase {
 	private final Random randomizer = new Random();

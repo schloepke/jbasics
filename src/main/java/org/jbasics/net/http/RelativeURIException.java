@@ -28,7 +28,7 @@ import java.io.IOException;
 
 /**
  * Thrown if an URI is a relative URI whereas an absolute is required.
- * 
+ *
  * @author Stephan Schloepke
  */
 public class RelativeURIException extends IOException {
@@ -42,11 +42,10 @@ public class RelativeURIException extends IOException {
 
 	/**
 	 * Creates a relative URI exception with a detailed message.
-	 * 
+	 *
 	 * @param message The message.
 	 */
 	public RelativeURIException(final String message) {
 		super(message);
 	}
-
 }

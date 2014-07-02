@@ -24,20 +24,16 @@
  */
 package org.jbasics.types.factories;
 
+import org.jbasics.pattern.factory.Factory;
+
 import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import org.jbasics.pattern.factory.Factory;
 
 public class SortedSetFactory<E> implements Factory<SortedSet<E>> {
 	private final static SortedSetFactory<?> SHARED_INSTANCE = new SortedSetFactory<Object>();
 
 	private final Comparator<E> comparator;
-
-	public static <E> SortedSetFactory<E> create(final Comparator<E> comparator) {
-		return new SortedSetFactory<E>(comparator);
-	}
 
 	public SortedSetFactory() {
 		this(null);
@@ -45,6 +41,15 @@ public class SortedSetFactory<E> implements Factory<SortedSet<E>> {
 
 	public SortedSetFactory(final Comparator<E> comparator) {
 		this.comparator = comparator;
+	}
+
+	public static <E> SortedSetFactory<E> create(final Comparator<E> comparator) {
+		return new SortedSetFactory<E>(comparator);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <E extends Comparable<E>> SortedSetFactory<E> sortedSetFactory() {
+		return (SortedSetFactory<E>) SortedSetFactory.SHARED_INSTANCE;
 	}
 
 	@Override
@@ -55,10 +60,4 @@ public class SortedSetFactory<E> implements Factory<SortedSet<E>> {
 			return new TreeSet<E>();
 		}
 	}
-
-	@SuppressWarnings("unchecked")
-	public static <E extends Comparable<E>> SortedSetFactory<E> sortedSetFactory() {
-		return (SortedSetFactory<E>) SortedSetFactory.SHARED_INSTANCE;
-	}
-
 }

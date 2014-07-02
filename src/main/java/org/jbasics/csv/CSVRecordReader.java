@@ -24,13 +24,13 @@
  */
 package org.jbasics.csv;
 
+import org.jbasics.checker.ContractCheck;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.jbasics.checker.ContractCheck;
 
 public class CSVRecordReader implements Closeable {
 	private final Readable in;
@@ -42,10 +42,6 @@ public class CSVRecordReader implements Closeable {
 		this(in, true);
 	}
 
-	public CSVRecordReader(final Readable in, final char separator) {
-		this(in, separator, true);
-	}
-
 	public CSVRecordReader(final Readable in, final boolean skipEmptyLines) {
 		this(in, ',', skipEmptyLines);
 	}
@@ -55,6 +51,10 @@ public class CSVRecordReader implements Closeable {
 		this.separator = separator;
 		this.skipEmptyLines = skipEmptyLines;
 		this.buf.flip();
+	}
+
+	public CSVRecordReader(final Readable in, final char separator) {
+		this(in, separator, true);
 	}
 
 	public CSVRecord readNext() throws IOException {
@@ -133,5 +133,4 @@ public class CSVRecordReader implements Closeable {
 	private enum ParsingState {
 		NONE, QUOTED, QUOTED_END, RECORD_END
 	}
-
 }

@@ -89,5 +89,4 @@ public class AddStrategy implements Callable<int[]> {
 		}
 		return result;
 	}
-
 }

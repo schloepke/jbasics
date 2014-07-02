@@ -24,9 +24,6 @@
  */
 package org.jbasics.math.expression.simple;
 
-import java.math.BigDecimal;
-import java.util.Map;
-
 import org.jbasics.math.expression.simple.impl.SimpleFunctionCallExpression;
 import org.jbasics.math.expression.simple.impl.SimpleSymbolExpression;
 import org.jbasics.pattern.builder.Builder;
@@ -34,15 +31,22 @@ import org.jbasics.pattern.strategy.ContextualExecuteStrategy;
 import org.jbasics.pattern.strategy.ContextualResolveStrategy;
 import org.jbasics.types.builders.MapBuilder;
 
+import java.math.BigDecimal;
+import java.util.Map;
+
 public class SimpleExpressionRegistry implements ContextualResolveStrategy<BigDecimal, SimpleSymbolExpression, SimpleExpressionContext>,
 		ContextualExecuteStrategy<BigDecimal, SimpleFunctionCallExpression, SimpleExpressionContext> {
 	private final Map<String, BigDecimal> symbols;
 	private final Map<String, ContextualExecuteStrategy<BigDecimal, SimpleFunctionCallExpression, SimpleExpressionContext>> functions;
 
 	private SimpleExpressionRegistry(final Map<String, BigDecimal> symbols,
-			final Map<String, ContextualExecuteStrategy<BigDecimal, SimpleFunctionCallExpression, SimpleExpressionContext>> functions) {
+									 final Map<String, ContextualExecuteStrategy<BigDecimal, SimpleFunctionCallExpression, SimpleExpressionContext>> functions) {
 		this.symbols = symbols;
 		this.functions = functions;
+	}
+
+	public static RegistryBuilder newBuilder() {
+		return new RegistryBuilder();
 	}
 
 	@Override
@@ -61,10 +65,6 @@ public class SimpleExpressionRegistry implements ContextualResolveStrategy<BigDe
 		return this.symbols.get(symbolExpression.getSymbol());
 	}
 
-	public static RegistryBuilder newBuilder() {
-		return new RegistryBuilder();
-	}
-
 	public static class RegistryBuilder implements Builder<SimpleExpressionRegistry> {
 		private final MapBuilder<String, BigDecimal> symbolsBuilder = new MapBuilder<String, BigDecimal>().immutable();
 		private final MapBuilder<String, ContextualExecuteStrategy<BigDecimal, SimpleFunctionCallExpression, SimpleExpressionContext>> functionsBuilder = new MapBuilder<String, ContextualExecuteStrategy<BigDecimal, SimpleFunctionCallExpression, SimpleExpressionContext>>()
@@ -76,7 +76,7 @@ public class SimpleExpressionRegistry implements ContextualResolveStrategy<BigDe
 		}
 
 		public RegistryBuilder addFunction(final String name,
-				final ContextualExecuteStrategy<BigDecimal, SimpleFunctionCallExpression, SimpleExpressionContext> strategy) {
+										   final ContextualExecuteStrategy<BigDecimal, SimpleFunctionCallExpression, SimpleExpressionContext> strategy) {
 			this.functionsBuilder.put(name, strategy);
 			return this;
 		}
@@ -92,5 +92,4 @@ public class SimpleExpressionRegistry implements ContextualResolveStrategy<BigDe
 			return new SimpleExpressionRegistry(this.symbolsBuilder.build(), this.functionsBuilder.build());
 		}
 	}
-
 }

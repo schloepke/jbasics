@@ -24,23 +24,34 @@
  */
 package org.jbasics.math.impl;
 
-import java.math.BigDecimal;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.IrationalNumber;
 import org.jbasics.math.strategies.NaturalLogarithmAlgorithmStrategy;
 
+import java.math.BigDecimal;
+
 public class LogNaturalFunctionIrationalNumber extends BigDecimalIrationalNumber {
-	private static final AlgorithmStrategy<BigDecimal> STRATEGY = new NaturalLogarithmAlgorithmStrategy();
 	/**
 	 * The logarithm naturals of two as cached value.
 	 */
-	public static final IrationalNumber<BigDecimal> LN2 = new LogNaturalFunctionIrationalNumber(MathImplConstants.TWO);
+	public static final IrationalNumber<BigDecimal> LN2;
 	/**
 	 * The logarithm naturals of ten as cached value.
 	 */
-	public static final IrationalNumber<BigDecimal> LN10 = new LogNaturalFunctionIrationalNumber(BigDecimal.TEN);
+	public static final IrationalNumber<BigDecimal> LN10;
+	private static final AlgorithmStrategy<BigDecimal> STRATEGY;
+
+	static {
+		STRATEGY = new NaturalLogarithmAlgorithmStrategy();
+		LN2 = new LogNaturalFunctionIrationalNumber(MathImplConstants.TWO);
+		LN10 = new LogNaturalFunctionIrationalNumber(BigDecimal.TEN);
+	}
+
+	private LogNaturalFunctionIrationalNumber(BigDecimal x) {
+		super(STRATEGY, x);
+		assert x != null && x.signum() > 0;
+	}
 
 	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
 		if (ContractCheck.mustNotBeNull(x, "x").signum() == 0) {
@@ -56,10 +67,4 @@ public class LogNaturalFunctionIrationalNumber extends BigDecimalIrationalNumber
 			return new LogNaturalFunctionIrationalNumber(x);
 		}
 	}
-
-	private LogNaturalFunctionIrationalNumber(BigDecimal x) {
-		super(STRATEGY, x);
-		assert x != null && x.signum() > 0;
-	}
-
 }

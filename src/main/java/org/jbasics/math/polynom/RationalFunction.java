@@ -24,11 +24,11 @@
  */
 package org.jbasics.math.polynom;
 
-import java.math.MathContext;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.BigRational;
 import org.jbasics.math.MathFunction;
+
+import java.math.MathContext;
 
 public class RationalFunction implements MathFunction {
 	private final MathFunction nominator;
@@ -56,10 +56,9 @@ public class RationalFunction implements MathFunction {
 		double qx = this.denominator.calculate(x);
 		return px / qx;
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.nominator + "/" + this.denominator;
 	}
-
 }

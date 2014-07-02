@@ -24,16 +24,24 @@
  */
 package org.jbasics.math.impl;
 
-import java.math.BigDecimal;
-
 import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.IrationalNumber;
 import org.jbasics.math.strategies.ExponentialTaylerAlgorithmStrategy;
 
-public class ExponentialIrationalNumber extends BigDecimalIrationalNumber {
-	private static final AlgorithmStrategy<BigDecimal> STRATEGY = new ExponentialTaylerAlgorithmStrategy();
+import java.math.BigDecimal;
 
-	public static final IrationalNumber<BigDecimal> E = new ExponentialIrationalNumber(BigDecimal.ONE);
+public class ExponentialIrationalNumber extends BigDecimalIrationalNumber {
+	public static final IrationalNumber<BigDecimal> E;
+	private static final AlgorithmStrategy<BigDecimal> STRATEGY;
+
+	static {
+		STRATEGY = new ExponentialTaylerAlgorithmStrategy();
+		E = new ExponentialIrationalNumber(BigDecimal.ONE);
+	}
+
+	private ExponentialIrationalNumber(BigDecimal x) {
+		super(STRATEGY, x);
+	}
 
 	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
 		if (BigDecimal.ONE.compareTo(x) == 0) {
@@ -41,9 +49,4 @@ public class ExponentialIrationalNumber extends BigDecimalIrationalNumber {
 		}
 		return new ExponentialIrationalNumber(x);
 	}
-
-	private ExponentialIrationalNumber(BigDecimal x) {
-		super(STRATEGY, x);
-	}
-
 }

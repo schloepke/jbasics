@@ -30,17 +30,15 @@ import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.coder.Decoder;
 
 /**
- * A chain of {@link Decoder}s to call. Actually this is an encoder Pair and a fully chain can be applied by
- * attaching one {@link Decoder} with another {@link DecoderChain}.
- * <p>
- * The guarantee to be thread safe is only guaranteed if the decoder given is also thread safe. Same applies to be
- * immutable.
- * </p>
- * 
+ * A chain of {@link Decoder}s to call. Actually this is an encoder Pair and a fully chain can be applied by attaching
+ * one {@link Decoder} with another {@link DecoderChain}. <p> The guarantee to be thread safe is only guaranteed if the
+ * decoder given is also thread safe. Same applies to be immutable. </p>
+ *
+ * @param <T>    The decoded type
+ * @param <TEnc> The encoded type
+ *
  * @author Stephan Schloepke
  * @since 1.0
- * @param <T> The decoded type
- * @param <TEnc> The encoded type
  */
 @ThreadSafe(derived = true)
 @ImmutableState(derived = true)
@@ -51,12 +49,12 @@ public final class DecoderChain<T, TEnc> implements Decoder<T, TEnc> {
 	private final Decoder second;
 
 	/**
-	 * Creates a decoder chain where the first decoder decodes and gives the decoded into the
-	 * second decoder.
-	 * 
-	 * @param first The first decoder (must not be null)
+	 * Creates a decoder chain where the first decoder decodes and gives the decoded into the second decoder.
+	 *
+	 * @param first  The first decoder (must not be null)
 	 * @param second the second decoder (must not be null)
-	 * @param <X> The intermediate type between first and second decoder.
+	 * @param <X>    The intermediate type between first and second decoder.
+	 *
 	 * @since 1.0
 	 */
 	public <X> DecoderChain(final Decoder<X, TEnc> first, final Decoder<T, X> second) {

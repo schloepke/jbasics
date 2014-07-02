@@ -24,6 +24,9 @@
  */
 package org.jbasics.types.transpose;
 
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.pattern.transpose.Transposer;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,29 +36,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.pattern.transpose.Transposer;
-
 @SuppressWarnings("unchecked")
 public class InterleaveTransposer<T> implements Transposer<List<T>, Collection<? extends Iterable<T>>> {
 	private static final InterleaveTransposer<?> SHARED_INSTANCE = new InterleaveTransposer<Object>(1);
 	private final int amountToTakeEach;
-
-	public static <T> List<T> interleave(final Iterable<T>... input) {
-		return ((InterleaveTransposer<T>) InterleaveTransposer.SHARED_INSTANCE).transpose(Arrays.asList(input));
-	}
-
-	public static <T> List<T> interleave(final Collection<? extends Iterable<T>> input) {
-		return ((InterleaveTransposer<T>) InterleaveTransposer.SHARED_INSTANCE).transpose(input);
-	}
-
-	public static <T> List<T> interleave(final int amountToTakeEach, final Iterable<T>... input) {
-		return new InterleaveTransposer<T>(amountToTakeEach).transpose(Arrays.asList(input));
-	}
-
-	public static <T> List<T> interleave(final int amountToTakeEach, final Collection<? extends Iterable<T>> input) {
-		return new InterleaveTransposer<T>(amountToTakeEach).transpose(input);
-	}
 
 	public InterleaveTransposer() {
 		this(1);
@@ -63,6 +47,10 @@ public class InterleaveTransposer<T> implements Transposer<List<T>, Collection<?
 
 	public InterleaveTransposer(final int amountToTakeEach) {
 		this.amountToTakeEach = ContractCheck.mustBeInRange(amountToTakeEach, 1, Integer.MAX_VALUE, "amountToTakeEach");
+	}
+
+	public static <T> List<T> interleave(final Iterable<T>... input) {
+		return ((InterleaveTransposer<T>) InterleaveTransposer.SHARED_INSTANCE).transpose(Arrays.asList(input));
 	}
 
 	@Override
@@ -88,4 +76,15 @@ public class InterleaveTransposer<T> implements Transposer<List<T>, Collection<?
 		return transposed;
 	}
 
+	public static <T> List<T> interleave(final Collection<? extends Iterable<T>> input) {
+		return ((InterleaveTransposer<T>) InterleaveTransposer.SHARED_INSTANCE).transpose(input);
+	}
+
+	public static <T> List<T> interleave(final int amountToTakeEach, final Iterable<T>... input) {
+		return new InterleaveTransposer<T>(amountToTakeEach).transpose(Arrays.asList(input));
+	}
+
+	public static <T> List<T> interleave(final int amountToTakeEach, final Collection<? extends Iterable<T>> input) {
+		return new InterleaveTransposer<T>(amountToTakeEach).transpose(input);
+	}
 }

@@ -24,12 +24,12 @@
  */
 package org.jbasics.math.expression.simple.impl;
 
-import java.math.BigDecimal;
-import java.util.Collection;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.expression.simple.SimpleExpression;
 import org.jbasics.math.expression.simple.SimpleExpressionContext;
+
+import java.math.BigDecimal;
+import java.util.Collection;
 
 public class SimpleNumberExpression extends SimpleExpression {
 	private final BigDecimal number;
@@ -48,12 +48,12 @@ public class SimpleNumberExpression extends SimpleExpression {
 	}
 
 	@Override
-	public String toString() {
-		return this.number.toString();
+	public <T extends Collection<String>> void collectSymbols(final T collection) {
+		// Numbers cannot have any symbols
 	}
 
 	@Override
-	public <T extends Collection<String>> void collectSymbols(final T collection) {
-		// Numbers cannot have any symbols
+	public String toString() {
+		return this.number.toString();
 	}
 }

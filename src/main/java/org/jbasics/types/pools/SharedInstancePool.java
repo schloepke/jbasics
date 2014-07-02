@@ -34,17 +34,23 @@ public class SharedInstancePool<T> implements Pool<T> {
 	private final Delegate<T> instance;
 
 	public SharedInstancePool(final T instance) {
-		if (instance == null) { throw new IllegalArgumentException("Null parameter: instance"); }
+		if (instance == null) {
+			throw new IllegalArgumentException("Null parameter: instance");
+		}
 		this.instance = new UnmodifiableDelegate<T>(instance);
 	}
 
 	public SharedInstancePool(final Delegate<T> delegate) {
-		if (delegate == null) { throw new IllegalArgumentException("Null parameter: delegate"); }
+		if (delegate == null) {
+			throw new IllegalArgumentException("Null parameter: delegate");
+		}
 		this.instance = delegate;
 	}
 
 	public SharedInstancePool(final Factory<T> factory) {
-		if (factory == null) { throw new IllegalArgumentException("Null parameter: factory"); }
+		if (factory == null) {
+			throw new IllegalArgumentException("Null parameter: factory");
+		}
 		this.instance = new LazySoftReferenceDelegate<T>(factory);
 	}
 
@@ -55,5 +61,4 @@ public class SharedInstancePool<T> implements Pool<T> {
 	public boolean release(final T object) {
 		return true;
 	}
-
 }

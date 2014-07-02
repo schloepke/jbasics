@@ -24,6 +24,9 @@
  */
 package org.jbasics.net.http;
 
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.net.mediatype.MediaType;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -35,13 +38,9 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.net.mediatype.MediaType;
-
 /**
- * Simple request entity holding a {@link CharSequence} (like {@link String} or
- * {@link StringBuilder}).
- * 
+ * Simple request entity holding a {@link CharSequence} (like {@link String} or {@link StringBuilder}).
+ *
  * @author Stephan Schloepke
  */
 public class CharSequenceRequestEntity extends RequestEntity<CharSequence> {
@@ -57,7 +56,7 @@ public class CharSequenceRequestEntity extends RequestEntity<CharSequence> {
 
 	/**
 	 * Creates a request entity for the given char sequence.
-	 * 
+	 *
 	 * @param sequence The char sequence.
 	 */
 	public CharSequenceRequestEntity(final CharSequence sequence) {
@@ -78,18 +77,18 @@ public class CharSequenceRequestEntity extends RequestEntity<CharSequence> {
 	}
 
 	@Override
-	public String getContentEncoding() {
-		return null;
-	}
-
-	@Override
 	public Locale getContentLanguage() {
 		return this.locale;
 	}
 
+	@Override
+	public String getContentEncoding() {
+		return null;
+	}
+
 	/**
 	 * Returns the computed MD5 hash of the request sequence entity.
-	 * 
+	 *
 	 * @return The computed MD5 hash of the sequence or null if encoding is not present or
 	 */
 	@Override
@@ -115,8 +114,9 @@ public class CharSequenceRequestEntity extends RequestEntity<CharSequence> {
 
 	/**
 	 * Serialize the character sequence to the given output stream.
-	 * 
+	 *
 	 * @param out The stream to write to.
+	 *
 	 * @throws IOException If an IO error occurred.
 	 * @see de.rms.atom.client.http.RequestEntity#serializeEntity(java.io.OutputStream)
 	 */
@@ -130,5 +130,4 @@ public class CharSequenceRequestEntity extends RequestEntity<CharSequence> {
 		writer.append(this.sequence);
 		writer.flush();
 	}
-
 }

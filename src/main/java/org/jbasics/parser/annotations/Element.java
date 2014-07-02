@@ -30,62 +30,49 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The annotation marks a builder method to receive the instance created for an
- * element.
- * <p>
- * Using this annotation lets the build parser know that this method is called
- * for elements of the given qualified name (name and name space). If the
- * annotation uses a {@link #maxOccurs()} of 1 than the method is viewed as a
- * setter which can only be called once on each instance. If the
- * {@link #maxOccurs()} is greater than 1 the method is considered an add type
- * of method concatenating multiple elements to a collection. A value less than
- * 0 indicates that the {@link #maxOccurs()} is unbound may any number of
- * elements can be added to the builder.
- * </p>
- * 
+ * The annotation marks a builder method to receive the instance created for an element. <p> Using this annotation lets
+ * the build parser know that this method is called for elements of the given qualified name (name and name space). If
+ * the annotation uses a {@link #maxOccurs()} of 1 than the method is viewed as a setter which can only be called once
+ * on each instance. If the {@link #maxOccurs()} is greater than 1 the method is considered an add type of method
+ * concatenating multiple elements to a collection. A value less than 0 indicates that the {@link #maxOccurs()} is
+ * unbound may any number of elements can be added to the builder. </p>
+ *
  * @author stephan
- * 
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.METHOD })
+@Target({ElementType.METHOD})
 public @interface Element {
 
 	/**
+	 * Constant to use as {@link #maxOccurs()} to indicate that the maximum occurrence is unbounded.
+	 */
+	final int UNBOUND = -1;
+
+	/**
 	 * The name space of the element which must not be null.
-	 * 
+	 *
 	 * @return The name space of the elements fully qualified name.
 	 */
 	String namespace();
 
 	/**
 	 * The name of the element which must not be null.
-	 * 
+	 *
 	 * @return The local name of the elements fully qualified name.
 	 */
 	String name();
 
 	/**
-	 * The minimum occurrence of the element. Defaults to zero and must not be
-	 * less than zero.
-	 * 
-	 * @return The minimum occurrence of the element. Defaults to zero and must
-	 *         not be less than zero.
+	 * The minimum occurrence of the element. Defaults to zero and must not be less than zero.
+	 *
+	 * @return The minimum occurrence of the element. Defaults to zero and must not be less than zero.
 	 */
 	int minOccurs() default 0;
 
 	/**
-	 * The maximum occurrence of the element. Defaults to one. Values less than
-	 * zero are considered unbound.
-	 * 
-	 * @return The maximum occurrence of the element. Defaults to one and values
-	 *         less than zero are considered unbound.
+	 * The maximum occurrence of the element. Defaults to one. Values less than zero are considered unbound.
+	 *
+	 * @return The maximum occurrence of the element. Defaults to one and values less than zero are considered unbound.
 	 */
 	int maxOccurs() default 1;
-
-	/**
-	 * Constant to use as {@link #maxOccurs()} to indicate that the maximum
-	 * occurrence is unbounded.
-	 */
-	final int UNBOUND = -1;
-
 }

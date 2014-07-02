@@ -24,15 +24,15 @@
  */
 package org.jbasics.math.strategies;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.MathContext;
-import java.math.RoundingMode;
-
 import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.BigRational;
 import org.jbasics.math.impl.Faculty;
 import org.jbasics.math.impl.SquareRootIrationalNumber;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 public class PiSeriesAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
 	public static final AlgorithmStrategy<BigDecimal> STRATEGY = new PiSeriesAlgorithmStrategy();
@@ -43,7 +43,7 @@ public class PiSeriesAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> 
 	private static final BigInteger C3 = BigInteger.valueOf(396);
 
 	public BigDecimal calculate(MathContext mcOut, BigDecimal guess, BigDecimal... xn) {
-		MathContext mc = new MathContext(mcOut.getPrecision()+2, RoundingMode.HALF_EVEN);
+		MathContext mc = new MathContext(mcOut.getPrecision() + 2, RoundingMode.HALF_EVEN);
 		Faculty k4 = new Faculty(4);
 		Faculty k = new Faculty();
 		BigInteger c2k = C2.negate();
@@ -62,5 +62,4 @@ public class PiSeriesAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> 
 			return pi.multiply(xn[0], mcOut);
 		}
 	}
-
 }

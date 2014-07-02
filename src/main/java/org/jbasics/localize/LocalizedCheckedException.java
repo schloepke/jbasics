@@ -35,8 +35,18 @@ public class LocalizedCheckedException extends Exception {
 		this(LocalizedMessageAccessor.getMessageBundleName(bundleInstance), key, arguments);
 	}
 
+	public LocalizedCheckedException(String bundle, String key, Object... arguments) {
+		super(LocalizedMessageAccessor.getUSEnglishMessage(bundle, key, arguments));
+		this.localizedMessage = LocalizedMessageAccessor.getLocalizedMessage(bundle, key, arguments);
+	}
+
 	public LocalizedCheckedException(Object bundleInstance, String key, Throwable cause, Object... arguments) {
 		this(LocalizedMessageAccessor.getMessageBundleName(bundleInstance), key, cause, arguments);
+	}
+
+	public LocalizedCheckedException(String bundle, String key, Throwable cause, Object... arguments) {
+		super(LocalizedMessageAccessor.getUSEnglishMessage(bundle, key, arguments), cause);
+		this.localizedMessage = LocalizedMessageAccessor.getLocalizedMessage(bundle, key, arguments);
 	}
 
 	public LocalizedCheckedException(Class<?> bundleClass, String key, Object... arguments) {
@@ -47,16 +57,6 @@ public class LocalizedCheckedException extends Exception {
 		this(LocalizedMessageAccessor.getMessageBundleName(bundleClass), key, cause, arguments);
 	}
 
-	public LocalizedCheckedException(String bundle, String key, Object... arguments) {
-		super(LocalizedMessageAccessor.getUSEnglishMessage(bundle, key, arguments));
-		this.localizedMessage = LocalizedMessageAccessor.getLocalizedMessage(bundle, key, arguments);
-	}
-
-	public LocalizedCheckedException(String bundle, String key, Throwable cause, Object... arguments) {
-		super(LocalizedMessageAccessor.getUSEnglishMessage(bundle, key, arguments), cause);
-		this.localizedMessage = LocalizedMessageAccessor.getLocalizedMessage(bundle, key, arguments);
-	}
-
 	@Override
 	public String getLocalizedMessage() {
 		if (this.localizedMessage != null) {
@@ -65,5 +65,4 @@ public class LocalizedCheckedException extends Exception {
 			return super.getLocalizedMessage();
 		}
 	}
-
 }

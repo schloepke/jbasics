@@ -25,7 +25,6 @@
 package org.jbasics.math.polynom;
 
 import junit.framework.Assert;
-
 import org.jbasics.math.BigRational;
 import org.jbasics.math.MathFunction;
 import org.jbasics.testing.Java14LoggingTestCase;
@@ -53,34 +52,32 @@ public class PolynomTest extends Java14LoggingTestCase {
 		actual = polynom.calculate(input);
 		this.logger.info("Result f(" + input + ") = " + actual);
 		Assert.assertEquals(BigRational.valueOf("13110514/771147"), actual);
-
 	}
-	
+
 	@Test
 	public void testAdd() {
 		Polynom lhs = new Polynom(3, 2, 4, 0, 2);
-		Polynom rhs = new Polynom(14,6,4);
+		Polynom rhs = new Polynom(14, 6, 4);
 		Polynom expected, actual;
-		
+
 		actual = lhs.add(rhs);
 		expected = new Polynom(17, 8, 8, 0, 2);
-		this.logger.info("Polynom add: "+lhs+" (+) "+rhs+" (=) "+actual);
+		this.logger.info("Polynom add: " + lhs + " (+) " + rhs + " (=) " + actual);
 		Assert.assertEquals(expected, actual);
 		Assert.assertTrue(expected.compareTo(actual) == 0);
 
 		actual = lhs.subtract(rhs);
 		expected = new Polynom(-11, -4, 0, 0, 2);
-		this.logger.info("Polynom subtract: "+lhs+" (+) "+rhs+" (=) "+actual);
+		this.logger.info("Polynom subtract: " + lhs + " (+) " + rhs + " (=) " + actual);
 		Assert.assertEquals(expected, actual);
 		Assert.assertTrue(expected.compareTo(actual) == 0);
 
 		actual = lhs.multiply(rhs);
 		expected = new Polynom(42, 46, 80, 32, 44, 12, 8);
-		this.logger.info("Polynom multiply: "+lhs+" (+) "+rhs+" (=) "+actual);
+		this.logger.info("Polynom multiply: " + lhs + " (+) " + rhs + " (=) " + actual);
 		Assert.assertEquals(expected, actual);
 		Assert.assertTrue(expected.compareTo(actual) == 0);
 
-		this.logger.info("Polynom divide: "+lhs+" (+) "+rhs+" (=) "+lhs.divide(rhs));
+		this.logger.info("Polynom divide: " + lhs + " (+) " + rhs + " (=) " + lhs.divide(rhs));
 	}
-
 }

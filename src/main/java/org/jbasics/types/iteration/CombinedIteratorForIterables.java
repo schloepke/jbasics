@@ -24,10 +24,10 @@
  */
 package org.jbasics.types.iteration;
 
+import org.jbasics.checker.ContractCheck;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import org.jbasics.checker.ContractCheck;
 
 public class CombinedIteratorForIterables<T> implements Iterator<T> {
 	private final Iterable<? extends T>[] iterables;
@@ -65,5 +65,4 @@ public class CombinedIteratorForIterables<T> implements Iterator<T> {
 			this.currentIterator.remove();
 		}
 	}
-
 }

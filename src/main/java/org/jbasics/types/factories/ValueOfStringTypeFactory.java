@@ -24,6 +24,8 @@
  */
 package org.jbasics.types.factories;
 
+import org.jbasics.pattern.factory.ParameterFactory;
+
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.lang.reflect.Constructor;
@@ -33,36 +35,15 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jbasics.pattern.factory.ParameterFactory;
-
 /**
- * Listenbeschreibung
- * <p>
- * Detailierte Beschreibung
- * </p>
- * 
+ * Listenbeschreibung <p> Detailierte Beschreibung </p>
+ *
  * @author stephan
  */
 public class ValueOfStringTypeFactory<InstanceType> implements ParameterFactory<InstanceType, String> {
+	private static Reference<Map<Class<?>, ValueOfStringTypeFactory<?>>> factoryCache;
 	private final Method valueOfMethod;
 	private final Constructor<InstanceType> stringConstructor;
-
-	private static Reference<Map<Class<?>, ValueOfStringTypeFactory<?>>> factoryCache;
-
-	@SuppressWarnings("unchecked")
-	public synchronized static <T> ParameterFactory<T, String> getFactoryFor(Class<T> type) {
-		Map<Class<?>, ValueOfStringTypeFactory<?>> cacheMap = factoryCache != null ? factoryCache.get() : null;
-		ValueOfStringTypeFactory<T> result = cacheMap != null ? (ValueOfStringTypeFactory<T>) cacheMap.get(type) : null;
-		if (result == null) {
-			result = new ValueOfStringTypeFactory<T>(type);
-			if (cacheMap == null) {
-				cacheMap = new HashMap<Class<?>, ValueOfStringTypeFactory<?>>();
-				factoryCache = new SoftReference<Map<Class<?>, ValueOfStringTypeFactory<?>>>(cacheMap);
-			}
-			cacheMap.put(type, result);
-		}
-		return result;
-	}
 
 	private ValueOfStringTypeFactory(Class<InstanceType> type) {
 		if (type == null) {
@@ -80,26 +61,6 @@ public class ValueOfStringTypeFactory<InstanceType> implements ParameterFactory<
 		} else {
 			this.stringConstructor = null;
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	public InstanceType create(String value) {
-		if (value != null) {
-			try {
-				if (this.valueOfMethod != null) {
-					return (InstanceType) this.valueOfMethod.invoke(null, value);
-				} else {
-					return this.stringConstructor.newInstance(value);
-				}
-			} catch (IllegalAccessException e) {
-				throw new RuntimeException(e);
-			} catch (InvocationTargetException e) {
-				throw new RuntimeException(e);
-			} catch (InstantiationException e) {
-				throw new RuntimeException(e);
-			}
-		}
-		return null;
 	}
 
 	private static <T> Method getStaticValueOfStringMethod(Class<T> type) {
@@ -132,4 +93,38 @@ public class ValueOfStringTypeFactory<InstanceType> implements ParameterFactory<
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	public synchronized static <T> ParameterFactory<T, String> getFactoryFor(Class<T> type) {
+		Map<Class<?>, ValueOfStringTypeFactory<?>> cacheMap = factoryCache != null ? factoryCache.get() : null;
+		ValueOfStringTypeFactory<T> result = cacheMap != null ? (ValueOfStringTypeFactory<T>) cacheMap.get(type) : null;
+		if (result == null) {
+			result = new ValueOfStringTypeFactory<T>(type);
+			if (cacheMap == null) {
+				cacheMap = new HashMap<Class<?>, ValueOfStringTypeFactory<?>>();
+				factoryCache = new SoftReference<Map<Class<?>, ValueOfStringTypeFactory<?>>>(cacheMap);
+			}
+			cacheMap.put(type, result);
+		}
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	public InstanceType create(String value) {
+		if (value != null) {
+			try {
+				if (this.valueOfMethod != null) {
+					return (InstanceType) this.valueOfMethod.invoke(null, value);
+				} else {
+					return this.stringConstructor.newInstance(value);
+				}
+			} catch (IllegalAccessException e) {
+				throw new RuntimeException(e);
+			} catch (InvocationTargetException e) {
+				throw new RuntimeException(e);
+			} catch (InstantiationException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		return null;
+	}
 }

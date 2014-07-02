@@ -25,12 +25,11 @@
 package org.jbasics.utilities;
 
 import junit.framework.Assert;
-
 import org.junit.Test;
 
 /**
  * Test class for {@link DataUtilities}.
- * 
+ *
  * @author Stephan Schloepke
  */
 public class DataUtilitiesTest {

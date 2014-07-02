@@ -31,5 +31,4 @@ public class PassThruValueTypeFactory<T> implements ParameterFactory<T, T> {
 	public T create(final T param) {
 		return param;
 	}
-
 }

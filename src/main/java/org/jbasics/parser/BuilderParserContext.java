@@ -24,13 +24,12 @@
  */
 package org.jbasics.parser;
 
+import org.jbasics.checker.ContractCheck;
+
+import javax.xml.namespace.QName;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
-import javax.xml.namespace.QName;
-
-import org.jbasics.checker.ContractCheck;
 
 public class BuilderParserContext<T> {
 	private static final ConcurrentMap<Class<?>, BuilderParserContext<?>> CONTEXT_CACHE;
@@ -38,6 +37,11 @@ public class BuilderParserContext<T> {
 
 	static {
 		CONTEXT_CACHE = new ConcurrentHashMap<Class<?>, BuilderParserContext<?>>();
+	}
+
+	public BuilderParserContext(Class<? extends T> documentType) {
+		this.parsingInformation = new AnnotationScanner().scan(ContractCheck
+				.mustNotBeNull(documentType, "documentType"));
 	}
 
 	public static <T> BuilderParserContext<T> getOrCreateContext(Class<? extends T> documentType) {
@@ -52,11 +56,6 @@ public class BuilderParserContext<T> {
 		return result;
 	}
 
-	public BuilderParserContext(Class<? extends T> documentType) {
-		this.parsingInformation = new AnnotationScanner().scan(ContractCheck
-				.mustNotBeNull(documentType, "documentType"));
-	}
-
 	public BuilderContentHandler<T> createContentHandler() {
 		return new BuilderContentHandler<T>(this);
 	}
@@ -64,5 +63,4 @@ public class BuilderParserContext<T> {
 	public ParsingInfo getParsingInfo(QName name) {
 		return this.parsingInformation.get(name);
 	}
-
 }

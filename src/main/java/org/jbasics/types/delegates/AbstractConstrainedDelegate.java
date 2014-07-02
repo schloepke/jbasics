@@ -34,12 +34,10 @@ public abstract class AbstractConstrainedDelegate<T> implements MutableDelegate<
 		this.delegate = delegate;
 	}
 
+	protected abstract void checkInitConstrain(T delegate);
+
 	public final T delegate() {
 		return this.delegate;
-	}
-
-	public final boolean isDelegateSet() {
-		return this.delegate != null;
 	}
 
 	public final T setDelegate(final T delegate) {
@@ -49,8 +47,9 @@ public abstract class AbstractConstrainedDelegate<T> implements MutableDelegate<
 		return temp;
 	}
 
+	public final boolean isDelegateSet() {
+		return this.delegate != null;
+	}
+
 	protected abstract void checkChangeCostrain(T delegate, T oldDelegate);
-
-	protected abstract void checkInitConstrain(T delegate);
-
 }

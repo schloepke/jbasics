@@ -24,9 +24,9 @@
  */
 package org.jbasics.math.distribution;
 
-import java.math.MathContext;
-
 import org.jbasics.math.MathFunction;
+
+import java.math.MathContext;
 
 public interface Distribution<T extends Number> {
 
@@ -47,5 +47,4 @@ public interface Distribution<T extends Number> {
 	T pdf(MathContext mc, Number x);
 
 	T cdf(MathContext mc, Number x);
-
 }

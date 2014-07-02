@@ -45,10 +45,16 @@ public final class SingletonThreadInstance<T> extends AbstractManageableSingleto
 	}
 
 	public void setInstance(final T instance) {
-		if (instance == null) { throw new IllegalArgumentException("Null parameter: instance"); }
-		if (this.instances.get() == instance) { return; }
-		if (this.instances.get() != null) { throw new IllegalStateException(
-				"The singleton instance is already set for this thread"); }
+		if (instance == null) {
+			throw new IllegalArgumentException("Null parameter: instance");
+		}
+		if (this.instances.get() == instance) {
+			return;
+		}
+		if (this.instances.get() != null) {
+			throw new IllegalStateException(
+					"The singleton instance is already set for this thread");
+		}
 		fireSingletonSet(instance);
 		this.instances.set(instance);
 	}
@@ -63,5 +69,4 @@ public final class SingletonThreadInstance<T> extends AbstractManageableSingleto
 	public boolean isInstanciated() {
 		return this.instances.get() != null;
 	}
-
 }

@@ -45,8 +45,12 @@ public final class SingletonInstance<T> extends AbstractManageableSingleton<T> {
 	}
 
 	public void setInstance(final T instance) {
-		if (instance == null) { throw new IllegalArgumentException("Null parameter: instance"); }
-		if (instance == this.instance) { return; }
+		if (instance == null) {
+			throw new IllegalArgumentException("Null parameter: instance");
+		}
+		if (instance == this.instance) {
+			return;
+		}
 		synchronized (this) {
 			if (this.instance == null) {
 				fireSingletonSet(instance);
@@ -69,5 +73,4 @@ public final class SingletonInstance<T> extends AbstractManageableSingleton<T> {
 	public boolean isInstanciated() {
 		return this.instance != null;
 	}
-
 }

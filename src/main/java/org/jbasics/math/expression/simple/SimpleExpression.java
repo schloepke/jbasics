@@ -27,7 +27,6 @@ package org.jbasics.math.expression.simple;
 import java.math.BigDecimal;
 import java.util.Collection;
 
-
 public abstract class SimpleExpression {
 
 	public static SimpleExpression valueOf(final String expression) {
@@ -41,5 +40,4 @@ public abstract class SimpleExpression {
 	public abstract BigDecimal eval(SimpleExpressionContext context);
 
 	public abstract <T extends Collection<String>> void collectSymbols(T collection);
-
 }

@@ -24,9 +24,7 @@
  */
 package org.jbasics.pattern.delivering;
 
-
 public interface DeliverableGroup<E, R> extends Deliverable<R> {
 
 	DeliverableGroup<E, R> add(E... elements);
-
 }

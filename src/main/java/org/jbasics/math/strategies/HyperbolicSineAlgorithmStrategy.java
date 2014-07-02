@@ -24,26 +24,18 @@
  */
 package org.jbasics.math.strategies;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-
 import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.impl.MathImplConstants;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+
 /**
- * The Hyperbolic Sine function algorithm.
- * <p>
- * Hyperbolic Sine is defined as:
- * <p style="margin-left: 2 em">
- * cosh(x) = (e<sup>x</sup> - e<sup>-x</sup>) / 2
- * </p>
- * Since e<sup>-x</sup> = 1 / e<sup>x</sup> we can change the function in a way that we only need to
- * calculate e<sup>x</sup> once:
- * <p style="margin-left: 2 em">
- * cosh(x) = (e<sup>x</sup> - 1/e<sup>x</sup>) / 2
- * </p>
- * </p>
- * 
+ * The Hyperbolic Sine function algorithm. <p> Hyperbolic Sine is defined as: <p style="margin-left: 2 em"> cosh(x) =
+ * (e<sup>x</sup> - e<sup>-x</sup>) / 2 </p> Since e<sup>-x</sup> = 1 / e<sup>x</sup> we can change the function in a
+ * way that we only need to calculate e<sup>x</sup> once: <p style="margin-left: 2 em"> cosh(x) = (e<sup>x</sup> -
+ * 1/e<sup>x</sup>) / 2 </p> </p>
+ *
  * @author Stephan Schloepke
  */
 public class HyperbolicSineAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
@@ -67,5 +59,4 @@ public class HyperbolicSineAlgorithmStrategy implements AlgorithmStrategy<BigDec
 		BigDecimal expX = this.exp.calculate(mc, null, xn[0]);
 		return expX.add(BigDecimal.ONE.divide(expX, mc), mc).multiply(MathImplConstants.HALF, mc);
 	}
-
 }

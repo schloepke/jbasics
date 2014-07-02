@@ -37,5 +37,4 @@ public interface Singleton<T> {
 	void addSingletonListener(VetoableSingletonChangeListener listener);
 
 	void removeSingletonListener(VetoableSingletonChangeListener listener);
-
 }

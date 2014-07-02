@@ -24,18 +24,6 @@
  */
 package org.jbasics.net.mail;
 
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
-import javax.mail.Message.RecipientType;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.builder.Builder;
@@ -45,11 +33,21 @@ import org.jbasics.types.delegates.LazySoftReferenceDelegate;
 import org.jbasics.types.delegates.UnmodifiableDelegate;
 import org.jbasics.types.tuples.Pair;
 
+import javax.mail.Message.RecipientType;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 public class MimeMessageBuilder implements Builder<MimeMessage> {
 	private final Delegate<Session> mailSessionDelegate;
-
-	private InternetAddress from;
 	private final Set<Pair<RecipientType, InternetAddress>> recipients = new LinkedHashSet<Pair<RecipientType, InternetAddress>>();
+	private InternetAddress from;
 	private String subject;
 	private String messageType;
 	private Object messageContent;
@@ -59,12 +57,12 @@ public class MimeMessageBuilder implements Builder<MimeMessage> {
 		this(new UnmodifiableDelegate<Session>(ContractCheck.mustNotBeNull(session, "session"))); //$NON-NLS-1$
 	}
 
-	public MimeMessageBuilder(final Factory<Session> sessionFactory) {
-		this(new LazySoftReferenceDelegate<Session>(ContractCheck.mustNotBeNull(sessionFactory, "sessionFactory"))); //$NON-NLS-1$
-	}
-
 	public MimeMessageBuilder(final Delegate<Session> sessionDelegate) {
 		this.mailSessionDelegate = ContractCheck.mustNotBeNull(sessionDelegate, "sessionDelegate"); //$NON-NLS-1$
+	}
+
+	public MimeMessageBuilder(final Factory<Session> sessionFactory) {
+		this(new LazySoftReferenceDelegate<Session>(ContractCheck.mustNotBeNull(sessionFactory, "sessionFactory"))); //$NON-NLS-1$
 	}
 
 	public MimeMessageBuilder setFrom(final String address) {
@@ -83,6 +81,15 @@ public class MimeMessageBuilder implements Builder<MimeMessage> {
 		return this;
 	}
 
+	public MimeMessageBuilder addRecipient(final RecipientType type, final String address) {
+		try {
+			this.recipients.add(new Pair<RecipientType, InternetAddress>(type, new InternetAddress(address)));
+			return this;
+		} catch (final AddressException e) {
+			throw DelegatedException.delegate(e);
+		}
+	}
+
 	public MimeMessageBuilder addCcRecipient(final String... addresses) {
 		for (final String address : addresses) {
 			addRecipient(RecipientType.CC, address);
@@ -95,15 +102,6 @@ public class MimeMessageBuilder implements Builder<MimeMessage> {
 			addRecipient(RecipientType.BCC, address);
 		}
 		return this;
-	}
-
-	public MimeMessageBuilder addRecipient(final RecipientType type, final String address) {
-		try {
-			this.recipients.add(new Pair<RecipientType, InternetAddress>(type, new InternetAddress(address)));
-			return this;
-		} catch (final AddressException e) {
-			throw DelegatedException.delegate(e);
-		}
 	}
 
 	public MimeMessageBuilder setSubject(final String subject) {
@@ -119,6 +117,16 @@ public class MimeMessageBuilder implements Builder<MimeMessage> {
 		this.messageType = type;
 		this.messageContent = content;
 		return this;
+	}
+
+	@Override
+	public void reset() {
+		this.from = null;
+		this.recipients.clear();
+		this.subject = null;
+		this.messageContent = null;
+		this.messageType = null;
+		this.sentDate = null;
 	}
 
 	@Override
@@ -154,16 +162,6 @@ public class MimeMessageBuilder implements Builder<MimeMessage> {
 		}
 	}
 
-	@Override
-	public void reset() {
-		this.from = null;
-		this.recipients.clear();
-		this.subject = null;
-		this.messageContent = null;
-		this.messageType = null;
-		this.sentDate = null;
-	}
-
 	public MimeMessageBuilder buildAndSend() {
 		try {
 			return buildAndSendWithMessageExeption();
@@ -176,5 +174,4 @@ public class MimeMessageBuilder implements Builder<MimeMessage> {
 		Transport.send(build());
 		return this;
 	}
-
 }

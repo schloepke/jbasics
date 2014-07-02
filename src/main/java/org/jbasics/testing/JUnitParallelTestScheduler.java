@@ -24,6 +24,9 @@
  */
 package org.jbasics.testing;
 
+import org.jbasics.exception.DelegatedException;
+import org.junit.runners.model.RunnerScheduler;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -32,15 +35,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.runners.model.RunnerScheduler;
-
-import org.jbasics.exception.DelegatedException;
-
 /**
- * A very simple runner implementing the JUnit {@link RunnerScheduler} to allow
- * run tests parallel with an executer.
+ * A very simple runner implementing the JUnit {@link RunnerScheduler} to allow run tests parallel with an executer.
  * Remember that JUnit still sees the RunnerScheduler and Runner interface as experimental.
- * 
+ *
  * @author Stephan Schloepke
  */
 public class JUnitParallelTestScheduler implements RunnerScheduler {

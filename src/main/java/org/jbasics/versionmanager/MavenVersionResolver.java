@@ -24,6 +24,11 @@
  */
 package org.jbasics.versionmanager;
 
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.configuration.properties.SystemProperty;
+import org.jbasics.enviroment.JVMEnviroment;
+import org.jbasics.pattern.resolver.Resolver;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -31,22 +36,15 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.configuration.properties.SystemProperty;
-import org.jbasics.enviroment.JVMEnviroment;
-import org.jbasics.pattern.resolver.Resolver;
-
 public class MavenVersionResolver implements Resolver<VersionInformation, VersionIdentifier> {
-	private static final Logger LOGGER = Logger.getLogger(MavenVersionResolver.class.getName());
-
-	private static final String WEB_INF_CLASES_RESOURCE = "WEB-INF/classes"; //$NON-NLS-1$
 	public static final String MAVEN_POM_PROPERTY_FORMAT = "META-INF/maven/%1$s/%2$s/pom.properties"; //$NON-NLS-1$
 	public static final String MAVEN_GROUP_PROPERTY = "groupId"; //$NON-NLS-1$
 	public static final String MAVEN_ARTIFACT_PROPERTY = "artifactId"; //$NON-NLS-1$
 	public static final String MAVEN_VERSION_PROPERTY = "version"; //$NON-NLS-1$
-
 	public static final SystemProperty<Boolean> MAVEN_STRICT_MODE = SystemProperty.booleanProperty(MavenVersionResolver.class.getName()
 			+ ".strictMode", Boolean.FALSE); //$NON-NLS-1$
+	private static final Logger LOGGER = Logger.getLogger(MavenVersionResolver.class.getName());
+	private static final String WEB_INF_CLASES_RESOURCE = "WEB-INF/classes"; //$NON-NLS-1$
 
 	@Override
 	public VersionInformation resolve(final VersionIdentifier request, final VersionInformation defaultResult) {
@@ -73,7 +71,7 @@ public class MavenVersionResolver implements Resolver<VersionInformation, Versio
 		}
 		final String version = props.getProperty(MavenVersionResolver.MAVEN_VERSION_PROPERTY);
 		if (MavenVersionResolver.LOGGER.isLoggable(Level.FINE)) {
-			MavenVersionResolver.LOGGER.log(Level.FINE, "Found version information for {0} with version", new Object[] { request, version }); //$NON-NLS-1$
+			MavenVersionResolver.LOGGER.log(Level.FINE, "Found version information for {0} with version", new Object[]{request, version}); //$NON-NLS-1$
 		}
 		return new VersionInformation(request, version);
 	}
@@ -144,5 +142,4 @@ public class MavenVersionResolver implements Resolver<VersionInformation, Versio
 			}
 		}
 	}
-
 }

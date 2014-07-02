@@ -24,10 +24,6 @@
  */
 package org.jbasics.math.approximation;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.BigDecimalMathLibrary;
 import org.jbasics.math.BoundedMathFunction;
@@ -35,12 +31,15 @@ import org.jbasics.math.MathFunction;
 import org.jbasics.math.NumberConverter;
 import org.jbasics.utilities.DataUtilities;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+
 /**
- * Calculate the derivation of a function by using a numerical approximation. The
- * calculation is made with a {@link MathContext} more precise than the one given
- * in order achieve a precise result within the given {@link MathContext}. However
- * since it is a numerical approach calculating the derivation it is not guaranteed
- * to be precise. But it is a very good approximation of the derivation.
+ * Calculate the derivation of a function by using a numerical approximation. The calculation is made with a {@link
+ * MathContext} more precise than the one given in order achieve a precise result within the given {@link MathContext}.
+ * However since it is a numerical approach calculating the derivation it is not guaranteed to be precise. But it is a
+ * very good approximation of the derivation.
  */
 public class DerivateNumericalApproximation implements BoundedMathFunction<BigDecimal> {
 	private final MathFunction<?> function;
@@ -49,11 +48,10 @@ public class DerivateNumericalApproximation implements BoundedMathFunction<BigDe
 
 	/**
 	 * Create the numerical derivation function for the given {@link MathFunction}. If the {@link MathContext}
-	 * implements {@link BoundedMathFunction} the boundaries of the function will hold as well for the
-	 * derivation of the function.
-	 * 
-	 * @param function
-	 *            The function to derive (must NOT be null)
+	 * implements {@link BoundedMathFunction} the boundaries of the function will hold as well for the derivation of the
+	 * function.
+	 *
+	 * @param function The function to derive (must NOT be null)
 	 */
 	public DerivateNumericalApproximation(final MathFunction<?> function) {
 		this.function = ContractCheck.mustNotBeNull(function, "function"); //$NON-NLS-1$
@@ -70,6 +68,11 @@ public class DerivateNumericalApproximation implements BoundedMathFunction<BigDe
 		this.function = ContractCheck.mustNotBeNull(function, "function"); //$NON-NLS-1$
 		this.lowerBoundary = lowerBoundary;
 		this.upperBoundary = upperBoundary;
+	}
+
+	@Override
+	public BigDecimal calculate(final Number x) {
+		return calculate(null, x);
 	}
 
 	@Override
@@ -100,11 +103,6 @@ public class DerivateNumericalApproximation implements BoundedMathFunction<BigDe
 	}
 
 	@Override
-	public BigDecimal calculate(final Number x) {
-		return calculate(null, x);
-	}
-
-	@Override
 	public double calculate(final double x) {
 		return calculate(MathContext.DECIMAL64, BigDecimal.valueOf(x)).doubleValue();
 	}
@@ -118,5 +116,4 @@ public class DerivateNumericalApproximation implements BoundedMathFunction<BigDe
 	public BigDecimal upperBoundery() {
 		return this.upperBoundary;
 	}
-
 }

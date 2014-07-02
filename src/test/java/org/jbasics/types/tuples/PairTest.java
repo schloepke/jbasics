@@ -24,11 +24,9 @@
  */
 package org.jbasics.types.tuples;
 
+import org.jbasics.testing.Java14LoggingTestCase;
 import org.junit.Assert;
 import org.junit.Test;
-
-import org.jbasics.testing.Java14LoggingTestCase;
-import org.jbasics.types.tuples.Pair;
 
 @SuppressWarnings("nls")
 public class PairTest extends Java14LoggingTestCase {
@@ -131,5 +129,4 @@ public class PairTest extends Java14LoggingTestCase {
 		Assert.assertNotNull(temp.toString());
 		this.logger.exiting(this.sourceClassName, "testToString");
 	}
-
 }

@@ -24,10 +24,6 @@
  */
 package org.jbasics.math.approximation;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.MathFunction;
 import org.jbasics.math.MathFunctionHelper;
@@ -35,6 +31,10 @@ import org.jbasics.math.NumberConverter;
 import org.jbasics.math.exception.NoConvergenceException;
 import org.jbasics.types.tuples.Range;
 import org.jbasics.utilities.DataUtilities;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 public class RegulaFalsiApproximation implements Approximation {
 	private final MathFunction<?> function;
@@ -78,34 +78,8 @@ public class RegulaFalsiApproximation implements Approximation {
 		}
 	}
 
-	private ApproximatedResult findZeroStandard(final MathContext mcIn, final BigDecimal fx, final BigDecimal xMin, final BigDecimal xMax,
-			final BigDecimal epsilon) {
-		final MathContext mc = new MathContext(mcIn.getPrecision() + 5, RoundingMode.HALF_EVEN);
-		BigDecimal x1 = xMin;
-		BigDecimal x2 = xMax;
-		BigDecimal f1 = NumberConverter.toBigDecimal(this.function.calculate(mc, x1)).subtract(fx, mc);
-		BigDecimal f2 = NumberConverter.toBigDecimal(this.function.calculate(mc, x2)).subtract(fx, mc);
-		BigDecimal z, fz;
-		for (int i = this.maxIterations; i > 0; i--) {
-			z = MathFunctionHelper.fitToBoundaries(this.function,
-					x1.subtract(x2.subtract(x1, mc).divide(f2.subtract(f1, mc), mc).multiply(f1, mc), mc));
-			fz = NumberConverter.toBigDecimal(this.function.calculate(mc, z)).subtract(fx, mc);
-			if (f1.signum() == fz.signum()) {
-				x1 = z;
-				f1 = fz;
-			} else {
-				x2 = z;
-				f2 = fz;
-			}
-			if (x2.subtract(x1).abs().compareTo(epsilon) <= 0 || fz.abs().compareTo(epsilon) <= 0) {
-				return new ApproximatedResult(this.maxIterations - i - 1, z.round(mcIn), x1.round(mcIn), x2.round(mcIn));
-			}
-		}
-		throw new NoConvergenceException("Approximation search does not converge within the maximum iterations"); //$NON-NLS-1$
-	}
-
 	private ApproximatedResult findZeroExtended(final MathContext mcIn, final BigDecimal fx, final BigDecimal xMin, final BigDecimal xMax,
-			final BigDecimal epsilon) {
+												final BigDecimal epsilon) {
 		final MathContext mc = new MathContext(mcIn.getPrecision() + 5, RoundingMode.HALF_EVEN);
 		BigDecimal x1 = xMin;
 		BigDecimal x2 = xMax;
@@ -136,4 +110,29 @@ public class RegulaFalsiApproximation implements Approximation {
 		throw new NoConvergenceException("Approximation search does not converge within the maximum iterations"); //$NON-NLS-1$
 	}
 
+	private ApproximatedResult findZeroStandard(final MathContext mcIn, final BigDecimal fx, final BigDecimal xMin, final BigDecimal xMax,
+												final BigDecimal epsilon) {
+		final MathContext mc = new MathContext(mcIn.getPrecision() + 5, RoundingMode.HALF_EVEN);
+		BigDecimal x1 = xMin;
+		BigDecimal x2 = xMax;
+		BigDecimal f1 = NumberConverter.toBigDecimal(this.function.calculate(mc, x1)).subtract(fx, mc);
+		BigDecimal f2 = NumberConverter.toBigDecimal(this.function.calculate(mc, x2)).subtract(fx, mc);
+		BigDecimal z, fz;
+		for (int i = this.maxIterations; i > 0; i--) {
+			z = MathFunctionHelper.fitToBoundaries(this.function,
+					x1.subtract(x2.subtract(x1, mc).divide(f2.subtract(f1, mc), mc).multiply(f1, mc), mc));
+			fz = NumberConverter.toBigDecimal(this.function.calculate(mc, z)).subtract(fx, mc);
+			if (f1.signum() == fz.signum()) {
+				x1 = z;
+				f1 = fz;
+			} else {
+				x2 = z;
+				f2 = fz;
+			}
+			if (x2.subtract(x1).abs().compareTo(epsilon) <= 0 || fz.abs().compareTo(epsilon) <= 0) {
+				return new ApproximatedResult(this.maxIterations - i - 1, z.round(mcIn), x1.round(mcIn), x2.round(mcIn));
+			}
+		}
+		throw new NoConvergenceException("Approximation search does not converge within the maximum iterations"); //$NON-NLS-1$
+	}
 }

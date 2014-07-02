@@ -24,12 +24,12 @@
  */
 package org.jbasics.event;
 
+import org.jbasics.checker.ContractCheck;
+
 import java.util.Collections;
 import java.util.EventListener;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.jbasics.checker.ContractCheck;
 
 @SuppressWarnings("unchecked")
 public class SynchronizedEventListenerSet<T extends EventListener> {
@@ -54,5 +54,4 @@ public class SynchronizedEventListenerSet<T extends EventListener> {
 	public Set<T> getEventListeners() {
 		return this.eventListeners;
 	}
-
 }

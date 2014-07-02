@@ -27,5 +27,4 @@ package org.jbasics.pattern.transpose;
 public interface Transposer<OutType, InType> {
 
 	OutType transpose(InType input);
-
 }

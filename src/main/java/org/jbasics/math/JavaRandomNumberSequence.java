@@ -40,5 +40,4 @@ public class JavaRandomNumberSequence implements RandomNumberSequence<Double> {
 	public Double nextRandomNumber() {
 		return random.nextDouble();
 	}
-
 }

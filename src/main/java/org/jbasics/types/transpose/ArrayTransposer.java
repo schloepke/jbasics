@@ -24,12 +24,12 @@
  */
 package org.jbasics.types.transpose;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.factory.ParameterFactory;
 import org.jbasics.pattern.transpose.Transposer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ArrayTransposer<OutType, InType> implements Transposer<List<OutType>, InType[]> {
 	private final ParameterFactory<OutType, InType> elementFactory;
@@ -45,5 +45,4 @@ public class ArrayTransposer<OutType, InType> implements Transposer<List<OutType
 		}
 		return result;
 	}
-
 }

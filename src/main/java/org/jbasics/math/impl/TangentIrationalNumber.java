@@ -24,21 +24,20 @@
  */
 package org.jbasics.math.impl;
 
-import java.math.BigDecimal;
-
 import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.IrationalNumber;
 import org.jbasics.math.strategies.TangentAlgorithmStrategy;
 
+import java.math.BigDecimal;
+
 public class TangentIrationalNumber extends BigDecimalIrationalNumber {
 	public static final AlgorithmStrategy<BigDecimal> STRATEGY = new TangentAlgorithmStrategy();
-
-	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
-		return new TangentIrationalNumber(x);
-	}
 
 	private TangentIrationalNumber(BigDecimal x) {
 		super(STRATEGY, x);
 	}
 
+	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
+		return new TangentIrationalNumber(x);
+	}
 }

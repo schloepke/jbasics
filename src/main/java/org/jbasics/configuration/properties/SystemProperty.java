@@ -24,19 +24,18 @@
  */
 package org.jbasics.configuration.properties;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.URI;
-import java.util.Locale;
-
-import javax.xml.datatype.Duration;
-import javax.xml.datatype.XMLGregorianCalendar;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.pattern.factory.ParameterFactory;
 import org.jbasics.pattern.strategy.SubstitutionStrategy;
 import org.jbasics.utilities.DataUtilities;
+
+import javax.xml.datatype.Duration;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.net.URI;
+import java.util.Locale;
 
 public class SystemProperty<ValueType> implements Delegate<ValueType> {
 	public static final ParameterFactory<String, String> STRING_PASS_THRU = new PassThruValueTypeFactory<String>();
@@ -44,7 +43,18 @@ public class SystemProperty<ValueType> implements Delegate<ValueType> {
 	private final String name;
 	private final ValueType defaultValue;
 	private final ParameterFactory<ValueType, String> valueTypeFactory;
-    private final SubstitutionStrategy<String, String> substitutionStrategy;
+	private final SubstitutionStrategy<String, String> substitutionStrategy;
+
+	public SystemProperty(final String name, final ParameterFactory<ValueType, String> valueTypeFactory, final ValueType defaultValue) {
+		this(name, valueTypeFactory, defaultValue, null);
+	}
+
+	public SystemProperty(final String name, final ParameterFactory<ValueType, String> valueTypeFactory, final ValueType defaultValue, final SubstitutionStrategy<String, String> substitutionStrategy) {
+		this.name = ContractCheck.mustNotBeNull(name, "name"); //$NON-NLS-1$
+		this.valueTypeFactory = ContractCheck.mustNotBeNull(valueTypeFactory, "valueTypeFactory"); //$NON-NLS-1$
+		this.defaultValue = defaultValue;
+		this.substitutionStrategy = DataUtilities.coalesce(substitutionStrategy, SubstitutionStrategy.STRING_PASS_THRU);
+	}
 
 	public static SystemProperty<String> stringProperty(final String name, final String defaultValue) {
 		return new SystemProperty<String>(name, SystemProperty.STRING_PASS_THRU, defaultValue);
@@ -86,17 +96,6 @@ public class SystemProperty<ValueType> implements Delegate<ValueType> {
 		return new SystemProperty<E>(name, new EnumValueTypeFactory<E>(enumClazz), defaultValue);
 	}
 
-    public SystemProperty(final String name, final ParameterFactory<ValueType, String> valueTypeFactory, final ValueType defaultValue) {
-        this(name, valueTypeFactory, defaultValue, null);
-    }
-
-	public SystemProperty(final String name, final ParameterFactory<ValueType, String> valueTypeFactory, final ValueType defaultValue, final SubstitutionStrategy<String, String> substitutionStrategy) {
-		this.name = ContractCheck.mustNotBeNull(name, "name"); //$NON-NLS-1$
-		this.valueTypeFactory = ContractCheck.mustNotBeNull(valueTypeFactory, "valueTypeFactory"); //$NON-NLS-1$
-		this.defaultValue = defaultValue;
-        this.substitutionStrategy = DataUtilities.coalesce(substitutionStrategy, SubstitutionStrategy.STRING_PASS_THRU);
-	}
-
 	public final boolean isPropertySet() {
 		return System.getProperty(this.name) != null;
 	}
@@ -105,24 +104,18 @@ public class SystemProperty<ValueType> implements Delegate<ValueType> {
 		return System.getProperty(this.name) == null;
 	}
 
-	public final ValueType value() {
-		final String temp = System.getProperty(this.name);
-		if (temp == null) {
-            return this.defaultValue;
-        } else {
-            return this.valueTypeFactory.create(substitutionStrategy.substitute(temp));
-		}
-	}
-
 	@Override
 	public ValueType delegate() {
 		return value();
 	}
 
-	@Override
-	public String toString() {
-		final ValueType temp = value();
-		return temp != null ? temp.toString() : "#NULL#"; //$NON-NLS-1$
+	public final ValueType value() {
+		final String temp = System.getProperty(this.name);
+		if (temp == null) {
+			return this.defaultValue;
+		} else {
+			return this.valueTypeFactory.create(substitutionStrategy.substitute(temp));
+		}
 	}
 
 	@Override
@@ -163,4 +156,9 @@ public class SystemProperty<ValueType> implements Delegate<ValueType> {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		final ValueType temp = value();
+		return temp != null ? temp.toString() : "#NULL#"; //$NON-NLS-1$
+	}
 }

@@ -24,6 +24,16 @@
  */
 package org.jbasics.command;
 
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.command.annotations.CommandParam;
+import org.jbasics.configuration.properties.SystemProperty;
+import org.jbasics.exception.DelegatedException;
+import org.jbasics.pattern.strategy.ExecuteStrategy;
+import org.jbasics.types.tuples.Triplet;
+import org.jbasics.utilities.DataUtilities;
+
+import javax.xml.datatype.Duration;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -37,17 +47,6 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-
-import javax.xml.datatype.Duration;
-import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.command.annotations.CommandParam;
-import org.jbasics.configuration.properties.SystemProperty;
-import org.jbasics.exception.DelegatedException;
-import org.jbasics.pattern.strategy.ExecuteStrategy;
-import org.jbasics.types.tuples.Triplet;
-import org.jbasics.utilities.DataUtilities;
 
 public class CommandSpec implements ExecuteStrategy<Integer, CommandCall> {
 	private final String namespace;
@@ -163,16 +162,27 @@ public class CommandSpec implements ExecuteStrategy<Integer, CommandCall> {
 		}
 	}
 
+	private final Class<?> getListType(final ParameterizedType type) {
+		final Type rawType = type.getRawType();
+		if (rawType == List.class || rawType == Collection.class) {
+			final Type implType = type.getActualTypeArguments()[0];
+			if (implType instanceof Class) {
+				return (Class<?>) implType;
+			}
+		}
+		return null;
+	}
+
+	public String getFullname() {
+		return getNamespace() + "/" + getName(); //$NON-NLS-1$
+	}
+
 	public String getNamespace() {
 		return this.namespace;
 	}
 
 	public String getName() {
 		return this.name;
-	}
-
-	public String getFullname() {
-		return getNamespace() + "/" + getName(); //$NON-NLS-1$
 	}
 
 	public String getDocumentation() {
@@ -201,16 +211,5 @@ public class CommandSpec implements ExecuteStrategy<Integer, CommandCall> {
 			}
 		}
 		return temp.toString();
-	}
-
-	private final Class<?> getListType(final ParameterizedType type) {
-		final Type rawType = type.getRawType();
-		if (rawType == List.class || rawType == Collection.class) {
-			final Type implType = type.getActualTypeArguments()[0];
-			if (implType instanceof Class) {
-				return (Class<?>) implType;
-			}
-		}
-		return null;
 	}
 }

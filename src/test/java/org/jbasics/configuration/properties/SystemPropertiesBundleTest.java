@@ -24,16 +24,14 @@
  */
 package org.jbasics.configuration.properties;
 
-import java.net.URI;
-import java.util.Properties;
-
 import junit.framework.Assert;
-
+import org.jbasics.text.StringUtilities;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.jbasics.text.StringUtilities;
+import java.net.URI;
+import java.util.Properties;
 
 @SuppressWarnings("nls")
 public class SystemPropertiesBundleTest {
@@ -95,5 +93,4 @@ public class SystemPropertiesBundleTest {
 		SystemProperty<URI> uriProp = bundle.getURIProperty("types.url");
 		Assert.assertEquals(URI.create("http://www.google.de"), uriProp.value());
 	}
-
 }

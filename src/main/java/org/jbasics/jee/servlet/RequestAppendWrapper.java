@@ -24,10 +24,10 @@
  */
 package org.jbasics.jee.servlet;
 
+import org.jbasics.checker.ContractCheck;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-
-import org.jbasics.checker.ContractCheck;
 
 public class RequestAppendWrapper extends HttpServletRequestWrapper {
 	private final CharSequence append;
@@ -42,16 +42,6 @@ public class RequestAppendWrapper extends HttpServletRequestWrapper {
 		return append(super.getPathInfo());
 	}
 
-	@Override
-	public String getRequestURI() {
-		return append(super.getRequestURI());
-	}
-
-	@Override
-	public StringBuffer getRequestURL() {
-		return super.getRequestURL().append(this.append);
-	}
-
 	private String append(String orig) {
 		StringBuilder temp = new StringBuilder();
 		if (orig != null) {
@@ -61,4 +51,13 @@ public class RequestAppendWrapper extends HttpServletRequestWrapper {
 		return temp.toString();
 	}
 
+	@Override
+	public String getRequestURI() {
+		return append(super.getRequestURI());
+	}
+
+	@Override
+	public StringBuffer getRequestURL() {
+		return super.getRequestURL().append(this.append);
+	}
 }

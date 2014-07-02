@@ -24,11 +24,11 @@
  */
 package org.jbasics.csv;
 
+import org.junit.Test;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Date;
-
-import org.junit.Test;
 
 public class CSVDataTest {
 
@@ -54,5 +54,4 @@ public class CSVDataTest {
 		System.out.println("---");
 		System.out.println(data.append(new StringBuilder(), ';'));
 	}
-
 }

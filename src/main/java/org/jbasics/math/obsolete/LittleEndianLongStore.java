@@ -26,26 +26,25 @@ package org.jbasics.math.obsolete;
 
 import java.util.Arrays;
 
-
 public class LittleEndianLongStore implements DataStorage<LittleEndianLongStore> {
 	private static final long[] ZERO = new long[0];
-	private static final byte[] ZERO_BYTES = new byte[] {0};
+	private static final byte[] ZERO_BYTES = new byte[]{0};
 	private long[] magnitude;
 
 	public LittleEndianLongStore() {
 		this(ZERO);
 	}
-	
-	public LittleEndianLongStore(int value) {
-		this(new long[] { value });
-	}
-
-	public LittleEndianLongStore(long value) {
-		this(new long[] { value });
-	}
 
 	public LittleEndianLongStore(long[] magnitude) {
 		this.magnitude = magnitude;
+	}
+
+	public LittleEndianLongStore(int value) {
+		this(new long[]{value});
+	}
+
+	public LittleEndianLongStore(long value) {
+		this(new long[]{value});
 	}
 
 	public LittleEndianLongStore(byte[] input) {
@@ -119,6 +118,16 @@ public class LittleEndianLongStore implements DataStorage<LittleEndianLongStore>
 			return new LittleEndianLongStore(t);
 		}
 		return new LittleEndianLongStore(result);
+	}
+
+	public LittleEndianLongStore subtract(LittleEndianLongStore subtraction) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public LittleEndianLongStore multiply(LittleEndianLongStore factor) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	public byte[] toByteArray() {
@@ -215,15 +224,4 @@ public class LittleEndianLongStore implements DataStorage<LittleEndianLongStore>
 	public int hashCode() {
 		return 31 + Arrays.hashCode(this.magnitude);
 	}
-
-	public LittleEndianLongStore multiply(LittleEndianLongStore factor) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public LittleEndianLongStore subtract(LittleEndianLongStore subtraction) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

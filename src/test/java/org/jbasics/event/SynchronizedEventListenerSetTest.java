@@ -24,19 +24,15 @@
  */
 package org.jbasics.event;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EventListener;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 public class SynchronizedEventListenerSetTest {
-
-	public static class TestListener implements EventListener {
-		// Just a tagging interface
-	}
 
 	@Test
 	public void testAddListener() {
@@ -86,4 +82,7 @@ public class SynchronizedEventListenerSetTest {
 		Assert.assertEquals(Collections.EMPTY_SET, list.getEventListeners());
 	}
 
+	public static class TestListener implements EventListener {
+		// Just a tagging interface
+	}
 }

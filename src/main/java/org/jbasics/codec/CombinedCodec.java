@@ -33,14 +33,12 @@ import org.jbasics.pattern.coder.Decoder;
 import org.jbasics.pattern.coder.Encoder;
 
 /**
- * A {@link Codec} build upon an {@link Encoder} and a {@link Decoder}.
- * <p>
- * The guarantee to be thread safe is only guaranteed if the encoder and decoder given are also thread safe. Same
- * applies to be immutable.
- * </p>
- * 
- * @param <T> The type of the normal (decoded) representation
+ * A {@link Codec} build upon an {@link Encoder} and a {@link Decoder}. <p> The guarantee to be thread safe is only
+ * guaranteed if the encoder and decoder given are also thread safe. Same applies to be immutable. </p>
+ *
+ * @param <T>    The type of the normal (decoded) representation
  * @param <TEnc> The type of the encoded representation
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -52,9 +50,10 @@ public final class CombinedCodec<T, TEnc> implements Codec<T, TEnc> {
 
 	/**
 	 * Creates a combined {@link Codec} based on the given {@link Encoder} and {@link Decoder}.
-	 * 
+	 *
 	 * @param encoder The {@link Encoder} to use (MUST not be null)
 	 * @param decoder The {@link Decoder} to use (MUST not be null)
+	 *
 	 * @throws ContractViolationException If the contract is broken (either encoder or decoder is null)
 	 * @since 1.0
 	 */
@@ -82,5 +81,4 @@ public final class CombinedCodec<T, TEnc> implements Codec<T, TEnc> {
 	public T decode(final TEnc encodedInput) {
 		return this.decoder.decode(encodedInput);
 	}
-
 }

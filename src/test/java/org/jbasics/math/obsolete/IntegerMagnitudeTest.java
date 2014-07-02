@@ -24,9 +24,9 @@
  */
 package org.jbasics.math.obsolete;
 
-import java.math.BigInteger;
-
 import org.junit.Test;
+
+import java.math.BigInteger;
 
 public class IntegerMagnitudeTest {
 
@@ -46,7 +46,6 @@ public class IntegerMagnitudeTest {
 		System.out.println(new BigInteger(x.toByteArray()));
 		x = b.add(a);
 		System.out.println(new BigInteger(x.toByteArray()));
-
 	}
 
 	@Test
@@ -60,5 +59,4 @@ public class IntegerMagnitudeTest {
 		IntegerMagnitude r2 = a.subtract(b);
 		System.out.println(new BigInteger(r2.toByteArray()).negate());
 	}
-
 }

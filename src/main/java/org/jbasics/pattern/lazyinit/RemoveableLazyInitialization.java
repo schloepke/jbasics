@@ -27,5 +27,4 @@ package org.jbasics.pattern.lazyinit;
 public interface RemoveableLazyInitialization<T> extends LazyInitialization<T> {
 
 	T remove();
-
 }

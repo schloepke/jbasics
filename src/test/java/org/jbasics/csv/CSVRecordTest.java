@@ -24,32 +24,29 @@
  */
 package org.jbasics.csv;
 
+import org.jbasics.text.StringUtilities;
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
-import org.junit.Assert;
-import org.junit.Test;
-
-import org.jbasics.text.StringUtilities;
 
 public class CSVRecordTest {
 
 	private static final String FIRST = "First";
 	private static final String SECOND = "Second";
 	private static final String THIRD = "Third";
-
+	private static final String[] NO_ESCAPE_RECORD_DATA = new String[]{CSVRecordTest.FIRST, CSVRecordTest.SECOND, CSVRecordTest.THIRD};
 	private static final String TO_ESCAPE_FIRST = "Some,Text";
 	private static final String TO_ESCAPE_SECOND = "Some\nText";
 	private static final String TO_ESCAPE_THIRD = "Some\rText";
 	private static final String TO_ESCAPE_FOURTH = "Some\"Text";
 	private static final String TO_ESCAPE_FIFTH = "Some;Text";
-
-	private static final String[] NO_ESCAPE_RECORD_DATA = new String[] { CSVRecordTest.FIRST, CSVRecordTest.SECOND, CSVRecordTest.THIRD };
-	private static final String[] ESCAPE_RECORD_DATA = new String[] { CSVRecordTest.FIRST, CSVRecordTest.TO_ESCAPE_FIRST, CSVRecordTest.SECOND,
+	private static final String[] ESCAPE_RECORD_DATA = new String[]{CSVRecordTest.FIRST, CSVRecordTest.TO_ESCAPE_FIRST, CSVRecordTest.SECOND,
 			CSVRecordTest.TO_ESCAPE_SECOND, CSVRecordTest.THIRD, CSVRecordTest.TO_ESCAPE_THIRD, CSVRecordTest.TO_ESCAPE_FOURTH,
-			CSVRecordTest.TO_ESCAPE_FIFTH };
+			CSVRecordTest.TO_ESCAPE_FIFTH};
 
 	@Test
 	public void testCreate() throws IOException {
@@ -72,7 +69,7 @@ public class CSVRecordTest {
 		record = new CSVRecord((List<String>) null);
 		Assert.assertEquals(0, record.size());
 		Assert.assertEquals("[]", record.toString());
-		record = new CSVRecord(Collections.<String> emptyList());
+		record = new CSVRecord(Collections.<String>emptyList());
 		Assert.assertEquals(0, record.size());
 		Assert.assertEquals("[]", record.toString());
 	}
@@ -112,7 +109,6 @@ public class CSVRecordTest {
 	public void testToString() {
 		final CSVRecord record = new CSVRecord(CSVRecordTest.NO_ESCAPE_RECORD_DATA);
 		Assert.assertEquals("[First, Second, Third]", record.toString());
-
 	}
 
 	@Test

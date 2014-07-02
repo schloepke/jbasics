@@ -27,5 +27,4 @@ package org.jbasics.pattern.factory;
 public interface ClosableFactory<T> extends Factory<T> {
 
 	void close();
-
 }

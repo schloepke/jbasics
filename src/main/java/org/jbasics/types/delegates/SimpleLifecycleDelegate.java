@@ -54,5 +54,4 @@ public class SimpleLifecycleDelegate<T> implements LifecycleDelegate<T> {
 		this.delegate = null;
 		return true;
 	}
-
 }

@@ -24,13 +24,13 @@
  */
 package org.jbasics.net.http;
 
-import java.util.Date;
-
 import org.jbasics.net.mediatype.MediaType;
+
+import java.util.Date;
 
 /**
  * Response Meta data. Subject to change.
- * 
+ *
  * @author Stephan Schloepke
  */
 public class ResponseMeta {
@@ -48,7 +48,7 @@ public class ResponseMeta {
 
 	/**
 	 * Returns the media type.
-	 * 
+	 *
 	 * @return the mediaType
 	 */
 	public MediaType getMediaType() {
@@ -56,100 +56,9 @@ public class ResponseMeta {
 	}
 
 	/**
-	 * Returns the content charset.
-	 * 
-	 * @return the charset
-	 */
-	public String getCharset() {
-		return this.charset;
-	}
-
-	/**
-	 * Returns the content encoding.
-	 * 
-	 * @return the encoding
-	 */
-	public String getEncoding() {
-		return this.encoding;
-	}
-
-	/**
-	 * Retruns the content language.
-	 * 
-	 * @return the language
-	 */
-	public String getLanguage() {
-		return this.language;
-	}
-
-	/**
-	 * Returns the ETAG of the response.
-	 * 
-	 * @return the eTag
-	 */
-	public String getETag() {
-		return this.eTag;
-	}
-
-	/**
-	 * Returns the content length.
-	 * 
-	 * @return the contentLength
-	 */
-	public long getContentLength() {
-		return this.contentLength;
-	}
-
-	/**
-	 * Returns the content MD5 hash.
-	 * 
-	 * @return the contentMD5
-	 */
-	public String getContentMD5() {
-		return this.contentMD5;
-	}
-
-	/**
-	 * Returns the fromEmail.
-	 * 
-	 * @return the fromEmail
-	 */
-	public String getFromEmail() {
-		return this.fromEmail;
-	}
-
-	/**
-	 * Returns the date.
-	 * 
-	 * @return the date
-	 */
-	public Date getDate() {
-		return this.date;
-	}
-
-	/**
-	 * Returns the last modified date.
-	 * 
-	 * @return the lastModified
-	 */
-	public Date getLastModified() {
-		return this.lastModified;
-	}
-
-	/**
-	 * Returns the date when the result expires.
-	 * 
-	 * @return the expires
-	 */
-	public Date getExpires() {
-		return this.expires;
-	}
-
-	/**
 	 * Sets the media type of the response.
-	 * 
-	 * @param mediaType
-	 *            the mediaType to set
+	 *
+	 * @param mediaType the mediaType to set
 	 */
 	protected void setMediaType(final MediaType mediaType) {
 		this.mediaType = mediaType;
@@ -159,103 +68,182 @@ public class ResponseMeta {
 	}
 
 	/**
+	 * Returns the content charset.
+	 *
+	 * @return the charset
+	 */
+	public String getCharset() {
+		return this.charset;
+	}
+
+	/**
 	 * Sets the character set of the response.
-	 * 
-	 * @param charset
-	 *            the charset to set
+	 *
+	 * @param charset the charset to set
 	 */
 	protected void setCharset(final String charset) {
 		this.charset = charset;
 	}
 
 	/**
+	 * Returns the content encoding.
+	 *
+	 * @return the encoding
+	 */
+	public String getEncoding() {
+		return this.encoding;
+	}
+
+	/**
 	 * Set the encoding of the response.
-	 * 
-	 * @param encoding
-	 *            the encoding to set
+	 *
+	 * @param encoding the encoding to set
 	 */
 	protected void setEncoding(final String encoding) {
 		this.encoding = encoding;
 	}
 
 	/**
+	 * Retruns the content language.
+	 *
+	 * @return the language
+	 */
+	public String getLanguage() {
+		return this.language;
+	}
+
+	/**
 	 * Set the language of the response.
-	 * 
-	 * @param language
-	 *            the language to set
+	 *
+	 * @param language the language to set
 	 */
 	protected void setLanguage(final String language) {
 		this.language = language;
 	}
 
 	/**
+	 * Returns the ETAG of the response.
+	 *
+	 * @return the eTag
+	 */
+	public String getETag() {
+		return this.eTag;
+	}
+
+	/**
 	 * Set the ETAG of the response.
-	 * 
-	 * @param tag
-	 *            the eTag to set
+	 *
+	 * @param tag the eTag to set
 	 */
 	protected void setETag(final String tag) {
 		this.eTag = tag;
 	}
 
 	/**
+	 * Returns the content length.
+	 *
+	 * @return the contentLength
+	 */
+	public long getContentLength() {
+		return this.contentLength;
+	}
+
+	/**
 	 * Set the length of the content.
-	 * 
-	 * @param contentLength
-	 *            the contentLength to set
+	 *
+	 * @param contentLength the contentLength to set
 	 */
 	protected void setContentLength(final long contentLength) {
 		this.contentLength = contentLength;
 	}
 
 	/**
+	 * Returns the content MD5 hash.
+	 *
+	 * @return the contentMD5
+	 */
+	public String getContentMD5() {
+		return this.contentMD5;
+	}
+
+	/**
 	 * Set the content MD5 hash.
-	 * 
-	 * @param contentMD5
-	 *            the contentMD5 to set
+	 *
+	 * @param contentMD5 the contentMD5 to set
 	 */
 	protected void setContentMD5(final String contentMD5) {
 		this.contentMD5 = contentMD5;
 	}
 
 	/**
+	 * Returns the fromEmail.
+	 *
+	 * @return the fromEmail
+	 */
+	public String getFromEmail() {
+		return this.fromEmail;
+	}
+
+	/**
 	 * Set the from email.
-	 * 
-	 * @param fromEmail
-	 *            the fromEmail to set
+	 *
+	 * @param fromEmail the fromEmail to set
 	 */
 	protected void setFromEmail(final String fromEmail) {
 		this.fromEmail = fromEmail;
 	}
 
 	/**
+	 * Returns the date.
+	 *
+	 * @return the date
+	 */
+	public Date getDate() {
+		return this.date;
+	}
+
+	/**
 	 * Set the date of the response.
-	 * 
-	 * @param date
-	 *            the date to set
+	 *
+	 * @param date the date to set
 	 */
 	protected void setDate(final Date date) {
 		this.date = date;
 	}
 
 	/**
+	 * Returns the last modified date.
+	 *
+	 * @return the lastModified
+	 */
+	public Date getLastModified() {
+		return this.lastModified;
+	}
+
+	/**
 	 * Set the last modified date.
-	 * 
-	 * @param lastModified
-	 *            the lastModified to set
+	 *
+	 * @param lastModified the lastModified to set
 	 */
 	protected void setLastModified(final Date lastModified) {
 		this.lastModified = lastModified;
 	}
 
 	/**
+	 * Returns the date when the result expires.
+	 *
+	 * @return the expires
+	 */
+	public Date getExpires() {
+		return this.expires;
+	}
+
+	/**
 	 * Set the expired date.
-	 * 
-	 * @param expires
-	 *            the expires to set
+	 *
+	 * @param expires the expires to set
 	 */
 	protected void setExpires(final Date expires) {
 		this.expires = expires;
 	}
-
 }

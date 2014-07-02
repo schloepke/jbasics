@@ -24,40 +24,23 @@
  */
 package org.jbasics.types.resolver;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.URI;
-import java.util.Locale;
-
-import javax.xml.datatype.Duration;
-import javax.xml.datatype.XMLGregorianCalendar;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.configuration.properties.SystemProperty;
 import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.pattern.resolver.Resolver;
 import org.jbasics.types.delegates.UnmodifiableDelegate;
 
+import javax.xml.datatype.Duration;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.net.URI;
+import java.util.Locale;
+
 public final class SystemPropertyResolver implements Resolver<String, String> {
 	public static final SystemPropertyResolver SHARED_INSTANCE = new SystemPropertyResolver();
 	public static final Delegate<SystemPropertyResolver> SHARED_INSTANCE_DELEGATE = new UnmodifiableDelegate<SystemPropertyResolver>(
 			SystemPropertyResolver.SHARED_INSTANCE);
-
-	public String resolve(final String request, final String defaultResult) {
-		return System.getProperty(ContractCheck.mustNotBeNullOrTrimmedEmpty(request, "request"), defaultResult); //$NON-NLS-1$
-	}
-
-	public SystemProperty<String> resolveString(final String key, final String defaultValue) {
-		return SystemProperty.stringProperty(key, defaultValue);
-	}
-
-	public SystemProperty<Boolean> resolveBoolean(final String key, final Boolean defaultValue) {
-		return SystemProperty.booleanProperty(key, defaultValue);
-	}
-
-	public SystemProperty<BigInteger> resolveInteger(final String key, final BigInteger defaultValue) {
-		return SystemProperty.integerProperty(key, defaultValue);
-	}
 
 	public static SystemProperty<BigDecimal> resolveDecimal(final String key, final BigDecimal defaultValue) {
 		return SystemProperty.decimalProperty(key, defaultValue);
@@ -87,4 +70,19 @@ public final class SystemPropertyResolver implements Resolver<String, String> {
 		return SystemProperty.enumProperty(enumClazz, key, defaultValue);
 	}
 
+	public String resolve(final String request, final String defaultResult) {
+		return System.getProperty(ContractCheck.mustNotBeNullOrTrimmedEmpty(request, "request"), defaultResult); //$NON-NLS-1$
+	}
+
+	public SystemProperty<String> resolveString(final String key, final String defaultValue) {
+		return SystemProperty.stringProperty(key, defaultValue);
+	}
+
+	public SystemProperty<Boolean> resolveBoolean(final String key, final Boolean defaultValue) {
+		return SystemProperty.booleanProperty(key, defaultValue);
+	}
+
+	public SystemProperty<BigInteger> resolveInteger(final String key, final BigInteger defaultValue) {
+		return SystemProperty.integerProperty(key, defaultValue);
+	}
 }

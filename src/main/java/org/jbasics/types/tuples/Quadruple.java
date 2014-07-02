@@ -103,5 +103,4 @@ public class Quadruple<A, B, C, D> implements Tuple<A, Tuple<B, Tuple<C, D>>> {
 				.append(this.right.third()).append(")");
 		return builder.toString();
 	}
-
 }

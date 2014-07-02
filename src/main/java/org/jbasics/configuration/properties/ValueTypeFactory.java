@@ -24,16 +24,17 @@
  */
 package org.jbasics.configuration.properties;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.factory.ParameterFactory;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @SuppressWarnings("unchecked")
 public final class ValueTypeFactory {
 	private final static Map<Class<?>, ParameterFactory<?, String>> FACTORIES = new HashMap<Class<?>, ParameterFactory<?, String>>();
+
 	static {
 		try {
 			//			for (final Map.Entry<Sequence<Class<?>>, ParameterFactory> entry : ServiceClassDiscovery
@@ -46,11 +47,16 @@ public final class ValueTypeFactory {
 		}
 	}
 
-	public static <T> ParameterFactory<T, String> registerFactory(final Class<T> type, final ParameterFactory<T, String> factory) {
-		final ParameterFactory<T, String> temp = (ParameterFactory<T, String>) ValueTypeFactory.FACTORIES.get(ContractCheck.mustNotBeNull(type,
-				"type"));
-		ValueTypeFactory.FACTORIES.put(type, ContractCheck.mustNotBeNull(factory, "factory"));
-		return temp;
+	public static boolean hasFactory(final Class<?> type) {
+		return ValueTypeFactory.FACTORIES.containsKey(type);
+	}
+
+	public static <T> T create(final String value, final Class<T> type) {
+		final ParameterFactory<T, String> temp = ValueTypeFactory.getFactory(type);
+		if (temp == null) {
+			throw new RuntimeException("No value type factory registered for " + type);
+		}
+		return temp.create(value);
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -63,15 +69,10 @@ public final class ValueTypeFactory {
 		return temp;
 	}
 
-	public static boolean hasFactory(final Class<?> type) {
-		return ValueTypeFactory.FACTORIES.containsKey(type);
-	}
-
-	public static <T> T create(final String value, final Class<T> type) {
-		final ParameterFactory<T, String> temp = ValueTypeFactory.getFactory(type);
-		if (temp == null) {
-			throw new RuntimeException("No value type factory registered for " + type);
-		}
-		return temp.create(value);
+	public static <T> ParameterFactory<T, String> registerFactory(final Class<T> type, final ParameterFactory<T, String> factory) {
+		final ParameterFactory<T, String> temp = (ParameterFactory<T, String>) ValueTypeFactory.FACTORIES.get(ContractCheck.mustNotBeNull(type,
+				"type"));
+		ValueTypeFactory.FACTORIES.put(type, ContractCheck.mustNotBeNull(factory, "factory"));
+		return temp;
 	}
 }

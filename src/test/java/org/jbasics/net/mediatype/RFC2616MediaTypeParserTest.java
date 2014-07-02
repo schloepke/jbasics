@@ -24,23 +24,20 @@
  */
 package org.jbasics.net.mediatype;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import org.jbasics.testing.Java14LoggingTestCase;
+import org.junit.Test;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jbasics.testing.Java14LoggingTestCase;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Listenbeschreibung
  * <p>
  * Detailierte Beschreibung
  * </p>
- * 
+ *
  * @author stephan
  */
 public class RFC2616MediaTypeParserTest extends Java14LoggingTestCase {
@@ -56,6 +53,27 @@ public class RFC2616MediaTypeParserTest extends Java14LoggingTestCase {
 			doPatternTest(RFC2616MediaTypeParser.MEDIA_TYPE_RANGE_PATTERN, true, "*/*; levelOne=one", "*", "*", "; levelOne=one");
 		} finally {
 			this.logger.exiting(RFC2616MediaTypeParserTest.class.getName(), "testMediaTypeRangePattern");
+		}
+	}
+
+	private void doPatternTest(final Pattern pattern, final boolean match, final String... groups) {
+		assert groups.length > 0;
+		Matcher m = pattern.matcher(groups[0]);
+		if (m.matches()) {
+			for (int i = 0; i < m.groupCount(); i++) {
+				this.logger.info("(" + i + ")" + m.group(i));
+			}
+			assertTrue(groups[0], match);
+			assertEquals(groups[0], groups.length, m.groupCount());
+			for (int i = 0; i < m.groupCount(); i++) {
+				if (groups[i] == null) {
+					assertNull(groups[0], m.group(i));
+				} else {
+					assertEquals(groups[0], groups[i], m.group(i));
+				}
+			}
+		} else {
+			assertFalse(groups[0], match);
 		}
 	}
 
@@ -86,26 +104,4 @@ public class RFC2616MediaTypeParserTest extends Java14LoggingTestCase {
 			this.logger.exiting(RFC2616MediaTypeParserTest.class.getName(), "testAcceptMediaTypePattern");
 		}
 	}
-
-	private void doPatternTest(final Pattern pattern, final boolean match, final String... groups) {
-		assert groups.length > 0;
-		Matcher m = pattern.matcher(groups[0]);
-		if (m.matches()) {
-			for (int i = 0; i < m.groupCount(); i++) {
-				this.logger.info("(" + i + ")" + m.group(i));
-			}
-			assertTrue(groups[0], match);
-			assertEquals(groups[0], groups.length, m.groupCount());
-			for (int i = 0; i < m.groupCount(); i++) {
-				if (groups[i] == null) {
-					assertNull(groups[0], m.group(i));
-				} else {
-					assertEquals(groups[0], groups[i], m.group(i));
-				}
-			}
-		} else {
-			assertFalse(groups[0], match);
-		}
-	}
-
 }

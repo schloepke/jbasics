@@ -24,12 +24,12 @@
  */
 package org.jbasics.net;
 
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.pattern.transpose.Transposer;
+
 import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.pattern.transpose.Transposer;
 
 public class URITransposer implements Transposer<URI, URI> {
 	public final static URITransposer SHARED_INSTANCE = new URITransposer();
@@ -48,6 +48,11 @@ public class URITransposer implements Transposer<URI, URI> {
 		}
 	}
 
+	public URI exchangeBaseURI(final URI input, final URI fromBase, final URI toBase) {
+		return transpose(ContractCheck.mustNotBeNull(toBase, "toBase")).resolve( //$NON-NLS-1$
+				transpose(ContractCheck.mustNotBeNull(fromBase, "fromBase")).relativize(ContractCheck.mustNotBeNull(input, "input"))); //$NON-NLS-1$ //$NON-NLS-2$
+	}
+
 	public URI transpose(final URI input) {
 		String scheme = ContractCheck.mustNotBeNull(input, "input").getScheme(); //$NON-NLS-1$
 		Transposer<URI, URI> factory = this.schemeFactories.get(scheme);
@@ -57,10 +62,4 @@ public class URITransposer implements Transposer<URI, URI> {
 		}
 		return temp == null ? input : temp;
 	}
-
-	public URI exchangeBaseURI(final URI input, final URI fromBase, final URI toBase) {
-		return transpose(ContractCheck.mustNotBeNull(toBase, "toBase")).resolve( //$NON-NLS-1$
-				transpose(ContractCheck.mustNotBeNull(fromBase, "fromBase")).relativize(ContractCheck.mustNotBeNull(input, "input"))); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-
 }

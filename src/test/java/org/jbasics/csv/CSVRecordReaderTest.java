@@ -24,14 +24,13 @@
  */
 package org.jbasics.csv;
 
+import junit.framework.Assert;
+import org.junit.Test;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.Assert;
-
-import org.junit.Test;
 
 public class CSVRecordReaderTest {
 	private static final String csvFileData = "One,Two,Three\n" + // Dont break;
@@ -48,5 +47,4 @@ public class CSVRecordReaderTest {
 		}
 		Assert.assertEquals(3, records.size());
 	}
-
 }

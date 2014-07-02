@@ -26,7 +26,7 @@ package org.jbasics.math.exception;
 
 /**
  * A calculation result is negativ infitiy.
- * 
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -40,5 +40,4 @@ public class NegativInfinityException extends InfinityException {
 	public NegativInfinityException(final String message) {
 		super(message);
 	}
-
 }

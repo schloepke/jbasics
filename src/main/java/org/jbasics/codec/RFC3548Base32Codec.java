@@ -24,45 +24,42 @@
  */
 package org.jbasics.codec;
 
-import java.io.ByteArrayOutputStream;
-
 import org.jbasics.arrays.ArrayConstants;
 import org.jbasics.pattern.coder.Codec;
 import org.jbasics.text.StringUtilities;
 
+import java.io.ByteArrayOutputStream;
+
 /**
- * Codec for the RFC3548 base 32 coding. This is one of the three codecs defined
- * in the RFC3548.
- * 
+ * Codec for the RFC3548 base 32 coding. This is one of the three codecs defined in the RFC3548.
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
 public class RFC3548Base32Codec implements Codec<byte[], CharSequence> {
 	/**
 	 * The alphabet used in the encoding and decoding process in upper case letters (case does not matter)
-	 * 
+	 *
 	 * @since 1.0
 	 */
 	public static final String BASE32_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567"; //$NON-NLS-1$
 	/**
 	 * The padding character used to fill the remaining characters to fit into the output block size
-	 * 
+	 *
 	 * @since 1.0
 	 */
 	public static final char PADDING_CHARACTER = '=';
-
-	private final boolean fillWithoutPadding;
-
 	/**
 	 * The shared instance to use (with padding in the result).
-	 * 
+	 *
 	 * @since 1.0
 	 */
 	public static final RFC3548Base32Codec INSTANCE = new RFC3548Base32Codec();
+	private final boolean fillWithoutPadding;
 
 	/**
 	 * Creates the standard codec with padding to fill the result.
-	 * 
+	 *
 	 * @since 1.0
 	 */
 	public RFC3548Base32Codec() {
@@ -71,8 +68,9 @@ public class RFC3548Base32Codec implements Codec<byte[], CharSequence> {
 
 	/**
 	 * Creates the codec with the option to not use the default padding to fill the blocks.
-	 * 
+	 *
 	 * @param fillWithoutPadding true to switch off the padding of the result blocks.
+	 *
 	 * @since 1.0
 	 */
 	public RFC3548Base32Codec(final boolean fillWithoutPadding) {
@@ -81,8 +79,9 @@ public class RFC3548Base32Codec implements Codec<byte[], CharSequence> {
 
 	/**
 	 * Returns the input block size used for encoding.
-	 * 
+	 *
 	 * @return The input block size
+	 *
 	 * @since 1.0
 	 */
 	public int getInputBlockSize() {
@@ -91,8 +90,9 @@ public class RFC3548Base32Codec implements Codec<byte[], CharSequence> {
 
 	/**
 	 * Returns the output block size used for encoding
-	 * 
+	 *
 	 * @return The output block size
+	 *
 	 * @since 1.0
 	 */
 	public int getOutputBlockSize() {
@@ -205,5 +205,4 @@ public class RFC3548Base32Codec implements Codec<byte[], CharSequence> {
 			}
 		}
 	}
-
 }

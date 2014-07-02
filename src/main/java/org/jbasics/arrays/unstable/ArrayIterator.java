@@ -24,31 +24,26 @@
  */
 package org.jbasics.arrays.unstable;
 
-import java.util.Iterator;
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.checker.ContractViolationException;
 import org.jbasics.types.sequences.Sequence;
 
+import java.util.Iterator;
+import java.util.ListIterator;
+import java.util.NoSuchElementException;
+
 /**
- * Simple {@link Iterator} to iterate over any typed array. While anything of this iterator is
- * immutable the data content given is NOT copied and can be changed by the caller. It is strongly
- * recommended to only use the iterator with constant arrays or copy them on construction.
- * <p>
- * An iterator cannot be thread safe and is also not immutable because it requires to know the current position on the
- * data. Therefore this iterator is neither thread safe nor is it immutable. It should not be stored other than for the
- * iteration moment within a single thread and needs to be discarded right after.
- * </p>
- * <p>
- * A much better way to iterator over data with a guarantee to be thread safe and immutable is to use the
- * {@link Sequence} instead.
- * </p>
- * 
+ * Simple {@link Iterator} to iterate over any typed array. While anything of this iterator is immutable the data
+ * content given is NOT copied and can be changed by the caller. It is strongly recommended to only use the iterator
+ * with constant arrays or copy them on construction. <p> An iterator cannot be thread safe and is also not immutable
+ * because it requires to know the current position on the data. Therefore this iterator is neither thread safe nor is
+ * it immutable. It should not be stored other than for the iteration moment within a single thread and needs to be
+ * discarded right after. </p> <p> A much better way to iterator over data with a guarantee to be thread safe and
+ * immutable is to use the {@link Sequence} instead. </p>
+ *
+ * @param <T> The type of the data in the array.
+ *
  * @author Stephan Schloepke
- * @param <T>
- *            The type of the data in the array.
  * @since 1.0
  */
 public class ArrayIterator<T> implements ListIterator<T> {
@@ -58,13 +53,12 @@ public class ArrayIterator<T> implements ListIterator<T> {
 	private int next = 0;
 
 	/**
-	 * Create an iterator for the given data. The data is NOT copied therefore
-	 * any change to the data will be reflected by the iterator as well!
-	 * 
-	 * @param data
-	 *            The data to iterate over (MUST not be null).
-	 * @throws ContractViolationException
-	 *             If data is null.
+	 * Create an iterator for the given data. The data is NOT copied therefore any change to the data will be reflected
+	 * by the iterator as well!
+	 *
+	 * @param data The data to iterate over (MUST not be null).
+	 *
+	 * @throws ContractViolationException If data is null.
 	 * @since 1.0
 	 */
 	public ArrayIterator(final T... data) {
@@ -74,13 +68,12 @@ public class ArrayIterator<T> implements ListIterator<T> {
 	}
 
 	/**
-	 * Create an iterator for the given data. The data is NOT copied therefore
-	 * any change to the data will be reflected by the iterator as well!
-	 * 
-	 * @param data
-	 *            The data to iterate over (MUST not be null).
-	 * @throws ContractViolationException
-	 *             If data is null.
+	 * Create an iterator for the given data. The data is NOT copied therefore any change to the data will be reflected
+	 * by the iterator as well!
+	 *
+	 * @param data The data to iterate over (MUST not be null).
+	 *
+	 * @throws ContractViolationException If data is null.
 	 * @since 1.0
 	 */
 	public ArrayIterator(final int offset, final int size, final T[] data) {
@@ -90,13 +83,12 @@ public class ArrayIterator<T> implements ListIterator<T> {
 	}
 
 	/**
-	 * Create an iterator for the given data. The data is NOT copied therefore
-	 * any change to the data will be reflected by the iterator as well!
-	 * 
-	 * @param data
-	 *            The data to iterate over (MUST not be null).
-	 * @throws ContractViolationException
-	 *             If data is null.
+	 * Create an iterator for the given data. The data is NOT copied therefore any change to the data will be reflected
+	 * by the iterator as well!
+	 *
+	 * @param data The data to iterate over (MUST not be null).
+	 *
+	 * @throws ContractViolationException If data is null.
 	 * @since 1.0
 	 */
 	public ArrayIterator(final int initialIndex, final T[] data) {
@@ -107,13 +99,12 @@ public class ArrayIterator<T> implements ListIterator<T> {
 	}
 
 	/**
-	 * Create an iterator for the given data. The data is NOT copied therefore
-	 * any change to the data will be reflected by the iterator as well!
-	 * 
-	 * @param data
-	 *            The data to iterate over (MUST not be null).
-	 * @throws ContractViolationException
-	 *             If data is null.
+	 * Create an iterator for the given data. The data is NOT copied therefore any change to the data will be reflected
+	 * by the iterator as well!
+	 *
+	 * @param data The data to iterate over (MUST not be null).
+	 *
+	 * @throws ContractViolationException If data is null.
 	 * @since 1.0
 	 */
 	public ArrayIterator(final int initialIndex, final int offset, final int size, final T[] data) {
@@ -187,7 +178,7 @@ public class ArrayIterator<T> implements ListIterator<T> {
 
 	/**
 	 * Optional operation to remove is not supported by this {@link Iterator}.
-	 * 
+	 *
 	 * @see java.util.Iterator#remove()
 	 */
 	@Override
@@ -197,7 +188,7 @@ public class ArrayIterator<T> implements ListIterator<T> {
 
 	/**
 	 * Optional operation to remove is not supported by this {@link Iterator}.
-	 * 
+	 *
 	 * @see java.util.ListIterator#set(java.lang.Object)
 	 */
 	@Override
@@ -207,7 +198,7 @@ public class ArrayIterator<T> implements ListIterator<T> {
 
 	/**
 	 * Optional operation to remove is not supported by this {@link Iterator}.
-	 * 
+	 *
 	 * @see java.util.ListIterator#add(java.lang.Object)
 	 */
 	@Override

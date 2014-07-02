@@ -24,11 +24,11 @@
  */
 package org.jbasics.persistence;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.delegation.LifecycleDelegate;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 
 public class EntityManagerDelegate implements LifecycleDelegate<EntityManager> {
 	private final EntityManager manager;
@@ -65,5 +65,4 @@ public class EntityManagerDelegate implements LifecycleDelegate<EntityManager> {
 		assert this.manager.isOpen();
 		return this.manager;
 	}
-
 }

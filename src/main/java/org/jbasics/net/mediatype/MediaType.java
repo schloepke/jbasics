@@ -24,14 +24,14 @@
  */
 package org.jbasics.net.mediatype;
 
-import java.util.regex.Pattern;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.types.tuples.Pair;
 
+import java.util.regex.Pattern;
+
 /**
  * Class holding a parsed media type as of RFC2616.
- * 
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -63,22 +63,10 @@ public class MediaType extends MediaTypeRange {
 	public static final MediaType APPLICATION_XHTML_TYPE = new MediaType("application", "xhtml+xml");
 
 	/**
-	 * Parses a media type from its string representation as of RFC 2616.
-	 * 
-	 * @param mediaTypeString The media type string to parse.
-	 * @return The parsed Media Type.
-	 * @throws IllegalArgumentException If the media type is malformed and does not comply to RFC
-	 *             2616.
-	 */
-	public static MediaType valueOf(final String mediaTypeString) {
-		return RFC2616MediaTypeParser.parseMediaType(mediaTypeString);
-	}
-
-	/**
 	 * Creates a media type with the given type, subtype and its parameters.
-	 * 
-	 * @param type The type.
-	 * @param subType The sub type.
+	 *
+	 * @param type       The type.
+	 * @param subType    The sub type.
 	 * @param parameters The parameters as key value pairs.
 	 */
 	public MediaType(final String type, final String subType, final Pair<String, String>... parameters) {
@@ -86,10 +74,25 @@ public class MediaType extends MediaTypeRange {
 	}
 
 	/**
+	 * Parses a media type from its string representation as of RFC 2616.
+	 *
+	 * @param mediaTypeString The media type string to parse.
+	 *
+	 * @return The parsed Media Type.
+	 *
+	 * @throws IllegalArgumentException If the media type is malformed and does not comply to RFC 2616.
+	 */
+	public static MediaType valueOf(final String mediaTypeString) {
+		return RFC2616MediaTypeParser.parseMediaType(mediaTypeString);
+	}
+
+	/**
 	 * Validated the type.
-	 * 
+	 *
 	 * @param typeString The type.
+	 *
 	 * @return The validated and may modified type string.
+	 *
 	 * @see org.jbasics.net.mediatype.MediaTypeRange#processTypeString(java.lang.String)
 	 */
 	@Override
@@ -99,9 +102,11 @@ public class MediaType extends MediaTypeRange {
 
 	/**
 	 * Validated the sub type.
-	 * 
+	 *
 	 * @param subTypeString The sub type.
+	 *
 	 * @return The validated and may modified sub type string.
+	 *
 	 * @see org.jbasics.net.mediatype.MediaTypeRange#processSubtypeString(java.lang.String)
 	 */
 	@Override
@@ -111,12 +116,12 @@ public class MediaType extends MediaTypeRange {
 
 	/**
 	 * Derives a new MediaType with the given parameters instead of the original ones.
-	 * 
+	 *
 	 * @param parameters The parameters to use for the derived one.
+	 *
 	 * @return The derived media type.
 	 */
 	public MediaType deriveWithNewParameters(final Pair<String, String>... parameters) {
 		return new MediaType(getType(), getSubType(), parameters);
 	}
-
 }

@@ -24,20 +24,19 @@
  */
 package org.jbasics.configuration.properties;
 
+import org.jbasics.pattern.factory.ParameterFactory;
+
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jbasics.pattern.factory.ParameterFactory;
-
 /**
- * Factory to create a {@link MathContext} instance from a {@link String}.
- * The given {@link String} is the precision followed by a comma and the rounding mode.
- * The rounding mode available is all {@link RoundingMode} values. The value is the exact
- * same name though case dosn't matter and a space or a minus is translated to an underscore.
- * So <em>Half Up</em>, <em>half-up</em>, <em>HALF_UP<em> will all lead to the same {@link RoundingMode#HALF_UP}.
- * 
+ * Factory to create a {@link MathContext} instance from a {@link String}. The given {@link String} is the precision
+ * followed by a comma and the rounding mode. The rounding mode available is all {@link RoundingMode} values. The value
+ * is the exact same name though case dosn't matter and a space or a minus is translated to an underscore. So <em>Half
+ * Up</em>, <em>half-up</em>, <em>HALF_UP<em> will all lead to the same {@link RoundingMode#HALF_UP}.
+ *
  * @author Stephan Schlöpke
  * @since 1.0
  */
@@ -48,17 +47,6 @@ public class MathContextValueTypeFactory implements ParameterFactory<MathContext
 			.compile("([a-zA-Z]+[a-zA-Z0-9]*)|(?:([0-9]+)(?:\\s*,\\s*([a-zA-Z]+[a-zA-Z0-9_ -]*))?)"); //$NON-NLS-1$
 	private final static Pattern REPLACE_PATTERN = Pattern.compile("-| "); //$NON-NLS-1$
 	private final static EnumValueTypeFactory<RoundingMode> ROUNDING_MODE_FACTORY = new EnumValueTypeFactory<RoundingMode>(RoundingMode.class, true);
-
-	public enum StandardTypes {
-		UNLIMITED(MathContext.UNLIMITED), DECIMAL32(MathContext.DECIMAL32), DECIMAL64(MathContext.DECIMAL64), DECIMAL128(MathContext.DECIMAL128), DECIMAL256(
-				new MathContext(142, RoundingMode.HALF_EVEN)), DECIMAL512(new MathContext(286, RoundingMode.HALF_EVEN));
-
-		public final MathContext ctx;
-
-		private StandardTypes(final MathContext ctx) {
-			this.ctx = ctx;
-		}
-	}
 
 	@Override
 	public MathContext create(final String param) {
@@ -87,5 +75,16 @@ public class MathContextValueTypeFactory implements ParameterFactory<MathContext
 		}
 		// TODO: Log the incorrect mathcontext
 		return MathContextValueTypeFactory.DEFAULT_MATH_CONTEXT;
+	}
+
+	public enum StandardTypes {
+		UNLIMITED(MathContext.UNLIMITED), DECIMAL32(MathContext.DECIMAL32), DECIMAL64(MathContext.DECIMAL64), DECIMAL128(MathContext.DECIMAL128), DECIMAL256(
+				new MathContext(142, RoundingMode.HALF_EVEN)), DECIMAL512(new MathContext(286, RoundingMode.HALF_EVEN));
+
+		public final MathContext ctx;
+
+		private StandardTypes(final MathContext ctx) {
+			this.ctx = ctx;
+		}
 	}
 }

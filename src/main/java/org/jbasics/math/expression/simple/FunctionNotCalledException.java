@@ -39,5 +39,4 @@ public class FunctionNotCalledException extends RuntimeException {
 	public SimpleFunctionCallExpression getFunctionCall() {
 		return this.functionCall;
 	}
-
 }

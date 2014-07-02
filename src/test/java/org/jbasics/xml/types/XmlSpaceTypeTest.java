@@ -24,12 +24,10 @@
  */
 package org.jbasics.xml.types;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import org.jbasics.testing.Java14LoggingTestCase;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class XmlSpaceTypeTest extends Java14LoggingTestCase {
 	private static final String PRESERVED_VALUE = "preserved";
@@ -63,5 +61,4 @@ public class XmlSpaceTypeTest extends Java14LoggingTestCase {
 		}
 		this.logger.exiting(this.sourceClassName, "testXmlValueOf");
 	}
-
 }

@@ -24,11 +24,11 @@
  */
 package org.jbasics.configuration.properties;
 
-import java.math.MathContext;
-import java.math.RoundingMode;
-
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 @SuppressWarnings("nls")
 public class MathContextValueTypeFactoryTest {

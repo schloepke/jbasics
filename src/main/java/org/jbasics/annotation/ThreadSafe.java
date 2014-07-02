@@ -30,21 +30,20 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Defines that the state of an Instance of the class is always thread safe.
- * It is required that there is nothing required to further synchronize any
- * access to an instance of the annotated type. If the thread safetynes is
- * reached by immutability it should be annotated with {@link ImmutableState}.
- * 
+ * Defines that the state of an Instance of the class is always thread safe. It is required that there is nothing
+ * required to further synchronize any access to an instance of the annotated type. If the thread safeness is reached
+ * by immutability it should be annotated with {@link ImmutableState}.
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ThreadSafe {
+
 	/**
-	 * Indicates that the only if the given parameters are thread safe that
-	 * this instance is as well.
-	 * 
+	 * Indicates that the only if the given parameters are thread safe that this instance is as well.
+	 *
 	 * @return True if the thread safe state is derived of its construction parameters. Default is false.
 	 */
 	boolean derived() default false;

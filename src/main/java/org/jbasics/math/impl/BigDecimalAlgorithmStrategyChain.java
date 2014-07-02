@@ -24,10 +24,10 @@
  */
 package org.jbasics.math.impl;
 
+import org.jbasics.math.AlgorithmStrategy;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
-
-import org.jbasics.math.AlgorithmStrategy;
 
 public class BigDecimalAlgorithmStrategyChain implements AlgorithmStrategy<BigDecimal> {
 	private final AlgorithmStrategy<BigDecimal>[] strategies;
@@ -45,5 +45,4 @@ public class BigDecimalAlgorithmStrategyChain implements AlgorithmStrategy<BigDe
 		}
 		return temp[0];
 	}
-
 }

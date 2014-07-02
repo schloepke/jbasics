@@ -34,44 +34,48 @@ public interface InternalCalculation {
 
 	/**
 	 * Adds x and y and returns the result.
-	 * 
+	 *
 	 * @param x The x array
 	 * @param y The y array
+	 *
 	 * @return The result in a newly allocated array
 	 */
 	int[] add(int[] x, int[] y);
 
 	/**
 	 * Required, that x is longer or equal in size to y.
-	 * 
-	 * @param x The x array
-	 * @param y The y array
+	 *
+	 * @param x    The x array
+	 * @param y    The y array
 	 * @param xoff The offset in the x array to start
 	 * @param xlen The length from the offset to add
 	 * @param yoff The offset in the y array to start
 	 * @param ylen The length from the offset to add (must be less than or equal to xlen).
+	 *
 	 * @return The addition result in a newly created array
 	 */
 	int[] add(int[] x, int[] y, int xoff, int xlen, int yoff, int ylen);
 
 	/**
 	 * Subtracts y from x where x must be a number greater than y (so no underflow occurs).
-	 * 
+	 *
 	 * @param x The x array (must be a number greater than y)
 	 * @param y The y array
+	 *
 	 * @return The result in a newly allocated array
 	 */
 	int[] subtract(int[] x, int[] y);
 
 	/**
 	 * Subtract y from x where x must be a number smaller than y (so no underflow occurs).
-	 * 
-	 * @param x The x array
-	 * @param y The y array
+	 *
+	 * @param x    The x array
+	 * @param y    The y array
 	 * @param xoff The offset to start in the x array
 	 * @param xlen The length from the offset to use in the x array
 	 * @param yoff The offset to start in the y array
 	 * @param ylen The length from the offset to use in the y array
+	 *
 	 * @return The result in a newly allocated array with all leading zeros stripped
 	 */
 	int[] subtract(int[] x, int[] y, int xoff, int xlen, int yoff, int ylen);

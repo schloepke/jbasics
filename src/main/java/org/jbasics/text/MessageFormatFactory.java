@@ -24,11 +24,11 @@
  */
 package org.jbasics.text;
 
-import java.text.MessageFormat;
-import java.util.Locale;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.factory.Factory;
+
+import java.text.MessageFormat;
+import java.util.Locale;
 
 public class MessageFormatFactory implements Factory<MessageFormat> {
 	private final String formatString;
@@ -46,5 +46,4 @@ public class MessageFormatFactory implements Factory<MessageFormat> {
 	public MessageFormat newInstance() {
 		return this.locale == null ? new MessageFormat(this.formatString) : new MessageFormat(this.formatString, this.locale);
 	}
-
 }

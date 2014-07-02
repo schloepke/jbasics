@@ -24,36 +24,15 @@
  */
 package org.jbasics.math.arbitrary.internal;
 
-
 class Int32CalculationImpl implements InternalCalculation {
 	private static final int KARATSUBA_THRESHOLD = 40;
 
 	/**
-	 * Strips the leading zeros from the given array and returns either the original array (if no
-	 * zeros were stripped) or a newly allocated array with the leading zeros removed.
-	 * 
-	 * @param x The array to check and strip leading zero
-	 * @return If nothing needs to be stripped returns the original array otherwise a newly
-	 *         allocated array with the leading zeros removed
-	 */
-	public int[] stripLeadingZeros(int[] x) {
-		if (x.length == 0 || x[0] != 0) {
-			return x;
-		}
-		int i = 0;
-		while (i < x.length && x[i] == 0) {
-			i++;
-		}
-		int[] result = new int[x.length - i];
-		System.arraycopy(x, i, result, 0, result.length);
-		return result;
-	}
-
-	/**
 	 * Adds x and y and returns the result.
-	 * 
+	 *
 	 * @param x The x array
 	 * @param y The y array
+	 *
 	 * @return The result in a newly allocated array
 	 */
 	public int[] add(int[] x, int[] y) {
@@ -62,13 +41,14 @@ class Int32CalculationImpl implements InternalCalculation {
 
 	/**
 	 * Required, that x is longer or equal in size to y.
-	 * 
-	 * @param x The x array
-	 * @param y The y array
+	 *
+	 * @param x    The x array
+	 * @param y    The y array
 	 * @param xoff The offset in the x array to start
 	 * @param xlen The length from the offset to add
 	 * @param yoff The offset in the y array to start
 	 * @param ylen The length from the offset to add (must be less than or equal to xlen).
+	 *
 	 * @return The addition result in a newly created array
 	 */
 	@SuppressWarnings("all" /* swapping the two sides lhs => rhs and rhs => lhs is better suitable on the parameter to lower stack usage */)
@@ -110,9 +90,10 @@ class Int32CalculationImpl implements InternalCalculation {
 
 	/**
 	 * Subtracts y from x where x must be a number greater than y (so no underflow occurs).
-	 * 
+	 *
 	 * @param x The x array (must be a number greater than y)
 	 * @param y The y array
+	 *
 	 * @return The result in a newly allocated array
 	 */
 	public int[] subtract(int[] x, int[] y) {
@@ -121,13 +102,14 @@ class Int32CalculationImpl implements InternalCalculation {
 
 	/**
 	 * Subtract y from x where x must be a number smaller than y (so no underflow occurs).
-	 * 
-	 * @param x The x array
-	 * @param y The y array
+	 *
+	 * @param x    The x array
+	 * @param y    The y array
 	 * @param xoff The offset to start in the x array
 	 * @param xlen The length from the offset to use in the x array
 	 * @param yoff The offset to start in the y array
 	 * @param ylen The length from the offset to use in the y array
+	 *
 	 * @return The result in a newly allocated array with all leading zeros stripped
 	 */
 	public int[] subtract(int[] x, int[] y, int xoff, int xlen, int yoff, int ylen) {
@@ -154,9 +136,10 @@ class Int32CalculationImpl implements InternalCalculation {
 
 	/**
 	 * Multiply the x and y and return the result in a newly allocated array.
-	 * 
+	 *
 	 * @param x The x value
 	 * @param y The y value
+	 *
 	 * @return The newly allocated array holding the result of the multiplication
 	 */
 	public int[] multiply(int[] x, int[] y) {
@@ -164,8 +147,8 @@ class Int32CalculationImpl implements InternalCalculation {
 	}
 
 	/**
-	 * Multiply two array with each other using the offset and length supplied for x and y. The
-	 * result is returned in a newly allocated array.
+	 * Multiply two array with each other using the offset and length supplied for x and y. The result is returned in a
+	 * newly allocated array.
 	 */
 	public int[] multiply(int[] x, int[] y, int xoff, int xlen, int yoff, int ylen) {
 		int[] z;
@@ -179,6 +162,28 @@ class Int32CalculationImpl implements InternalCalculation {
 			z = basecamp(x, y, xoff, xlen, yoff, ylen);
 		}
 		return stripLeadingZeros(z);
+	}
+
+	/**
+	 * Strips the leading zeros from the given array and returns either the original array (if no zeros were stripped)
+	 * or a newly allocated array with the leading zeros removed.
+	 *
+	 * @param x The array to check and strip leading zero
+	 *
+	 * @return If nothing needs to be stripped returns the original array otherwise a newly allocated array with the
+	 * leading zeros removed
+	 */
+	public int[] stripLeadingZeros(int[] x) {
+		if (x.length == 0 || x[0] != 0) {
+			return x;
+		}
+		int i = 0;
+		while (i < x.length && x[i] == 0) {
+			i++;
+		}
+		int[] result = new int[x.length - i];
+		System.arraycopy(x, i, result, 0, result.length);
+		return result;
 	}
 
 	private int[] basecamp(int[] x, int[] y, int xoff, int xlen, int yoff, int ylen) {
@@ -232,5 +237,4 @@ class Int32CalculationImpl implements InternalCalculation {
 			return add(res, a0b0);
 		}
 	}
-
 }

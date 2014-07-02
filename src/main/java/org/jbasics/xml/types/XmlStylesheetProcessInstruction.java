@@ -24,14 +24,13 @@
  */
 package org.jbasics.xml.types;
 
-import java.net.URI;
-
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.xml.XmlSerializable;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.xml.XmlSerializable;
+import java.net.URI;
 
 public class XmlStylesheetProcessInstruction implements XmlSerializable {
 	private final String type;
@@ -47,7 +46,7 @@ public class XmlStylesheetProcessInstruction implements XmlSerializable {
 	}
 
 	public XmlStylesheetProcessInstruction(final Object type, final URI href, final String title, final String media, final String charset,
-			final Boolean alternate) {
+										   final Boolean alternate) {
 		this.type = ContractCheck.mustNotBeNull(type, "type").toString();
 		this.href = ContractCheck.mustNotBeNull(href, "href");
 		this.title = title;
@@ -101,5 +100,4 @@ public class XmlStylesheetProcessInstruction implements XmlSerializable {
 		}
 		handler.processingInstruction("xml-stylesheet", temp.toString());
 	}
-
 }

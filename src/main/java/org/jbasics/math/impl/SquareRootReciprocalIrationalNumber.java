@@ -24,17 +24,21 @@
  */
 package org.jbasics.math.impl;
 
-import java.math.BigDecimal;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.IrationalNumber;
 import org.jbasics.math.strategies.ReciprocalSquareRootAlgorithmStrategy;
 
+import java.math.BigDecimal;
+
 public class SquareRootReciprocalIrationalNumber extends BigDecimalIrationalNumber {
 	public static final AlgorithmStrategy<BigDecimal> STRATEGY = new ReciprocalSquareRootAlgorithmStrategy();
 
 	public static final IrationalNumber<BigDecimal> SQUARE_ROOT_RECIPROCAL_OF_2 = new SquareRootReciprocalIrationalNumber(MathImplConstants.TWO);
+
+	private SquareRootReciprocalIrationalNumber(BigDecimal x) {
+		super(STRATEGY, x);
+	}
 
 	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
 		if (ContractCheck.mustNotBeNull(x, "x").signum() <= 0) {
@@ -47,9 +51,4 @@ public class SquareRootReciprocalIrationalNumber extends BigDecimalIrationalNumb
 		}
 		return new SquareRootReciprocalIrationalNumber(x);
 	}
-
-	private SquareRootReciprocalIrationalNumber(BigDecimal x) {
-		super(STRATEGY, x);
-	}
-
 }

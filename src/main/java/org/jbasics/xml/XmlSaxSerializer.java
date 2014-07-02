@@ -24,6 +24,10 @@
  */
 package org.jbasics.xml;
 
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.xml.types.XmlStylesheetProcessInstruction;
+import org.xml.sax.SAXException;
+
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
@@ -31,10 +35,6 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
-
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.xml.types.XmlStylesheetProcessInstruction;
-import org.xml.sax.SAXException;
 
 public class XmlSaxSerializer {
 	private final String encoding;
@@ -78,5 +78,4 @@ public class XmlSaxSerializer {
 			throw er;
 		}
 	}
-
 }

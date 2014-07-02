@@ -70,7 +70,7 @@ public class BigDecimalMatrixTest {
 		BigDecimalMatrix calculated = input.multiply(factor);
 		Assert.assertEquals(expected, calculated);
 	}
-	
+
 	@Test
 	public void testRowAndColumnVector() {
 		BigDecimalMatrix rowVector = BigDecimalMatrix.createRowVector(3, 5, 7);
@@ -78,7 +78,7 @@ public class BigDecimalMatrixTest {
 		BigDecimalMatrix expected = BigDecimalMatrix.createColumnVector(66);
 		Assert.assertEquals(expected, rowVector.multiply(colVector));
 	}
-	
+
 	@Test
 	public void testAssociativeProperty() {
 		BigDecimalMatrix A = BigDecimalMatrix.create().withRowFromLongs(1, 2, 3).withRowFromLongs(4, 5, 6).build();
@@ -94,5 +94,4 @@ public class BigDecimalMatrixTest {
 		BigDecimalMatrix C = BigDecimalMatrix.create().withRowFromLongs(12, -6).withRowFromLongs(39, -12).build();
 		Assert.assertEquals(A.add(B).multiply(C), A.multiply(C).add(B.multiply(C)));
 	}
-
 }

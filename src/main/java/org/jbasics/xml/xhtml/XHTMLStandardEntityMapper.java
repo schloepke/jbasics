@@ -24,9 +24,9 @@
  */
 package org.jbasics.xml.xhtml;
 
-import java.util.Map;
-
 import org.jbasics.types.builders.MapBuilder;
+
+import java.util.Map;
 
 public final class XHTMLStandardEntityMapper {
 	public static final Map<String, Integer> XHTML_STANDARD_ENTITIY_CODEPOINT_MAP;
@@ -129,7 +129,7 @@ public final class XHTMLStandardEntityMapper {
 				.put("yacute", new Integer(253)) //
 				.put("thorn", new Integer(254)) //
 				.put("yuml", new Integer(255)) //
-				// Symbol Entities
+						// Symbol Entities
 				.put("quot", new Integer(34)) //
 				.put("amp", new Integer(38)) //
 				.put("lt", new Integer(60)) //
@@ -163,7 +163,7 @@ public final class XHTMLStandardEntityMapper {
 				.put("lsaquo", new Integer(8249)) //
 				.put("rsaquo", new Integer(8250)) //
 				.put("euro", new Integer(8364)) //
-				// Greek Letters
+						// Greek Letters
 				.put("Alpha", new Integer(913)) //
 				.put("Beta", new Integer(914)) //
 				.put("Gamma", new Integer(915)) //
@@ -216,7 +216,7 @@ public final class XHTMLStandardEntityMapper {
 				.put("thetasym", new Integer(977)) //
 				.put("upsih", new Integer(978)) //
 				.put("piv", new Integer(982)) //
-				// Mathematical and thechnical symbols
+						// Mathematical and thechnical symbols
 				.put("bull", new Integer(8226)) //
 				.put("hellip", new Integer(8230)) //
 				.put("prime", new Integer(8242)) //
@@ -292,17 +292,16 @@ public final class XHTMLStandardEntityMapper {
 
 		final MapBuilder<String, String> stringEntities = new MapBuilder<String, String>().immutable();
 		for (final Map.Entry<String, Integer> entry : XHTMLStandardEntityMapper.XHTML_STANDARD_ENTITIY_CODEPOINT_MAP.entrySet()) {
-			stringEntities.put(entry.getKey(), new String(new int[] { entry.getValue().intValue() }, 0, 1));
+			stringEntities.put(entry.getKey(), new String(new int[]{entry.getValue().intValue()}, 0, 1));
 		}
 		XHTML_STANDARD_ENTITY_MAP = stringEntities.build();
-	}
-
-	public static String resolveEntity(final String entityName) {
-		return XHTMLStandardEntityMapper.XHTML_STANDARD_ENTITY_MAP.get(entityName);
 	}
 
 	private XHTMLStandardEntityMapper() {
 		// To disallow instanciation
 	}
 
+	public static String resolveEntity(final String entityName) {
+		return XHTMLStandardEntityMapper.XHTML_STANDARD_ENTITY_MAP.get(entityName);
+	}
 }

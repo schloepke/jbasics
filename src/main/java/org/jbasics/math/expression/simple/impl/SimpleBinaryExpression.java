@@ -24,13 +24,13 @@
  */
 package org.jbasics.math.expression.simple.impl;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.util.Collection;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.expression.simple.SimpleExpression;
 import org.jbasics.math.expression.simple.SimpleExpressionContext;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.util.Collection;
 
 public abstract class SimpleBinaryExpression extends SimpleExpression {
 	protected final SimpleExpression lhs;
@@ -61,5 +61,4 @@ public abstract class SimpleBinaryExpression extends SimpleExpression {
 	}
 
 	protected abstract BigDecimal evalOp(BigDecimal left, BigDecimal right, MathContext mc);
-
 }

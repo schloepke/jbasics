@@ -24,14 +24,13 @@
  */
 package org.jbasics.parser.invoker;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import javax.xml.namespace.QName;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.factory.ParameterFactory;
 import org.jbasics.types.factories.ValueOfStringTypeFactory;
+
+import javax.xml.namespace.QName;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class AttributeInvoker<T> implements Invoker<T, String> {
 	private final boolean useExtendedForm;
@@ -63,6 +62,10 @@ public class AttributeInvoker<T> implements Invoker<T, String> {
 		}
 	}
 
+	public static <T> AttributeInvoker<T> createInvoker(Class<T> type, Method m) {
+		return new AttributeInvoker<T>(m);
+	}
+
 	public void invoke(T instance, QName name, String data) {
 		Object temp = data;
 		if (this.factory != null) {
@@ -76,16 +79,11 @@ public class AttributeInvoker<T> implements Invoker<T, String> {
 			}
 		} catch (InvocationTargetException e) {
 			if (e.getCause() instanceof RuntimeException) {
-				throw (RuntimeException)e.getCause();
+				throw (RuntimeException) e.getCause();
 			}
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
 	}
-
-	public static <T> AttributeInvoker<T> createInvoker(Class<T> type, Method m) {
-		return new AttributeInvoker<T>(m);
-	}
-
 }

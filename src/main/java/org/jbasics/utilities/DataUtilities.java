@@ -26,7 +26,7 @@ package org.jbasics.utilities;
 
 /**
  * Utility class offering some often needed functions on any type of data.
- * 
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -38,11 +38,10 @@ public final class DataUtilities {
 
 	/**
 	 * Returns the first non null argument given or null if non of the arguments are non null.
-	 * 
-	 * @param <T>
-	 *            The type to return
-	 * @param ts
-	 *            The elements to scan thru.
+	 *
+	 * @param <T> The type to return
+	 * @param ts  The elements to scan thru.
+	 *
 	 * @return The first non null element unless all are null than null is returned.
 	 */
 	public static <T> T coalesce(final T... ts) {
@@ -56,13 +55,11 @@ public final class DataUtilities {
 
 	/**
 	 * Returns true if the enum instance is one of the enum list.
-	 * 
-	 * @param <T>
-	 *            The enum type
-	 * @param instance
-	 *            The instance to check (null always yields false)
-	 * @param enumList
-	 *            The list to check the instance against (null or empty always leads false)
+	 *
+	 * @param <T>      The enum type
+	 * @param instance The instance to check (null always yields false)
+	 * @param enumList The list to check the instance against (null or empty always leads false)
+	 *
 	 * @return True of the enum instance on of the enum list element.
 	 */
 	public static <T extends Enum<?>> boolean isEnumInList(final T instance, final T... enumList) {
@@ -78,13 +75,11 @@ public final class DataUtilities {
 
 	/**
 	 * Returns true if the enum instance is one of the enum list.
-	 * 
-	 * @param <T>
-	 *            The type of the check
-	 * @param instance
-	 *            The instance to check (null always yields false)
-	 * @param enumList
-	 *            The list to check the instance against (null or empty always leads false)
+	 *
+	 * @param <T>      The type of the check
+	 * @param instance The instance to check (null always yields false)
+	 * @param enumList The list to check the instance against (null or empty always leads false)
+	 *
 	 * @return True of the enum instance on of the enum list element.
 	 */
 	public static <T> boolean isInList(final T instance, final T... list) {

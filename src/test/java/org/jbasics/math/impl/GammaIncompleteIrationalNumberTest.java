@@ -24,13 +24,12 @@
  */
 package org.jbasics.math.impl;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-
-import org.junit.Test;
-
 import org.jbasics.math.BigDecimalMathLibrary;
 import org.jbasics.math.BigRational;
+import org.junit.Test;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
 
 public class GammaIncompleteIrationalNumberTest {
 	private final MathContext mc = MathContext.DECIMAL128;
@@ -59,5 +58,4 @@ public class GammaIncompleteIrationalNumberTest {
 		System.out.println("incompleteGammaP(" + x.divide(beta) + ", " + alpha + ") = " + calculated + " (" + expected.subtract(calculated).abs()
 				+ ") expected:" + expected);
 	}
-
 }

@@ -29,5 +29,4 @@ import org.jbasics.pattern.visitor.Visitable;
 public interface Composite<T> extends Visitable<CompositeVisitor<T>>, Iterable<Composite<T>> {
 
 	T value();
-
 }

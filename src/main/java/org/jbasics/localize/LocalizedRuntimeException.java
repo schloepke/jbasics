@@ -25,13 +25,11 @@
 package org.jbasics.localize;
 
 /**
- * <p>
- * Exceptions can be seen as immutable and thread safe even they do not fulfill the requirements completely. The stack
- * trace can be set, exchanged and is mutable. If that happens from different threads it is uncertain what the end
+ * <p> Exceptions can be seen as immutable and thread safe even they do not fulfill the requirements completely. The
+ * stack trace can be set, exchanged and is mutable. If that happens from different threads it is uncertain what the end
  * result will be. Since it is not a common practice to change the stack trace it can be seen as immutable and thread
- * safe.
- * </p>
- * 
+ * safe. </p>
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -62,8 +60,18 @@ public class LocalizedRuntimeException extends RuntimeException {
 		this(LocalizedMessageAccessor.getMessageBundleName(bundleInstance), key, arguments);
 	}
 
+	public LocalizedRuntimeException(final String bundle, final String key, final Object... arguments) {
+		super(LocalizedMessageAccessor.getUSEnglishMessage(bundle, key, arguments));
+		this.localizedMessage = LocalizedMessageAccessor.getLocalizedMessage(bundle, key, arguments);
+	}
+
 	public LocalizedRuntimeException(final Object bundleInstance, final String key, final Throwable cause, final Object... arguments) {
 		this(LocalizedMessageAccessor.getMessageBundleName(bundleInstance), key, cause, arguments);
+	}
+
+	public LocalizedRuntimeException(final String bundle, final String key, final Throwable cause, final Object... arguments) {
+		super(LocalizedMessageAccessor.getUSEnglishMessage(bundle, key, arguments), cause);
+		this.localizedMessage = LocalizedMessageAccessor.getLocalizedMessage(bundle, key, arguments);
 	}
 
 	public LocalizedRuntimeException(final Class<?> bundleClass, final String key, final Object... arguments) {
@@ -74,16 +82,6 @@ public class LocalizedRuntimeException extends RuntimeException {
 		this(LocalizedMessageAccessor.getMessageBundleName(bundleClass), key, cause, arguments);
 	}
 
-	public LocalizedRuntimeException(final String bundle, final String key, final Object... arguments) {
-		super(LocalizedMessageAccessor.getUSEnglishMessage(bundle, key, arguments));
-		this.localizedMessage = LocalizedMessageAccessor.getLocalizedMessage(bundle, key, arguments);
-	}
-
-	public LocalizedRuntimeException(final String bundle, final String key, final Throwable cause, final Object... arguments) {
-		super(LocalizedMessageAccessor.getUSEnglishMessage(bundle, key, arguments), cause);
-		this.localizedMessage = LocalizedMessageAccessor.getLocalizedMessage(bundle, key, arguments);
-	}
-
 	@Override
 	public String getLocalizedMessage() {
 		if (this.localizedMessage != null) {
@@ -92,5 +90,4 @@ public class LocalizedRuntimeException extends RuntimeException {
 			return super.getLocalizedMessage();
 		}
 	}
-
 }

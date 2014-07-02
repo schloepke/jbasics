@@ -35,20 +35,6 @@ public class ArbitraryRational implements ArbitraryNumber {
 	private final ArbitraryInteger numerator;
 	private final ArbitraryInteger denominator;
 
-	public static ArbitraryRational valueOf(final ArbitraryInteger numerator, final ArbitraryInteger denominator) {
-		if (numerator.isZero()) {
-			return ArbitraryRational.ZERO;
-		}
-		return new ArbitraryRational(numerator, denominator);
-	}
-
-	public static ArbitraryRational valueOf(final ArbitraryInteger numerator) {
-		if (numerator.isZero()) {
-			return ArbitraryRational.ZERO;
-		}
-		return new ArbitraryRational(numerator, ArbitraryInteger.ONE);
-	}
-
 	private ArbitraryRational(final ArbitraryInteger numerator, final ArbitraryInteger denominator) {
 		if (denominator.isZero()) {
 			throw new ArithmeticException("Division by zero");
@@ -61,40 +47,23 @@ public class ArbitraryRational implements ArbitraryNumber {
 		}
 	}
 
-	// Converting
+	public static ArbitraryRational valueOf(final ArbitraryInteger numerator) {
+		if (numerator.isZero()) {
+			return ArbitraryRational.ZERO;
+		}
+		return new ArbitraryRational(numerator, ArbitraryInteger.ONE);
+	}
 
 	@Override
 	public BigDecimal toNumber() {
 		return new BigDecimal(this.numerator.toNumber()).divide(new BigDecimal(this.denominator.toNumber()));
 	}
 
-	public BigDecimal toNumber(final MathContext mc) {
-		return new BigDecimal(this.numerator.toNumber()).divide(new BigDecimal(this.denominator.toNumber()), mc);
-	}
-
-	public ArbitraryInteger numerator() {
-		return this.numerator;
-	}
-
-	public ArbitraryInteger denominator() {
-		return this.denominator;
-	}
-
-	// Checks
+	// Converting
 
 	@Override
 	public int signum() {
 		return this.numerator.signum();
-	}
-
-	@Override
-	public boolean isZero() {
-		return this.numerator.isZero();
-	}
-
-	@Override
-	public boolean isPositiv() {
-		return this.numerator.isPositiv();
 	}
 
 	@Override
@@ -103,16 +72,16 @@ public class ArbitraryRational implements ArbitraryNumber {
 	}
 
 	@Override
-	public ArbitraryRational increment() {
-		return ArbitraryRational.valueOf(this.numerator.add(this.denominator), this.denominator);
+	public boolean isPositiv() {
+		return this.numerator.isPositiv();
 	}
 
 	@Override
-	public ArbitraryRational decrement() {
-		return ArbitraryRational.valueOf(this.numerator.subtract(this.denominator), this.denominator);
+	public boolean isZero() {
+		return this.numerator.isZero();
 	}
 
-	// Global operations
+	// Checks
 
 	@Override
 	public ArbitraryRational abs() {
@@ -134,7 +103,17 @@ public class ArbitraryRational implements ArbitraryNumber {
 		return multiply(this);
 	}
 
-	// The integer operators
+	@Override
+	public ArbitraryRational increment() {
+		return ArbitraryRational.valueOf(this.numerator.add(this.denominator), this.denominator);
+	}
+
+	@Override
+	public ArbitraryRational decrement() {
+		return ArbitraryRational.valueOf(this.numerator.subtract(this.denominator), this.denominator);
+	}
+
+	// Global operations
 
 	@Override
 	public ArbitraryRational add(final ArbitraryInteger summand) {
@@ -156,7 +135,7 @@ public class ArbitraryRational implements ArbitraryNumber {
 		return ArbitraryRational.valueOf(this.numerator, this.denominator.multiply(divisor));
 	}
 
-	// The rational operations
+	// The integer operators
 
 	@Override
 	public ArbitraryRational add(final ArbitraryRational summand) {
@@ -180,4 +159,24 @@ public class ArbitraryRational implements ArbitraryNumber {
 		return ArbitraryRational.valueOf(this.numerator.multiply(divisor.denominator), this.denominator.multiply(divisor.numerator));
 	}
 
+	// The rational operations
+
+	public static ArbitraryRational valueOf(final ArbitraryInteger numerator, final ArbitraryInteger denominator) {
+		if (numerator.isZero()) {
+			return ArbitraryRational.ZERO;
+		}
+		return new ArbitraryRational(numerator, denominator);
+	}
+
+	public BigDecimal toNumber(final MathContext mc) {
+		return new BigDecimal(this.numerator.toNumber()).divide(new BigDecimal(this.denominator.toNumber()), mc);
+	}
+
+	public ArbitraryInteger numerator() {
+		return this.numerator;
+	}
+
+	public ArbitraryInteger denominator() {
+		return this.denominator;
+	}
 }

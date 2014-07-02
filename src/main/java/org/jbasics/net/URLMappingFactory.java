@@ -24,15 +24,15 @@
  */
 package org.jbasics.net;
 
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.exception.DelegatedException;
+import org.jbasics.pattern.factory.ParameterFactory;
+
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.exception.DelegatedException;
-import org.jbasics.pattern.factory.ParameterFactory;
 
 public class URLMappingFactory implements ParameterFactory<URL, URI> {
 	public final static URLMappingFactory SHARED_INSTANCE = new URLMappingFactory();
@@ -74,5 +74,4 @@ public class URLMappingFactory implements ParameterFactory<URL, URI> {
 			throw DelegatedException.delegate(e);
 		}
 	}
-
 }

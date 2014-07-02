@@ -24,15 +24,15 @@
  */
 package org.jbasics.arch;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * It is impossible that this test results in a 100% coverage since the class under test returns
  * certain parts only under certain JVM conditions. In 32 bit world it is impossible to have a 64
  * bit result as well as in a 64 bit world it is impossible to have a 32 bit result.
- * 
+ *
  * @author Stephan Schloepke
  */
 public class ArithmeticArchitectureTest {

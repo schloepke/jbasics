@@ -34,5 +34,4 @@ public class ContextualCalculateStrategiesDiscoverFactory<Context> extends
 	public ContextualCalculateStrategiesDiscoverFactory(final Class<? extends Context> contextType) {
 		super(ContextualCalculateStrategy.class, null, null, ContractCheck.mustNotBeNull(contextType, "contextType")); //$NON-NLS-1$
 	}
-
 }

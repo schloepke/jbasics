@@ -24,13 +24,8 @@
  */
 package org.jbasics.parser;
 
-import java.net.URI;
-import java.util.Collections;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.xml.namespace.QName;
-
+import org.jbasics.parser.invoker.Invoker;
+import org.jbasics.types.tuples.Pair;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
@@ -38,8 +33,11 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ext.DefaultHandler2;
 
-import org.jbasics.parser.invoker.Invoker;
-import org.jbasics.types.tuples.Pair;
+import javax.xml.namespace.QName;
+import java.net.URI;
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings("unchecked")
 public class BuilderContentHandler<T> extends DefaultHandler2 {
@@ -66,6 +64,12 @@ public class BuilderContentHandler<T> extends DefaultHandler2 {
 	}
 
 	@Override
+	public void setDocumentLocator(final Locator locator) {
+		super.setDocumentLocator(locator);
+		this.locator = locator;
+	}
+
+	@Override
 	public void startDocument() throws SAXException {
 		if (this.parsing.compareAndSet(false, true)) {
 			this.states = new StateStack<BuildHandler>();
@@ -87,6 +91,24 @@ public class BuilderContentHandler<T> extends DefaultHandler2 {
 		this.prefixes = null;
 		this.characterBuffer = null;
 		this.states = null;
+	}
+
+	@Override
+	public void startPrefixMapping(final String prefix, final String uri) throws SAXException {
+		if (this.activeCustomParserContentHandler != null) {
+			this.activeCustomParserContentHandler.startPrefixMapping(prefix, uri);
+		} else {
+			this.prefixes.pushMapping(prefix, URI.create(uri));
+		}
+	}
+
+	@Override
+	public void endPrefixMapping(final String prefix) throws SAXException {
+		if (this.activeCustomParserContentHandler != null) {
+			this.activeCustomParserContentHandler.endPrefixMapping(prefix);
+		} else {
+			this.prefixes.popMapping(prefix);
+		}
 	}
 
 	@Override
@@ -210,24 +232,6 @@ public class BuilderContentHandler<T> extends DefaultHandler2 {
 	}
 
 	@Override
-	public void startPrefixMapping(final String prefix, final String uri) throws SAXException {
-		if (this.activeCustomParserContentHandler != null) {
-			this.activeCustomParserContentHandler.startPrefixMapping(prefix, uri);
-		} else {
-			this.prefixes.pushMapping(prefix, URI.create(uri));
-		}
-	}
-
-	@Override
-	public void endPrefixMapping(final String prefix) throws SAXException {
-		if (this.activeCustomParserContentHandler != null) {
-			this.activeCustomParserContentHandler.endPrefixMapping(prefix);
-		} else {
-			this.prefixes.popMapping(prefix);
-		}
-	}
-
-	@Override
 	public void characters(final char[] ch, final int start, final int length) throws SAXException {
 		if (this.activeCustomParserContentHandler != null) {
 			this.activeCustomParserContentHandler.characters(ch, start, length);
@@ -250,27 +254,6 @@ public class BuilderContentHandler<T> extends DefaultHandler2 {
 		}
 	}
 
-	@Override
-	public void setDocumentLocator(final Locator locator) {
-		super.setDocumentLocator(locator);
-		this.locator = locator;
-	}
-
-	private SAXParseException createParsingException(final RuntimeException eo) {
-		Throwable e = eo;
-		while (e.getCause() != null && e.getCause() != e) {
-			e = e.getCause();
-		}
-		StringBuilder message = new StringBuilder();
-		message.append("[").append(e.getClass().getSimpleName()).append("] ").append(e.getMessage());
-		if (this.locator != null) {
-			message.append(" (").append(this.locator.getLineNumber()).append("/").append(this.locator.getColumnNumber()).append(")");
-		}
-		SAXParseException en = new SAXParseException(message.toString(), this.locator);
-		en.setStackTrace(e.getStackTrace());
-		return en;
-	}
-
 	private QName createQualifiedName(String namespace, final String localname, final String qName) {
 		String prefix = null;
 		if (qName != null) {
@@ -290,6 +273,21 @@ public class BuilderContentHandler<T> extends DefaultHandler2 {
 		} else {
 			return new QName(namespace, localname);
 		}
+	}
+
+	private SAXParseException createParsingException(final RuntimeException eo) {
+		Throwable e = eo;
+		while (e.getCause() != null && e.getCause() != e) {
+			e = e.getCause();
+		}
+		StringBuilder message = new StringBuilder();
+		message.append("[").append(e.getClass().getSimpleName()).append("] ").append(e.getMessage());
+		if (this.locator != null) {
+			message.append(" (").append(this.locator.getLineNumber()).append("/").append(this.locator.getColumnNumber()).append(")");
+		}
+		SAXParseException en = new SAXParseException(message.toString(), this.locator);
+		en.setStackTrace(e.getStackTrace());
+		return en;
 	}
 
 	/*

@@ -24,10 +24,6 @@
  */
 package org.jbasics.jee.servlet;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -35,6 +31,9 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class RequestInfoLoggingFilter implements Filter {
 	private String loggerName = getClass().getName();
@@ -51,20 +50,20 @@ public class RequestInfoLoggingFilter implements Filter {
 		}
 	}
 
-	public void destroy() {
-		// Nothing to do to destruct
-	}
-
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		Logger logger = Logger.getLogger(this.loggerName);
 		if (logger.isLoggable(this.logLevel)) {
 			if (request instanceof HttpServletRequest) {
-				HttpServletRequest temp = (HttpServletRequest)request;
+				HttpServletRequest temp = (HttpServletRequest) request;
 				logger.log(this.logLevel, "HttpServletRequest.getPathInfo() = " + temp.getPathInfo());
 				logger.log(this.logLevel, "HttpServletRequest.getRequestURI() = " + temp.getRequestURI());
 				logger.log(this.logLevel, "HttpServletRequest.getRequestURL() = " + temp.getRequestURL());
 			}
 		}
 		chain.doFilter(request, response);
+	}
+
+	public void destroy() {
+		// Nothing to do to destruct
 	}
 }

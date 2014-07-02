@@ -24,19 +24,19 @@
  */
 package org.jbasics.net;
 
-import java.net.URI;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.factory.ParameterFactory;
 import org.jbasics.pattern.modifer.Extendable;
 import org.jbasics.text.StringUtilities;
 
+import java.net.URI;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 /**
- * A simple factory to generate Tag URIs as outlined by the informal
- * <a href="http://tools.ietf.org/html/rfc4151">RFC 4151</a>.
+ * A simple factory to generate Tag URIs as outlined by the informal <a href="http://tools.ietf.org/html/rfc4151">RFC
+ * 4151</a>.
  *
  * @author Stephan Schloepke
  */
@@ -49,26 +49,6 @@ public class TagURIFactory implements ParameterFactory<URI, String>, Extendable<
 	private final Date taggingEntityAuthorityDate;
 	private final String[] pathSegments;
 	private final String base;
-
-	public static TagURIFactory newInstance(final String authorityName, final int year) {
-		return TagURIFactory.newInstance(authorityName, year, 1, 1);
-	}
-
-	public static TagURIFactory newInstance(final String authorityName, final int year, final int month) {
-		return TagURIFactory.newInstance(authorityName, year, month, 1);
-	}
-
-	public static TagURIFactory newInstance(final String authorityName, final int year, final int month, final int dayOfMonth) {
-		final Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.YEAR, year);
-		cal.set(Calendar.MONTH, month - 1);
-		cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-		return new TagURIFactory(authorityName, cal.getTime());
-	}
-
-	public static TagURIFactory newInstance(final String authorityName, final Date taggingEntityDate, final String... pathSegments) {
-		return new TagURIFactory(authorityName, taggingEntityDate, pathSegments);
-	}
 
 	public TagURIFactory(final String authorityName, final Date taggingEntityDate, final String... pathSegments) {
 		this.taggingEntityAuthorityName = ContractCheck.mustNotBeNullOrTrimmedEmpty(authorityName, "authorityName"); //$NON-NLS-1$
@@ -93,6 +73,26 @@ public class TagURIFactory implements ParameterFactory<URI, String>, Extendable<
 			this.pathSegments = null;
 			this.base = StringUtilities.join(TagURIFactory.TAG_PARTS_DELIMITER, TagURIFactory.TAG_SCHEME, taggingEntity);
 		}
+	}
+
+	public static TagURIFactory newInstance(final String authorityName, final int year) {
+		return TagURIFactory.newInstance(authorityName, year, 1, 1);
+	}
+
+	public static TagURIFactory newInstance(final String authorityName, final int year, final int month, final int dayOfMonth) {
+		final Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.YEAR, year);
+		cal.set(Calendar.MONTH, month - 1);
+		cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+		return new TagURIFactory(authorityName, cal.getTime());
+	}
+
+	public static TagURIFactory newInstance(final String authorityName, final int year, final int month) {
+		return TagURIFactory.newInstance(authorityName, year, month, 1);
+	}
+
+	public static TagURIFactory newInstance(final String authorityName, final Date taggingEntityDate, final String... pathSegments) {
+		return new TagURIFactory(authorityName, taggingEntityDate, pathSegments);
 	}
 
 	@Override
@@ -128,5 +128,4 @@ public class TagURIFactory implements ParameterFactory<URI, String>, Extendable<
 					this.base, specific));
 		}
 	}
-
 }

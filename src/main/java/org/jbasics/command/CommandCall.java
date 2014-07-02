@@ -24,15 +24,15 @@
  */
 package org.jbasics.command;
 
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.pattern.factory.ParameterFactory;
+import org.jbasics.types.transpose.MapTransposer;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.pattern.factory.ParameterFactory;
-import org.jbasics.types.transpose.MapTransposer;
 
 public class CommandCall {
 	public final static MapTransposer<String, CommandParameter> COMMAND_PARAMETER_TRANSPOSER = new MapTransposer<String, CommandParameter>(
@@ -44,19 +44,6 @@ public class CommandCall {
 
 	private final String name;
 	private final Map<String, CommandParameter> parameters;
-
-	public static CommandCall create(final String[] args) {
-		String commandName = ContractCheck.mustNotBeNullOrEmpty(args, "args")[0]; //$NON-NLS-1$
-		if (args.length > 1) {
-			ArrayList<CommandParameter> parameter = new ArrayList<CommandParameter>(args.length - 1);
-			for (int i = 1; i < args.length; i++) {
-				parameter.add(CommandParameter.parse(args[i]));
-			}
-			return new CommandCall(commandName, parameter);
-		} else {
-			return new CommandCall(commandName);
-		}
-	}
 
 	public CommandCall(final String name) {
 		this.name = ContractCheck.mustNotBeNullOrTrimmedEmpty(name, "name"); //$NON-NLS-1$
@@ -70,7 +57,20 @@ public class CommandCall {
 	public CommandCall(final String name, final Collection<CommandParameter> parameters) {
 		this.name = ContractCheck.mustNotBeNullOrTrimmedEmpty(name, "name"); //$NON-NLS-1$
 		this.parameters = parameters != null && parameters.size() > 0 ? Collections.unmodifiableMap(CommandCall.COMMAND_PARAMETER_TRANSPOSER
-				.transpose(parameters)) : Collections.<String, CommandParameter> emptyMap();
+				.transpose(parameters)) : Collections.<String, CommandParameter>emptyMap();
+	}
+
+	public static CommandCall create(final String[] args) {
+		String commandName = ContractCheck.mustNotBeNullOrEmpty(args, "args")[0]; //$NON-NLS-1$
+		if (args.length > 1) {
+			ArrayList<CommandParameter> parameter = new ArrayList<CommandParameter>(args.length - 1);
+			for (int i = 1; i < args.length; i++) {
+				parameter.add(CommandParameter.parse(args[i]));
+			}
+			return new CommandCall(commandName, parameter);
+		} else {
+			return new CommandCall(commandName);
+		}
 	}
 
 	public String getName() {
@@ -93,5 +93,4 @@ public class CommandCall {
 		}
 		return t.toString();
 	}
-
 }

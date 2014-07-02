@@ -24,14 +24,14 @@
  */
 package org.jbasics.types.composite;
 
+import org.jbasics.pattern.composite.Composite;
+import org.jbasics.pattern.composite.CompositeVisitor;
+import org.jbasics.pattern.delegation.MutableDelegate;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
-import org.jbasics.pattern.composite.Composite;
-import org.jbasics.pattern.composite.CompositeVisitor;
-import org.jbasics.pattern.delegation.MutableDelegate;
 
 public class DelegateComposite<T> implements MutableDelegate<T>, Composite<T> {
 	private T value;
@@ -42,7 +42,7 @@ public class DelegateComposite<T> implements MutableDelegate<T>, Composite<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-    public Iterator<Composite<T>> iterator() {
+	public Iterator<Composite<T>> iterator() {
 		if (this.childrean != null) {
 			return this.childrean.iterator();
 		} else {
@@ -65,16 +65,12 @@ public class DelegateComposite<T> implements MutableDelegate<T>, Composite<T> {
 		return delegate();
 	}
 
-	public void accept(final CompositeVisitor<T> visitor) {
-		visitor.visit(this);
-	}
-
 	public T delegate() {
 		return this.value;
 	}
 
-	public boolean isDelegateSet() {
-		return this.value != null;
+	public void accept(final CompositeVisitor<T> visitor) {
+		visitor.visit(this);
 	}
 
 	public T setDelegate(final T delegate) {
@@ -83,4 +79,7 @@ public class DelegateComposite<T> implements MutableDelegate<T>, Composite<T> {
 		return temp;
 	}
 
+	public boolean isDelegateSet() {
+		return this.value != null;
+	}
 }

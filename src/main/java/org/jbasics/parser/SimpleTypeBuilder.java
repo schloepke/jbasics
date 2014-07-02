@@ -24,11 +24,6 @@
  */
 package org.jbasics.parser;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.xml.namespace.QName;
-
 import org.jbasics.parser.annotations.AnyAttribute;
 import org.jbasics.parser.annotations.Content;
 import org.jbasics.pattern.builder.Builder;
@@ -36,38 +31,25 @@ import org.jbasics.pattern.factory.Factory;
 import org.jbasics.pattern.factory.ParameterFactory;
 import org.jbasics.types.factories.ValueOfStringTypeFactory;
 
+import javax.xml.namespace.QName;
+import java.util.HashMap;
+import java.util.Map;
+
 public class SimpleTypeBuilder<T> implements Builder<T> {
 	private final ParameterFactory<T, String> typeFactory;
 	private String text;
 	private Map<QName, String> attributes;
 
-	public static class BuilderFactory<T> implements Factory<Builder<T>> {
-		private final ParameterFactory<T, String> typeFactory;
-
-		private BuilderFactory(Class<T> type) {
-			this.typeFactory = ValueOfStringTypeFactory.getFactoryFor(type);
-		}
-
-		public Builder<T> newInstance() {
-			return new SimpleTypeBuilder<T>(this.typeFactory);
-		}
-
-		public static <T> Factory<Builder<T>> createFactory(Class<T> type) {
-			return new BuilderFactory<T>(type);
-		}
-
-	}
-
 	protected SimpleTypeBuilder(ParameterFactory<T, String> typeFactory) {
 		this.typeFactory = typeFactory;
 	}
 
-	public T build() {
-		return this.typeFactory.create(this.text);
-	}
-
 	public void reset() {
 		this.text = null;
+	}
+
+	public T build() {
+		return this.typeFactory.create(this.text);
 	}
 
 	@Content
@@ -85,4 +67,19 @@ public class SimpleTypeBuilder<T> implements Builder<T> {
 		return this;
 	}
 
+	public static class BuilderFactory<T> implements Factory<Builder<T>> {
+		private final ParameterFactory<T, String> typeFactory;
+
+		private BuilderFactory(Class<T> type) {
+			this.typeFactory = ValueOfStringTypeFactory.getFactoryFor(type);
+		}
+
+		public static <T> Factory<Builder<T>> createFactory(Class<T> type) {
+			return new BuilderFactory<T>(type);
+		}
+
+		public Builder<T> newInstance() {
+			return new SimpleTypeBuilder<T>(this.typeFactory);
+		}
+	}
 }

@@ -27,5 +27,4 @@ package org.jbasics.pattern.strategy;
 public interface ContextualCalculateStrategy<Result, Request, Context> {
 
 	Result calculate(Request request, Context context);
-
 }

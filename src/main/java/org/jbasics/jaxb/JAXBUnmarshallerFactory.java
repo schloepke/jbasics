@@ -24,15 +24,14 @@
  */
 package org.jbasics.jaxb;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.types.delegates.LazySoftReferenceDelegate;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 public class JAXBUnmarshallerFactory implements Factory<Unmarshaller> {
 	private final Delegate<JAXBContext> jaxbContextDelegate;
@@ -62,5 +61,4 @@ public class JAXBUnmarshallerFactory implements Factory<Unmarshaller> {
 			throw DelegatedException.delegate(e);
 		}
 	}
-
 }

@@ -24,39 +24,39 @@
  */
 package org.jbasics.codec;
 
-import java.io.ByteArrayOutputStream;
-
 import org.jbasics.arrays.ArrayConstants;
 import org.jbasics.pattern.coder.Codec;
 import org.jbasics.text.StringUtilities;
 import org.jbasics.types.sequences.ArrayCharacterSequence;
 
+import java.io.ByteArrayOutputStream;
+
 /**
- * Codec for the RFC3548 base 16 coding. This is one of the three codecs defined
- * in the RFC3548. The codec is also known as the hex codec because it results.
- * in two character hex values for one byte.
- * 
+ * Codec for the RFC3548 base 16 coding. This is one of the three codecs defined in the RFC3548. The codec is also known
+ * as the hex codec because it results. in two character hex values for one byte.
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
 public class RFC3548Base16Codec implements Codec<byte[], CharSequence> {
 	/**
 	 * The alphabet used for coding and decoding
-	 * 
+	 *
 	 * @since 1.0
 	 */
 	public static final String BASE16_ALPHABET = "0123456789ABCDEF"; //$NON-NLS-1$
 	/**
 	 * The shared instance of the codec
-	 * 
+	 *
 	 * @since 1.0
 	 */
 	public static final RFC3548Base16Codec INSTANCE = new RFC3548Base16Codec();
 
 	/**
 	 * Returns the input block size used for encoding.
-	 * 
+	 *
 	 * @return The input block size
+	 *
 	 * @since 1.0
 	 */
 	public int getInputBlockSize() {
@@ -65,8 +65,9 @@ public class RFC3548Base16Codec implements Codec<byte[], CharSequence> {
 
 	/**
 	 * Returns the output block size used for encoding
-	 * 
+	 *
 	 * @return The output block size
+	 *
 	 * @since 1.0
 	 */
 	public int getOutputBlockSize() {

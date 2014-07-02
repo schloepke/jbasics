@@ -24,12 +24,11 @@
  */
 package org.jbasics.parser.invoker;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import org.jbasics.checker.ContractCheck;
 
 import javax.xml.namespace.QName;
-
-import org.jbasics.checker.ContractCheck;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class ContentInvoker<T> implements Invoker<T, String> {
 	private final Method method;
@@ -47,6 +46,10 @@ public class ContentInvoker<T> implements Invoker<T, String> {
 		}
 	}
 
+	public static <T> ContentInvoker<T> createInvoker(Class<T> type, Method m) {
+		return new ContentInvoker<T>(m);
+	}
+
 	public void invoke(T instance, QName name, String data) {
 		try {
 			this.method.invoke(instance, data);
@@ -56,9 +59,4 @@ public class ContentInvoker<T> implements Invoker<T, String> {
 			throw new RuntimeException(e);
 		}
 	}
-
-	public static <T> ContentInvoker<T> createInvoker(Class<T> type, Method m) {
-		return new ContentInvoker<T>(m);
-	}
-
 }

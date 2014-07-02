@@ -24,11 +24,11 @@
  */
 package org.jbasics.jaxb;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.factory.Factory;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 
 public class JAXBContextFactory implements Factory<JAXBContext> {
 	private final String contextPath;
@@ -61,5 +61,4 @@ public class JAXBContextFactory implements Factory<JAXBContext> {
 			throw DelegatedException.delegate(e);
 		}
 	}
-
 }

@@ -24,15 +24,15 @@
  */
 package org.jbasics.net.mediatype;
 
-import java.io.Serializable;
-import java.util.Arrays;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.types.tuples.Pair;
 
+import java.io.Serializable;
+import java.util.Arrays;
+
 /**
  * Holds the info for an accept HTTP header of a single media type accepted.
- * 
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -42,20 +42,10 @@ public class AcceptMediaTypeRange implements Comparable<AcceptMediaTypeRange>, S
 	private Pair<String, String>[] acceptParameters;
 
 	/**
-	 * Returns the parsed accept string.
-	 * 
-	 * @param acceptMediaTypeString The string to parse.
-	 * @return The accept media type instance.
-	 */
-	public static AcceptMediaTypeRange valueOf(final String acceptMediaTypeString) {
-		return RFC2616MediaTypeParser.parseAcceptMediaTypeEntry(acceptMediaTypeString);
-	}
-
-	/**
 	 * Constructs an {@link AcceptMediaTypeRange}.
-	 * 
-	 * @param mediaTypeRange The media type range (cannot be null).
-	 * @param qualifyFactor The qualify factor (if null 1.0 is default).
+	 *
+	 * @param mediaTypeRange   The media type range (cannot be null).
+	 * @param qualifyFactor    The qualify factor (if null 1.0 is default).
 	 * @param acceptParameters The accept parameters if any.
 	 */
 	public AcceptMediaTypeRange(final MediaTypeRange mediaTypeRange, final Double qualifyFactor, final Pair<String, String>... acceptParameters) {
@@ -67,8 +57,19 @@ public class AcceptMediaTypeRange implements Comparable<AcceptMediaTypeRange>, S
 	}
 
 	/**
+	 * Returns the parsed accept string.
+	 *
+	 * @param acceptMediaTypeString The string to parse.
+	 *
+	 * @return The accept media type instance.
+	 */
+	public static AcceptMediaTypeRange valueOf(final String acceptMediaTypeString) {
+		return RFC2616MediaTypeParser.parseAcceptMediaTypeEntry(acceptMediaTypeString);
+	}
+
+	/**
 	 * Returns the media type range.
-	 * 
+	 *
 	 * @return the mediaTypeRange
 	 */
 	public MediaTypeRange getMediaTypeRange() {
@@ -77,7 +78,7 @@ public class AcceptMediaTypeRange implements Comparable<AcceptMediaTypeRange>, S
 
 	/**
 	 * Returns the qualify factor.
-	 * 
+	 *
 	 * @return the qualifyFactor
 	 */
 	public double getQualifyFactor() {
@@ -86,7 +87,7 @@ public class AcceptMediaTypeRange implements Comparable<AcceptMediaTypeRange>, S
 
 	/**
 	 * Returns the accept parameters.
-	 * 
+	 *
 	 * @return the acceptParameters
 	 */
 	public Pair<String, String>[] getAcceptParameters() {
@@ -95,8 +96,9 @@ public class AcceptMediaTypeRange implements Comparable<AcceptMediaTypeRange>, S
 
 	/**
 	 * Returns the value of the first occurrence of the parameter with the given name.
-	 * 
+	 *
 	 * @param name The name of the parameter.
+	 *
 	 * @return The value of the first occurrence of the named parameter.
 	 */
 	public final String getAcceptParameter(final String name) {
@@ -113,8 +115,9 @@ public class AcceptMediaTypeRange implements Comparable<AcceptMediaTypeRange>, S
 
 	/**
 	 * Returns true if the given media type is accepted by this.
-	 * 
+	 *
 	 * @param mediaType The media type to check.
+	 *
 	 * @return True if the media type is accepted.
 	 */
 	public final boolean isAccepted(final MediaType mediaType) {
@@ -122,26 +125,10 @@ public class AcceptMediaTypeRange implements Comparable<AcceptMediaTypeRange>, S
 	}
 
 	/**
-	 * Returns a string of this {@link AcceptMediaTypeRange}.
-	 * 
-	 * @return The string form.
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		StringBuilder temp = new StringBuilder().append(this.mediaTypeRange).append("; q=").append(this.qualifyFactor);
-		if (this.acceptParameters != null) {
-			for (Pair<String, String> acceptParam : this.acceptParameters) {
-				temp.append("; ").append(acceptParam.left()).append("=").append(acceptParam.right());
-			}
-		}
-		return temp.toString();
-	}
-
-	/**
 	 * Returns the hash code.
-	 * 
+	 *
 	 * @return The hash code.
+	 *
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -158,9 +145,11 @@ public class AcceptMediaTypeRange implements Comparable<AcceptMediaTypeRange>, S
 
 	/**
 	 * Checks for equality.
-	 * 
+	 *
 	 * @param obj The object to check.
+	 *
 	 * @return True if equal.
+	 *
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -181,11 +170,31 @@ public class AcceptMediaTypeRange implements Comparable<AcceptMediaTypeRange>, S
 	}
 
 	/**
+	 * Returns a string of this {@link AcceptMediaTypeRange}.
+	 *
+	 * @return The string form.
+	 *
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder temp = new StringBuilder().append(this.mediaTypeRange).append("; q=").append(this.qualifyFactor);
+		if (this.acceptParameters != null) {
+			for (Pair<String, String> acceptParam : this.acceptParameters) {
+				temp.append("; ").append(acceptParam.left()).append("=").append(acceptParam.right());
+			}
+		}
+		return temp.toString();
+	}
+
+	/**
 	 * Compares this {@link AcceptMediaTypeRange} with the supplied one to order based on importance.
-	 * 
+	 *
 	 * @param otherAcceptMediaType The one to compare with.
-	 * @return 0 if they are equal important, -1 if this is less important and 1 if this is more
-	 *         important than the supplied one.
+	 *
+	 * @return 0 if they are equal important, -1 if this is less important and 1 if this is more important than the
+	 * supplied one.
+	 *
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
 	public int compareTo(final AcceptMediaTypeRange otherAcceptMediaType) {

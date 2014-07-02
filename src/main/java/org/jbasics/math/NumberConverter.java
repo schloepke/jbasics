@@ -24,10 +24,10 @@
  */
 package org.jbasics.math;
 
+import org.jbasics.types.tuples.Pair;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
-
-import org.jbasics.types.tuples.Pair;
 
 public class NumberConverter {
 
@@ -98,5 +98,4 @@ public class NumberConverter {
 			return new Pair<String, Integer>(temp, 10);
 		}
 	}
-
 }

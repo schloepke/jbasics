@@ -32,19 +32,14 @@ import org.jbasics.pattern.coder.Decoder;
 import org.jbasics.pattern.factory.ParameterFactory;
 
 /**
- * A {@link ParameterFactory} which uses a {@link Decoder} to decode the given
- * content. This is a helpful class when there is a {@link Decoder} used as input where
- * a {@link ParameterFactory} is required.
- * <p>
- * The guarantee to be thread safe is only guaranteed if the decoder given is also thread safe. Same applies to be
- * immutable.
- * </p>
- * 
+ * A {@link ParameterFactory} which uses a {@link Decoder} to decode the given content. This is a helpful class when
+ * there is a {@link Decoder} used as input where a {@link ParameterFactory} is required. <p> The guarantee to be thread
+ * safe is only guaranteed if the decoder given is also thread safe. Same applies to be immutable. </p>
+ *
+ * @param <Decoded> The decoded type
+ * @param <Encoded> The encoded type
+ *
  * @author Stephan Schloepke
- * @param <Decoded>
- *            The decoded type
- * @param <Encoded>
- *            The encoded type
  * @since 1.0
  */
 @ThreadSafe(derived = true)
@@ -53,32 +48,12 @@ public final class DecodeFactory<Decoded, Encoded> implements ParameterFactory<D
 	private final Decoder<Decoded, Encoded> decoder;
 
 	/**
-	 * Create a {@link DecodeFactory} for the given {@link Decoder} with the same input and
-	 * output types.
-	 * 
-	 * @param <Enc>
-	 *            The encoded type
-	 * @param <Dec>
-	 *            The decoded type
-	 * @param decoder
-	 *            The decoder to use (MUST NOT be null).
-	 * @throws ContractViolationException
-	 *             If the decoder is null.
-	 * @return The {@link DecodeFactory} for the supplied {@link Decoder}.
-	 * @since 1.0
-	 */
-	public static <Enc, Dec> DecodeFactory<Enc, Dec> createForDecoder(final Decoder<Enc, Dec> decoder) {
-		return new DecodeFactory<Enc, Dec>(decoder);
-	}
-
-	/**
 	 * Create a decode {@link ParameterFactory} for the given {@link Decoder}.
-	 * 
-	 * @param decoder
-	 *            The {@link Decoder} to use to decode the parameter of the {@link ParameterFactory} (MUST NOT be
-	 *            null).
-	 * @throws ContractViolationException
-	 *             If the {@link Decoder} is null.
+	 *
+	 * @param decoder The {@link Decoder} to use to decode the parameter of the {@link ParameterFactory} (MUST NOT be
+	 *                null).
+	 *
+	 * @throws ContractViolationException If the {@link Decoder} is null.
 	 * @since 1.0
 	 */
 	public DecodeFactory(final Decoder<Decoded, Encoded> decoder) {
@@ -86,13 +61,28 @@ public final class DecodeFactory<Decoded, Encoded> implements ParameterFactory<D
 	}
 
 	/**
-	 * Decodes the given parameter (which is supposed to be encoded in the correct manner) and returns
-	 * the decoded content (Create a decoded version of the encoded input).
-	 * 
-	 * @param param
-	 *            The encoded content to decode with this factory (Parameter contract is defined by the decoder).
-	 * @throws ContractViolationException
-	 *             Possible thrown if the contract of the used {@link Decoder} is broken.
+	 * Create a {@link DecodeFactory} for the given {@link Decoder} with the same input and output types.
+	 *
+	 * @param <Enc>   The encoded type
+	 * @param <Dec>   The decoded type
+	 * @param decoder The decoder to use (MUST NOT be null).
+	 *
+	 * @return The {@link DecodeFactory} for the supplied {@link Decoder}.
+	 *
+	 * @throws ContractViolationException If the decoder is null.
+	 * @since 1.0
+	 */
+	public static <Enc, Dec> DecodeFactory<Enc, Dec> createForDecoder(final Decoder<Enc, Dec> decoder) {
+		return new DecodeFactory<Enc, Dec>(decoder);
+	}
+
+	/**
+	 * Decodes the given parameter (which is supposed to be encoded in the correct manner) and returns the decoded
+	 * content (Create a decoded version of the encoded input).
+	 *
+	 * @param param The encoded content to decode with this factory (Parameter contract is defined by the decoder).
+	 *
+	 * @throws ContractViolationException Possible thrown if the contract of the used {@link Decoder} is broken.
 	 * @see org.jbasics.pattern.factory.ParameterFactory#create(java.lang.Object)
 	 * @since 1.0
 	 */

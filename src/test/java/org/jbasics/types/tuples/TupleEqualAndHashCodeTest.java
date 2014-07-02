@@ -27,7 +27,7 @@ package org.jbasics.types.tuples;
 import org.junit.Assert;
 import org.junit.Test;
 
-@SuppressWarnings({ "nls", "boxing" })
+@SuppressWarnings({"nls", "boxing"})
 public class TupleEqualAndHashCodeTest {
 
 	@Test
@@ -65,5 +65,4 @@ public class TupleEqualAndHashCodeTest {
 		Assert.assertEquals("Equals method does not return equal", left, right);
 		Assert.assertEquals("Hashcode is inconsistent to equal", left.hashCode(), right.hashCode());
 	}
-
 }

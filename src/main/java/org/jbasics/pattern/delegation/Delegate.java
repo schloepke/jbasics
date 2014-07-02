@@ -25,24 +25,16 @@
 package org.jbasics.pattern.delegation;
 
 /**
- * Interface offering the access to an element inside a delegated wrapper.
- * <p>
- * The contract of usage does not put any constraints on how the delegate is
- * received / lazy created or must be set. It is depending on the implementation
- * if the delegate always returns a value different from null. It is also up to
- * the implementor if the instance is created on demand or if the instance can
- * change in the life of the delegate.
- * </p>
- * <p>
- * It is however important that the user of the delegate should avoid saving the
- * instance inside the delegate for later use. It is by contract not allowed to
- * safe the instance. The access should always go thru the delegate method.
- * </p>
+ * Interface offering the access to an element inside a delegated wrapper. <p> The contract of usage does not put any
+ * constraints on how the delegate is received / lazy created or must be set. It is depending on the implementation if
+ * the delegate always returns a value different from null. It is also up to the implementor if the instance is created
+ * on demand or if the instance can change in the life of the delegate. </p> <p> It is however important that the user
+ * of the delegate should avoid saving the instance inside the delegate for later use. It is by contract not allowed to
+ * safe the instance. The access should always go thru the delegate method. </p>
+ *
+ * @param <T> The type of the embedded instance which is delegated (can be null).
  *
  * @author Stephan Schloepke
- * @param <T>
- *            The type of the embedded instance which is delegated (can be
- *            null).
  * @since 1.0
  */
 public interface Delegate<T> {
@@ -50,9 +42,7 @@ public interface Delegate<T> {
 	/**
 	 * Returns the instance to which it is supposed to be delegated.
 	 *
-	 * @return The instance (can be null or lazy created. Even changing in every
-	 *         call).
+	 * @return The instance (can be null or lazy created. Even changing in every call).
 	 */
 	T delegate();
-
 }

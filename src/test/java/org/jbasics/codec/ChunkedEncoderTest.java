@@ -37,5 +37,4 @@ public class ChunkedEncoderTest {
 		Assert.assertEquals("ABCDE-ABCDE-ABCDE", encoder.encode("ABCDEABCDEABCDE").toString());
 		Assert.assertEquals("ABCDE-ABCDE-ABCDE-F", encoder.encode("ABCDEABCDEABCDEF").toString());
 	}
-
 }

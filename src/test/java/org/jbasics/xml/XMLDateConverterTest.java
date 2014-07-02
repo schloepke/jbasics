@@ -24,17 +24,15 @@
  */
 package org.jbasics.xml;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.logging.Level;
-
-import javax.xml.datatype.DatatypeConstants;
-import javax.xml.datatype.XMLGregorianCalendar;
-
+import org.jbasics.testing.Java14LoggingTestCase;
 import org.junit.Assert;
 import org.junit.Test;
 
-import org.jbasics.testing.Java14LoggingTestCase;
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.logging.Level;
 
 public class XMLDateConverterTest extends Java14LoggingTestCase {
 
@@ -46,7 +44,7 @@ public class XMLDateConverterTest extends Java14LoggingTestCase {
 		Date test = cal.getTime();
 		XMLGregorianCalendar result = XMLDateConverter.convert(test);
 		this.logger.log(Level.ALL, "XML Schema Type \"{0}\"", result.getXMLSchemaType());
-		this.logger.log(Level.ALL, "Date \"{0}\" => XML Date \"{1}\"", new Object[] { test, result });
+		this.logger.log(Level.ALL, "Date \"{0}\" => XML Date \"{1}\"", new Object[]{test, result});
 		Assert.assertEquals(DatatypeConstants.DATETIME, result.getXMLSchemaType());
 		Assert.assertEquals(2010, result.getYear());
 		Assert.assertEquals(8, result.getMonth());
@@ -65,7 +63,7 @@ public class XMLDateConverterTest extends Java14LoggingTestCase {
 		Date test = cal.getTime();
 		XMLGregorianCalendar temp = XMLDateConverter.convert(test);
 		Date result = XMLDateConverter.convert(temp);
-		this.logger.log(Level.ALL, "Date \"{0}\" => XML Date \"{1}\"", new Object[] { test, temp });
+		this.logger.log(Level.ALL, "Date \"{0}\" => XML Date \"{1}\"", new Object[]{test, temp});
 		Assert.assertEquals(test, result);
 		Assert.assertNotSame(test, result);
 		this.logger.exiting(XMLDateConverterTest.class.getSimpleName(), "testConvertDate");
@@ -92,5 +90,4 @@ public class XMLDateConverterTest extends Java14LoggingTestCase {
 		Assert.assertEquals(12, result.getMonth());
 		this.logger.exiting(XMLDateConverterTest.class.getSimpleName(), "testConvertYear");
 	}
-
 }

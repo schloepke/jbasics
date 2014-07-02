@@ -24,45 +24,24 @@
  */
 package org.jbasics.net.mediatype;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Arrays;
-import java.util.Collection;
-
 import org.jbasics.testing.Java14LoggingTestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import java.util.Arrays;
+import java.util.Collection;
+
+import static org.junit.Assert.*;
+
 /**
  * JUnit text for the {@link MediaType}.
- * 
+ *
  * @author Stephan Schloepke
  */
 @RunWith(Parameterized.class)
 public class MediaTypeTest extends Java14LoggingTestCase {
-
-	/**
-	 * JUnit test parameters.
-	 * 
-	 * @return The collection of test parameters.
-	 */
-	@SuppressWarnings("boxing")
-	@Parameters
-	public static Collection<?> parameters() {
-		return Arrays.asList(new Object[][] { // Test Cases
-		        { "text/html; charset=iso-8859-1", "text", "html", "charset", "iso-8859-1", false }, // Test case
-		                { "text/xml", "text", "xml", null, null, false }, // Test case
-		                { "application/xhtml+xml", "application", "xhtml+xml", null, null, false }, // Test case
-		                { "text /html; charset=iso-8859-1", "text", "html", "charset", "iso-8859-1", true }, // Test case
-		                { "text/ html; charset=iso-8859-1", "text", "html", "charset", "iso-8859-1", true }, // Test case
-		                { "application/rating+xml; version=1 3.56", "application", "rating+xml", "version", "1 3.56", true }, // Test case
-		                { "application/rating+xml; version=1/3.56", "application", "rating+xml", "version", "1/3.56", false }, // Test case
-		        });
-	}
 
 	private final String stringType;
 	private final String expectedType;
@@ -70,25 +49,43 @@ public class MediaTypeTest extends Java14LoggingTestCase {
 	private final String expectedParamKey;
 	private final String expectedParamValue;
 	private final boolean exceptionExpected;
-
 	/**
 	 * Creating the test with the given test parameters.
-	 * 
-	 * @param stringType The string to test.
-	 * @param type The expected type.
-	 * @param subType The expected sub type.
-	 * @param parameter The expected parameter name.
-	 * @param value The expected parameter value.
+	 *
+	 * @param stringType        The string to test.
+	 * @param type              The expected type.
+	 * @param subType           The expected sub type.
+	 * @param parameter         The expected parameter name.
+	 * @param value             The expected parameter value.
 	 * @param exceptionExpected True if an {@link IllegalArgumentException} is expected.
 	 */
 	public MediaTypeTest(final String stringType, final String type, final String subType, final String parameter, final String value,
-	        final boolean exceptionExpected) {
+						 final boolean exceptionExpected) {
 		this.stringType = stringType;
 		this.expectedType = type;
 		this.expectedSubType = subType;
 		this.expectedParamKey = parameter;
 		this.expectedParamValue = value;
 		this.exceptionExpected = exceptionExpected;
+	}
+
+	/**
+	 * JUnit test parameters.
+	 *
+	 * @return The collection of test parameters.
+	 */
+	@SuppressWarnings("boxing")
+	@Parameters
+	public static Collection<?> parameters() {
+		return Arrays.asList(new Object[][]{ // Test Cases
+				{"text/html; charset=iso-8859-1", "text", "html", "charset", "iso-8859-1", false}, // Test case
+				{"text/xml", "text", "xml", null, null, false}, // Test case
+				{"application/xhtml+xml", "application", "xhtml+xml", null, null, false}, // Test case
+				{"text /html; charset=iso-8859-1", "text", "html", "charset", "iso-8859-1", true}, // Test case
+				{"text/ html; charset=iso-8859-1", "text", "html", "charset", "iso-8859-1", true}, // Test case
+				{"application/rating+xml; version=1 3.56", "application", "rating+xml", "version", "1 3.56", true}, // Test case
+				{"application/rating+xml; version=1/3.56", "application", "rating+xml", "version", "1/3.56", false}, // Test case
+		});
 	}
 
 	/**
@@ -112,5 +109,4 @@ public class MediaTypeTest extends Java14LoggingTestCase {
 			this.logger.exiting(getClass().getName(), "testMediaTypeParsing");
 		}
 	}
-
 }

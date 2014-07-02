@@ -24,13 +24,12 @@
  */
 package org.jbasics.utilities;
 
-import java.net.URI;
-
 import junit.framework.Assert;
-
 import org.junit.Test;
 
-@SuppressWarnings({ "nls", "static-method" })
+import java.net.URI;
+
+@SuppressWarnings({"nls", "static-method"})
 public class NamespacePackageFactoryTest {
 
 	@Test
@@ -50,5 +49,4 @@ public class NamespacePackageFactoryTest {
 		Assert.assertEquals("com.step_h.extended",
 				NamespacePackageFactory.SHARED_INSTANCE.create(URI.create("http://step-h.com/extended.xls")));
 	}
-
 }

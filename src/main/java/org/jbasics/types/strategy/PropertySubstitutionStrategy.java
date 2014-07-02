@@ -24,11 +24,6 @@
  */
 package org.jbasics.types.strategy;
 
-import java.io.IOException;
-import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.delegation.Delegate;
@@ -38,6 +33,11 @@ import org.jbasics.pattern.strategy.ContextualSubstitutionStrategy;
 import org.jbasics.pattern.strategy.SubstitutionStrategy;
 import org.jbasics.types.delegates.UnmodifiableDelegate;
 import org.jbasics.types.resolver.SystemPropertyResolver;
+
+import java.io.IOException;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PropertySubstitutionStrategy implements SubstitutionStrategy<CharSequence, CharSequence>,
 		ContextualSubstitutionStrategy<CharSequence, CharSequence, Properties> {
@@ -64,22 +64,22 @@ public class PropertySubstitutionStrategy implements SubstitutionStrategy<CharSe
 		this(SystemPropertyResolver.SHARED_INSTANCE_DELEGATE);
 	}
 
-	public PropertySubstitutionStrategy(final Resolver<String, String> valueResolver) {
-		this(new UnmodifiableDelegate<Resolver<String, String>>(valueResolver));
-	}
-
 	public PropertySubstitutionStrategy(final Delegate<? extends Resolver<String, String>> valueResolver) {
 		this(valueResolver, PropertySubstitutionStrategy.STANDARD_SUBSTITUTION_PATTERN, PropertySubstitutionStrategy.STANDARD_KEY_GROUP_NUMBER,
 				PropertySubstitutionStrategy.STANDARD_DEFAULT_GROUP_NUMBER);
 	}
 
 	public PropertySubstitutionStrategy(final Delegate<? extends Resolver<String, String>> valueResolver, final Pattern pattern,
-			final int keyGroupNumber,
-			final int defaultGroupNumber) {
+										final int keyGroupNumber,
+										final int defaultGroupNumber) {
 		this.valueResolver = ContractCheck.mustNotBeNull(valueResolver, "valueResolver"); //$NON-NLS-1$
 		this.pattern = ContractCheck.mustNotBeNull(pattern, "pattern"); //$NON-NLS-1$
 		this.keyGroupNumber = ContractCheck.mustBeInRange(keyGroupNumber, 1, 10, "keyGroupNumber"); //$NON-NLS-1$
 		this.defaultGroupNumber = ContractCheck.mustBeInRange(defaultGroupNumber, 0, 10, "defaultGroupNumber"); //$NON-NLS-1$
+	}
+
+	public PropertySubstitutionStrategy(final Resolver<String, String> valueResolver) {
+		this(new UnmodifiableDelegate<Resolver<String, String>>(valueResolver));
 	}
 
 	public CharSequence substitute(final CharSequence input) {

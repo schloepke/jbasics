@@ -27,5 +27,4 @@ package org.jbasics.pattern.instance;
 public interface GroupedInstance<T> {
 
 	T group();
-
 }

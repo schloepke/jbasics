@@ -24,19 +24,19 @@
  */
 package org.jbasics.types.builders;
 
-import java.util.Collections;
-import java.util.Map;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.builder.Builder;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.types.factories.MapFactory;
 import org.jbasics.types.tuples.Pair;
 
+import java.util.Collections;
+import java.util.Map;
+
 public class MapBuilder<K, V> implements Builder<Map<K, V>> {
 	private final Factory<Map<K, V>> mapFactory;
-	private boolean mutable = false;
 	private final Map<K, V> map;
+	private boolean mutable = false;
 
 	public MapBuilder() {
 		this.mapFactory = MapFactory.unorderedMapFactory();
@@ -48,17 +48,12 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
 		this.map = this.mapFactory.newInstance();
 	}
 
-	public MapBuilder<K, V> put(final K key, final V value) {
-		this.map.put(key, value);
-		return this;
-	}
-
 	public MapBuilder<K, V> putConditional(final boolean condition, final K key, final V value) {
 		return condition ? put(key, value) : this;
 	}
 
-	public MapBuilder<K, V> put(final Pair<K, V> keyValuePair) {
-		this.map.put(keyValuePair.first(), keyValuePair.second());
+	public MapBuilder<K, V> put(final K key, final V value) {
+		this.map.put(key, value);
 		return this;
 	}
 
@@ -66,8 +61,8 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
 		return condition ? put(keyValuePair) : this;
 	}
 
-	public MapBuilder<K, V> putAll(final Map<? extends K, ? extends V> map) {
-		this.map.putAll(map);
+	public MapBuilder<K, V> put(final Pair<K, V> keyValuePair) {
+		this.map.put(keyValuePair.first(), keyValuePair.second());
 		return this;
 	}
 
@@ -75,15 +70,20 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
 		return condition ? putAll(map) : this;
 	}
 
-	public MapBuilder<K, V> putAll(final Pair<K, V>... keyValuePairs) {
-		for (final Pair<K, V> keyValuePair : keyValuePairs) {
-			this.map.put(keyValuePair.first(), keyValuePair.second());
-		}
+	public MapBuilder<K, V> putAll(final Map<? extends K, ? extends V> map) {
+		this.map.putAll(map);
 		return this;
 	}
 
 	public MapBuilder<K, V> putAllConditional(final boolean condition, final Pair<K, V>... keyValuePairs) {
 		return condition ? putAll(keyValuePairs) : this;
+	}
+
+	public MapBuilder<K, V> putAll(final Pair<K, V>... keyValuePairs) {
+		for (final Pair<K, V> keyValuePair : keyValuePairs) {
+			this.map.put(keyValuePair.first(), keyValuePair.second());
+		}
+		return this;
 	}
 
 	public MapBuilder<K, V> mutable() {
@@ -97,15 +97,14 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
 	}
 
 	@Override
+	public void reset() {
+		this.map.clear();
+	}
+
+	@Override
 	public Map<K, V> build() {
 		final Map<K, V> result = this.mapFactory.newInstance();
 		result.putAll(this.map);
 		return this.mutable ? result : Collections.unmodifiableMap(result);
 	}
-
-	@Override
-	public void reset() {
-		this.map.clear();
-	}
-
 }

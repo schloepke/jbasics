@@ -24,52 +24,49 @@
  */
 package org.jbasics.math.impl;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.util.Arrays;
-import java.util.Collection;
-
 import junit.framework.Assert;
-
+import org.jbasics.math.BigDecimalMathLibrary;
+import org.jbasics.math.NumberConverter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import org.jbasics.math.BigDecimalMathLibrary;
-import org.jbasics.math.NumberConverter;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.util.Arrays;
+import java.util.Collection;
 
 @RunWith(Parameterized.class)
 public class GammaFunctionIrationalNumberTest {
 
-	@Parameters
-	public static Collection<Object[]> testCases() {
-		return Arrays.asList( // Test case following
-				new Object[] { MathContext.DECIMAL128, 1, 1 }, // Test case
-				new Object[] { MathContext.DECIMAL64, 1, 1 }, // Test case
-				new Object[] { MathContext.DECIMAL128, 2, 1 }, // Test case
-				new Object[] { MathContext.DECIMAL64, 2, 1 }, // Test case
-				new Object[] { MathContext.DECIMAL128, 3, 2 }, // Test case
-				new Object[] { MathContext.DECIMAL64, 3, 2 }, // Test case
-				new Object[] { MathContext.DECIMAL128, 4, 6 }, // Test case
-				new Object[] { MathContext.DECIMAL64, 4, 6 }, // Test case
-				new Object[] { MathContext.DECIMAL128, 5, 6 * 4 }, // Test case
-				new Object[] { MathContext.DECIMAL64, 5, 6 * 4 }, // Test case
-				new Object[] { MathContext.DECIMAL128, 6, 6 * 4 * 5 }, // Test case
-				new Object[] { MathContext.DECIMAL64, 6, 6 * 4 * 5 }, // Test case
-				new Object[] { MathContext.DECIMAL128, 10, 6 * 4 * 5 * 6 * 7 * 8 * 9 }, // Test case
-				new Object[] { MathContext.DECIMAL64, 10, 6 * 4 * 5 * 6 * 7 * 8 * 9 } // Test case
-				);
-	}
-
 	private final BigDecimal x;
 	private final BigDecimal ref;
 	private final MathContext mc;
-
 	public GammaFunctionIrationalNumberTest(final MathContext mc, final Number x, final Number reference) {
 		this.mc = mc;
 		this.x = NumberConverter.toBigDecimal(x);
 		this.ref = NumberConverter.toBigDecimal(reference);
+	}
+
+	@Parameters
+	public static Collection<Object[]> testCases() {
+		return Arrays.asList( // Test case following
+				new Object[]{MathContext.DECIMAL128, 1, 1}, // Test case
+				new Object[]{MathContext.DECIMAL64, 1, 1}, // Test case
+				new Object[]{MathContext.DECIMAL128, 2, 1}, // Test case
+				new Object[]{MathContext.DECIMAL64, 2, 1}, // Test case
+				new Object[]{MathContext.DECIMAL128, 3, 2}, // Test case
+				new Object[]{MathContext.DECIMAL64, 3, 2}, // Test case
+				new Object[]{MathContext.DECIMAL128, 4, 6}, // Test case
+				new Object[]{MathContext.DECIMAL64, 4, 6}, // Test case
+				new Object[]{MathContext.DECIMAL128, 5, 6 * 4}, // Test case
+				new Object[]{MathContext.DECIMAL64, 5, 6 * 4}, // Test case
+				new Object[]{MathContext.DECIMAL128, 6, 6 * 4 * 5}, // Test case
+				new Object[]{MathContext.DECIMAL64, 6, 6 * 4 * 5}, // Test case
+				new Object[]{MathContext.DECIMAL128, 10, 6 * 4 * 5 * 6 * 7 * 8 * 9}, // Test case
+				new Object[]{MathContext.DECIMAL64, 10, 6 * 4 * 5 * 6 * 7 * 8 * 9} // Test case
+		);
 	}
 
 	@Test
@@ -86,5 +83,4 @@ public class GammaFunctionIrationalNumberTest {
 		System.out.println("exp(lnGamma(" + this.x + ")) = " + calculated + " (" + this.ref.subtract(calculated).abs() + ")");
 		Assert.assertEquals(this.ref.doubleValue(), calculated.doubleValue(), 1e-6);
 	}
-
 }

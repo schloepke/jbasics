@@ -26,7 +26,6 @@ package org.jbasics.math.obsolete;
 
 import java.util.Arrays;
 
-
 public class LittleEndianIntegerStore implements DataStorage<LittleEndianIntegerStore> {
 	private static final int[] ZERO = new int[0];
 	private static final byte[] ZERO_BYTES = new byte[0];
@@ -36,16 +35,16 @@ public class LittleEndianIntegerStore implements DataStorage<LittleEndianInteger
 		this(ZERO);
 	}
 
+	public LittleEndianIntegerStore(int[] magnitude) {
+		this.magnitude = magnitude;
+	}
+
 	public LittleEndianIntegerStore(int value) {
-		this(new int[] { value });
+		this(new int[]{value});
 	}
 
 	public LittleEndianIntegerStore(long value) {
-		this(new int[] { (int) (value & 0xffffffffL), (int) (value >>> 32) });
-	}
-
-	public LittleEndianIntegerStore(int[] magnitude) {
-		this.magnitude = magnitude;
+		this(new int[]{(int) (value & 0xffffffffL), (int) (value >>> 32)});
 	}
 
 	public LittleEndianIntegerStore(byte[] input) {
@@ -77,6 +76,65 @@ public class LittleEndianIntegerStore implements DataStorage<LittleEndianInteger
 
 	public LittleEndianIntegerStore subtract(LittleEndianIntegerStore summand) {
 		return add(summand, true);
+	}
+
+	public LittleEndianIntegerStore multiply(LittleEndianIntegerStore factor) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public byte[] toByteArray() {
+		if (this.magnitude == null || this.magnitude.length == 0) {
+			return ZERO_BYTES;
+		}
+		int bytes = (this.magnitude.length - 1) * 4;
+		int temp = this.magnitude[this.magnitude.length - 1];
+		if (temp < 0) {
+			bytes += 4;
+		} else if (temp >= 0x01000000) {
+			bytes += 4;
+		} else if (temp >= 0x00010000) {
+			bytes += 3;
+		} else if (temp >= 0x00000100) {
+			bytes += 2;
+		} else if (temp > 0) {
+			bytes += 1;
+		} else if (temp == 0 && bytes > 0 && this.magnitude[this.magnitude.length - 2] < 0) {
+			bytes += 1;
+		}
+		byte[] result = new byte[bytes];
+		for (int i = 0; i < this.magnitude.length; i++) {
+			int x = this.magnitude[i];
+			if (bytes > 3) {
+				result[--bytes] = (byte) ((x & 0x000000ff));
+				result[--bytes] = (byte) ((x & 0x0000ff00) >>> 8);
+				result[--bytes] = (byte) ((x & 0x00ff0000) >>> 16);
+				result[--bytes] = (byte) (x >>> 24);
+			} else if (bytes == 3) {
+				result[--bytes] = (byte) ((x & 0x000000ff));
+				result[--bytes] = (byte) ((x & 0x0000ff00) >>> 8);
+				result[--bytes] = (byte) ((x & 0x00ff0000) >>> 16);
+			} else if (bytes == 2) {
+				result[--bytes] = (byte) ((x & 0x000000ff));
+				result[--bytes] = (byte) ((x & 0x0000ff00) >>> 8);
+			} else if (bytes == 1) {
+				result[--bytes] = (byte) ((x & 0x000000ff));
+			}
+		}
+		return result;
+	}
+
+	public boolean isZero() {
+		return this.magnitude == null || this.magnitude.length == 0 || zeroscan(this.magnitude);
+	}
+
+	private boolean zeroscan(int[] in) {
+		for (int x : in) {
+			if (x != 0) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@SuppressWarnings("all" /* we want to re assign the parameter to lower stack usage and local varss */)
@@ -139,60 +197,6 @@ public class LittleEndianIntegerStore implements DataStorage<LittleEndianInteger
 		return new LittleEndianIntegerStore(result);
 	}
 
-	public byte[] toByteArray() {
-		if (this.magnitude == null || this.magnitude.length == 0) {
-			return ZERO_BYTES;
-		}
-		int bytes = (this.magnitude.length - 1) * 4;
-		int temp = this.magnitude[this.magnitude.length - 1];
-		if (temp < 0) {
-			bytes += 4;
-		} else if (temp >= 0x01000000) {
-			bytes += 4;
-		} else if (temp >= 0x00010000) {
-			bytes += 3;
-		} else if (temp >= 0x00000100) {
-			bytes += 2;
-		} else if (temp > 0) {
-			bytes += 1;
-		} else if (temp == 0 && bytes > 0 && this.magnitude[this.magnitude.length - 2] < 0) {
-			bytes += 1;
-		}
-		byte[] result = new byte[bytes];
-		for (int i = 0; i < this.magnitude.length; i++) {
-			int x = this.magnitude[i];
-			if (bytes > 3) {
-				result[--bytes] = (byte) ((x & 0x000000ff));
-				result[--bytes] = (byte) ((x & 0x0000ff00) >>> 8);
-				result[--bytes] = (byte) ((x & 0x00ff0000) >>> 16);
-				result[--bytes] = (byte) (x >>> 24);
-			} else if (bytes == 3) {
-				result[--bytes] = (byte) ((x & 0x000000ff));
-				result[--bytes] = (byte) ((x & 0x0000ff00) >>> 8);
-				result[--bytes] = (byte) ((x & 0x00ff0000) >>> 16);
-			} else if (bytes == 2) {
-				result[--bytes] = (byte) ((x & 0x000000ff));
-				result[--bytes] = (byte) ((x & 0x0000ff00) >>> 8);
-			} else if (bytes == 1) {
-				result[--bytes] = (byte) ((x & 0x000000ff));
-			}
-		}
-		return result;
-	}
-
-	public boolean isZero() {
-		return this.magnitude == null || this.magnitude.length == 0 || zeroscan(this.magnitude);
-	}
-
-	private boolean zeroscan(int[] in) {
-		for (int x : in) {
-			if (x != 0) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 	@Override
 	public int hashCode() {
 		return 31 + Arrays.hashCode(this.magnitude);
@@ -200,10 +204,5 @@ public class LittleEndianIntegerStore implements DataStorage<LittleEndianInteger
 
 	public void multipy(LittleEndianIntegerStore factor) {
 		// TODO:
-	}
-
-	public LittleEndianIntegerStore multiply(LittleEndianIntegerStore factor) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

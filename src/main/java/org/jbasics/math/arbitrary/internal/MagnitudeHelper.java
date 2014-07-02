@@ -58,5 +58,4 @@ public class MagnitudeHelper {
 		}
 		return result;
 	}
-
 }

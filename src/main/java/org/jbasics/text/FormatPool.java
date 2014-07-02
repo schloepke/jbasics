@@ -24,15 +24,15 @@
  */
 package org.jbasics.text;
 
-import java.text.FieldPosition;
-import java.text.Format;
-import java.text.ParsePosition;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.pattern.pooling.Pool;
 import org.jbasics.types.pools.LazyQueuePool;
 import org.jbasics.types.pools.PooledDelegate;
+
+import java.text.FieldPosition;
+import java.text.Format;
+import java.text.ParsePosition;
 
 public class FormatPool<T extends Format> extends Format implements Pool<T> {
 	private static final long serialVersionUID = 1L;
@@ -73,5 +73,4 @@ public class FormatPool<T extends Format> extends Format implements Pool<T> {
 	public PooledDelegate<T> createPooledDelegate() {
 		return new PooledDelegate<T>(this.formatPool);
 	}
-
 }

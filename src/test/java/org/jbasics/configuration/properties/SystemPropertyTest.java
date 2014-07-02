@@ -25,17 +25,12 @@
 package org.jbasics.configuration.properties;
 
 import junit.framework.Assert;
-
 import org.junit.Test;
 
 @SuppressWarnings("nls")
 public class SystemPropertyTest {
 
 	private static final String JBASICS_TEST_PROPERTY = "jbasics.test";
-
-	enum TestEnum {
-		ONE, TWO
-	}
 
 	@Test
 	public void testEnumProperty() {
@@ -47,5 +42,9 @@ public class SystemPropertyTest {
 		Assert.assertEquals(TestEnum.TWO, temp.value());
 		Assert.assertFalse(temp.isPropertyDefault());
 		Assert.assertTrue(temp.isPropertySet());
+	}
+
+	enum TestEnum {
+		ONE, TWO
 	}
 }

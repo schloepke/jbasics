@@ -27,5 +27,4 @@ package org.jbasics.pattern.factory;
 public interface Factory<T> {
 
 	T newInstance();
-
 }

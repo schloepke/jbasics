@@ -24,15 +24,13 @@
  */
 package org.jbasics.codec;
 
-import java.nio.charset.Charset;
-
 import junit.framework.Assert;
-
-import org.junit.Test;
-
 import org.jbasics.pattern.coder.Codec;
 import org.jbasics.pattern.coder.Decoder;
 import org.jbasics.pattern.coder.Encoder;
+import org.junit.Test;
+
+import java.nio.charset.Charset;
 
 @SuppressWarnings("nls")
 public class XOrCryptCodecTest {

@@ -24,16 +24,14 @@
  */
 package org.jbasics.checker;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import org.jbasics.localize.LocalizedMessageAccessor;
+import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-import org.jbasics.localize.LocalizedMessageAccessor;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class ContractCheckTest {
 
@@ -93,7 +91,7 @@ public class ContractCheckTest {
 		} catch (ContractViolationException e) {
 			// This is the correct behavior
 		}
-		String[] temp = new String[] { "1", "2", "3" };
+		String[] temp = new String[]{"1", "2", "3"};
 		assertArrayEquals(temp, ContractCheck.mustNotBeNullOrEmpty(temp, "test"));
 	}
 
@@ -123,7 +121,7 @@ public class ContractCheckTest {
 		} catch (ContractViolationException e) {
 			// This is the correct behavior
 		}
-		byte[] temp = new byte[] { 1, 2, 3 };
+		byte[] temp = new byte[]{1, 2, 3};
 		assertArrayEquals(temp, ContractCheck.mustNotBeNullOrEmpty(temp, "test"));
 	}
 
@@ -200,5 +198,4 @@ public class ContractCheckTest {
 		temp = "abc";
 		assertEquals(temp, ContractCheck.mustMatchPattern(temp, pattern, "test"));
 	}
-
 }

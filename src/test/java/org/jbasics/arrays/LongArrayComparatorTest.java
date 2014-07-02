@@ -77,9 +77,9 @@ public class LongArrayComparatorTest {
 		Assert.assertEquals(-1, LongArrayComparator.compareArrays(this.lessThanBase, this.base));
 		Assert.assertEquals(-1, LongArrayComparator.compareArrays(ArrayConstants.ZERO_LENGTH_LONG_ARRAY, this.base));
 		// single element compare
-		Assert.assertEquals(0, LongArrayComparator.compareArrays(new long[] { 10 }, new long[] { 10 }));
-		Assert.assertEquals(1, LongArrayComparator.compareArrays(new long[] { 10 }, new long[] { 8 }));
-		Assert.assertEquals(-1, LongArrayComparator.compareArrays(new long[] { 8 }, new long[] { 10 }));
+		Assert.assertEquals(0, LongArrayComparator.compareArrays(new long[]{10}, new long[]{10}));
+		Assert.assertEquals(1, LongArrayComparator.compareArrays(new long[]{10}, new long[]{8}));
+		Assert.assertEquals(-1, LongArrayComparator.compareArrays(new long[]{8}, new long[]{10}));
 	}
 
 	@Test

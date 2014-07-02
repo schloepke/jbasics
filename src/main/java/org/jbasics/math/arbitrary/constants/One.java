@@ -48,7 +48,7 @@ public class One implements ArbitraryNumber {
 		return 1;
 	}
 
-	public boolean isZero() {
+	public boolean isNegativ() {
 		return false;
 	}
 
@@ -56,7 +56,7 @@ public class One implements ArbitraryNumber {
 		return true;
 	}
 
-	public boolean isNegativ() {
+	public boolean isZero() {
 		return false;
 	}
 
@@ -92,15 +92,7 @@ public class One implements ArbitraryNumber {
 		return summand.increment();
 	}
 
-	public ArbitraryNumber add(ArbitraryRational summand) {
-		return summand.increment();
-	}
-
 	public ArbitraryNumber subtract(ArbitraryInteger subtrahend) {
-		return subtrahend.negate().increment();
-	}
-
-	public ArbitraryNumber subtract(ArbitraryRational subtrahend) {
 		return subtrahend.negate().increment();
 	}
 
@@ -108,16 +100,23 @@ public class One implements ArbitraryNumber {
 		return factor;
 	}
 
-	public ArbitraryNumber multiply(ArbitraryRational factor) {
-		return factor;
-	}
-
 	public ArbitraryNumber divide(ArbitraryInteger divisor) {
 		return divisor.reciprocal();
+	}
+
+	public ArbitraryNumber add(ArbitraryRational summand) {
+		return summand.increment();
+	}
+
+	public ArbitraryNumber subtract(ArbitraryRational subtrahend) {
+		return subtrahend.negate().increment();
+	}
+
+	public ArbitraryNumber multiply(ArbitraryRational factor) {
+		return factor;
 	}
 
 	public ArbitraryNumber divide(ArbitraryRational divisor) {
 		return divisor.reciprocal();
 	}
-
 }

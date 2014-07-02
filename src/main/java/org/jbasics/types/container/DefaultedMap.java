@@ -24,10 +24,6 @@
  */
 package org.jbasics.types.container;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.pattern.factory.ParameterFactory;
@@ -35,15 +31,15 @@ import org.jbasics.pattern.strategy.SubstitutionStrategy;
 import org.jbasics.pattern.transpose.Transposer;
 import org.jbasics.types.delegates.UnmodifiableDelegate;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+
 public class DefaultedMap<K, V> implements Map<K, V>, Delegate<Map<K, V>>, SubstitutionStrategy<V, K>, ParameterFactory<V, K>, Transposer<V, K> {
 	private final Delegate<Map<K, V>> mapDelegate;
 	private final V defaultValue;
 
 	public DefaultedMap(final Map<K, V> delegatedMap) {
-		this(delegatedMap, null);
-	}
-
-	public DefaultedMap(final Delegate<Map<K, V>> delegatedMap) {
 		this(delegatedMap, null);
 	}
 
@@ -54,6 +50,10 @@ public class DefaultedMap<K, V> implements Map<K, V>, Delegate<Map<K, V>>, Subst
 	public DefaultedMap(final Delegate<Map<K, V>> delegatedMap, final V defaultValue) {
 		this.mapDelegate = ContractCheck.mustNotBeNull(delegatedMap, "delegatedMap"); //$NON-NLS-1$
 		this.defaultValue = defaultValue;
+	}
+
+	public DefaultedMap(final Delegate<Map<K, V>> delegatedMap) {
+		this(delegatedMap, null);
 	}
 
 	public int size() {
@@ -123,5 +123,4 @@ public class DefaultedMap<K, V> implements Map<K, V>, Delegate<Map<K, V>>, Subst
 	public V transpose(final K input) {
 		return get(input);
 	}
-
 }

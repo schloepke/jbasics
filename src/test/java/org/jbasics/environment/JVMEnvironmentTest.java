@@ -24,11 +24,10 @@
  */
 package org.jbasics.environment;
 
-import java.util.Collection;
-
+import org.jbasics.enviroment.JVMEnviroment;
 import org.junit.Test;
 
-import org.jbasics.enviroment.JVMEnviroment;
+import java.util.Collection;
 
 public class JVMEnvironmentTest {
 
@@ -45,5 +44,4 @@ public class JVMEnvironmentTest {
 			System.out.println(element);
 		}
 	}
-
 }

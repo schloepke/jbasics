@@ -24,14 +24,14 @@
  */
 package org.jbasics.types.pools;
 
-import java.util.LinkedList;
-import java.util.Queue;
-
 import org.jbasics.pattern.delegation.MutableDelegate;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.pattern.pooling.Pool;
 import org.jbasics.types.delegates.LazySoftReferenceDelegate;
 import org.jbasics.types.factories.QueueFactory;
+
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class LazyQueuePool<T> implements Pool<T> {
 	private static final int DEFAULT_MAX_POOL_SIZE = 5;
@@ -41,14 +41,6 @@ public class LazyQueuePool<T> implements Pool<T> {
 
 	public LazyQueuePool(final Factory<T> factory) {
 		this(factory, new QueueFactory<T>());
-	}
-
-	public LazyQueuePool(final int maxPoolSize, final Factory<T> factory) {
-		this(factory, new Factory<Queue<T>>() {
-			public Queue<T> newInstance() {
-				return new LinkedList<T>();
-			}
-		});
 	}
 
 	public LazyQueuePool(final Factory<T> factory, final Factory<? extends Queue<T>> queueFactory) {
@@ -63,6 +55,14 @@ public class LazyQueuePool<T> implements Pool<T> {
 		this.factory = factory;
 		this.pool = new LazySoftReferenceDelegate<Queue<T>>((Factory<Queue<T>>) queueFactory);
 		this.maxPoolSize = maxPoolSize;
+	}
+
+	public LazyQueuePool(final int maxPoolSize, final Factory<T> factory) {
+		this(factory, new Factory<Queue<T>>() {
+			public Queue<T> newInstance() {
+				return new LinkedList<T>();
+			}
+		});
 	}
 
 	public LazyQueuePool(final Factory<T> factory, final MutableDelegate<Queue<T>> queueDelegate) {
@@ -101,5 +101,4 @@ public class LazyQueuePool<T> implements Pool<T> {
 			return false;
 		}
 	}
-
 }

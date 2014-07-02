@@ -24,13 +24,21 @@
  */
 package org.jbasics.net;
 
-import java.net.URI;
-
+import org.jbasics.pattern.transpose.Transposer;
 import org.junit.Test;
 
-import org.jbasics.pattern.transpose.Transposer;
+import java.net.URI;
 
 public class URITransposerTest {
+
+	@Test
+	public void test() {
+		URITransposer.SHARED_INSTANCE.setSchemeTransposer("urn", new URNTransposer()); //$NON-NLS-1$
+		URI uri = URI.create("http://example.com/somebase/somesubse/nag/nag/0123");
+		System.out.println(uri);
+		URI result = URITransposer.SHARED_INSTANCE.exchangeBaseURI(uri, URI.create("urn:jbasics:testOne:"), URI.create("urn:jbasics:testTwo:"));
+		System.out.println(result);
+	}
 
 	public class URNTransposer implements Transposer<URI, URI> {
 
@@ -45,14 +53,4 @@ public class URITransposerTest {
 			}
 		}
 	}
-
-	@Test
-	public void test() {
-		URITransposer.SHARED_INSTANCE.setSchemeTransposer("urn", new URNTransposer()); //$NON-NLS-1$
-		URI uri = URI.create("http://example.com/somebase/somesubse/nag/nag/0123");
-		System.out.println(uri);
-		URI result = URITransposer.SHARED_INSTANCE.exchangeBaseURI(uri, URI.create("urn:jbasics:testOne:"), URI.create("urn:jbasics:testTwo:"));
-		System.out.println(result);
-	}
-
 }

@@ -24,48 +24,24 @@
  */
 package org.jbasics.types.factories;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.RandomAccess;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
 import org.jbasics.pattern.delegation.MutableDelegate;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.types.delegates.LazyDelegate;
 
+import java.util.*;
+
 /**
- * This is the main place where all JBasics types create their required collection instances.
- * <p>
- * In order to replace the collections used by JBasics you can set the Delegate o the Factory. This
- * should normally happen before the CollectionsFactory is used. However there is the guarantee that
- * JBasics never casts a returned value to anything other than the interface it returns.
- * </p>
- * <p>
- * Using this is especially useful when you need to replace a list instance by a test instance or
- * any sort of proxy in order to test the lazy creation of instances somewhere in the framework.
- * </p>
- * <p>
- * The contract defined that any new...Instance method called needs to return a newly created empty
- * instance of the given type. In certain cases another implicit rule applies as well like when
- * creating a {@link RandomAccess} list it is required that the list has constant time accessing
- * elements randomly. For more information see the explicit method.
- * </p>
- * <p>
- * If at any given time it is required to switch back from a changed factory you can remove the
- * delegate in order to let the next usage trigger the lazy creation of the default factory.
- * </p>
- * 
+ * This is the main place where all JBasics types create their required collection instances. <p> In order to replace
+ * the collections used by JBasics you can set the Delegate o the Factory. This should normally happen before the
+ * CollectionsFactory is used. However there is the guarantee that JBasics never casts a returned value to anything
+ * other than the interface it returns. </p> <p> Using this is especially useful when you need to replace a list
+ * instance by a test instance or any sort of proxy in order to test the lazy creation of instances somewhere in the
+ * framework. </p> <p> The contract defined that any new...Instance method called needs to return a newly created empty
+ * instance of the given type. In certain cases another implicit rule applies as well like when creating a {@link
+ * RandomAccess} list it is required that the list has constant time accessing elements randomly. For more information
+ * see the explicit method. </p> <p> If at any given time it is required to switch back from a changed factory you can
+ * remove the delegate in order to let the next usage trigger the lazy creation of the default factory. </p>
+ *
  * @author Stephan Schloepke
  * @since 1.0.0
  */
@@ -81,12 +57,12 @@ public class CollectionsFactory {
 		return DELEGATE.delegate();
 	}
 
-	public <E> List<E> newListInstance() {
-		return new ArrayList<E>();
-	}
-
 	public <E> List<E> newRandomAccessListInstance() {
 		return newListInstance();
+	}
+
+	public <E> List<E> newListInstance() {
+		return new ArrayList<E>();
 	}
 
 	public <E> List<E> newSequentialAccessListInstance() {
@@ -120,5 +96,4 @@ public class CollectionsFactory {
 	public <K, V> SortedMap<K, V> newSortedMapInstance() {
 		return new TreeMap<K, V>();
 	}
-
 }

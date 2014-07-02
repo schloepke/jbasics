@@ -38,27 +38,26 @@ public class SubstitutionDelegate<OutputType, InputType> implements Delegate<Out
 		this(new UnmodifiableDelegate<InputType>(input), new UnmodifiableDelegate<SubstitutionStrategy<OutputType, InputType>>(strategy));
 	}
 
+	public SubstitutionDelegate(final Delegate<InputType> inputDelegate,
+								final Delegate<? extends SubstitutionStrategy<OutputType, InputType>> strategyDelegate) {
+		this.inputDelegate = ContractCheck.mustNotBeNull(inputDelegate, "inputDelegate"); //$NON-NLS-1$
+		this.strategyDelegate = ContractCheck.mustNotBeNull(strategyDelegate, "strategyDelegate"); //$NON-NLS-1$
+	}
+
 	public SubstitutionDelegate(final InputType input,
-			final Singleton<? extends SubstitutionStrategy<OutputType, InputType>> strategySingleton) {
+								final Singleton<? extends SubstitutionStrategy<OutputType, InputType>> strategySingleton) {
 		this(new UnmodifiableDelegate<InputType>(input), new SingletonDelegate<SubstitutionStrategy<OutputType, InputType>>(
 				ContractCheck.mustNotBeNull(strategySingleton, "strategySingleton"))); //$NON-NLS-1$
 	}
 
 	public SubstitutionDelegate(final Delegate<InputType> inputDelegate,
-			final Singleton<? extends SubstitutionStrategy<OutputType, InputType>> strategySingleton) {
+								final Singleton<? extends SubstitutionStrategy<OutputType, InputType>> strategySingleton) {
 		this(inputDelegate, new SingletonDelegate<SubstitutionStrategy<OutputType, InputType>>(ContractCheck.mustNotBeNull(strategySingleton,
 				"strategySingleton"))); //$NON-NLS-1$
-	}
-
-	public SubstitutionDelegate(final Delegate<InputType> inputDelegate,
-			final Delegate<? extends SubstitutionStrategy<OutputType, InputType>> strategyDelegate) {
-		this.inputDelegate = ContractCheck.mustNotBeNull(inputDelegate, "inputDelegate"); //$NON-NLS-1$
-		this.strategyDelegate = ContractCheck.mustNotBeNull(strategyDelegate, "strategyDelegate"); //$NON-NLS-1$
 	}
 
 	public OutputType delegate() {
 		InputType temp = this.inputDelegate.delegate();
 		return temp == null ? null : this.strategyDelegate.delegate().substitute(temp);
 	}
-
 }

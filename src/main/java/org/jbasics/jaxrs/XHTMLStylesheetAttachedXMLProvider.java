@@ -24,17 +24,8 @@
  */
 package org.jbasics.jaxrs;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.nio.charset.Charset;
-import java.util.Map;
-import java.util.WeakHashMap;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
@@ -57,9 +48,17 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.nio.charset.Charset;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * @author Stephan Schlöpke, Christopher Stolle
@@ -76,12 +75,6 @@ public class XHTMLStylesheetAttachedXMLProvider implements MessageBodyWriter<XHT
 	}
 
 	@Override
-	public long getSize(final XHTMLStylesheetAttachedJAXB<?> t, final Class<?> type, final Type genericType, final Annotation[] annotations,
-			final MediaType mediaType) {
-		return -1;
-	}
-
-	@Override
 	public boolean isWriteable(final Class<?> type, final Type genericType, final Annotation[] annotations, final MediaType mediaType) {
 		return XHTMLStylesheetAttachedJAXB.class.isAssignableFrom(type) && (MediaType.APPLICATION_XHTML_XML_TYPE.equals(mediaType) ||
 				MediaType.APPLICATION_XML_TYPE.equals(mediaType) ||
@@ -91,9 +84,15 @@ public class XHTMLStylesheetAttachedXMLProvider implements MessageBodyWriter<XHT
 	}
 
 	@Override
+	public long getSize(final XHTMLStylesheetAttachedJAXB<?> t, final Class<?> type, final Type genericType, final Annotation[] annotations,
+						final MediaType mediaType) {
+		return -1;
+	}
+
+	@Override
 	public void writeTo(final XHTMLStylesheetAttachedJAXB<?> t, final Class<?> type, final Type genericType, final Annotation[] annotations,
-			final MediaType mediaType,
-			final MultivaluedMap<String, Object> httpHeaders, final OutputStream entityStream) throws IOException, WebApplicationException {
+						final MediaType mediaType,
+						final MultivaluedMap<String, Object> httpHeaders, final OutputStream entityStream) throws IOException, WebApplicationException {
 		try {
 			final Marshaller marshaller = getMarshaller(t.getEntityType(), mediaType);
 			Charset charset = XHTMLStylesheetAttachedXMLProvider.UTF8;
@@ -112,6 +111,33 @@ public class XHTMLStylesheetAttachedXMLProvider implements MessageBodyWriter<XHT
 		} catch (final JAXBException e) {
 			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	protected final Marshaller getMarshaller(final Class<?> type, final MediaType mt) throws JAXBException {
+		final ContextResolver<Marshaller> marshallerResolver = this.providers.getContextResolver(Marshaller.class, mt);
+		Marshaller marshaller = null;
+		if (marshallerResolver != null) {
+			marshaller = marshallerResolver.getContext(type);
+		}
+		if (marshaller == null) {
+			JAXBContext context = null;
+			final ContextResolver<JAXBContext> cr = this.providers.getContextResolver(JAXBContext.class, mt);
+			if (cr != null) {
+				context = cr.getContext(type);
+			}
+			if (context == null) {
+				synchronized (XHTMLStylesheetAttachedXMLProvider.JAXB_CONTEXT_CACHE) {
+					context = XHTMLStylesheetAttachedXMLProvider.JAXB_CONTEXT_CACHE.get(type);
+					if (context == null) {
+						context = JAXBContext.newInstance(type);
+						XHTMLStylesheetAttachedXMLProvider.JAXB_CONTEXT_CACHE.put(type, context);
+					}
+				}
+			}
+			marshaller = context.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		}
+		return marshaller;
 	}
 
 	private static void writeToXhtml(final XHTMLStylesheetAttachedJAXB<?> t, final Charset charset, final Marshaller marshaller, final Writer w)
@@ -173,32 +199,4 @@ public class XHTMLStylesheetAttachedXMLProvider implements MessageBodyWriter<XHT
 			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
 		}
 	}
-
-	protected final Marshaller getMarshaller(final Class<?> type, final MediaType mt) throws JAXBException {
-		final ContextResolver<Marshaller> marshallerResolver = this.providers.getContextResolver(Marshaller.class, mt);
-		Marshaller marshaller = null;
-		if (marshallerResolver != null) {
-			marshaller = marshallerResolver.getContext(type);
-		}
-		if (marshaller == null) {
-			JAXBContext context = null;
-			final ContextResolver<JAXBContext> cr = this.providers.getContextResolver(JAXBContext.class, mt);
-			if (cr != null) {
-				context = cr.getContext(type);
-			}
-			if (context == null) {
-				synchronized (XHTMLStylesheetAttachedXMLProvider.JAXB_CONTEXT_CACHE) {
-					context = XHTMLStylesheetAttachedXMLProvider.JAXB_CONTEXT_CACHE.get(type);
-					if (context == null) {
-						context = JAXBContext.newInstance(type);
-						XHTMLStylesheetAttachedXMLProvider.JAXB_CONTEXT_CACHE.put(type, context);
-					}
-				}
-			}
-			marshaller = context.createMarshaller();
-			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-		}
-		return marshaller;
-	}
-
 }

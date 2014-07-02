@@ -24,6 +24,15 @@
  */
 package org.jbasics.configuration.properties;
 
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.pattern.factory.ParameterFactory;
+import org.jbasics.pattern.strategy.SubstitutionStrategy;
+import org.jbasics.text.StringUtilities;
+import org.jbasics.types.tuples.Pair;
+import org.jbasics.utilities.DataUtilities;
+
+import javax.xml.datatype.Duration;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
@@ -32,41 +41,36 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.xml.datatype.Duration;
-import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.pattern.factory.ParameterFactory;
-import org.jbasics.pattern.strategy.SubstitutionStrategy;
-import org.jbasics.text.StringUtilities;
-import org.jbasics.types.tuples.Pair;
-import org.jbasics.utilities.DataUtilities;
-
 /**
- * The {@link SystemPropertiesBundle} is a specialized form of the {@link Properties} with the extension that
- * every property set will be overwritten by a corresponding system property if exist.
- * <p>
- * So whenver one uses the {@link #getProperty(String)} or {@link #getProperty(String, String)} method the result is
- * first checked with the system property and if there is no value set the property of this {@link Properties} is
- * returned (or the corresponding default).
- * </p>
- * <p>
- * It is the inverse form of new {@link Properties}({@link System#getProperties()}). And in case that one wants to
- * overwrite the default and the system property it is possible to use this {@link SystemPropertiesBundle} as default
- * properties for another {@link Properties} instance.
- * </p>
- * 
+ * The {@link SystemPropertiesBundle} is a specialized form of the {@link Properties} with the extension that every
+ * property set will be overwritten by a corresponding system property if exist. <p> So whenver one uses the {@link
+ * #getProperty(String)} or {@link #getProperty(String, String)} method the result is first checked with the system
+ * property and if there is no value set the property of this {@link Properties} is returned (or the corresponding
+ * default). </p> <p> It is the inverse form of new {@link Properties}({@link System#getProperties()}). And in case that
+ * one wants to overwrite the default and the system property it is possible to use this {@link SystemPropertiesBundle}
+ * as default properties for another {@link Properties} instance. </p>
+ *
  * @author Stephan Schloepke
  * @since 1.0.0
  */
 public class SystemPropertiesBundle extends Properties {
 	private static final long serialVersionUID = 1L;
 	private final String prefix;
+	private final SubstitutionStrategy<String, String> substitutionStrategy;
 	private transient ConcurrentMap<Pair<String, Class<?>>, SystemProperty<?>> sharedTypedProperties;
-    private final SubstitutionStrategy<String, String> substitutionStrategy;
 
 	public SystemPropertiesBundle() {
 		this(null, null);
+	}
+
+	public SystemPropertiesBundle(final String prefix, final Properties defaults) {
+		this(prefix, defaults, null);
+	}
+
+	public SystemPropertiesBundle(final String prefix, final Properties defaults, SubstitutionStrategy<String, String> substitutionStrategy) {
+		super(defaults);
+		this.prefix = prefix;
+		this.substitutionStrategy = DataUtilities.coalesce(substitutionStrategy, SubstitutionStrategy.STRING_PASS_THRU);
 	}
 
 	public SystemPropertiesBundle(final Properties defaults) {
@@ -77,17 +81,7 @@ public class SystemPropertiesBundle extends Properties {
 		this(prefix, null);
 	}
 
-	public SystemPropertiesBundle(final String prefix, final Properties defaults) {
-		this(prefix, defaults, null);
-	}
-
-    public SystemPropertiesBundle(final String prefix, final Properties defaults, SubstitutionStrategy<String, String> substitutionStrategy) {
-        super(defaults);
-        this.prefix = prefix;
-        this.substitutionStrategy = DataUtilities.coalesce(substitutionStrategy, SubstitutionStrategy.STRING_PASS_THRU);
-    }
-
-    @Override
+	@Override
 	public String getProperty(final String key) {
 		String result = null;
 		if (this.prefix != null) {
@@ -100,6 +94,37 @@ public class SystemPropertiesBundle extends Properties {
 
 	public SystemProperty<String> getStringProperty(final String name) {
 		return getTypedProperty(name, String.class, SystemProperty.STRING_PASS_THRU);
+	}
+
+	public final <T> SystemProperty<T> getTypedProperty(final String name, final Class<T> type, final ParameterFactory<T, String> typeFactory) {
+		final Pair<String, Class<?>> key = new Pair<String, Class<?>>(ContractCheck.mustNotBeNullOrTrimmedEmpty(name, "name"), ContractCheck.mustNotBeNull( //$NON-NLS-1$
+				type, "type")); //$NON-NLS-1$
+		SystemProperty<T> result = getSharedTypedProperty(key);
+		if (result == null) {
+			result = addSharedTypedProperty(key, new SystemProperty<T>(name, typeFactory, ContractCheck.mustNotBeNull(typeFactory, "typeFactory") //$NON-NLS-1$
+					.create(substitutionStrategy.substitute(super.getProperty(name))), this.substitutionStrategy));
+		}
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T> SystemProperty<T> getSharedTypedProperty(final Pair<String, Class<?>> key) {
+		if (this.sharedTypedProperties != null) {
+			return (SystemProperty<T>) this.sharedTypedProperties.get(key);
+		} else {
+			return null;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T> SystemProperty<T> addSharedTypedProperty(final Pair<String, Class<?>> key, final SystemProperty<T> value) {
+		if (this.sharedTypedProperties == null) {
+			// We do not care about creation since worst case is we create twice and have one value not cached. Since it
+			// is a cache and not a singleton collection we are thread safe here
+			this.sharedTypedProperties = new ConcurrentHashMap<Pair<String, Class<?>>, SystemProperty<?>>();
+		}
+		final SystemProperty<T> temp = (SystemProperty<T>) this.sharedTypedProperties.putIfAbsent(key, value);
+		return temp == null ? value : temp;
 	}
 
 	public SystemProperty<URI> getURIProperty(final String name) {
@@ -146,37 +171,6 @@ public class SystemPropertiesBundle extends Properties {
 		return getTypedProperty(name, Locale.class, LocaleValueTypeFactory.SHARED_INSTANCE);
 	}
 
-	public final <T> SystemProperty<T> getTypedProperty(final String name, final Class<T> type, final ParameterFactory<T, String> typeFactory) {
-		final Pair<String, Class<?>> key = new Pair<String, Class<?>>(ContractCheck.mustNotBeNullOrTrimmedEmpty(name, "name"), ContractCheck.mustNotBeNull( //$NON-NLS-1$
-				type, "type")); //$NON-NLS-1$
-		SystemProperty<T> result = getSharedTypedProperty(key);
-		if (result == null) {
-			result = addSharedTypedProperty(key, new SystemProperty<T>(name, typeFactory, ContractCheck.mustNotBeNull(typeFactory, "typeFactory") //$NON-NLS-1$
-					.create(substitutionStrategy.substitute(super.getProperty(name))), this.substitutionStrategy));
-		}
-		return result;
-	}
-
-	@SuppressWarnings("unchecked")
-	private <T> SystemProperty<T> getSharedTypedProperty(final Pair<String, Class<?>> key) {
-		if (this.sharedTypedProperties != null) {
-			return (SystemProperty<T>) this.sharedTypedProperties.get(key);
-		} else {
-			return null;
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private <T> SystemProperty<T> addSharedTypedProperty(final Pair<String, Class<?>> key, final SystemProperty<T> value) {
-		if (this.sharedTypedProperties == null) {
-			// We do not care about creation since worst case is we create twice and have one value not cached. Since it
-			// is a cache and not a singleton collection we are thread safe here
-			this.sharedTypedProperties = new ConcurrentHashMap<Pair<String, Class<?>>, SystemProperty<?>>();
-		}
-		final SystemProperty<T> temp = (SystemProperty<T>) this.sharedTypedProperties.putIfAbsent(key, value);
-		return temp == null ? value : temp;
-	}
-
 	@Override
 	public synchronized Object put(final Object key, final Object value) {
 		if (this.sharedTypedProperties != null && !this.sharedTypedProperties.isEmpty()) {
@@ -184,5 +178,4 @@ public class SystemPropertiesBundle extends Properties {
 		}
 		return super.put(key, value);
 	}
-
 }

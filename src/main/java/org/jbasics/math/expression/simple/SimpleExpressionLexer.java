@@ -28,10 +28,6 @@ import org.jbasics.checker.ContractCheck;
 
 public class SimpleExpressionLexer {
 
-	public static enum TokenType {
-		ADD, SUBTRACT, MULTIPLY, DIVIDE, POW, LEFT_BRACE, RIGHT_BRACE, COMMA, NUMBER, SYMBOL, EOF
-	}
-
 	private final CharSequence sequence;
 	private final StringBuilder currentContent;
 	private int position;
@@ -160,4 +156,7 @@ public class SimpleExpressionLexer {
 		}
 	}
 
+	public static enum TokenType {
+		ADD, SUBTRACT, MULTIPLY, DIVIDE, POW, LEFT_BRACE, RIGHT_BRACE, COMMA, NUMBER, SYMBOL, EOF
+	}
 }

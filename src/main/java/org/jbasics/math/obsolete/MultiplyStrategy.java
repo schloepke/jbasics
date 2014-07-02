@@ -104,5 +104,4 @@ public class MultiplyStrategy implements Callable<int[]> {
 //		}
 //		return result;
 //	}
-
 }

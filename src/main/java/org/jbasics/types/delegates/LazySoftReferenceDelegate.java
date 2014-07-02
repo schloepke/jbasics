@@ -24,46 +24,27 @@
  */
 package org.jbasics.types.delegates;
 
-import java.lang.ref.SoftReference;
-
 import org.jbasics.pattern.delegation.MutableDelegate;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.pattern.lazyinit.RemoveableLazyInitialization;
+
+import java.lang.ref.SoftReference;
 
 public final class LazySoftReferenceDelegate<T> implements RemoveableLazyInitialization<T>, MutableDelegate<T> {
 	private final Factory<T> factory;
 	private SoftReference<T> reference;
 
 	public LazySoftReferenceDelegate(final Factory<T> factory) {
-		if (factory == null) { throw new IllegalArgumentException("Null paramter: factory"); }
+		if (factory == null) {
+			throw new IllegalArgumentException("Null paramter: factory");
+		}
 		this.factory = factory;
-	}
-
-	public void initialize() {
-		delegate();
-	}
-
-	public boolean isInitialized() {
-		return this.reference != null && this.reference.get() != null;
 	}
 
 	public T remove() {
 		T temp = this.reference != null ? this.reference.get() : null;
 		this.reference = null;
 		return temp;
-	}
-
-	public T delegate() {
-		T result = this.reference != null ? this.reference.get() : null;
-		if (result == null) {
-			result = this.factory.newInstance();
-			this.reference = new SoftReference<T>(result);
-		}
-		return result;
-	}
-
-	public boolean isDelegateSet() {
-		return isInitialized();
 	}
 
 	public T setDelegate(final T delegate) {
@@ -76,4 +57,24 @@ public final class LazySoftReferenceDelegate<T> implements RemoveableLazyInitial
 		return result;
 	}
 
+	public boolean isDelegateSet() {
+		return isInitialized();
+	}
+
+	public boolean isInitialized() {
+		return this.reference != null && this.reference.get() != null;
+	}
+
+	public void initialize() {
+		delegate();
+	}
+
+	public T delegate() {
+		T result = this.reference != null ? this.reference.get() : null;
+		if (result == null) {
+			result = this.factory.newInstance();
+			this.reference = new SoftReference<T>(result);
+		}
+		return result;
+	}
 }

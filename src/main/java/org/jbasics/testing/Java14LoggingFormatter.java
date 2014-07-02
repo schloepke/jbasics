@@ -28,11 +28,8 @@ import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
 /**
- * A Java14 logging facility formatter.
- * <p>
- * This is a very simple formatter usually used for testing purpose only.
- * </p>
- * 
+ * A Java14 logging facility formatter. <p> This is a very simple formatter usually used for testing purpose only. </p>
+ *
  * @author Stephan Schloepke
  * @since 1.0.0
  */
@@ -48,7 +45,7 @@ public class Java14LoggingFormatter extends Formatter {
 		if ("ENTRY".equals(message)) {
 			message = "ENTRY  ===> " + record.getSourceClassName() + "#" + record.getSourceMethodName();
 		} else if ("RETURN".equals(message)) {
-			message = "RETURN <=== "+ record.getSourceClassName() + "#" + record.getSourceMethodName();
+			message = "RETURN <=== " + record.getSourceClassName() + "#" + record.getSourceMethodName();
 		}
 		String logName = record.getLoggerName();
 		if (logName.length() > 40) {
@@ -83,16 +80,15 @@ public class Java14LoggingFormatter extends Formatter {
 		}
 		return temp.toString();
 	}
-	
+
 	@Override
 	public synchronized String formatMessage(LogRecord record) {
 		String message = record.getMessage();
 		if ("ENTRY".equals(message)) {
 			return "----->  " + record.getSourceClassName() + "#" + record.getSourceMethodName();
 		} else if ("RETURN".equals(message)) {
-			return "<----- "+ record.getSourceClassName() + "#" + record.getSourceMethodName() + "\n";
+			return "<----- " + record.getSourceClassName() + "#" + record.getSourceMethodName() + "\n";
 		}
 		return super.formatMessage(record);
 	}
-
 }

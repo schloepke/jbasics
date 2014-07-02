@@ -24,20 +24,16 @@
  */
 package org.jbasics.types.factories;
 
+import org.jbasics.pattern.factory.Factory;
+
 import java.util.Comparator;
 import java.util.SortedMap;
 import java.util.TreeMap;
-
-import org.jbasics.pattern.factory.Factory;
 
 public class SortedMapFactory<K, V> implements Factory<SortedMap<K, V>> {
 	private final static SortedMapFactory<?, ?> SHARED_INSTANCE = new SortedMapFactory<Object, Object>();
 
 	private final Comparator<K> comparator;
-
-	public static <K, V> SortedMapFactory<K, V> create(final Comparator<K> comparator) {
-		return new SortedMapFactory<K, V>(comparator);
-	}
 
 	public SortedMapFactory() {
 		this(null);
@@ -45,6 +41,15 @@ public class SortedMapFactory<K, V> implements Factory<SortedMap<K, V>> {
 
 	public SortedMapFactory(final Comparator<K> comparator) {
 		this.comparator = comparator;
+	}
+
+	public static <K, V> SortedMapFactory<K, V> create(final Comparator<K> comparator) {
+		return new SortedMapFactory<K, V>(comparator);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <K extends Comparable<K>, V> SortedMapFactory<K, V> sortedMapFactory() {
+		return (SortedMapFactory<K, V>) SortedMapFactory.SHARED_INSTANCE;
 	}
 
 	@Override
@@ -55,10 +60,4 @@ public class SortedMapFactory<K, V> implements Factory<SortedMap<K, V>> {
 			return new TreeMap<K, V>();
 		}
 	}
-
-	@SuppressWarnings("unchecked")
-	public static <K extends Comparable<K>, V> SortedMapFactory<K, V> sortedMapFactory() {
-		return (SortedMapFactory<K, V>) SortedMapFactory.SHARED_INSTANCE;
-	}
-
 }

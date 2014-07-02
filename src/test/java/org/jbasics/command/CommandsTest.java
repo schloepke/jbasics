@@ -24,19 +24,19 @@
  */
 package org.jbasics.command;
 
-import java.io.IOException;
-
 import org.junit.Test;
+
+import java.io.IOException;
 
 @SuppressWarnings("nls")
 public class CommandsTest {
-	public final static String[] SPLIT_CALL_ARGS = new String[] { "TestCommands/split", "portfolio=Regulatory Reporting,Non-Regulatory-Reporting",
-			"destination=folder/subfolder", "stress=23,43,53" };
+	public final static String[] SPLIT_CALL_ARGS = new String[]{"TestCommands/split", "portfolio=Regulatory Reporting,Non-Regulatory-Reporting",
+			"destination=folder/subfolder", "stress=23,43,53"};
 
-	public final static String[] DELETE_CALL_ARGS = new String[] { "deleteProcessed", "destination=folder/subfolder",
-			"destination=anotherFolder/something" };
+	public final static String[] DELETE_CALL_ARGS = new String[]{"deleteProcessed", "destination=folder/subfolder",
+			"destination=anotherFolder/something"};
 
-	public final static String[] LIST_FILES_ARGS = new String[] { "listFiles", "input=.@.*" };
+	public final static String[] LIST_FILES_ARGS = new String[]{"listFiles", "input=.@.*"};
 
 	@Test
 	public void testArgsParsin() {
@@ -57,5 +57,4 @@ public class CommandsTest {
 		e.execute(delete);
 		e.execute(listFiles);
 	}
-
 }

@@ -24,48 +24,46 @@
  */
 package org.jbasics.codec;
 
-import java.util.Arrays;
-import java.util.Collection;
-
+import org.jbasics.arrays.ArrayConstants;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import org.jbasics.arrays.ArrayConstants;
+import java.util.Arrays;
+import java.util.Collection;
 
 @RunWith(Parameterized.class)
 public class RFC3548Base16CodecTest {
-	@Parameters
-	public static Collection<Object[]> parameters() {
-		return Arrays.asList(new Object[][] {
-				// { null}, // Null value check
-				{ "", "" }, // Zero length check
-				{ "Hello World", "48656C6C6F20576F726C64" }, // generic test
-				{ "a", "61" }, // fits Base16 only
-				{ "aB", "6142" }, // fits Base 16 only
-				{ "aBc", "614263" }, // fits Base16, Base64
-				{ "aBcD", "61426344" }, // fits Base16 only
-				{ "aBcDe", "6142634465" }, // fits Base16 and Base32
-				{ "aBcDeF", "614263446546" }, // fits Base16 and Base64
-				{ "aBcDeFg", "61426344654667" }, // fits Base16 only
-				{ "aBcDeFgH", "6142634465466748" }, // fits Base16 only
-				{ "aBcDeFgHi", "614263446546674869" }, // fits Base16 and Base64
-				{ "aBcDeFgHiJ", "6142634465466748694A" }, // fits Base16 and Base32
-				{ "A brown fox jumps over the yellow fence", "412062726F776E20666F78206A756D7073206F766572207468652079656C6C6F772066656E6365" }, // Random text one
-				{ "Somthing gotta go", "536F6D7468696E6720676F74746120676F" }, // Random text one
-				{ "Is this onl me or are there bugs?", "49732074686973206F6E6C206D65206F722061726520746865726520627567733F" }, // Random text one
-				{ "user:pass", "757365723A70617373" } // User name / password encoding as in HTTP Basic Auth
-				});
-	}
-
 	private final String testData;
 	private final String expectedCoded;
-
 	public RFC3548Base16CodecTest(final String testData, final String expectedCoded) {
 		this.testData = testData;
 		this.expectedCoded = expectedCoded;
+	}
+
+	@Parameters
+	public static Collection<Object[]> parameters() {
+		return Arrays.asList(new Object[][]{
+				// { null}, // Null value check
+				{"", ""}, // Zero length check
+				{"Hello World", "48656C6C6F20576F726C64"}, // generic test
+				{"a", "61"}, // fits Base16 only
+				{"aB", "6142"}, // fits Base 16 only
+				{"aBc", "614263"}, // fits Base16, Base64
+				{"aBcD", "61426344"}, // fits Base16 only
+				{"aBcDe", "6142634465"}, // fits Base16 and Base32
+				{"aBcDeF", "614263446546"}, // fits Base16 and Base64
+				{"aBcDeFg", "61426344654667"}, // fits Base16 only
+				{"aBcDeFgH", "6142634465466748"}, // fits Base16 only
+				{"aBcDeFgHi", "614263446546674869"}, // fits Base16 and Base64
+				{"aBcDeFgHiJ", "6142634465466748694A"}, // fits Base16 and Base32
+				{"A brown fox jumps over the yellow fence", "412062726F776E20666F78206A756D7073206F766572207468652079656C6C6F772066656E6365"}, // Random text one
+				{"Somthing gotta go", "536F6D7468696E6720676F74746120676F"}, // Random text one
+				{"Is this onl me or are there bugs?", "49732074686973206F6E6C206D65206F722061726520746865726520627567733F"}, // Random text one
+				{"user:pass", "757365723A70617373"} // User name / password encoding as in HTTP Basic Auth
+		});
 	}
 
 	@Test

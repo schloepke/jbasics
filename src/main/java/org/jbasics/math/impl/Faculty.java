@@ -72,5 +72,4 @@ public class Faculty implements Iterator<BigInteger> {
 	public BigInteger currentValue() {
 		return this.value;
 	}
-
 }

@@ -24,6 +24,9 @@
  */
 package org.jbasics.math;
 
+import org.jbasics.arrays.unstable.ArrayIterator;
+import org.jbasics.checker.ContractCheck;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Arrays;
@@ -31,63 +34,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.jbasics.arrays.unstable.ArrayIterator;
-import org.jbasics.checker.ContractCheck;
-
-public class BigDecimalMatrix implements Iterable<Collection<BigDecimal>> /* , Comparable<BigDecimalMatrix> */{
+public class BigDecimalMatrix implements Iterable<Collection<BigDecimal>> /* , Comparable<BigDecimalMatrix> */ {
 	private final int rows, columns;
 	private final BigDecimal[][] matrix;
 	private transient Collection<BigDecimal>[] iterables;
-
-	public static BigDecimalMatrixBuilder create() {
-		return new BigDecimalMatrixBuilder();
-	}
-
-	public static BigDecimalMatrix createColumnVector(final Number... values) {
-		return new BigDecimalMatrix(ContractCheck.mustNotBeNullOrEmpty(values, "values").length, 1, values);
-	}
-
-	public static BigDecimalMatrix createRowVector(final Number... values) {
-		return new BigDecimalMatrix(1, ContractCheck.mustNotBeNullOrEmpty(values, "values").length, values);
-	}
-
-	public static BigDecimalMatrix createIdentityMatrix(final int size) {
-		final BigDecimalMatrix result = new BigDecimalMatrix(size, size);
-		for (int i = 0; i < size; i++) {
-			result.matrix[i][i] = BigDecimal.ONE;
-		}
-		return result;
-	}
-
-	public static BigDecimalMatrix createRandomMatrix(final int rows, final int columns) {
-		return BigDecimalMatrix.createRandomMatrix(rows, columns, new JavaRandomNumberSequence());
-	}
-
-	public static BigDecimalMatrix createRandomMatrix(final int rows, final int columns, final RandomNumberSequence<? extends Number> r) {
-		final BigDecimalMatrix result = new BigDecimalMatrix(rows, columns);
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < columns; j++) {
-				result.matrix[i][j] = NumberConverter.toBigDecimal(r.nextRandomNumber());
-			}
-		}
-		return result;
-	}
-
-	public static BigDecimalMatrix createRandomColumnVector(final int size) {
-		return BigDecimalMatrix.createRandomMatrix(ContractCheck.mustBeInRange(size, 0, Integer.MAX_VALUE, "size"), 1); //$NON-NLS-1$
-	}
-
-	public static BigDecimalMatrix createRandomRowVector(final int size) {
-		return BigDecimalMatrix.createRandomMatrix(1, ContractCheck.mustBeInRange(size, 0, Integer.MAX_VALUE, "size")); //$NON-NLS-1$
-	}
-
-	public static BigDecimalMatrix createRandomColumnVector(final int size, final RandomNumberSequence<? extends Number> r) {
-		return BigDecimalMatrix.createRandomMatrix(ContractCheck.mustBeInRange(size, 0, Integer.MAX_VALUE, "size"), 1, r); //$NON-NLS-1$
-	}
-
-	public static BigDecimalMatrix createRandomRowVector(final int size, final RandomNumberSequence<? extends Number> r) {
-		return BigDecimalMatrix.createRandomMatrix(1, ContractCheck.mustBeInRange(size, 0, Integer.MAX_VALUE, "size"), r); //$NON-NLS-1$
-	}
 
 	public BigDecimalMatrix(final int rows, final int columns, final Number... values) {
 		this.rows = ContractCheck.mustBeInRange(rows, 1, Integer.MAX_VALUE, "rows"); //$NON-NLS-1$
@@ -116,6 +66,10 @@ public class BigDecimalMatrix implements Iterable<Collection<BigDecimal>> /* , C
 		}
 	}
 
+	public BigDecimalMatrix(final List<List<Number>> values) {
+		this(ContractCheck.mustNotBeNullOrEmpty(values, "values").size(), BigDecimalMatrix.determinColumnSize(values), values); //$NON-NLS-1$
+	}
+
 	public BigDecimalMatrix(final int rows, final int columns, final List<List<Number>> values) {
 		ContractCheck.mustNotBeNullOrEmpty(values, "values"); //$NON-NLS-1$
 		this.rows = ContractCheck.mustBeInRange(rows, 1, Integer.MAX_VALUE, "rows"); //$NON-NLS-1$
@@ -130,8 +84,63 @@ public class BigDecimalMatrix implements Iterable<Collection<BigDecimal>> /* , C
 		}
 	}
 
-	public BigDecimalMatrix(final List<List<Number>> values) {
-		this(ContractCheck.mustNotBeNullOrEmpty(values, "values").size(), BigDecimalMatrix.determinColumnSize(values), values); //$NON-NLS-1$
+	private static int determinColumnSize(final List<List<Number>> values) {
+		assert values != null;
+		int maxColumns = 0;
+		for (final List<Number> column : values) {
+			maxColumns = Math.max(maxColumns, column != null ? column.size() : 0);
+		}
+		return maxColumns;
+	}
+
+	public static BigDecimalMatrixBuilder create() {
+		return new BigDecimalMatrixBuilder();
+	}
+
+	public static BigDecimalMatrix createColumnVector(final Number... values) {
+		return new BigDecimalMatrix(ContractCheck.mustNotBeNullOrEmpty(values, "values").length, 1, values);
+	}
+
+	public static BigDecimalMatrix createRowVector(final Number... values) {
+		return new BigDecimalMatrix(1, ContractCheck.mustNotBeNullOrEmpty(values, "values").length, values);
+	}
+
+	public static BigDecimalMatrix createIdentityMatrix(final int size) {
+		final BigDecimalMatrix result = new BigDecimalMatrix(size, size);
+		for (int i = 0; i < size; i++) {
+			result.matrix[i][i] = BigDecimal.ONE;
+		}
+		return result;
+	}
+
+	public static BigDecimalMatrix createRandomColumnVector(final int size) {
+		return BigDecimalMatrix.createRandomMatrix(ContractCheck.mustBeInRange(size, 0, Integer.MAX_VALUE, "size"), 1); //$NON-NLS-1$
+	}
+
+	public static BigDecimalMatrix createRandomMatrix(final int rows, final int columns) {
+		return BigDecimalMatrix.createRandomMatrix(rows, columns, new JavaRandomNumberSequence());
+	}
+
+	public static BigDecimalMatrix createRandomMatrix(final int rows, final int columns, final RandomNumberSequence<? extends Number> r) {
+		final BigDecimalMatrix result = new BigDecimalMatrix(rows, columns);
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				result.matrix[i][j] = NumberConverter.toBigDecimal(r.nextRandomNumber());
+			}
+		}
+		return result;
+	}
+
+	public static BigDecimalMatrix createRandomRowVector(final int size) {
+		return BigDecimalMatrix.createRandomMatrix(1, ContractCheck.mustBeInRange(size, 0, Integer.MAX_VALUE, "size")); //$NON-NLS-1$
+	}
+
+	public static BigDecimalMatrix createRandomColumnVector(final int size, final RandomNumberSequence<? extends Number> r) {
+		return BigDecimalMatrix.createRandomMatrix(ContractCheck.mustBeInRange(size, 0, Integer.MAX_VALUE, "size"), 1, r); //$NON-NLS-1$
+	}
+
+	public static BigDecimalMatrix createRandomRowVector(final int size, final RandomNumberSequence<? extends Number> r) {
+		return BigDecimalMatrix.createRandomMatrix(1, ContractCheck.mustBeInRange(size, 0, Integer.MAX_VALUE, "size"), r); //$NON-NLS-1$
 	}
 
 	public BigDecimal get(final int row, final int column) {
@@ -194,6 +203,16 @@ public class BigDecimalMatrix implements Iterable<Collection<BigDecimal>> /* , C
 		return multiply(BigDecimal.valueOf(scalar), MathContext.UNLIMITED);
 	}
 
+	public BigDecimalMatrix multiply(final BigDecimal scalar, final MathContext mc) {
+		final BigDecimalMatrix result = new BigDecimalMatrix(this.rows, this.columns);
+		for (int i = 0; i < this.matrix.length; i++) {
+			for (int j = 0; j < this.matrix[i].length; j++) {
+				result.matrix[i][j] = this.matrix[i][j].multiply(scalar, mc);
+			}
+		}
+		return result;
+	}
+
 	public BigDecimalMatrix multiply(final double scalar) {
 		return multiply(BigDecimal.valueOf(scalar), MathContext.UNLIMITED);
 	}
@@ -208,16 +227,6 @@ public class BigDecimalMatrix implements Iterable<Collection<BigDecimal>> /* , C
 
 	public BigDecimalMatrix multiply(final BigDecimal scalar) {
 		return multiply(scalar, MathContext.UNLIMITED);
-	}
-
-	public BigDecimalMatrix multiply(final BigDecimal scalar, final MathContext mc) {
-		final BigDecimalMatrix result = new BigDecimalMatrix(this.rows, this.columns);
-		for (int i = 0; i < this.matrix.length; i++) {
-			for (int j = 0; j < this.matrix[i].length; j++) {
-				result.matrix[i][j] = this.matrix[i][j].multiply(scalar, mc);
-			}
-		}
-		return result;
 	}
 
 	public BigDecimalMatrix multiply(final BigDecimalMatrix factor) {
@@ -239,22 +248,6 @@ public class BigDecimalMatrix implements Iterable<Collection<BigDecimal>> /* , C
 			}
 		}
 		return result;
-	}
-
-	@Override
-	@SuppressWarnings("nls")
-	public String toString() {
-		final StringBuilder t = new StringBuilder();
-		for (final BigDecimal[] element : this.matrix) {
-			t.append(t.length() == 0 ? "[ " : " | ");
-			for (int j = 0; j < element.length; j++) {
-				if (j > 0) {
-					t.append(" ");
-				}
-				t.append(element[j]);
-			}
-		}
-		return t.append(" ]").toString();
 	}
 
 	@Override
@@ -316,13 +309,19 @@ public class BigDecimalMatrix implements Iterable<Collection<BigDecimal>> /* , C
 		}
 	}
 
-	private static int determinColumnSize(final List<List<Number>> values) {
-		assert values != null;
-		int maxColumns = 0;
-		for (final List<Number> column : values) {
-			maxColumns = Math.max(maxColumns, column != null ? column.size() : 0);
+	@Override
+	@SuppressWarnings("nls")
+	public String toString() {
+		final StringBuilder t = new StringBuilder();
+		for (final BigDecimal[] element : this.matrix) {
+			t.append(t.length() == 0 ? "[ " : " | ");
+			for (int j = 0; j < element.length; j++) {
+				if (j > 0) {
+					t.append(" ");
+				}
+				t.append(element[j]);
+			}
 		}
-		return maxColumns;
+		return t.append(" ]").toString();
 	}
-
 }

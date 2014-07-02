@@ -24,19 +24,18 @@
  */
 package org.jbasics.persistence;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.persistence.EntityManager;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.pooling.KeyedPool;
 import org.jbasics.pattern.pooling.NewPool;
 import org.jbasics.pattern.pooling.PooledInstance;
 import org.jbasics.types.pools.BlockingPool;
+
+import javax.persistence.EntityManager;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PersistenceManager implements KeyedPool<String, EntityManager> {
 
@@ -45,7 +44,7 @@ public class PersistenceManager implements KeyedPool<String, EntityManager> {
 	private final Logger logger = Logger.getLogger(PersistenceManager.class.getName());
 
 	private final ConcurrentMap<String, NewPool<EntityManager>> pools;
-// private final ConcurrentMap<String, ThreadLocal<PooledInstance<EntityManager>>> threadedPoolInstances;
+	// private final ConcurrentMap<String, ThreadLocal<PooledInstance<EntityManager>>> threadedPoolInstances;
 	private boolean closed = false;
 
 	public PersistenceManager() {

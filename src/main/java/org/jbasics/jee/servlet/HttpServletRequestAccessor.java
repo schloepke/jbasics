@@ -24,21 +24,20 @@
  */
 package org.jbasics.jee.servlet;
 
+import org.jbasics.arrays.ArrayConstants;
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.exception.DelegatedException;
+
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.jbasics.arrays.ArrayConstants;
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.exception.DelegatedException;
-
 /**
  * This accessor can be used to access parameter values in the request in a more convinient way.
- * 
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -49,8 +48,9 @@ public class HttpServletRequestAccessor {
 	/**
 	 * Create an accessor for the given {@link HttpServletRequest}. An {@link IllegalArgumentException} is thrown if the
 	 * request is null.
-	 * 
+	 *
 	 * @param request The request to access the parameters from (must not be null)
+	 *
 	 * @throws IllegalArgumentException If the request is null
 	 */
 	public HttpServletRequestAccessor(final HttpServletRequest request) {
@@ -59,7 +59,7 @@ public class HttpServletRequestAccessor {
 
 	/**
 	 * Returns the embedded servlet request (is never null).
-	 * 
+	 *
 	 * @return The embedded servlet request which is never null.
 	 */
 	public HttpServletRequest getServletRequest() {
@@ -114,6 +114,32 @@ public class HttpServletRequestAccessor {
 		return temp != null ? parseNumber(temp) : defaultValue;
 	}
 
+	/**
+	 * Parse the given {@link String} to a {@link Number}. The parser first parses the {@link String} to a {@link
+	 * Double} and than checks if the value can fit in a lesser type until {@link Integer} is reached.
+	 *
+	 * @param stringValue The value to parse (must not be null)
+	 *
+	 * @return The parsed number ({@link Double}, {@link Float}, {@link Long} or {@link Integer})
+	 */
+	private Number parseNumber(final String stringValue) {
+		assert stringValue != null;
+		Double val = Double.valueOf(stringValue);
+		double x = val.doubleValue();
+		long y = (long) x;
+		if (x - y == 0.0) {
+			if (((int) y) == y) {
+				return Integer.valueOf(val.intValue());
+			} else {
+				return Long.valueOf(val.longValue());
+			}
+		} else if (((float) x) == x) {
+			return Float.valueOf(val.floatValue());
+		} else {
+			return val;
+		}
+	}
+
 	public Number[] getNumberParameters(final String name) {
 		String[] temp = this.request.getParameterValues(ContractCheck.mustNotBeNull(name, "name")); //$NON-NLS-1$
 		if (temp == null || temp.length == 0) {
@@ -165,18 +191,6 @@ public class HttpServletRequestAccessor {
 		return temp != null ? parseDate(temp) : defaultValue;
 	}
 
-	public Date[] getDateParameters(final String name) {
-		String[] temp = this.request.getParameterValues(ContractCheck.mustNotBeNull(name, "name")); //$NON-NLS-1$
-		if (temp == null || temp.length == 0) {
-			return ArrayConstants.ZERO_LENGTH_DATE_ARRAY;
-		}
-		Date[] result = new Date[temp.length];
-		for (int i = 0; i < temp.length; i++) {
-			result[i] = parseDate(temp[i]);
-		}
-		return result;
-	}
-
 	private Date parseDate(final String stringValue) {
 		assert stringValue != null;
 		DateFormat f1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"); //$NON-NLS-1$
@@ -192,30 +206,15 @@ public class HttpServletRequestAccessor {
 		}
 	}
 
-	/**
-	 * Parse the given {@link String} to a {@link Number}. The parser first parses the {@link String} to a
-	 * {@link Double} and than checks if the value can fit in a lesser type
-	 * until {@link Integer} is reached.
-	 * 
-	 * @param stringValue The value to parse (must not be null)
-	 * @return The parsed number ({@link Double}, {@link Float}, {@link Long} or {@link Integer})
-	 */
-	private Number parseNumber(final String stringValue) {
-		assert stringValue != null;
-		Double val = Double.valueOf(stringValue);
-		double x = val.doubleValue();
-		long y = (long) x;
-		if (x - y == 0.0) {
-			if (((int) y) == y) {
-				return Integer.valueOf(val.intValue());
-			} else {
-				return Long.valueOf(val.longValue());
-			}
-		} else if (((float) x) == x) {
-			return Float.valueOf(val.floatValue());
-		} else {
-			return val;
+	public Date[] getDateParameters(final String name) {
+		String[] temp = this.request.getParameterValues(ContractCheck.mustNotBeNull(name, "name")); //$NON-NLS-1$
+		if (temp == null || temp.length == 0) {
+			return ArrayConstants.ZERO_LENGTH_DATE_ARRAY;
 		}
+		Date[] result = new Date[temp.length];
+		for (int i = 0; i < temp.length; i++) {
+			result[i] = parseDate(temp[i]);
+		}
+		return result;
 	}
-
 }

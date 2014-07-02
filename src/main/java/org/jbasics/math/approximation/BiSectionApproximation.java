@@ -24,9 +24,6 @@
  */
 package org.jbasics.math.approximation;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.BigDecimalMathLibrary;
 import org.jbasics.math.MathFunction;
@@ -35,6 +32,9 @@ import org.jbasics.math.NumberConverter;
 import org.jbasics.math.exception.NoConvergenceException;
 import org.jbasics.types.tuples.Range;
 import org.jbasics.utilities.DataUtilities;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
 
 public class BiSectionApproximation implements Approximation {
 	private final MathFunction<?> function;
@@ -51,7 +51,7 @@ public class BiSectionApproximation implements Approximation {
 	}
 
 	public BiSectionApproximation(final MathFunction<?> function, final int maxIterations, final int accuracy,
-			final boolean iterateCloseWithoutConvergence) {
+								  final boolean iterateCloseWithoutConvergence) {
 		this.function = ContractCheck.mustNotBeNull(function, "function"); //$NON-NLS-1$
 		this.maxIterations = Math.max(10, Math.min(2000, maxIterations));
 		this.accuracy = BigDecimal.ONE.scaleByPowerOfTen(-Math.abs(accuracy));
@@ -126,5 +126,4 @@ public class BiSectionApproximation implements Approximation {
 					+ ")"); //$NON-NLS-1$
 		}
 	}
-
 }

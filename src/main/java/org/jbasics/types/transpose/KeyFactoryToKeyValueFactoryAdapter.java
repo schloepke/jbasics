@@ -40,5 +40,4 @@ public class KeyFactoryToKeyValueFactoryAdapter<K, V> implements ParameterFactor
 	public Tuple<K, V> create(final V param) {
 		return new Pair<K, V>(this.keyFactory.create(param), param);
 	}
-
 }

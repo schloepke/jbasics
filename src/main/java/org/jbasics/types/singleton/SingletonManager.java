@@ -24,13 +24,13 @@
  */
 package org.jbasics.types.singleton;
 
+import org.jbasics.pattern.singleton.Singleton;
+
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.jbasics.pattern.singleton.Singleton;
 
 public final class SingletonManager {
 	// This instance is not a singleton since every singleton instance is
@@ -45,6 +45,11 @@ public final class SingletonManager {
 	private final Set<Singleton<?>> singletons;
 	private final long createTimestamp;
 
+	private SingletonManager() {
+		this.singletons = new HashSet<Singleton<?>>();
+		this.createTimestamp = System.currentTimeMillis();
+	}
+
 	public static SingletonManager instance() {
 		return SingletonManager.INSTANCE;
 	}
@@ -55,15 +60,25 @@ public final class SingletonManager {
 		}
 	}
 
-	public boolean isRegistered(final Singleton<?> singleton) {
-		return this.singletons.contains(singleton);
-	}
-
 	public void resetAllSingletons() {
 		for (Singleton<?> singleton : this.singletons) {
 			synchronized (singleton) {
 				singleton.resetInstance();
 			}
+		}
+	}
+
+	public InfoSnapshot createSingletonInfoSnapshot(final Singleton<?> singleton) {
+		return new InfoSnapshot(singleton, isRegistered(singleton));
+	}
+
+	public boolean isRegistered(final Singleton<?> singleton) {
+		return this.singletons.contains(singleton);
+	}
+
+	public void listSingletons(final PrintStream out) {
+		for (InfoSnapshot info : getSingletonInfos()) {
+			out.println(info);
 		}
 	}
 
@@ -75,23 +90,8 @@ public final class SingletonManager {
 		return result;
 	}
 
-	public InfoSnapshot createSingletonInfoSnapshot(final Singleton<?> singleton) {
-		return new InfoSnapshot(singleton, isRegistered(singleton));
-	}
-
-	public void listSingletons(final PrintStream out) {
-		for (InfoSnapshot info : getSingletonInfos()) {
-			out.println(info);
-		}
-	}
-
 	public long getCreateTimestamp() {
 		return this.createTimestamp;
-	}
-
-	private SingletonManager() {
-		this.singletons = new HashSet<Singleton<?>>();
-		this.createTimestamp = System.currentTimeMillis();
 	}
 
 	public static class InfoSnapshot {
@@ -173,7 +173,7 @@ public final class SingletonManager {
 			}
 			InfoSnapshot other = (InfoSnapshot) obj;
 			if (this.factoryHashCode == 0 || this.factoryHashCode != other.factoryHashCode
-			        || this.singletonTypeHashCode != other.singletonTypeHashCode) {
+					|| this.singletonTypeHashCode != other.singletonTypeHashCode) {
 				return false;
 			}
 			return true;
@@ -191,5 +191,4 @@ public final class SingletonManager {
 			return temp.toString();
 		}
 	}
-
 }

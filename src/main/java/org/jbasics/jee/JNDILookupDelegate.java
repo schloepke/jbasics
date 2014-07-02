@@ -24,11 +24,6 @@
  */
 package org.jbasics.jee;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.Name;
-import javax.naming.NamingException;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.delegation.Delegate;
@@ -36,23 +31,24 @@ import org.jbasics.pattern.delegation.ReleasableDelegate;
 import org.jbasics.types.delegates.LazyDelegate;
 import org.jbasics.types.delegates.UnmodifiableDelegate;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.Name;
+import javax.naming.NamingException;
+
 /**
- * A simple delegate which gets an instance based on the given name and optional the context. The delegate will
- * return the lazy looked up instance or throws a {@link DelegatedException} runtime exception if the name
- * could not be found lazily.
- * <p>
- * This lookup is a {@link ReleasableDelegate} so that the looked up instance can be released. In such a case the cached
- * instance is released and the next call to {@link #delegate()} will lookup the instance again. If the given
- * {@link Context} {@link Delegate} is a {@link ReleasableDelegate} instance it will be released as well upon releasing
- * this delegate.
- * </p>
- * <p>
- * If you do not want the delegate to be released as well you need to wrap it in a release blocking delegate instance.
- * </p>
- * 
+ * A simple delegate which gets an instance based on the given name and optional the context. The delegate will return
+ * the lazy looked up instance or throws a {@link DelegatedException} runtime exception if the name could not be found
+ * lazily. <p> This lookup is a {@link ReleasableDelegate} so that the looked up instance can be released. In such a
+ * case the cached instance is released and the next call to {@link #delegate()} will lookup the instance again. If the
+ * given {@link Context} {@link Delegate} is a {@link ReleasableDelegate} instance it will be released as well upon
+ * releasing this delegate. </p> <p> If you do not want the delegate to be released as well you need to wrap it in a
+ * release blocking delegate instance. </p>
+ *
+ * @param <T> The type of the instance bound in the nameing service.
+ *
  * @author Stephan Schloepke
  * @since 1.0
- * @param <T> The type of the instance bound in the nameing service.
  */
 public class JNDILookupDelegate<T> implements ReleasableDelegate<T> {
 	private final String lookupNameAsString;
@@ -64,30 +60,30 @@ public class JNDILookupDelegate<T> implements ReleasableDelegate<T> {
 		this(lookupName, new LazyDelegate<InitialContext>(InitialContextFactory.INSTANCE));
 	}
 
-	public JNDILookupDelegate(final String lookupName, final Context lookupContext) {
-		this(lookupName, lookupContext != null ? new UnmodifiableDelegate<Context>(lookupContext) : new LazyDelegate<InitialContext>(
-				InitialContextFactory.INSTANCE));
-	}
-
 	public JNDILookupDelegate(final String lookupName, final Delegate<? extends Context> lookupContextDelegate) {
 		this.lookupNameAsString = ContractCheck.mustNotBeNull(lookupName, "lookupName"); //$NON-NLS-1$
 		this.lookupContextDelegate = ContractCheck.mustNotBeNull(lookupContextDelegate, "lookupContext"); //$NON-NLS-1$
 		this.lookupName = null;
 	}
 
-	public JNDILookupDelegate(final Name lookupName) {
-		this(lookupName, new LazyDelegate<InitialContext>(InitialContextFactory.INSTANCE));
-	}
-
-	public JNDILookupDelegate(final Name lookupName, final Context lookupContext) {
+	public JNDILookupDelegate(final String lookupName, final Context lookupContext) {
 		this(lookupName, lookupContext != null ? new UnmodifiableDelegate<Context>(lookupContext) : new LazyDelegate<InitialContext>(
 				InitialContextFactory.INSTANCE));
+	}
+
+	public JNDILookupDelegate(final Name lookupName) {
+		this(lookupName, new LazyDelegate<InitialContext>(InitialContextFactory.INSTANCE));
 	}
 
 	public JNDILookupDelegate(final Name lookupName, final Delegate<? extends Context> lookupContextDelegate) {
 		this.lookupName = ContractCheck.mustNotBeNull(lookupName, "lookupName"); //$NON-NLS-1$
 		this.lookupContextDelegate = ContractCheck.mustNotBeNull(lookupContextDelegate, "lookupContext"); //$NON-NLS-1$
 		this.lookupNameAsString = null;
+	}
+
+	public JNDILookupDelegate(final Name lookupName, final Context lookupContext) {
+		this(lookupName, lookupContext != null ? new UnmodifiableDelegate<Context>(lookupContext) : new LazyDelegate<InitialContext>(
+				InitialContextFactory.INSTANCE));
 	}
 
 	public boolean release() {
@@ -116,5 +112,4 @@ public class JNDILookupDelegate<T> implements ReleasableDelegate<T> {
 		}
 		return this.instance;
 	}
-
 }

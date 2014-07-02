@@ -24,10 +24,6 @@
  */
 package org.jbasics.math.approximation;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.BigDecimalMathLibrary;
 import org.jbasics.math.MathFunction;
@@ -35,6 +31,10 @@ import org.jbasics.math.MathFunctionHelper;
 import org.jbasics.math.exception.NoConvergenceException;
 import org.jbasics.types.tuples.Range;
 import org.jbasics.utilities.DataUtilities;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 public class NewtonRhapsonApproximation implements Approximation {
 	private final MathFunction<BigDecimal> function;
@@ -51,12 +51,12 @@ public class NewtonRhapsonApproximation implements Approximation {
 	}
 
 	public NewtonRhapsonApproximation(final MathFunction<BigDecimal> function, final MathFunction<BigDecimal> derivateFunction,
-			final int maxIterations) {
+									  final int maxIterations) {
 		this(function, derivateFunction, maxIterations, -32);
 	}
 
 	public NewtonRhapsonApproximation(final MathFunction<BigDecimal> function, final MathFunction<BigDecimal> derivateFunction,
-			final int maxIterations, final int accuracy) {
+									  final int maxIterations, final int accuracy) {
 		this.function = ContractCheck.mustNotBeNull(function, "function"); //$NON-NLS-1$
 		this.derivateFunction = ContractCheck.mustNotBeNull(derivateFunction, "derivateFunction"); //$NON-NLS-1$
 		this.maxIterations = Math.max(10, Math.min(2000, maxIterations));
@@ -86,5 +86,4 @@ public class NewtonRhapsonApproximation implements Approximation {
 		throw new NoConvergenceException("Newton-Rhapson approximation does not terminate within the maximum iterations  (" + this.maxIterations //$NON-NLS-1$
 				+ ")"); //$NON-NLS-1$
 	}
-
 }

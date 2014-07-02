@@ -25,10 +25,8 @@
 package org.jbasics.versionmanager;
 
 import junit.framework.Assert;
-
-import org.junit.Test;
-
 import org.jbasics.testing.Java14LoggingTestCase;
+import org.junit.Test;
 
 @SuppressWarnings("nls")
 public class VersionManagerTest extends Java14LoggingTestCase {
@@ -40,5 +38,4 @@ public class VersionManagerTest extends Java14LoggingTestCase {
 		Assert.assertFalse("Version should not be unknown", info.isUnknown());
 		Assert.assertEquals("Version is not correct", "0.2.11", info.getVersion());
 	}
-
 }

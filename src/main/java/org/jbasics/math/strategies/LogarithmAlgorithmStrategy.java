@@ -24,11 +24,11 @@
  */
 package org.jbasics.math.strategies;
 
+import org.jbasics.math.AlgorithmStrategy;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.concurrent.atomic.AtomicReferenceArray;
-
-import org.jbasics.math.AlgorithmStrategy;
 
 public class LogarithmAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
 	private final AlgorithmStrategy<BigDecimal> naturalLogrithm;
@@ -82,5 +82,4 @@ public class LogarithmAlgorithmStrategy implements AlgorithmStrategy<BigDecimal>
 		}
 		return result;
 	}
-
 }

@@ -24,9 +24,9 @@
  */
 package org.jbasics.arrays;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 public class ArrayConstantsTest {
 
@@ -58,5 +58,4 @@ public class ArrayConstantsTest {
 		assertTrue(ArrayConstants.ZERO_LENGTH_LONG_ARRAY != null);
 		assertTrue(ArrayConstants.ZERO_LENGTH_LONG_ARRAY.length == 0);
 	}
-
 }

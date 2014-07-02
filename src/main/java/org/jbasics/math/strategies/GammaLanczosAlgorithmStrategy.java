@@ -24,12 +24,12 @@
  */
 package org.jbasics.math.strategies;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.BigDecimalMathLibrary;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
 
 public class GammaLanczosAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
 	private final LanczosCoefficients coefficients;
@@ -55,7 +55,6 @@ public class GammaLanczosAlgorithmStrategy implements AlgorithmStrategy<BigDecim
 					BigDecimalMathLibrary.pow(t, x).valueToPrecision(mc).multiply(expTxA), mc);
 		}
 	}
-
 }
 
 /*

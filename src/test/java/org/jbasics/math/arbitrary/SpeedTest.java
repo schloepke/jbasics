@@ -24,12 +24,12 @@
  */
 package org.jbasics.math.arbitrary;
 
-import static org.junit.Assert.assertEquals;
+import org.jbasics.profile.TimeProfile;
+import org.junit.Test;
 
 import java.math.BigInteger;
 
-import org.jbasics.profile.TimeProfile;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 public class SpeedTest {
 	public static final int RUN_TEST_AMOUNT = 2;
@@ -41,6 +41,24 @@ public class SpeedTest {
 		for (int i = 0; i < RUN_TEST_AMOUNT; i++) {
 			testSpeed(10, new LargeNumberAdd(settings), new BigIntegerAdd(settings));
 		}
+	}
+
+	private void testSpeed(int testCount, SpeedTestCallable<ArbitraryInteger> mine, SpeedTestCallable<BigInteger> ref)
+			throws Exception {
+		BigInteger refResult = ref.call();
+		System.out.println("BitL: " + refResult.bitLength() + " (Ints: " + (long) Math.ceil(refResult.bitLength()
+				/ 32.0) + ", DecDig: "
+				+ (long) Math.ceil(refResult.bitLength() * Math.log10(2)) + ")");
+//		System.out.println("Ref:  " + refResult);
+		BigInteger mineResult = mine.call().toNumber();
+//		System.out.println("Test: " + mineResult);
+		assertEquals(refResult, mineResult);
+		TimeProfile profiler = new TimeProfile(testCount);
+		TimeProfile.Result refTime = profiler.profile(ref);
+		System.out.println("BigInteger:   " + refTime);
+		TimeProfile.Result mineTime = profiler.profile(mine);
+		System.out.println("LargeNatural: " + mineTime + " ("
+				+ ((long) (mineTime.getTotal() / refTime.getTotal() * 100000d)) / 1000d + "%)");
 	}
 
 	@Test
@@ -60,24 +78,6 @@ public class SpeedTest {
 			testSpeed(1, new LargeNumberMultiply(settings), new BigIntegerMultiply(settings));
 		}
 	}
-
-	private void testSpeed(int testCount, SpeedTestCallable<ArbitraryInteger> mine, SpeedTestCallable<BigInteger> ref)
-			throws Exception {
-		BigInteger refResult = ref.call();
-		System.out.println("BitL: " + refResult.bitLength() + " (Ints: " + (long)Math.ceil(refResult.bitLength()
-				/ 32.0) + ", DecDig: "
-				+ (long)Math.ceil(refResult.bitLength() * Math.log10(2)) + ")");
-//		System.out.println("Ref:  " + refResult);
-		BigInteger mineResult = mine.call().toNumber();
-//		System.out.println("Test: " + mineResult);
-		assertEquals(refResult, mineResult);
-		TimeProfile profiler = new TimeProfile(testCount);
-		TimeProfile.Result refTime = profiler.profile(ref);
-		System.out.println("BigInteger:   " + refTime);
-		TimeProfile.Result mineTime = profiler.profile(mine);
-		System.out.println("LargeNatural: " + mineTime + " ("
-				+ ((long) (mineTime.getTotal() / refTime.getTotal() * 100000d)) / 1000d + "%)");
-	}
 }
 
 class BigIntegerAdd extends SpeedTestCallable<BigInteger> {
@@ -87,14 +87,13 @@ class BigIntegerAdd extends SpeedTestCallable<BigInteger> {
 	}
 
 	@Override
+	protected BigInteger valueOf(BigInteger value) {
+		return value;
+	}	@Override
 	protected BigInteger process(BigInteger lhs, BigInteger rhs) {
 		return lhs.add(rhs);
 	}
 
-	@Override
-	protected BigInteger valueOf(BigInteger value) {
-		return value;
-	}
 
 }
 
@@ -113,7 +112,6 @@ class BigIntegerSubtract extends SpeedTestCallable<BigInteger> {
 	protected BigInteger valueOf(BigInteger value) {
 		return value;
 	}
-
 }
 
 class BigIntegerMultiply extends SpeedTestCallable<BigInteger> {
@@ -131,7 +129,6 @@ class BigIntegerMultiply extends SpeedTestCallable<BigInteger> {
 	protected BigInteger valueOf(BigInteger value) {
 		return value;
 	}
-
 }
 
 class LargeNumberAdd extends SpeedTestCallable<ArbitraryInteger> {
@@ -149,7 +146,6 @@ class LargeNumberAdd extends SpeedTestCallable<ArbitraryInteger> {
 	protected ArbitraryInteger valueOf(BigInteger value) {
 		return ArbitraryInteger.valueOf(value.toByteArray());
 	}
-
 }
 
 class LargeNumberSubtract extends SpeedTestCallable<ArbitraryInteger> {
@@ -167,7 +163,6 @@ class LargeNumberSubtract extends SpeedTestCallable<ArbitraryInteger> {
 	protected ArbitraryInteger valueOf(BigInteger value) {
 		return ArbitraryInteger.valueOf(value.toByteArray());
 	}
-
 }
 
 class LargeNumberMultiply extends SpeedTestCallable<ArbitraryInteger> {
@@ -185,5 +180,4 @@ class LargeNumberMultiply extends SpeedTestCallable<ArbitraryInteger> {
 	protected ArbitraryInteger valueOf(BigInteger value) {
 		return ArbitraryInteger.valueOf(value.toByteArray());
 	}
-
 }

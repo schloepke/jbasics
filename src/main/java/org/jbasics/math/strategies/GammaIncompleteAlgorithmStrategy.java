@@ -24,11 +24,11 @@
  */
 package org.jbasics.math.strategies;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-
 import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.BigDecimalMathLibrary;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
 
 public class GammaIncompleteAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
 	private final AlgorithmStrategy<BigDecimal> lnGammaStrategy = new GammaLnLanczosAlgorithmStrategy(LanczosCoefficients.LAN_COEF15);
@@ -100,5 +100,4 @@ public class GammaIncompleteAlgorithmStrategy implements AlgorithmStrategy<BigDe
 			h3 = h5;
 		}
 	}
-
 }

@@ -27,12 +27,12 @@ package org.jbasics.math.obsolete;
 public interface DataStorage<T extends DataStorage<?>> {
 
 	T add(T summand);
-	
+
 	T subtract(T subtraction);
-	
+
 	T multiply(T factor);
 
 	byte[] toByteArray();
-	
+
 	boolean isZero();
 }

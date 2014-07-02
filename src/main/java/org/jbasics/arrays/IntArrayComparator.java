@@ -24,24 +24,20 @@
  */
 package org.jbasics.arrays;
 
-import java.util.Comparator;
-
 import org.jbasics.annotation.ImmutableState;
 import org.jbasics.annotation.ThreadSafe;
 
+import java.util.Comparator;
+
 /**
- * Implements the {@link Comparator} interface for int arrays and offers static compare methods.
- * <p>
- * This small helper class offers compare functionality for int arrays. Mostly the static methods are used in order to
- * compare two given arrays. Additionally it is possible to instantiate this class in order to use it as a comparator.
- * </p>
- * <p>
- * It is important to know that there is no null check. Meaning that if any of given x or y is null it is considered to
- * be like a zero length array. So a zero length array and a null array are considered to be equal. However a zero
- * length or null array compared to a not null and not zero length array is always considered to be less than even the
- * not zero length array may contain only zero values.
- * </p>
- * 
+ * Implements the {@link Comparator} interface for int arrays and offers static compare methods. <p> This small helper
+ * class offers compare functionality for int arrays. Mostly the static methods are used in order to compare two given
+ * arrays. Additionally it is possible to instantiate this class in order to use it as a comparator. </p> <p> It is
+ * important to know that there is no null check. Meaning that if any of given x or y is null it is considered to be
+ * like a zero length array. So a zero length array and a null array are considered to be equal. However a zero length
+ * or null array compared to a not null and not zero length array is always considered to be less than even the not zero
+ * length array may contain only zero values. </p>
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -49,34 +45,63 @@ import org.jbasics.annotation.ThreadSafe;
 @ImmutableState
 public final class IntArrayComparator implements Comparator<int[]> {
 	/**
-	 * The singleton comparator to use as comparator. Use this instead of creating a new instance
-	 * since the comparator does not have any state and multiple instances do not make sense unless
-	 * the API of the usage requires it.
-	 * 
+	 * The singleton comparator to use as comparator. Use this instead of creating a new instance since the comparator
+	 * does not have any state and multiple instances do not make sense unless the API of the usage requires it.
+	 *
 	 * @since 1.0
 	 */
 	public static final Comparator<int[]> COMPARATOR = new IntArrayComparator();
 
 	/**
-	 * Compare the two given arrays and return a value suitable by to the {@link Comparator} interface.
-	 * 
-	 * @param x The left array to compare
-	 * @param y The right array to compare
-	 * @return 0 if the two arrays are equal, -1 if x is less than y and 1 if x is greater than y.
-	 * @see #compareArrays(int[], int[])
+	 * Do not instantiate this comparator but use {@link IntArrayComparator#COMPARATOR} instead.
+	 */
+	private IntArrayComparator() {
+		// to hinder instantiation
+	}
+
+	/**
+	 * Returns true if the given array is null, zero length or contains only zero values.
+	 *
+	 * @param x The array to check for zero or null
+	 *
+	 * @return True if the array is null, zero length or contains only zero.
+	 *
 	 * @since 1.0
 	 */
-	@Override
-	public int compare(final int[] x, final int[] y) {
-		return IntArrayComparator.compareArrays(x, y);
+	public static boolean isZeroOrNull(final int[] x) {
+		if (x != null && x.length > 0) {
+			int i = x.length;
+			while (--i >= 0) {
+				if (x[i] != 0) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Returns true if the x array is greater than the y array.
+	 *
+	 * @param x The left array
+	 * @param y The right array
+	 *
+	 * @return True if x > y
+	 *
+	 * @since 1.0
+	 */
+	public static boolean isGreaterThan(final int[] x, final int[] y) {
+		return IntArrayComparator.compareArrays(x, y) > 0;
 	}
 
 	/**
 	 * Compare the two given arrays and return a value suitable by to the {@link Comparator} interface.
-	 * 
+	 *
 	 * @param x The left array to compare
 	 * @param y The right array to compare
+	 *
 	 * @return 0 if the two arrays are equal, -1 if x is less than y and 1 if x is greater than y.
+	 *
 	 * @see #compare(int[], int[])
 	 * @since 1.0
 	 */
@@ -108,42 +133,13 @@ public final class IntArrayComparator implements Comparator<int[]> {
 	}
 
 	/**
-	 * Returns true if the given array is null, zero length or contains only zero values.
-	 * 
-	 * @param x The array to check for zero or null
-	 * @return True if the array is null, zero length or contains only zero.
-	 * @since 1.0
-	 */
-	public static boolean isZeroOrNull(final int[] x) {
-		if (x != null && x.length > 0) {
-			int i = x.length;
-			while (--i >= 0) {
-				if (x[i] != 0) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * Returns true if the x array is greater than the y array.
-	 * 
-	 * @param x The left array
-	 * @param y The right array
-	 * @return True if x > y
-	 * @since 1.0
-	 */
-	public static boolean isGreaterThan(final int[] x, final int[] y) {
-		return IntArrayComparator.compareArrays(x, y) > 0;
-	}
-
-	/**
 	 * Returns true if the x array is greater than or equal the y array.
-	 * 
+	 *
 	 * @param x The left array
 	 * @param y The right array
+	 *
 	 * @return True if x >= y
+	 *
 	 * @since 1.0
 	 */
 	public static boolean isGreaterThanOrEqual(final int[] x, final int[] y) {
@@ -152,10 +148,12 @@ public final class IntArrayComparator implements Comparator<int[]> {
 
 	/**
 	 * Returns true if the x array is equal to the y array.
-	 * 
+	 *
 	 * @param x The left array
 	 * @param y The right array
+	 *
 	 * @return True if x == y
+	 *
 	 * @since 1.0
 	 */
 	public static boolean isEqual(final int[] x, final int[] y) {
@@ -164,10 +162,12 @@ public final class IntArrayComparator implements Comparator<int[]> {
 
 	/**
 	 * Returns true if the x array is less than the y array.
-	 * 
+	 *
 	 * @param x The left array
 	 * @param y The right array
+	 *
 	 * @return True if x < y
+	 *
 	 * @since 1.0
 	 */
 	public static boolean isLessThan(final int[] x, final int[] y) {
@@ -176,10 +176,12 @@ public final class IntArrayComparator implements Comparator<int[]> {
 
 	/**
 	 * Returns true if the x array is less than or equal the y array.
-	 * 
+	 *
 	 * @param x The left array
 	 * @param y The right array
+	 *
 	 * @return True if x <= y
+	 *
 	 * @since 1.0
 	 */
 	public static boolean isLessThanOrEqual(final int[] x, final int[] y) {
@@ -188,10 +190,12 @@ public final class IntArrayComparator implements Comparator<int[]> {
 
 	/**
 	 * Returns true if the x array is not equal to the y array.
-	 * 
+	 *
 	 * @param x The left array
 	 * @param y The right array
+	 *
 	 * @return True if x <> y
+	 *
 	 * @since 1.0
 	 */
 	public static boolean isNotEqual(final int[] x, final int[] y) {
@@ -199,9 +203,18 @@ public final class IntArrayComparator implements Comparator<int[]> {
 	}
 
 	/**
-	 * Do not instantiate this comparator but use {@link IntArrayComparator#COMPARATOR} instead.
+	 * Compare the two given arrays and return a value suitable by to the {@link Comparator} interface.
+	 *
+	 * @param x The left array to compare
+	 * @param y The right array to compare
+	 *
+	 * @return 0 if the two arrays are equal, -1 if x is less than y and 1 if x is greater than y.
+	 *
+	 * @see #compareArrays(int[], int[])
+	 * @since 1.0
 	 */
-	private IntArrayComparator() {
-		// to hinder instantiation
+	@Override
+	public int compare(final int[] x, final int[] y) {
+		return IntArrayComparator.compareArrays(x, y);
 	}
 }

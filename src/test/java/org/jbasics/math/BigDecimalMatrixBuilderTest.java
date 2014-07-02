@@ -24,9 +24,9 @@
  */
 package org.jbasics.math;
 
-import java.math.BigDecimal;
-
 import org.junit.Test;
+
+import java.math.BigDecimal;
 
 public class BigDecimalMatrixBuilderTest {
 

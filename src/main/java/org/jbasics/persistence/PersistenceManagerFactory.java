@@ -24,15 +24,14 @@
  */
 package org.jbasics.persistence;
 
-import java.util.Hashtable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.jbasics.pattern.factory.Factory;
 
 import javax.naming.Context;
 import javax.naming.Name;
 import javax.naming.spi.ObjectFactory;
-
-import org.jbasics.pattern.factory.Factory;
+import java.util.Hashtable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PersistenceManagerFactory implements ObjectFactory, Factory<PersistenceManager> {
 
@@ -47,5 +46,4 @@ public class PersistenceManagerFactory implements ObjectFactory, Factory<Persist
 		}
 		return new PersistenceManager();
 	}
-
 }

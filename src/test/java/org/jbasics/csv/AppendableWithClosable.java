@@ -54,5 +54,4 @@ public class AppendableWithClosable implements Appendable, Closeable {
 		this.builder.append(c);
 		return this;
 	}
-
 }

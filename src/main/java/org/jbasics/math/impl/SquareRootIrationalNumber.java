@@ -24,31 +24,32 @@
  */
 package org.jbasics.math.impl;
 
-import java.math.BigDecimal;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.IrationalNumber;
 import org.jbasics.math.strategies.SquareRootAlgorithmStrategy;
 
+import java.math.BigDecimal;
+
 /**
- * Calculates the square root for the given number.
- * <p>
- * Using the Heron algorithm in conjunction with a start value calculated by the {@link Math#sqrt(double)} function.
- * </p>
- * 
+ * Calculates the square root for the given number. <p> Using the Heron algorithm in conjunction with a start value
+ * calculated by the {@link Math#sqrt(double)} function. </p>
+ *
  * @author Stephan Schloepke
  */
 public class SquareRootIrationalNumber extends BigDecimalIrationalNumber {
 	public static final AlgorithmStrategy<BigDecimal> STRATEGY = new SquareRootAlgorithmStrategy();
-
+	public static final IrationalNumber<BigDecimal> SQUARE_ROOT_OF_PI2 = new BigDecimalIrationalNumber(new BigDecimalAlgorithmStrategyChain(
+			PiIrationalNumber.STRATEGY, SquareRootIrationalNumber.STRATEGY), MathImplConstants.TWO);
 	/**
 	 * The constant square root of two.
 	 */
 	public static final IrationalNumber<BigDecimal> SQUARE_ROOT_OF_2 = new SquareRootIrationalNumber(MathImplConstants.TWO);
 	public static final IrationalNumber<BigDecimal> SQUARE_ROOT_OF_3 = new SquareRootIrationalNumber(MathImplConstants.THREE);
-	public static final IrationalNumber<BigDecimal> SQUARE_ROOT_OF_PI2 = new BigDecimalIrationalNumber(new BigDecimalAlgorithmStrategyChain(
-			PiIrationalNumber.STRATEGY, SquareRootIrationalNumber.STRATEGY), MathImplConstants.TWO);
+
+	private SquareRootIrationalNumber(final BigDecimal x) {
+		super(SquareRootIrationalNumber.STRATEGY, x);
+	}
 
 	public static IrationalNumber<BigDecimal> valueOf(final BigDecimal x) {
 		if (ContractCheck.mustNotBeNull(x, "x").signum() < 0) {
@@ -61,9 +62,4 @@ public class SquareRootIrationalNumber extends BigDecimalIrationalNumber {
 		}
 		return new SquareRootIrationalNumber(x);
 	}
-
-	private SquareRootIrationalNumber(final BigDecimal x) {
-		super(SquareRootIrationalNumber.STRATEGY, x);
-	}
-
 }

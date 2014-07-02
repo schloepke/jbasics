@@ -70,5 +70,4 @@ public class AuthorisationFailedException extends Exception {
 	public RequiredRoles getRequiredRoles() {
 		return this.requiredRoles;
 	}
-
 }

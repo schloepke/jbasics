@@ -24,13 +24,6 @@
  */
 package org.jbasics.csv;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import org.jbasics.arrays.unstable.ArrayIterator;
 import org.jbasics.net.mediatype.MediaType;
 import org.jbasics.pattern.container.Indexed;
@@ -39,9 +32,16 @@ import org.jbasics.pattern.factory.ParameterFactory;
 import org.jbasics.types.sequences.Sequence;
 import org.jbasics.types.tuples.Pair;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * CSVFile is a comma separated values file as defined by RFC4180.
- * 
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -60,6 +60,13 @@ public class CSVTable implements Iterable<CSVRecord>, Mapable<Sequence<String>, 
 		this(null, ',', (CSVRecord) null, records);
 	}
 
+	public CSVTable(final Charset charset, final char separator, final CSVRecord headers, final CSVRecord[] records) {
+		this.charset = charset == null ? Charset.defaultCharset() : charset;
+		this.headers = headers;
+		this.records = records == null ? new CSVRecord[0] : records;
+		this.separator = separator;
+	}
+
 	public CSVTable(final Collection<CSVRecord> records) {
 		this(null, ',', (CSVRecord) null, records.toArray(new CSVRecord[records.size()]));
 	}
@@ -72,45 +79,8 @@ public class CSVTable implements Iterable<CSVRecord>, Mapable<Sequence<String>, 
 		this(charset, separator, headers == null || headers.length == 0 ? null : new CSVRecord(headers), records);
 	}
 
-	public CSVTable(final Charset charset, final char separator, final CSVRecord headers, final CSVRecord[] records) {
-		this.charset = charset == null ? Charset.defaultCharset() : charset;
-		this.headers = headers;
-		this.records = records == null ? new CSVRecord[0] : records;
-		this.separator = separator;
-	}
-
 	public int size() {
 		return this.records.length;
-	}
-
-	public Charset getCharset() {
-		return this.charset;
-	}
-
-	public char getSeparator() {
-		return this.separator;
-	}
-
-	public boolean hasHeaders() {
-		return this.headers != null;
-	}
-
-	public CSVRecord getHeaders() {
-		return this.headers;
-	}
-
-	@SuppressWarnings("unchecked")
-	public MediaType getMediaType() {
-		return CSVTable.RFC4180_MEDIA_TYPE.deriveWithNewParameters(new Pair<String, String>("charset", this.charset.name()),
-				hasHeaders() ? CSVTable.HEADER_PRESENT : CSVTable.HEADER_ABSENT);
-	}
-
-	public String getMediaTypeString() {
-		return getMediaType().toString();
-	}
-
-	public Iterator<CSVRecord> iterator() {
-		return new ArrayIterator<CSVRecord>(this.records);
 	}
 
 	@Override
@@ -122,8 +92,47 @@ public class CSVTable implements Iterable<CSVRecord>, Mapable<Sequence<String>, 
 		return this.records[index];
 	}
 
+	public Charset getCharset() {
+		return this.charset;
+	}
+
+	public char getSeparator() {
+		return this.separator;
+	}
+
+	public CSVRecord getHeaders() {
+		return this.headers;
+	}
+
+	public String getMediaTypeString() {
+		return getMediaType().toString();
+	}
+
+	@SuppressWarnings("unchecked")
+	public MediaType getMediaType() {
+		return CSVTable.RFC4180_MEDIA_TYPE.deriveWithNewParameters(new Pair<String, String>("charset", this.charset.name()),
+				hasHeaders() ? CSVTable.HEADER_PRESENT : CSVTable.HEADER_ABSENT);
+	}
+
+	public boolean hasHeaders() {
+		return this.headers != null;
+	}
+
+	public Iterator<CSVRecord> iterator() {
+		return new ArrayIterator<CSVRecord>(this.records);
+	}
+
 	public String getField(final int recordIndex, final int fieldIndex) {
 		return this.records[recordIndex].getField(fieldIndex);
+	}
+
+	@Override
+	public String toString() {
+		try {
+			return append(new StringBuilder()).toString();
+		} catch (final IOException e) {
+			return "Exception in toString: " + e;
+		}
 	}
 
 	public Appendable append(final Appendable appendable) throws IOException {
@@ -139,21 +148,8 @@ public class CSVTable implements Iterable<CSVRecord>, Mapable<Sequence<String>, 
 		return appendable;
 	}
 
-	@Override
-	public String toString() {
-		try {
-			return append(new StringBuilder()).toString();
-		} catch (final IOException e) {
-			return "Exception in toString: " + e;
-		}
-	}
-
 	public Map<Sequence<String>, CSVRecord> map(final String... columnNames) {
 		return map(new CSVRecordSequenceTransposer(this, columnNames));
-	}
-
-	public Map<Sequence<String>, CSVRecord> map(final int... fields) {
-		return map(new CSVRecordSequenceTransposer(fields));
 	}
 
 	public Map<Sequence<String>, CSVRecord> map(final ParameterFactory<Sequence<String>, CSVRecord> keyFactory) {
@@ -164,4 +160,7 @@ public class CSVTable implements Iterable<CSVRecord>, Mapable<Sequence<String>, 
 		return result;
 	}
 
+	public Map<Sequence<String>, CSVRecord> map(final int... fields) {
+		return map(new CSVRecordSequenceTransposer(fields));
+	}
 }

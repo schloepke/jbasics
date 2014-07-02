@@ -67,5 +67,4 @@ public class SpeedTestSettings {
 	public boolean isRecursive() {
 		return this.recursive;
 	}
-
 }

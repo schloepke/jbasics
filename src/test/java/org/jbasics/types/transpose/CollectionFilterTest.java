@@ -24,17 +24,15 @@
  */
 package org.jbasics.types.transpose;
 
+import junit.framework.Assert;
+import org.jbasics.pattern.transpose.ElementFilter;
+import org.jbasics.types.tuples.Pair;
+import org.junit.Test;
+
 import java.util.Arrays;
 import java.util.Collection;
 
-import junit.framework.Assert;
-
-import org.junit.Test;
-
-import org.jbasics.pattern.transpose.ElementFilter;
-import org.jbasics.types.tuples.Pair;
-
-@SuppressWarnings({ "nls", "unchecked" })
+@SuppressWarnings({"nls", "unchecked"})
 public class CollectionFilterTest {
 
 	private static final CollectionFilter<Pair<String, String>> DVB_FILTER = new CollectionFilter<Pair<String, String>>(

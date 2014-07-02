@@ -24,14 +24,13 @@
  */
 package org.jbasics.math.obsolete;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import org.jbasics.checker.ContractViolationException;
+import org.junit.Test;
 
 import java.math.BigInteger;
 
-import org.jbasics.checker.ContractViolationException;
-import org.jbasics.math.obsolete.ComplementHelper;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class ComplementHelperTest {
 	private static final BigInteger TEST_NORMAL = BigInteger.valueOf(1024);
@@ -89,5 +88,4 @@ public class ComplementHelperTest {
 			// expected
 		}
 	}
-
 }

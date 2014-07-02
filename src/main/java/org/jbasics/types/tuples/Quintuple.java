@@ -107,5 +107,4 @@ public class Quintuple<A, B, C, D, E> implements Tuple<A, Tuple<B, Tuple<C, Tupl
 				.append(this.right.third()).append(", ").append(this.right.fourth()).append(")");
 		return builder.toString();
 	}
-
 }

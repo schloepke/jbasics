@@ -30,16 +30,15 @@ import org.jbasics.pattern.factory.Factory;
 public class StaticInstanceFactory<T> implements Factory<T> {
 	private final T instance;
 
-	public static <T> Factory<T> createForInstance(final T instance) {
-		return new StaticInstanceFactory<T>(instance);
-	}
-
 	public StaticInstanceFactory(final T instance) {
 		this.instance = ContractCheck.mustNotBeNull(instance, "instance");
+	}
+
+	public static <T> Factory<T> createForInstance(final T instance) {
+		return new StaticInstanceFactory<T>(instance);
 	}
 
 	public T newInstance() {
 		return this.instance;
 	}
-
 }

@@ -24,10 +24,10 @@
  */
 package org.jbasics.discover;
 
-import java.io.Serializable;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.delegation.ReleasableDelegate;
+
+import java.io.Serializable;
 
 public class DiscoverableImplementationDelegate<T> implements ReleasableDelegate<T>, Serializable {
 	private static final long serialVersionUID = 20120101L;
@@ -35,17 +35,17 @@ public class DiscoverableImplementationDelegate<T> implements ReleasableDelegate
 	private final Class<? extends T> defaultImpl;
 	private transient T instance;
 
+	protected DiscoverableImplementationDelegate(final Class<T> abstractClass, final Class<? extends T> defaultImpl) {
+		this.abstractClass = ContractCheck.mustNotBeNull(abstractClass, "abstractClass");
+		this.defaultImpl = defaultImpl;
+	}
+
 	public static <T> DiscoverableImplementationDelegate<T> newInstance(final Class<T> abstractClass) {
 		return new DiscoverableImplementationDelegate<T>(abstractClass, null);
 	}
 
 	public static <T> DiscoverableImplementationDelegate<T> newInstance(final Class<T> abstractClass, final Class<? extends T> defaultImpl) {
 		return new DiscoverableImplementationDelegate<T>(abstractClass, defaultImpl);
-	}
-
-	protected DiscoverableImplementationDelegate(final Class<T> abstractClass, final Class<? extends T> defaultImpl) {
-		this.abstractClass = ContractCheck.mustNotBeNull(abstractClass, "abstractClass");
-		this.defaultImpl = defaultImpl;
 	}
 
 	public T delegate() {
@@ -69,5 +69,4 @@ public class DiscoverableImplementationDelegate<T> implements ReleasableDelegate
 		this.instance = null;
 		return false;
 	}
-
 }

@@ -24,15 +24,6 @@
  */
 package org.jbasics.command;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.command.annotations.Command;
 import org.jbasics.command.annotations.Commands;
@@ -44,6 +35,15 @@ import org.jbasics.text.JavaUtilLoggingWriter;
 import org.jbasics.types.factories.CollectionsFactory;
 import org.jbasics.utilities.DataUtilities;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class CommandExecutor implements ExecuteStrategy<Integer, CommandCall> {
 	public static final Integer NO_ERROR_RETURN_CODE = Integer.valueOf(0);
 	public static final Integer GENERAL_ERROR_RETURN_CODE = Integer.valueOf(-1);
@@ -53,6 +53,15 @@ public class CommandExecutor implements ExecuteStrategy<Integer, CommandCall> {
 	private final Map<String, String> aliases;
 	private final PrintWriter outChannel;
 	private final PrintWriter errorChannel;
+
+	private CommandExecutor(final Map<String, CommandSpec> commands, final Map<String, String> aliases, final PrintWriter outChannel,
+							final PrintWriter errChannel, final ContextualExecuteStrategy<Integer, CommandCall, CommandExecutor> interceptor) {
+		this.commands = ContractCheck.mustNotBeNullOrEmpty(commands, "commands"); //$NON-NLS-1$
+		this.aliases = ContractCheck.mustNotBeNullOrEmpty(aliases, "aliases"); //$NON-NLS-1$
+		this.outChannel = outChannel == null ? new PrintWriter(System.out) : outChannel;
+		this.errorChannel = errChannel == null ? new PrintWriter(System.err) : errChannel;
+		this.interceptor = interceptor;
+	}
 
 	public static CommandExecutorBuilder newBuilder() {
 		return new CommandExecutorBuilder();
@@ -80,6 +89,14 @@ public class CommandExecutor implements ExecuteStrategy<Integer, CommandCall> {
 		return CommandExecutor.GENERAL_ERROR_RETURN_CODE;
 	}
 
+	public Appendable printCommand(final Appendable out) throws IOException {
+		for (final CommandSpec spec : this.commands.values()) {
+			out.append(spec.toString());
+			out.append('\n');
+		}
+		return out;
+	}
+
 	@Override
 	public Integer execute(final CommandCall commandCall) {
 		String commandName = ContractCheck.mustNotBeNull(commandCall, "commandCall").getName(); //$NON-NLS-1$
@@ -96,23 +113,6 @@ public class CommandExecutor implements ExecuteStrategy<Integer, CommandCall> {
 			throw new CommandExecutionException("Unknown command '" + commandCall + "'", commandCall); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return commandSpec.execute(commandCall);
-	}
-
-	public Appendable printCommand(final Appendable out) throws IOException {
-		for (final CommandSpec spec : this.commands.values()) {
-			out.append(spec.toString());
-			out.append('\n');
-		}
-		return out;
-	}
-
-	private CommandExecutor(final Map<String, CommandSpec> commands, final Map<String, String> aliases, final PrintWriter outChannel,
-			final PrintWriter errChannel, final ContextualExecuteStrategy<Integer, CommandCall, CommandExecutor> interceptor) {
-		this.commands = ContractCheck.mustNotBeNullOrEmpty(commands, "commands"); //$NON-NLS-1$
-		this.aliases = ContractCheck.mustNotBeNullOrEmpty(aliases, "aliases"); //$NON-NLS-1$
-		this.outChannel = outChannel == null ? new PrintWriter(System.out) : outChannel;
-		this.errorChannel = errChannel == null ? new PrintWriter(System.err) : errChannel;
-		this.interceptor = interceptor;
 	}
 
 	public static class CommandExecutorBuilder implements Builder<CommandExecutor> {
@@ -150,57 +150,6 @@ public class CommandExecutor implements ExecuteStrategy<Integer, CommandCall> {
 			for (final Class<?> commandsType : commandsTypes) {
 				scanCommandsType(commandsType);
 			}
-			return this;
-		}
-
-		public CommandExecutorBuilder withCommandSpecs(final CommandSpec... commandsTypes) {
-			for (final CommandSpec commandsType : commandsTypes) {
-				addSpec(commandsType);
-			}
-			return this;
-		}
-
-		public CommandExecutorBuilder withOutputWriter(final PrintWriter out) {
-			this.outChannel = out;
-			return this;
-		}
-
-		public CommandExecutorBuilder withErrorWriter(final PrintWriter out) {
-			this.errChannel = out;
-			return this;
-		}
-
-		public CommandExecutorBuilder withOutputWriter(final Writer out) {
-			return withOutputWriter(new PrintWriter(out));
-		}
-
-		public CommandExecutorBuilder withErrorWriter(final Writer out) {
-			return withErrorWriter(new PrintWriter(out));
-		}
-
-		public CommandExecutorBuilder withOutputAppendable(final Appendable out) {
-			return withOutputWriter(out != null ? new AppendableWriter(out) : null);
-		}
-
-		public CommandExecutorBuilder withErrorAppendable(final Appendable out) {
-			return withErrorWriter(out != null ? new AppendableWriter(out) : null);
-		}
-
-		public CommandExecutorBuilder withJavaLoggingOutput(final Logger logger) {
-			return withOutputWriter(new JavaUtilLoggingWriter(ContractCheck.mustNotBeNull(logger, "logger"), Level.INFO)).withErrorWriter(
-					new JavaUtilLoggingWriter(logger, Level.SEVERE));
-		}
-
-		public CommandExecutorBuilder withJavaLoggingOutput(final String loggerName) {
-			return withJavaLoggingOutput(Logger.getLogger(ContractCheck.mustNotBeNull(loggerName, "loggerName")));
-		}
-
-		public CommandExecutorBuilder withJavaLoggingOutput(final Class<?> loggerType) {
-			return withJavaLoggingOutput(ContractCheck.mustNotBeNull(loggerType, "loggerType").getName());
-		}
-
-		public CommandExecutorBuilder withInterceptor(final ContextualExecuteStrategy<Integer, CommandCall, CommandExecutor> interceptor) {
-			this.interceptor = interceptor;
 			return this;
 		}
 
@@ -248,6 +197,57 @@ public class CommandExecutor implements ExecuteStrategy<Integer, CommandCall> {
 			} else {
 				this.aliases.put(name, alias + "," + fullName); //$NON-NLS-1$
 			}
+		}
+
+		public CommandExecutorBuilder withCommandSpecs(final CommandSpec... commandsTypes) {
+			for (final CommandSpec commandsType : commandsTypes) {
+				addSpec(commandsType);
+			}
+			return this;
+		}
+
+		public CommandExecutorBuilder withOutputAppendable(final Appendable out) {
+			return withOutputWriter(out != null ? new AppendableWriter(out) : null);
+		}
+
+		public CommandExecutorBuilder withOutputWriter(final Writer out) {
+			return withOutputWriter(new PrintWriter(out));
+		}
+
+		public CommandExecutorBuilder withOutputWriter(final PrintWriter out) {
+			this.outChannel = out;
+			return this;
+		}
+
+		public CommandExecutorBuilder withErrorAppendable(final Appendable out) {
+			return withErrorWriter(out != null ? new AppendableWriter(out) : null);
+		}
+
+		public CommandExecutorBuilder withErrorWriter(final Writer out) {
+			return withErrorWriter(new PrintWriter(out));
+		}
+
+		public CommandExecutorBuilder withErrorWriter(final PrintWriter out) {
+			this.errChannel = out;
+			return this;
+		}
+
+		public CommandExecutorBuilder withJavaLoggingOutput(final Class<?> loggerType) {
+			return withJavaLoggingOutput(ContractCheck.mustNotBeNull(loggerType, "loggerType").getName());
+		}
+
+		public CommandExecutorBuilder withJavaLoggingOutput(final String loggerName) {
+			return withJavaLoggingOutput(Logger.getLogger(ContractCheck.mustNotBeNull(loggerName, "loggerName")));
+		}
+
+		public CommandExecutorBuilder withJavaLoggingOutput(final Logger logger) {
+			return withOutputWriter(new JavaUtilLoggingWriter(ContractCheck.mustNotBeNull(logger, "logger"), Level.INFO)).withErrorWriter(
+					new JavaUtilLoggingWriter(logger, Level.SEVERE));
+		}
+
+		public CommandExecutorBuilder withInterceptor(final ContextualExecuteStrategy<Integer, CommandCall, CommandExecutor> interceptor) {
+			this.interceptor = interceptor;
+			return this;
 		}
 	}
 }

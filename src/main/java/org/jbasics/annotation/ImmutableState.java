@@ -30,20 +30,20 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Defines that the state of an Instance of the class is always immutable.
- * It is required that there is no ways to change the value of an instance
- * of this class neither direct or indirect. Imutable types are also always
- * thread safe!
- * 
+ * Defines that the state of an Instance of the class is always immutable. It is required that there is no ways to
+ * change the value of an instance of this class neither direct or indirect. Immutable types are also always thread
+ * safe!
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ImmutableState {
+
 	/**
 	 * Indicates that we are only immutable if the given construction parameters are immutable as well.
-	 * 
+	 *
 	 * @return True if the immutable state is derived of its construction parameters. Default is false.
 	 */
 	boolean derived() default false;

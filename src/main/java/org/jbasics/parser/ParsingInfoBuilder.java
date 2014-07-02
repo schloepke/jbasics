@@ -24,17 +24,16 @@
  */
 package org.jbasics.parser;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import javax.xml.namespace.QName;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.parser.invoker.Invoker;
 import org.jbasics.pattern.builder.Builder;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.types.tuples.Pair;
+
+import javax.xml.namespace.QName;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public class ParsingInfoBuilder implements Builder<Object> {
@@ -50,6 +49,22 @@ public class ParsingInfoBuilder implements Builder<Object> {
 
 	public static ParsingInfoBuilder newInstance() {
 		return new ParsingInfoBuilder();
+	}
+
+	public void reset() {
+		this.builderType = null;
+		this.builderFactory = null;
+		this.qualifiedNameInvoker = null;
+		if (this.attributeInvokers != null) {
+			this.attributeInvokers.clear();
+		}
+		this.anyAttributeInvoker = null;
+		if (this.elementInvokers != null) {
+			this.elementInvokers.clear();
+		}
+		this.anyElementInvoker = null;
+		this.contentInvoker = null;
+		this.commentInvoker = null;
 	}
 
 	public ParsingInfo build() {
@@ -71,22 +86,6 @@ public class ParsingInfoBuilder implements Builder<Object> {
 		}
 		return new ParsingInfo(this.builderFactory, this.qualifiedNameInvoker, attributes, this.anyAttributeInvoker,
 				elements, this.anyElementInvoker, this.contentInvoker, this.commentInvoker);
-	}
-
-	public void reset() {
-		this.builderType = null;
-		this.builderFactory = null;
-		this.qualifiedNameInvoker = null;
-		if (this.attributeInvokers != null) {
-			this.attributeInvokers.clear();
-		}
-		this.anyAttributeInvoker = null;
-		if (this.elementInvokers != null) {
-			this.elementInvokers.clear();
-		}
-		this.anyElementInvoker = null;
-		this.contentInvoker = null;
-		this.commentInvoker = null;
 	}
 
 	public ParsingInfoBuilder setBuilderFactory(Factory<? extends Builder> builderFactory) {
@@ -168,10 +167,9 @@ public class ParsingInfoBuilder implements Builder<Object> {
 	public Class<? extends Builder> getBuilderType() {
 		return this.builderType;
 	}
-	
+
 	public ParsingInfoBuilder setBuilderType(Class<? extends Builder> builderType) {
 		this.builderType = builderType;
 		return this;
 	}
-
 }

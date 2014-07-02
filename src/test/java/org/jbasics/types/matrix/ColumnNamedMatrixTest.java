@@ -24,9 +24,9 @@
  */
 package org.jbasics.types.matrix;
 
-import java.util.List;
-
 import org.junit.Test;
+
+import java.util.List;
 
 public class ColumnNamedMatrixTest {
 

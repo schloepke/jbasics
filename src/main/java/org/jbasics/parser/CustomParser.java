@@ -31,5 +31,4 @@ public interface CustomParser {
 	ContentHandler beginParsing();
 
 	void finishParsing();
-	
 }

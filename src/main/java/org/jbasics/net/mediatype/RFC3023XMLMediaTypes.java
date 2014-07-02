@@ -26,7 +26,7 @@ package org.jbasics.net.mediatype;
 
 /**
  * This is a convinient class that helps to determine if a media type is an xml media type as defined by RFC3023.
- * 
+ *
  * @author Stephan Schloepke
  */
 public final class RFC3023XMLMediaTypes {
@@ -70,5 +70,4 @@ public final class RFC3023XMLMediaTypes {
 			return true;
 		}
 	}
-
 }

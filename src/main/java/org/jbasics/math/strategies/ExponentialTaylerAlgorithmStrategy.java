@@ -24,12 +24,12 @@
  */
 package org.jbasics.math.strategies;
 
+import org.jbasics.math.AlgorithmStrategy;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
-
-import org.jbasics.math.AlgorithmStrategy;
 
 public class ExponentialTaylerAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
 	public static final AlgorithmStrategy<BigDecimal> STRATEGY = new ExponentialTaylerAlgorithmStrategy();
@@ -66,5 +66,4 @@ public class ExponentialTaylerAlgorithmStrategy implements AlgorithmStrategy<Big
 		}
 		return result.round(mc);
 	}
-
 }

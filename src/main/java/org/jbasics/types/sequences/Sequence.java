@@ -24,9 +24,6 @@
  */
 package org.jbasics.types.sequences;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.factory.ParameterFactory;
 import org.jbasics.pattern.modifer.Concatable;
@@ -36,18 +33,40 @@ import org.jbasics.text.StringUtilities;
 import org.jbasics.types.tuples.Tuple;
 import org.jbasics.utilities.DataUtilities;
 
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * Defines a sequence. This is currently
- * 
- * @author schls1
+ *
  * @param <T>
+ *
+ * @author schls1
  */
 public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Concatable<Sequence<T>> {
 	public static final Sequence<?> EMPTY_SEQUENCE = new Sequence<Object>();
+	private final T element;
+	private final Sequence<T> rest;
+	private final int size;
 
-	@SuppressWarnings("unchecked")
-	public static <E> Sequence<E> emptySequence() {
-		return (Sequence<E>) Sequence.EMPTY_SEQUENCE;
+	public Sequence() {
+		this.element = null;
+		this.rest = null;
+		this.size = 0;
+	}
+
+	public Sequence(final T element) {
+		this(element, null);
+	}
+
+	public Sequence(final T element, final Sequence<T> rest) {
+		this.element = element;
+		this.rest = rest;
+		this.size = rest != null ? rest.size + 1 : 1;
+	}
+
+	public static Sequence<String> split(final String input, final String regex) {
+		return Sequence.create(ContractCheck.mustNotBeNull(input, "input").split(ContractCheck.mustNotBeNullOrTrimmedEmpty(regex, "regex"))); //$NON-NLS-1$//$NON-NLS-2$
 	}
 
 	public static <E> Sequence<E> create(final E... elements) {
@@ -60,8 +79,13 @@ public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Co
 		return result;
 	}
 
-	public static Sequence<String> split(final String input, final String regex) {
-		return Sequence.create(ContractCheck.mustNotBeNull(input, "input").split(ContractCheck.mustNotBeNullOrTrimmedEmpty(regex, "regex"))); //$NON-NLS-1$//$NON-NLS-2$
+	@SuppressWarnings("unchecked")
+	public static <E> Sequence<E> emptySequence() {
+		return (Sequence<E>) Sequence.EMPTY_SEQUENCE;
+	}
+
+	public Sequence<T> cons(final T item) {
+		return new Sequence<T>(item, this);
 	}
 
 	public static <E> Sequence<E> cons(final E element, final Sequence<E> sequence) {
@@ -78,6 +102,29 @@ public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Co
 			t = t.cons(element);
 		}
 		return t.reverse();
+	}
+
+	public Sequence<T> reverse() {
+		Sequence<T> result = Sequence.emptySequence();
+		Sequence<T> temp = this;
+		while (!temp.isEmpty()) {
+			result = result.cons(temp.first());
+			temp = temp.rest();
+		}
+		return result;
+	}
+
+	public boolean isEmpty() {
+		return this.size == 0;
+	}
+
+	public T first() {
+		return this.element;
+	}
+
+	@SuppressWarnings("unchecked")
+	public Sequence<T> rest() {
+		return DataUtilities.coalesce(this.rest, (Sequence<T>) Sequence.EMPTY_SEQUENCE);
 	}
 
 	public static <E> Sequence<E> cons(final Sequence<E> seqOne, final Sequence<E> seqTwo) {
@@ -109,67 +156,12 @@ public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Co
 		return result;
 	}
 
-	private final T element;
-	private final Sequence<T> rest;
-	private final int size;
-
-	public Sequence() {
-		this.element = null;
-		this.rest = null;
-		this.size = 0;
-	}
-
-	public Sequence(final T element) {
-		this(element, null);
-	}
-
-	public Sequence(final T element, final Sequence<T> rest) {
-		this.element = element;
-		this.rest = rest;
-		this.size = rest != null ? rest.size + 1 : 1;
-	}
-
-	public T first() {
-		return this.element;
-	}
-
-	@SuppressWarnings("unchecked")
-	public Sequence<T> rest() {
-		return DataUtilities.coalesce(this.rest, (Sequence<T>) Sequence.EMPTY_SEQUENCE);
-	}
-
-	public T head() {
-		return this.first();
-	}
-
-	public Sequence<T> tail() {
-		return this.rest();
-	}
-
 	public T car() {
 		return this.first();
 	}
 
 	public Sequence<T> cdr() {
 		return this.rest();
-	}
-
-	public boolean isEmpty() {
-		return this.size == 0;
-	}
-
-	public Sequence<T> cons(final T item) {
-		return new Sequence<T>(item, this);
-	}
-
-	public Sequence<T> reverse() {
-		Sequence<T> result = Sequence.emptySequence();
-		Sequence<T> temp = this;
-		while (!temp.isEmpty()) {
-			result = result.cons(temp.first());
-			temp = temp.rest();
-		}
-		return result;
 	}
 
 	@Override
@@ -214,6 +206,14 @@ public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Co
 		return result.reverse();
 	}
 
+	public T head() {
+		return this.first();
+	}
+
+	public Sequence<T> tail() {
+		return this.rest();
+	}
+
 	public Sequence<T> skip(final int amount) {
 		Sequence<T> temp = this;
 		for (int i = amount; i > 0; i--) {
@@ -254,18 +254,6 @@ public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Co
 
 	public String joinToString(final CharSequence separator) {
 		return StringUtilities.joinToString(separator, this);
-	}
-
-	@Override
-	public String toString() {
-		final StringBuilder temp = new StringBuilder().append("{"); //$NON-NLS-1$
-		if (!isEmpty()) {
-			temp.append(this.element);
-			if (this.rest != null && !this.rest.isEmpty()) {
-				temp.append(", ").append(this.rest); //$NON-NLS-1$
-			}
-		}
-		return temp.append("}").toString(); //$NON-NLS-1$
 	}
 
 	/*
@@ -314,4 +302,15 @@ public final class Sequence<T> implements Iterable<T>, Tuple<T, Sequence<T>>, Co
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		final StringBuilder temp = new StringBuilder().append("{"); //$NON-NLS-1$
+		if (!isEmpty()) {
+			temp.append(this.element);
+			if (this.rest != null && !this.rest.isEmpty()) {
+				temp.append(", ").append(this.rest); //$NON-NLS-1$
+			}
+		}
+		return temp.append("}").toString(); //$NON-NLS-1$
+	}
 }

@@ -24,14 +24,14 @@
  */
 package org.jbasics.parser;
 
+import org.jbasics.pattern.container.Stack;
+import org.jbasics.types.container.ListStack;
+import org.jbasics.types.tuples.Pair;
+
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import org.jbasics.pattern.container.Stack;
-import org.jbasics.types.container.ListStack;
-import org.jbasics.types.tuples.Pair;
 
 public class NamespacePrefixStack implements Iterable<Pair<String, URI>> {
 	public final Map<String, Stack<URI>> prefixMappings;
@@ -84,7 +84,5 @@ public class NamespacePrefixStack implements Iterable<Pair<String, URI>> {
 		public void remove() {
 			throw new UnsupportedOperationException();
 		}
-
 	}
-
 }

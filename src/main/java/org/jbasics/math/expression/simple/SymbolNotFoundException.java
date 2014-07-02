@@ -40,5 +40,4 @@ public class SymbolNotFoundException extends RuntimeException {
 	public SimpleSymbolExpression getSymbol() {
 		return this.symbol;
 	}
-
 }

@@ -24,11 +24,11 @@
  */
 package org.jbasics.math.expression.simple.impl;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-
 import org.jbasics.math.BigDecimalMathLibrary;
 import org.jbasics.math.expression.simple.SimpleExpression;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
 
 public class SimplePowerExpression extends SimpleBinaryExpression {
 
@@ -45,5 +45,4 @@ public class SimplePowerExpression extends SimpleBinaryExpression {
 	public String toString() {
 		return new StringBuilder().append(this.lhs).append("^").append(this.rhs).toString(); //$NON-NLS-1$
 	}
-
 }

@@ -45,5 +45,4 @@ public interface PageableData<T> extends Iterable<T> {
 	int currentPage();
 
 	int pageSize();
-
 }

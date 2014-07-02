@@ -33,9 +33,8 @@ public interface Builder<BuildType> {
 
 	/**
 	 * Builds the complete instance and returns it.
-	 * 
+	 *
 	 * @return The completly build instance.
 	 */
 	BuildType build();
-
 }

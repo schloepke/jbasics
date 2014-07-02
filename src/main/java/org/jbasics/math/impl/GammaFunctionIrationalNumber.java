@@ -24,21 +24,20 @@
  */
 package org.jbasics.math.impl;
 
-import java.math.BigDecimal;
-
 import org.jbasics.math.IrationalNumber;
 import org.jbasics.math.strategies.GammaLanczosAlgorithmStrategy;
 import org.jbasics.math.strategies.LanczosCoefficients;
 
+import java.math.BigDecimal;
+
 public class GammaFunctionIrationalNumber extends BigDecimalIrationalNumber {
 	public static final GammaLanczosAlgorithmStrategy STRATEGY = new GammaLanczosAlgorithmStrategy(LanczosCoefficients.LAN_COEF15);
-
-	public static IrationalNumber<BigDecimal> valueOf(final BigDecimal x) {
-		return new GammaFunctionIrationalNumber(x);
-	}
 
 	protected GammaFunctionIrationalNumber(final BigDecimal x) {
 		super(GammaFunctionIrationalNumber.STRATEGY, x);
 	}
 
+	public static IrationalNumber<BigDecimal> valueOf(final BigDecimal x) {
+		return new GammaFunctionIrationalNumber(x);
+	}
 }

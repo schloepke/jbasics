@@ -24,13 +24,13 @@
  */
 package org.jbasics.codec;
 
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.pattern.coder.Codec;
+
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.util.Random;
-
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.pattern.coder.Codec;
 
 public class XOrCryptCodec implements Codec<CharSequence, byte[]> {
 	public static final Charset UTF8_CHARSET = Charset.forName("UTF8"); //$NON-NLS-1$
@@ -43,17 +43,17 @@ public class XOrCryptCodec implements Codec<CharSequence, byte[]> {
 		this(XOrCryptCodec.UTF8_CHARSET, null);
 	}
 
+	public XOrCryptCodec(final Charset charset, final byte[] xorSource) {
+		this.charset = ContractCheck.mustNotBeNull(charset, "charset"); //$NON-NLS-1$
+		this.xorSource = xorSource == null || xorSource.length == 0 ? null : xorSource;
+	}
+
 	public XOrCryptCodec(final String xorDataString) {
 		this(xorDataString, XOrCryptCodec.UTF8_CHARSET);
 	}
 
 	public XOrCryptCodec(final String xorDataString, final Charset charset) {
 		this(ContractCheck.mustNotBeNull(charset, "charset"), xorDataString.getBytes(charset)); //$NON-NLS-1$
-	}
-
-	public XOrCryptCodec(final Charset charset, final byte[] xorSource) {
-		this.charset = ContractCheck.mustNotBeNull(charset, "charset"); //$NON-NLS-1$
-		this.xorSource = xorSource == null || xorSource.length == 0 ? null : xorSource;
 	}
 
 	@Override
@@ -93,5 +93,4 @@ public class XOrCryptCodec implements Codec<CharSequence, byte[]> {
 		b.rewind();
 		return this.charset.decode(b).toString();
 	}
-
 }

@@ -70,5 +70,4 @@ public abstract class AuthenticationException extends Exception {
 	public SecurityRealm getRealm() {
 		return this.realm;
 	}
-
 }

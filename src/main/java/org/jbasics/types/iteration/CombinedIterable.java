@@ -24,9 +24,9 @@
  */
 package org.jbasics.types.iteration;
 
-import java.util.Iterator;
-
 import org.jbasics.checker.ContractCheck;
+
+import java.util.Iterator;
 
 public class CombinedIterable<T> implements Iterable<T> {
 	private final Iterable<? extends T>[] iterables;
@@ -39,5 +39,4 @@ public class CombinedIterable<T> implements Iterable<T> {
 	public Iterator<T> iterator() {
 		return new CombinedIteratorForIterables<T>(this.iterables);
 	}
-
 }

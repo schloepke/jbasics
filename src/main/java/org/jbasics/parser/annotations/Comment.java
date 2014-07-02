@@ -30,7 +30,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.METHOD })
+@Target({ElementType.METHOD})
 public @interface Comment {
 	// This is a tagging annotation without any specific attributes
 }

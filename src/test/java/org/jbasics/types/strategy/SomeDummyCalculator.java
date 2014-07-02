@@ -24,9 +24,9 @@
  */
 package org.jbasics.types.strategy;
 
-import java.math.BigDecimal;
-
 import org.jbasics.pattern.strategy.ContextualCalculateStrategy;
+
+import java.math.BigDecimal;
 
 public class SomeDummyCalculator implements ContextualCalculateStrategy<BigDecimal, Double, SomeDummyContext> {
 
@@ -34,5 +34,4 @@ public class SomeDummyCalculator implements ContextualCalculateStrategy<BigDecim
 		return request == null ? BigDecimal.ZERO : BigDecimal.valueOf(request.doubleValue()).multiply(
 				context == null ? BigDecimal.ONE : context.getFactorNotNull());
 	}
-
 }

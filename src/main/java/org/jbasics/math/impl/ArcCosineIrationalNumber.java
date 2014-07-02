@@ -24,21 +24,20 @@
  */
 package org.jbasics.math.impl;
 
-import java.math.BigDecimal;
-
 import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.IrationalNumber;
 import org.jbasics.math.strategies.ArcCosineAlgorithmStrategy;
 
+import java.math.BigDecimal;
+
 public class ArcCosineIrationalNumber extends BigDecimalIrationalNumber {
 	private static final AlgorithmStrategy<BigDecimal> STRATEGY = new ArcCosineAlgorithmStrategy();
-
-	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
-		return new ArcCosineIrationalNumber(x);
-	}
 
 	private ArcCosineIrationalNumber(BigDecimal x) {
 		super(STRATEGY, x);
 	}
 
+	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
+		return new ArcCosineIrationalNumber(x);
+	}
 }

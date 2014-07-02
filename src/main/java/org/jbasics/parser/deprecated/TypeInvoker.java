@@ -24,9 +24,9 @@
  */
 package org.jbasics.parser.deprecated;
 
-import javax.xml.namespace.QName;
-
 import org.jbasics.parser.invoker.Invoker;
+
+import javax.xml.namespace.QName;
 
 public class TypeInvoker<T> {
 	private final Class<T> type;
@@ -66,5 +66,4 @@ public class TypeInvoker<T> {
 		}
 		return false;
 	}
-
 }

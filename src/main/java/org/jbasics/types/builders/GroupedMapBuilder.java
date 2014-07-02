@@ -24,29 +24,40 @@
  */
 package org.jbasics.types.builders;
 
-import java.util.Collections;
-import java.util.Map;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.builder.Builder;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.types.factories.MapFactory;
 import org.jbasics.types.tuples.Triplet;
 
+import java.util.Collections;
+import java.util.Map;
+
 public class GroupedMapBuilder<G, K, V> implements Builder<Map<G, Map<K, V>>> {
 	private final Factory<Map<G, Map<K, V>>> groupMapFactory;
 	private final Factory<Map<K, V>> mapFactory;
-	private boolean mutable = false;
 	private final Map<G, Map<K, V>> storage;
+	private boolean mutable = false;
 
 	public GroupedMapBuilder() {
-		this(MapFactory.<G, Map<K, V>> orderedMapFactory(), MapFactory.<K, V> orderedMapFactory());
+		this(MapFactory.<G, Map<K, V>>orderedMapFactory(), MapFactory.<K, V>orderedMapFactory());
 	}
 
 	public GroupedMapBuilder(final Factory<Map<G, Map<K, V>>> groupMapFactory, final Factory<Map<K, V>> mapFactory) {
 		this.mapFactory = ContractCheck.mustNotBeNull(mapFactory, "mapFactory"); //$NON-NLS-1$
 		this.groupMapFactory = ContractCheck.mustNotBeNull(groupMapFactory, "groupMapFactory"); //$NON-NLS-1$
 		this.storage = this.groupMapFactory.newInstance();
+	}
+
+	public GroupedMapBuilder<G, K, V> putAll(final Triplet<G, K, V>... groupKeyValuePairs) {
+		for (Triplet<G, K, V> groupKeyValuePair : groupKeyValuePairs) {
+			put(groupKeyValuePair);
+		}
+		return this;
+	}
+
+	public GroupedMapBuilder<G, K, V> put(final Triplet<G, K, V> groupKeyValuePair) {
+		return put(groupKeyValuePair.first(), groupKeyValuePair.second(), groupKeyValuePair.third());
 	}
 
 	public GroupedMapBuilder<G, K, V> put(final G group, final K key, final V value) {
@@ -56,17 +67,6 @@ public class GroupedMapBuilder<G, K, V> implements Builder<Map<G, Map<K, V>>> {
 			this.storage.put(group, map);
 		}
 		map.put(key, value);
-		return this;
-	}
-
-	public GroupedMapBuilder<G, K, V> put(final Triplet<G, K, V> groupKeyValuePair) {
-		return put(groupKeyValuePair.first(), groupKeyValuePair.second(), groupKeyValuePair.third());
-	}
-
-	public GroupedMapBuilder<G, K, V> putAll(final Triplet<G, K, V>... groupKeyValuePairs) {
-		for (Triplet<G, K, V> groupKeyValuePair : groupKeyValuePairs) {
-			put(groupKeyValuePair);
-		}
 		return this;
 	}
 
@@ -93,5 +93,4 @@ public class GroupedMapBuilder<G, K, V> implements Builder<Map<G, Map<K, V>>> {
 		}
 		return this.mutable ? result : Collections.unmodifiableMap(result);
 	}
-
 }

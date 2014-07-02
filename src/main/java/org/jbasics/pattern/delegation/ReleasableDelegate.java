@@ -26,20 +26,18 @@ package org.jbasics.pattern.delegation;
 
 /**
  * A delegate which can be released. Usually used in conjunction with a Pool.
- * 
+ *
  * @param <T> The delegated type.
+ *
  * @author Stephan Schloepke
  * @since 1.0.0
  */
 public interface ReleasableDelegate<T> extends Delegate<T> {
 
 	/**
-	 * Release the delegate making it no longer been available unless its lazily recreated or
-	 * acquired from a pool.
-	 * 
-	 * @return True if the delegated element is released. If it is false the delegate might keep the
-	 *         delegated instance.
+	 * Release the delegate making it no longer been available unless its lazily recreated or acquired from a pool.
+	 *
+	 * @return True if the delegated element is released. If it is false the delegate might keep the delegated instance.
 	 */
 	boolean release();
-
 }

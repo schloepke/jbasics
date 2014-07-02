@@ -24,12 +24,10 @@
  */
 package org.jbasics.xml.xhtml;
 
-import java.io.IOException;
-import java.util.Map;
-
 import org.junit.Test;
 
-import org.jbasics.xml.xhtml.XHTMLStandardEntityMapper;
+import java.io.IOException;
+import java.util.Map;
 
 public class XHTMLStandardEntityMapperTest {
 
@@ -39,5 +37,4 @@ public class XHTMLStandardEntityMapperTest {
 			System.out.append(entity.getKey() + " = '" + entity.getValue() + "'").append("\n");
 		}
 	}
-
 }

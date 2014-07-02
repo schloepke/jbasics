@@ -24,12 +24,12 @@
  */
 package org.jbasics.jaxb;
 
+import org.jbasics.types.delegates.UnmodifiableDelegate;
+import org.jbasics.types.pools.LazyQueuePool;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.validation.Schema;
-
-import org.jbasics.types.delegates.UnmodifiableDelegate;
-import org.jbasics.types.pools.LazyQueuePool;
 
 public class JAXBMarshallerPool extends LazyQueuePool<Marshaller> {
 
@@ -60,5 +60,4 @@ public class JAXBMarshallerPool extends LazyQueuePool<Marshaller> {
 	public JAXBMarshallerPool(final JAXBContextFactory contextFactory, final Schema schema) {
 		super(new JAXBMarshallerFactory(contextFactory, schema));
 	}
-
 }

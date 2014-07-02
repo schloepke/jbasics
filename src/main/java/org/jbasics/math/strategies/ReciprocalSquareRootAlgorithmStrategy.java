@@ -24,11 +24,11 @@
  */
 package org.jbasics.math.strategies;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-
 import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.impl.MathImplConstants;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
 
 public class ReciprocalSquareRootAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
 
@@ -49,5 +49,4 @@ public class ReciprocalSquareRootAlgorithmStrategy implements AlgorithmStrategy<
 		} while (result.subtract(oldResult, mc).signum() != 0);
 		return result;
 	}
-
 }

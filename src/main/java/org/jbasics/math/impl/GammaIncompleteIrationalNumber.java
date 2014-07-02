@@ -24,21 +24,20 @@
  */
 package org.jbasics.math.impl;
 
-import java.math.BigDecimal;
-
 import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.IrationalNumber;
 import org.jbasics.math.strategies.GammaIncompleteAlgorithmStrategy;
 
+import java.math.BigDecimal;
+
 public class GammaIncompleteIrationalNumber extends BigDecimalIrationalNumber {
 	public static final AlgorithmStrategy<BigDecimal> STRATEGY = new GammaIncompleteAlgorithmStrategy();
-
-	public static IrationalNumber<BigDecimal> valueOf(final BigDecimal x, final BigDecimal alpha) {
-		return new GammaIncompleteIrationalNumber(x, alpha);
-	}
 
 	protected GammaIncompleteIrationalNumber(final BigDecimal x, final BigDecimal alpha) {
 		super(GammaIncompleteIrationalNumber.STRATEGY, x, alpha);
 	}
 
+	public static IrationalNumber<BigDecimal> valueOf(final BigDecimal x, final BigDecimal alpha) {
+		return new GammaIncompleteIrationalNumber(x, alpha);
+	}
 }

@@ -24,11 +24,11 @@
  */
 package org.jbasics.configuration.properties;
 
-import java.math.BigDecimal;
-
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.math.BigDecimal;
 
 public class ValueTypeFactoryTest {
 
@@ -38,5 +38,4 @@ public class ValueTypeFactoryTest {
 		final BigDecimal test = ValueTypeFactory.create("1.04711", BigDecimal.class);
 		Assert.assertEquals(new BigDecimal("1.04711"), test);
 	}
-
 }

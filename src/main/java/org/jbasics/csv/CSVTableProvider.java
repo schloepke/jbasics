@@ -24,6 +24,15 @@
  */
 package org.jbasics.csv;
 
+import org.jbasics.configuration.properties.BooleanValueTypeFactory;
+import org.jbasics.configuration.properties.SystemProperty;
+import org.jbasics.utilities.DataUtilities;
+
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.ext.MessageBodyReader;
+import javax.ws.rs.ext.Provider;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,27 +44,15 @@ import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.MessageBodyReader;
-import javax.ws.rs.ext.Provider;
-
-import org.jbasics.configuration.properties.BooleanValueTypeFactory;
-import org.jbasics.configuration.properties.SystemProperty;
-import org.jbasics.utilities.DataUtilities;
-
 @Provider
 public class CSVTableProvider implements MessageBodyReader<CSVTable> {
-	private final Logger logger = Logger.getLogger(CSVTableProvider.class.getName());
-
 	public static final String USE_SEMICOLON_AS_STANDARD_PROPERTY = "org.jbasics.csv.CSVTableProvider.invertAlternateSeparator";
-	public static final String GERMAN_GUESS_PROPERTY = "org.jbasics.csv.CSVTableProvider.germanUseSemicolonSeparator";
-	public static final String AUTO_GUESS_PROPERTY = "org.jbasics.csv.CSVTableProvider.separatorAutoGuessing";
-
-	public static final SystemProperty<Boolean> USE_GERMAN_SEPARATOR_DETECTION = SystemProperty.booleanProperty(CSVTableProvider.GERMAN_GUESS_PROPERTY, Boolean.FALSE);
-	public static final SystemProperty<Boolean> USE_SEPARATOR_AUTO_GUESS = SystemProperty.booleanProperty(CSVTableProvider.AUTO_GUESS_PROPERTY, Boolean.FALSE);
 	public static final SystemProperty<Boolean> INVERT_ALTERNATE_SEPARATOR = SystemProperty.booleanProperty(CSVTableProvider.USE_SEMICOLON_AS_STANDARD_PROPERTY, Boolean.FALSE);
+	public static final String GERMAN_GUESS_PROPERTY = "org.jbasics.csv.CSVTableProvider.germanUseSemicolonSeparator";
+	public static final SystemProperty<Boolean> USE_GERMAN_SEPARATOR_DETECTION = SystemProperty.booleanProperty(CSVTableProvider.GERMAN_GUESS_PROPERTY, Boolean.FALSE);
+	public static final String AUTO_GUESS_PROPERTY = "org.jbasics.csv.CSVTableProvider.separatorAutoGuessing";
+	public static final SystemProperty<Boolean> USE_SEPARATOR_AUTO_GUESS = SystemProperty.booleanProperty(CSVTableProvider.AUTO_GUESS_PROPERTY, Boolean.FALSE);
+	private final Logger logger = Logger.getLogger(CSVTableProvider.class.getName());
 
 	@Override
 	public boolean isReadable(final Class<?> type, final Type genericType, final Annotation[] annotations, final MediaType mediaType) {
@@ -120,5 +117,4 @@ public class CSVTableProvider implements MessageBodyReader<CSVTable> {
 		}
 		return result;
 	}
-
 }

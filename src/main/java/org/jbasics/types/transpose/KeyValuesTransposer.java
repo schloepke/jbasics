@@ -24,11 +24,6 @@
  */
 package org.jbasics.types.transpose;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.pattern.factory.ParameterFactory;
@@ -37,6 +32,11 @@ import org.jbasics.pattern.transpose.Transposer;
 import org.jbasics.types.factories.ListFactory;
 import org.jbasics.types.factories.MapFactory;
 import org.jbasics.types.tuples.Tuple;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class KeyValuesTransposer<K, V, E> implements Transposer<Map<K, List<V>>, Collection<E>>, SubstitutionStrategy<Map<K, List<V>>, Collection<E>> {
 	private final ParameterFactory<? extends Tuple<K, V>, E> keyValueFactory;
@@ -48,16 +48,8 @@ public class KeyValuesTransposer<K, V, E> implements Transposer<Map<K, List<V>>,
 		this(keyValueFactory, null, null, false);
 	}
 
-	public KeyValuesTransposer(final ParameterFactory<? extends Tuple<K, V>, E> keyValueFactory, final boolean ordered) {
-		this(keyValueFactory, new MapFactory<K, List<V>>(ordered), null, false);
-	}
-
-	public KeyValuesTransposer(final ParameterFactory<? extends Tuple<K, V>, E> keyValueFactory, final boolean ordered, final boolean mutable) {
-		this(keyValueFactory, new MapFactory<K, List<V>>(ordered), null, mutable);
-	}
-
 	public KeyValuesTransposer(final ParameterFactory<? extends Tuple<K, V>, E> keyValueFactory, final Factory<Map<K, List<V>>> mapFactory,
-			final Factory<List<V>> listFactory, final boolean mutable) {
+							   final Factory<List<V>> listFactory, final boolean mutable) {
 		this.keyValueFactory = ContractCheck.mustNotBeNull(keyValueFactory, "keyValueFactory"); //$NON-NLS-1$
 		if (mapFactory != null) {
 			this.mapFactory = mapFactory;
@@ -70,6 +62,19 @@ public class KeyValuesTransposer<K, V, E> implements Transposer<Map<K, List<V>>,
 			this.listFactory = ListFactory.randomAccessListFactory();
 		}
 		this.mutable = mutable;
+	}
+
+	public KeyValuesTransposer(final ParameterFactory<? extends Tuple<K, V>, E> keyValueFactory, final boolean ordered) {
+		this(keyValueFactory, new MapFactory<K, List<V>>(ordered), null, false);
+	}
+
+	public KeyValuesTransposer(final ParameterFactory<? extends Tuple<K, V>, E> keyValueFactory, final boolean ordered, final boolean mutable) {
+		this(keyValueFactory, new MapFactory<K, List<V>>(ordered), null, mutable);
+	}
+
+	@Override
+	public Map<K, List<V>> substitute(final Collection<E> input) {
+		return transpose(input);
 	}
 
 	@Override
@@ -94,10 +99,4 @@ public class KeyValuesTransposer<K, V, E> implements Transposer<Map<K, List<V>>,
 		}
 		return this.mutable ? result : Collections.unmodifiableMap(result);
 	}
-
-	@Override
-	public Map<K, List<V>> substitute(final Collection<E> input) {
-		return transpose(input);
-	}
-
 }

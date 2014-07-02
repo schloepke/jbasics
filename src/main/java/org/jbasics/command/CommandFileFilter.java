@@ -24,11 +24,11 @@
  */
 package org.jbasics.command;
 
+import org.jbasics.checker.ContractCheck;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.util.regex.Pattern;
-
-import org.jbasics.checker.ContractCheck;
 
 public class CommandFileFilter implements FileFilter {
 	private final Pattern pattern;

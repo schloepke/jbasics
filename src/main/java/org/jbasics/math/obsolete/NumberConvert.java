@@ -26,7 +26,7 @@ package org.jbasics.math.obsolete;
 
 /**
  * Converts BigEndian numbers from various formats.
- * 
+ *
  * @author Stephan Schloepke
  */
 public class NumberConvert {
@@ -44,19 +44,17 @@ public class NumberConvert {
 	}
 
 	/**
-	 * Converts a big endian stored two complement byte array number to a big endian two complement
-	 * integer array.
-	 * <p>
-	 * Any leading part is stripped (for positive numbers all leading zeros and for negative numbers
-	 * all leading -1 but the last one). Also the convert respects the size of integer and is not
-	 * fixed to be 32 bit integer (64 bit works as well as even 128 bit). Even it is supported that
-	 * an integer can be say 40bit such a system dosn't exists. Currently 32bit and 64bit is
-	 * correctly detected while maybe 128bit is available some day in java and would work as well.
-	 * </p>
-	 * 
+	 * Converts a big endian stored two complement byte array number to a big endian two complement integer array. <p>
+	 * Any leading part is stripped (for positive numbers all leading zeros and for negative numbers all leading -1 but
+	 * the last one). Also the convert respects the size of integer and is not fixed to be 32 bit integer (64 bit works
+	 * as well as even 128 bit). Even it is supported that an integer can be say 40bit such a system dosn't exists.
+	 * Currently 32bit and 64bit is correctly detected while maybe 128bit is available some day in java and would work
+	 * as well. </p>
+	 *
 	 * @param input The big endian two's complement number stored in bytes.
-	 * @return The big endian two's complement number stored in integer (32, 64 .. bit). Can be a
-	 *         zero sized array if the input number can be reduced to zero.
+	 *
+	 * @return The big endian two's complement number stored in integer (32, 64 .. bit). Can be a zero sized array if
+	 * the input number can be reduced to zero.
 	 */
 	public static int[] convert(byte[] input) {
 		if (input == null || input.length == 0) {
@@ -221,5 +219,4 @@ public class NumberConvert {
 		}
 		return true;
 	}
-
 }

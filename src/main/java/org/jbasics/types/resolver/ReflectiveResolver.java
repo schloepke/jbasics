@@ -24,25 +24,15 @@
  */
 package org.jbasics.types.resolver;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.resolver.Resolver;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+
 public class ReflectiveResolver<ResultType, RequestType> implements Resolver<ResultType, RequestType> {
 	private final Method reflectionMethod;
-
-	public static <ResultType, RequestType> CacheResolver<ResultType, RequestType> createCached(Class<ResultType> resultType,
-			Class<RequestType> requestType, String methodName) {
-		return new CacheResolver<ResultType, RequestType>(create(resultType, requestType, methodName));
-	}
-
-	public static <ResultType, RequestType> ReflectiveResolver<ResultType, RequestType> create(Class<ResultType> resultType,
-			Class<RequestType> requestType, String methodName) {
-		return new ReflectiveResolver<ResultType, RequestType>(resultType, requestType, methodName);
-	}
 
 	@SuppressWarnings("nls")
 	public ReflectiveResolver(Class<ResultType> resultType, Class<RequestType> requestType, String methodName) {
@@ -58,6 +48,16 @@ public class ReflectiveResolver<ResultType, RequestType> implements Resolver<Res
 		}
 	}
 
+	public static <ResultType, RequestType> CacheResolver<ResultType, RequestType> createCached(Class<ResultType> resultType,
+																								Class<RequestType> requestType, String methodName) {
+		return new CacheResolver<ResultType, RequestType>(create(resultType, requestType, methodName));
+	}
+
+	public static <ResultType, RequestType> ReflectiveResolver<ResultType, RequestType> create(Class<ResultType> resultType,
+																							   Class<RequestType> requestType, String methodName) {
+		return new ReflectiveResolver<ResultType, RequestType>(resultType, requestType, methodName);
+	}
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public ResultType resolve(RequestType request, ResultType defaultResult) {
@@ -71,5 +71,4 @@ public class ReflectiveResolver<ResultType, RequestType> implements Resolver<Res
 			throw DelegatedException.delegate(e);
 		}
 	}
-
 }

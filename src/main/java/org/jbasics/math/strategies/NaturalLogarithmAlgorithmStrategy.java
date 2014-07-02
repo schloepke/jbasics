@@ -24,10 +24,10 @@
  */
 package org.jbasics.math.strategies;
 
+import org.jbasics.math.AlgorithmStrategy;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
-
-import org.jbasics.math.AlgorithmStrategy;
 
 public class NaturalLogarithmAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
 	private final AlgorithmStrategy<BigDecimal> exponentialFunction;
@@ -61,5 +61,4 @@ public class NaturalLogarithmAlgorithmStrategy implements AlgorithmStrategy<BigD
 		} while (oldResult.round(mc).subtract(result.round(mc)).signum() != 0);
 		return result.round(mc);
 	}
-
 }

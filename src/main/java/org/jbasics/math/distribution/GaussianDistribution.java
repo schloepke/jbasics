@@ -24,10 +24,10 @@
  */
 package org.jbasics.math.distribution;
 
+import org.jbasics.math.MathFunction;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
-
-import org.jbasics.math.MathFunction;
 
 public class GaussianDistribution implements MathFunction<BigDecimal> {
 	public static final GaussianDistribution STANDARD_NORMAL_DISTRIBUTION = new GaussianDistribution(BigDecimal.ZERO, BigDecimal.ONE);
@@ -69,5 +69,4 @@ public class GaussianDistribution implements MathFunction<BigDecimal> {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
 }

@@ -33,17 +33,10 @@ public final class LazyDelegate<T> implements RemoveableLazyInitialization<T>, M
 	private T delegate;
 
 	public LazyDelegate(final Factory<T> factory) {
-		if (factory == null) { throw new IllegalArgumentException("Null parameter: factory"); }
+		if (factory == null) {
+			throw new IllegalArgumentException("Null parameter: factory");
+		}
 		this.factory = factory;
-	}
-
-	public void initialize() {
-		if (isInitialized()) { throw new IllegalStateException("Lazy initialized instance is already initialized"); }
-		this.delegate = this.factory.newInstance();
-	}
-
-	public boolean isInitialized() {
-		return this.delegate != null;
 	}
 
 	public T delegate() {
@@ -53,8 +46,15 @@ public final class LazyDelegate<T> implements RemoveableLazyInitialization<T>, M
 		return this.delegate;
 	}
 
-	public boolean isDelegateSet() {
-		return isInitialized();
+	public boolean isInitialized() {
+		return this.delegate != null;
+	}
+
+	public void initialize() {
+		if (isInitialized()) {
+			throw new IllegalStateException("Lazy initialized instance is already initialized");
+		}
+		this.delegate = this.factory.newInstance();
 	}
 
 	public T setDelegate(final T delegate) {
@@ -64,10 +64,13 @@ public final class LazyDelegate<T> implements RemoveableLazyInitialization<T>, M
 		return null;
 	}
 
+	public boolean isDelegateSet() {
+		return isInitialized();
+	}
+
 	public T remove() {
 		T temp = this.delegate;
 		this.delegate = null;
 		return temp;
 	}
-
 }

@@ -24,11 +24,10 @@
  */
 package org.jbasics.types.strategy;
 
-import java.util.Properties;
-
 import junit.framework.Assert;
-
 import org.junit.Test;
+
+import java.util.Properties;
 
 @SuppressWarnings("nls")
 public class PropertySubstitutionStrategyTest {

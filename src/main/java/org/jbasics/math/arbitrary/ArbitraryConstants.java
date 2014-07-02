@@ -33,5 +33,4 @@ public class ArbitraryConstants {
 	public static final ArbitraryNumber ZERO = Zero.INSTANCE;
 	public static final ArbitraryNumber ONE = One.INSTANCE;
 	public static final ArbitraryNumber MINUS_ONE = MinusOne.INSTANCE;
-
 }

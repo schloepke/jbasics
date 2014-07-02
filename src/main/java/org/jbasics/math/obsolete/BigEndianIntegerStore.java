@@ -36,16 +36,16 @@ public class BigEndianIntegerStore implements DataStorage<BigEndianIntegerStore>
 		this(BigEndianIntegerStore.ZERO);
 	}
 
+	public BigEndianIntegerStore(final int[] magnitude) {
+		this.magnitude = magnitude;
+	}
+
 	public BigEndianIntegerStore(final int value) {
-		this(new int[] { value });
+		this(new int[]{value});
 	}
 
 	public BigEndianIntegerStore(final long value) {
-		this(new int[] { (int) (value & BigEndianIntegerStore.SUMMAND_MASK), (int) (value >>> 32) });
-	}
-
-	public BigEndianIntegerStore(final int[] magnitude) {
-		this.magnitude = magnitude;
+		this(new int[]{(int) (value & BigEndianIntegerStore.SUMMAND_MASK), (int) (value >>> 32)});
 	}
 
 	public BigEndianIntegerStore(final byte[] data) {
@@ -114,8 +114,20 @@ public class BigEndianIntegerStore implements DataStorage<BigEndianIntegerStore>
 		return new BigEndianIntegerStore(result);
 	}
 
+	public BigEndianIntegerStore subtract(final BigEndianIntegerStore subtraction) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public BigEndianIntegerStore multiply(final BigEndianIntegerStore factor) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public byte[] toByteArray() {
-		if (this.magnitude == null || this.magnitude.length == 0) { return BigEndianIntegerStore.ZERO_BYTES; }
+		if (this.magnitude == null || this.magnitude.length == 0) {
+			return BigEndianIntegerStore.ZERO_BYTES;
+		}
 		int bytes = (this.magnitude.length - 1) * 4;
 		int temp = this.magnitude[0];
 		if (temp < 0) {
@@ -157,7 +169,9 @@ public class BigEndianIntegerStore implements DataStorage<BigEndianIntegerStore>
 
 	private boolean zeroscan(final int[] in) {
 		for (int x : in) {
-			if (x != 0) { return false; }
+			if (x != 0) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -166,15 +180,4 @@ public class BigEndianIntegerStore implements DataStorage<BigEndianIntegerStore>
 	public int hashCode() {
 		return 31 + Arrays.hashCode(this.magnitude);
 	}
-
-	public BigEndianIntegerStore multiply(final BigEndianIntegerStore factor) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public BigEndianIntegerStore subtract(final BigEndianIntegerStore subtraction) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

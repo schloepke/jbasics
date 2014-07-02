@@ -47,5 +47,4 @@ public final class SequenceIterator<T> implements Iterator<T> {
 	public void remove() {
 		throw new UnsupportedOperationException("Sequences are always imutable"); //$NON-NLS-1$
 	}
-
 }

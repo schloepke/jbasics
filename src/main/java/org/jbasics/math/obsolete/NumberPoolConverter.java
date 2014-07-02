@@ -85,5 +85,4 @@ public final class NumberPoolConverter {
 		}
 		return result;
 	}
-
 }

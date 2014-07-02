@@ -24,12 +24,12 @@
  */
 package org.jbasics.types.transpose;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.strategy.SubstitutionStrategy;
 import org.jbasics.pattern.transpose.Transposer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ListTransposer<OutType, InType> implements SubstitutionStrategy<List<OutType>, List<? extends InType>>,
 		Transposer<List<OutType>, List<? extends InType>> {
@@ -38,6 +38,10 @@ public class ListTransposer<OutType, InType> implements SubstitutionStrategy<Lis
 
 	public ListTransposer(final Transposer<OutType, InType> elementTransposer) {
 		this.elementTransposer = ContractCheck.mustNotBeNull(elementTransposer, "elementTransposer"); //$NON-NLS-1$
+	}
+
+	public List<OutType> substitute(final List<? extends InType> input) {
+		return transpose(input);
 	}
 
 	public List<OutType> transpose(final List<? extends InType> input) {
@@ -51,9 +55,4 @@ public class ListTransposer<OutType, InType> implements SubstitutionStrategy<Lis
 			return result;
 		}
 	}
-
-	public List<OutType> substitute(final List<? extends InType> input) {
-		return transpose(input);
-	}
-
 }

@@ -24,9 +24,6 @@
  */
 package org.jbasics.math.distribution;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.BigDecimalMathLibrary;
@@ -39,6 +36,9 @@ import org.jbasics.math.approximation.BiSectionApproximation;
 import org.jbasics.math.approximation.ChainedApproximation;
 import org.jbasics.math.approximation.NewtonRhapsonApproximation;
 import org.jbasics.math.strategies.GammaIncompleteAlgorithmStrategy;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
 
 public class GammaDistribution implements Distribution<BigDecimal> {
 	protected static final BigDecimal LOW_BOUND_ALL_FUNC = BigDecimal.ZERO;

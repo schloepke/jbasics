@@ -24,16 +24,16 @@
  */
 package org.jbasics.testing;
 
+import org.jbasics.checker.ContractCheck;
+
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jbasics.checker.ContractCheck;
-
 /**
- * Base class to provide a preconfigured logging enviroment. TestCases can access the logger over
- * the protected {@link #logger} instance.
- * 
+ * Base class to provide a preconfigured logging enviroment. TestCases can access the logger over the protected {@link
+ * #logger} instance.
+ *
  * @author Stephan Schloepke
  * @since 1.0.0
  */
@@ -56,5 +56,4 @@ public class Java14LoggingTestCase {
 	protected final void setGlobalLoggingLevel(Level level) {
 		JDK_ROOT_LOGGER.setLevel(ContractCheck.mustNotBeNull(level, "level"));
 	}
-
 }

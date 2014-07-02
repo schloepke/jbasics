@@ -24,18 +24,18 @@
  */
 package org.jbasics.types.container;
 
-import java.util.EmptyStackException;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.NoSuchElementException;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.container.Stack;
 import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.types.delegates.LazyDelegate;
 import org.jbasics.types.factories.ListFactory;
+
+import java.util.EmptyStackException;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 public class ListStack<E> implements Stack<E> {
 	private final Delegate<List<E>> stackList;
@@ -54,20 +54,9 @@ public class ListStack<E> implements Stack<E> {
 	}
 
 	@Override
-	public E peek() {
-		final List<E> temp = this.stackList.delegate();
-		if (temp.isEmpty()) {
-			throw new NoSuchElementException("Stack empty");
-		}
-		if (temp instanceof LinkedList<?>) {
-			return ((LinkedList<E>) temp).getLast();
-		}
-		return temp.get(temp.size() - 1);
-	}
-
-	@Override
-	public E peek(final int depth) {
-		throw new UnsupportedOperationException("Optional contract peek(depth) is unsupported by ListStack");
+	public E push(final E element) {
+		this.stackList.delegate().add(element);
+		return element;
 	}
 
 	@Override
@@ -88,9 +77,20 @@ public class ListStack<E> implements Stack<E> {
 	}
 
 	@Override
-	public E push(final E element) {
-		this.stackList.delegate().add(element);
-		return element;
+	public E peek() {
+		final List<E> temp = this.stackList.delegate();
+		if (temp.isEmpty()) {
+			throw new NoSuchElementException("Stack empty");
+		}
+		if (temp instanceof LinkedList<?>) {
+			return ((LinkedList<E>) temp).getLast();
+		}
+		return temp.get(temp.size() - 1);
+	}
+
+	@Override
+	public E peek(final int depth) {
+		throw new UnsupportedOperationException("Optional contract peek(depth) is unsupported by ListStack");
 	}
 
 	@Override
@@ -101,12 +101,6 @@ public class ListStack<E> implements Stack<E> {
 	@Override
 	public int size() {
 		return this.stackList.delegate().size();
-	}
-
-	@Override
-	public Iterator<E> iterator() {
-		// TODO: Make this iterator unmodifiable
-		return this.stackList.delegate().iterator();
 	}
 
 	@Override
@@ -138,4 +132,9 @@ public class ListStack<E> implements Stack<E> {
 		return this.stackList.delegate().set(size - depth, value);
 	}
 
+	@Override
+	public Iterator<E> iterator() {
+		// TODO: Make this iterator unmodifiable
+		return this.stackList.delegate().iterator();
+	}
 }

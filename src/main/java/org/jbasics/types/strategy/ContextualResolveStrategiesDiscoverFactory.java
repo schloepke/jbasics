@@ -34,5 +34,4 @@ public class ContextualResolveStrategiesDiscoverFactory<Context> extends
 	public ContextualResolveStrategiesDiscoverFactory(final Class<? extends Context> contextType) {
 		super(ContextualResolveStrategy.class, null, null, ContractCheck.mustNotBeNull(contextType, "contextType")); //$NON-NLS-1$
 	}
-
 }

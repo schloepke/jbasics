@@ -24,11 +24,9 @@
  */
 package org.jbasics.jaxb;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.net.URL;
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.enviroment.JVMEnviroment;
+import org.jbasics.exception.DelegatedException;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBElement;
@@ -38,33 +36,14 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.enviroment.JVMEnviroment;
-import org.jbasics.exception.DelegatedException;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.net.URL;
 
 public class JAXBSimpleTools {
 	private final JAXBPool pool;
-
-	public static <T> String marshallToString(final JAXBElement<T> element) {
-		return new JAXBSimpleTools(element.getDeclaredType()).marshall(element);
-	}
-
-	public static <T> String marshallToString(final T element) {
-		return new JAXBSimpleTools(element.getClass()).marshall(element);
-	}
-
-	public static <T> void marshallToFile(final T element, final File file) {
-		new JAXBSimpleTools(element.getClass()).marshall(element, file);
-	}
-
-	public static <T> T unmarshallFromString(final Class<? extends T> type, final String content) {
-		return new JAXBSimpleTools(type).unmarshall(type, content);
-	}
-
-	public static <T> T unmarshallFromURL(final Class<? extends T> type, final URL content) {
-		return new JAXBSimpleTools(type).unmarshall(type, content);
-	}
 
 	public JAXBSimpleTools(final String contextPath) {
 		this.pool = new JAXBPool(contextPath);
@@ -92,8 +71,8 @@ public class JAXBSimpleTools {
 		this.pool = new JAXBPool(classes);
 	}
 
-	public JAXBPool getPool() {
-		return this.pool;
+	public static <T> String marshallToString(final JAXBElement<T> element) {
+		return new JAXBSimpleTools(element.getDeclaredType()).marshall(element);
 	}
 
 	public <T> String marshall(final T element) {
@@ -110,6 +89,14 @@ public class JAXBSimpleTools {
 		}
 	}
 
+	public static <T> String marshallToString(final T element) {
+		return new JAXBSimpleTools(element.getClass()).marshall(element);
+	}
+
+	public static <T> void marshallToFile(final T element, final File file) {
+		new JAXBSimpleTools(element.getClass()).marshall(element, file);
+	}
+
 	public <T> void marshall(final T element, final File file) {
 		Marshaller marshaller = this.pool.aquireMarshaller();
 		try {
@@ -120,6 +107,10 @@ public class JAXBSimpleTools {
 		} finally {
 			this.pool.releaseMarshaller(marshaller);
 		}
+	}
+
+	public static <T> T unmarshallFromString(final Class<? extends T> type, final String content) {
+		return new JAXBSimpleTools(type).unmarshall(type, content);
 	}
 
 	public <T> T unmarshall(final Class<? extends T> type, final String content) {
@@ -133,9 +124,8 @@ public class JAXBSimpleTools {
 		}
 	}
 
-	public <T> T unmarshall(final Class<? extends T> type, final Class<?> resourceBase, final String resourceName) {
-		return unmarshall(type, ContractCheck.mustNotBeNull(resourceBase, "resourceBase").getResource( //$NON-NLS-1$
-				ContractCheck.mustNotBeNull(resourceName, "resourceName"))); //$NON-NLS-1$
+	public static <T> T unmarshallFromURL(final Class<? extends T> type, final URL content) {
+		return new JAXBSimpleTools(type).unmarshall(type, content);
 	}
 
 	public <T> T unmarshall(final Class<? extends T> type, final URL resource) {
@@ -151,4 +141,12 @@ public class JAXBSimpleTools {
 		}
 	}
 
+	public JAXBPool getPool() {
+		return this.pool;
+	}
+
+	public <T> T unmarshall(final Class<? extends T> type, final Class<?> resourceBase, final String resourceName) {
+		return unmarshall(type, ContractCheck.mustNotBeNull(resourceBase, "resourceBase").getResource( //$NON-NLS-1$
+				ContractCheck.mustNotBeNull(resourceName, "resourceName"))); //$NON-NLS-1$
+	}
 }

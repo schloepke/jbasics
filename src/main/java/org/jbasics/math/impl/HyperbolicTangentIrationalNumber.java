@@ -24,21 +24,20 @@
  */
 package org.jbasics.math.impl;
 
-import java.math.BigDecimal;
-
 import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.IrationalNumber;
 import org.jbasics.math.strategies.HyperbolicTangentAlgorithmStrategy;
 
+import java.math.BigDecimal;
+
 public class HyperbolicTangentIrationalNumber extends BigDecimalIrationalNumber {
 	private static final AlgorithmStrategy<BigDecimal> STRATEGY = new HyperbolicTangentAlgorithmStrategy();
-
-	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
-		return new HyperbolicTangentIrationalNumber(x);
-	}
 
 	private HyperbolicTangentIrationalNumber(BigDecimal x) {
 		super(STRATEGY, x);
 	}
 
+	public static IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
+		return new HyperbolicTangentIrationalNumber(x);
+	}
 }

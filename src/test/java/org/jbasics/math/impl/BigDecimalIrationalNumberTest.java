@@ -24,13 +24,6 @@
  */
 package org.jbasics.math.impl;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-
-import org.junit.Assert;
-import org.junit.Test;
-
 import org.jbasics.math.BigRational;
 import org.jbasics.math.IrationalNumber;
 import org.jbasics.math.arbitrary.ArbitraryFaculty;
@@ -38,6 +31,12 @@ import org.jbasics.math.arbitrary.ArbitraryInteger;
 import org.jbasics.math.arbitrary.ArbitraryRational;
 import org.jbasics.math.strategies.PiSeriesAlgorithmStrategy;
 import org.jbasics.testing.Java14LoggingTestCase;
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 public class BigDecimalIrationalNumberTest extends Java14LoggingTestCase {
 
@@ -139,5 +138,4 @@ public class BigDecimalIrationalNumberTest extends Java14LoggingTestCase {
 		BigDecimal piDistance = PiIrationalNumber.PI.valueToPrecision(mc).subtract(piResult);
 		System.out.println("Dist: " + piDistance);
 	}
-
 }

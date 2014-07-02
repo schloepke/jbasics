@@ -24,20 +24,6 @@
  */
 package org.jbasics.command;
 
-import java.io.File;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
-import javax.xml.datatype.Duration;
-import javax.xml.datatype.XMLGregorianCalendar;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.configuration.properties.DateValueTypeFactory;
 import org.jbasics.configuration.properties.DurationValueTypeFactory;
@@ -50,19 +36,22 @@ import org.jbasics.types.sequences.Sequence;
 import org.jbasics.utilities.DataUtilities;
 import org.jbasics.xml.XMLDateConverter;
 
+import javax.xml.datatype.Duration;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.io.File;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
 public class CommandParameter implements Extendable<CommandParameter, String>, Concatable<CommandParameter> {
 	private final String parameterName;
 	private final Sequence<String> values;
-
-	public static CommandParameter parse(final String input) {
-		final String[] nameValuesPair = ContractCheck.mustNotBeNullOrTrimmedEmpty(input, "input").split("=", 2); //$NON-NLS-1$ //$NON-NLS-2$
-		final String name = nameValuesPair[0];
-		return CommandParameter.parseContent(name, nameValuesPair[1]);
-	}
-
-	public static CommandParameter parseContent(final String name, final String unparsedValue) {
-		return new CommandParameter(ContractCheck.mustNotBeNullOrTrimmedEmpty(name, "name"), DataUtilities.coalesce(unparsedValue, "").split(",|;"));
-	}
 
 	public CommandParameter(final String parameterName, final String value) {
 		this.parameterName = ContractCheck.mustNotBeNullOrTrimmedEmpty(parameterName, "parameterName"); //$NON-NLS-1$
@@ -82,6 +71,16 @@ public class CommandParameter implements Extendable<CommandParameter, String>, C
 	private CommandParameter(final String parameterName, final Sequence<String> values) {
 		this.parameterName = ContractCheck.mustNotBeNullOrTrimmedEmpty(parameterName, "parameterName"); //$NON-NLS-1$
 		this.values = ContractCheck.mustNotBeNull(values, "values"); //$NON-NLS-1$
+	}
+
+	public static CommandParameter parse(final String input) {
+		final String[] nameValuesPair = ContractCheck.mustNotBeNullOrTrimmedEmpty(input, "input").split("=", 2); //$NON-NLS-1$ //$NON-NLS-2$
+		final String name = nameValuesPair[0];
+		return CommandParameter.parseContent(name, nameValuesPair[1]);
+	}
+
+	public static CommandParameter parseContent(final String name, final String unparsedValue) {
+		return new CommandParameter(ContractCheck.mustNotBeNullOrTrimmedEmpty(name, "name"), DataUtilities.coalesce(unparsedValue, "").split(",|;"));
 	}
 
 	public String getParameterName() {
@@ -287,8 +286,16 @@ public class CommandParameter implements Extendable<CommandParameter, String>, C
 		return files;
 	}
 
+	public <T> T asStaticValueOfMethodValue(final Class<T> type) {
+		return asFactoryCreatedValue(ValueOfStringTypeFactory.getFactoryFor(type));
+	}
+
 	public <T> T asFactoryCreatedValue(final ParameterFactory<T, String> factory) {
 		return ContractCheck.mustNotBeNull(factory, "factory").create(this.values.first());
+	}
+
+	public <T> List<T> asStaticValueOfMethodValues(final Class<T> type) {
+		return asFactoryCreatedValues(ValueOfStringTypeFactory.getFactoryFor(type));
 	}
 
 	public <T> List<T> asFactoryCreatedValues(final ParameterFactory<T, String> factory) {
@@ -298,14 +305,6 @@ public class CommandParameter implements Extendable<CommandParameter, String>, C
 			result.add(factory.create(value));
 		}
 		return Collections.unmodifiableList(result);
-	}
-
-	public <T> T asStaticValueOfMethodValue(final Class<T> type) {
-		return asFactoryCreatedValue(ValueOfStringTypeFactory.getFactoryFor(type));
-	}
-
-	public <T> List<T> asStaticValueOfMethodValues(final Class<T> type) {
-		return asFactoryCreatedValues(ValueOfStringTypeFactory.getFactoryFor(type));
 	}
 
 	@Override

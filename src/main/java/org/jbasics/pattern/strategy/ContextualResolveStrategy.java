@@ -27,5 +27,4 @@ package org.jbasics.pattern.strategy;
 public interface ContextualResolveStrategy<ResultType, RequestType, ContextType> {
 
 	ResultType resolve(final RequestType request, final ContextType context);
-
 }

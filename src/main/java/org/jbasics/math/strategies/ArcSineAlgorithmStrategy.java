@@ -24,10 +24,10 @@
  */
 package org.jbasics.math.strategies;
 
+import org.jbasics.math.AlgorithmStrategy;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
-
-import org.jbasics.math.AlgorithmStrategy;
 
 public class ArcSineAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
 
@@ -37,5 +37,4 @@ public class ArcSineAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
 		}
 		return BigDecimal.valueOf(Math.asin(xn[0].doubleValue())).round(mc);
 	}
-
 }

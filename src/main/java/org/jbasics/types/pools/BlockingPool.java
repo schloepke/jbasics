@@ -24,6 +24,13 @@
  */
 package org.jbasics.types.pools;
 
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.exception.DelegatedException;
+import org.jbasics.pattern.delegation.LifecycleDelegate;
+import org.jbasics.pattern.factory.Factory;
+import org.jbasics.pattern.pooling.NewPool;
+import org.jbasics.pattern.pooling.PooledInstance;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -33,28 +40,17 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.exception.DelegatedException;
-import org.jbasics.pattern.delegation.LifecycleDelegate;
-import org.jbasics.pattern.factory.Factory;
-import org.jbasics.pattern.pooling.NewPool;
-import org.jbasics.pattern.pooling.PooledInstance;
-
 public class BlockingPool<T> implements NewPool<T> {
-	private final Logger logger = Logger.getLogger(BlockingQueue.class.getName());
-
 	public final static long DEFAULT_MAX_WAIT = 5000;
 	public final static int DEFAULT_MAX_IDLE = 5;
 	public final static int DEFAULT_MAX_ACTIVE = 50;
-
 	protected final int maxIdle;
 	protected final int maxActive;
 	protected final long maxWait;
 	protected final Factory<LifecycleDelegate<T>> instanceFactory;
-
 	protected final BlockingQueue<LifecycleDelegate<T>> passiveInstances;
 	protected final List<LifecycleDelegate<T>> managedInstances;
-
+	private final Logger logger = Logger.getLogger(BlockingQueue.class.getName());
 	protected boolean closed = false;
 
 	public BlockingPool(final Factory<LifecycleDelegate<T>> instanceFactory, final int maxIdle, final int maxActive, final long maxWait) {
@@ -169,5 +165,4 @@ public class BlockingPool<T> implements NewPool<T> {
 			return this.instance.delegate();
 		}
 	}
-
 }

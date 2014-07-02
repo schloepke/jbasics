@@ -24,24 +24,24 @@
  */
 package org.jbasics.types.factories;
 
+import org.jbasics.pattern.factory.Factory;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
-import org.jbasics.pattern.factory.Factory;
-
 /**
  * Factory for a {@link Queue} implementation which is implemented by a {@link LinkedList}.
- * 
- * @author Stephan Schloepke
- * @since 1.0.0
+ *
  * @param <T> The type of the elements in the Queue
+ *
+ * @author Stephan Schloepke
  * @see Queue
  * @see LinkedList
+ * @since 1.0.0
  */
 public class QueueFactory<T> implements Factory<Queue<T>> {
 
 	public Queue<T> newInstance() {
 		return CollectionsFactory.instance().newQueueInstance();
 	}
-
 }

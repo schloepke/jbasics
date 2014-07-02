@@ -24,6 +24,11 @@
  */
 package org.jbasics.codec;
 
+import org.jbasics.annotation.ImmutableState;
+import org.jbasics.annotation.ThreadSafe;
+import org.jbasics.exception.DelegatedException;
+import org.jbasics.pattern.coder.Codec;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,12 +37,34 @@ import java.io.OutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import org.jbasics.exception.DelegatedException;
-import org.jbasics.pattern.coder.Codec;
-
+/**
+ * A {@link Codec} that to compress and decompress byte arrays.
+ * <p>
+ * The {@link #encode(byte[])} method will compress the
+ * supplied byte array into a newly created byte array and returns it. The input array is not modified!
+ * </p>
+ * <p>
+ * The {@link #decode(byte[])} method will decompress the supplied byte array into a newly create byte array and
+ * returns it. The input array is not modified!?
+ * </p>
+ *
+ * @author Stephan Schloepke
+ * @since 1.0
+ */
+@ThreadSafe
+@ImmutableState
 public class CompressCodec implements Codec<byte[], byte[]> {
 	public static final CompressCodec SHARED_INSTANCE = new CompressCodec();
 
+	/**
+	 * Compress the byte array content and return the compressed byte array.
+	 *
+	 * @param input The byte array to compress (will not be modified)
+	 *
+	 * @return A new byte array with the compressed data.
+	 *
+	 * @see org.jbasics.pattern.coder.Encoder#encode(java.lang.Object)
+	 */
 	@Override
 	public byte[] encode(final byte[] input) {
 		try {
@@ -51,6 +78,15 @@ public class CompressCodec implements Codec<byte[], byte[]> {
 		}
 	}
 
+	/**
+	 * Compress the byte array content and return the compressed byte array.
+	 *
+	 * @param encodedInput The byte array to compress (will not be modified)
+	 *
+	 * @return A new byte array with the compressed data.
+	 *
+	 * @see org.jbasics.pattern.coder.Encoder#encode(java.lang.Object)
+	 */
 	@Override
 	public byte[] decode(final byte[] encodedInput) {
 		try {
@@ -65,5 +101,4 @@ public class CompressCodec implements Codec<byte[], byte[]> {
 			throw DelegatedException.delegate(e);
 		}
 	}
-
 }

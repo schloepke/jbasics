@@ -24,6 +24,10 @@
  */
 package org.jbasics.jee.servlet;
 
+import org.jbasics.checker.ContractCheck;
+
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -33,19 +37,11 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-
-import org.jbasics.checker.ContractCheck;
-
 /**
- * The {@link ServletExecutorPool} is designed specific for use in a servlet containter. You need to
- * register the {@link ServletExecutorPool} as a {@link ServletContextListener} in the web.xml in
- * order to function correctly.
- * <p>
- * Currently not finished yet! So this is in alpha, beta or what so ever
- * </p>
- * 
+ * The {@link ServletExecutorPool} is designed specific for use in a servlet containter. You need to register the {@link
+ * ServletExecutorPool} as a {@link ServletContextListener} in the web.xml in order to function correctly. <p> Currently
+ * not finished yet! So this is in alpha, beta or what so ever </p>
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -53,12 +49,39 @@ public class ServletExecutorPool implements ServletContextListener {
 	private final static AtomicBoolean available = new AtomicBoolean(false);
 	private final static ConcurrentMap<Enum<?>, ExecutorService> executors = new ConcurrentHashMap<Enum<?>, ExecutorService>();
 
-	public void contextDestroyed(final ServletContextEvent sce) {
-		ServletExecutorPool.shutdownAll();
+	public static <T> Future<T> queueTask(final Enum<?> name, final Callable<T> task) {
+		return ServletExecutorPool.getOrCreateExecutorService(name).submit(ContractCheck.mustNotBeNull(task, "task")); //$NON-NLS-1$
+	}
+
+	/**
+	 * Returns an already created {@link ExecutorService} for the given name or creates one and returns it.
+	 *
+	 * @param name The name of the executor pool to create
+	 *
+	 * @return The {@link ExecutorService} already created or a newly created one.
+	 */
+	protected final static ExecutorService getOrCreateExecutorService(final Enum<?> name) {
+		if (!ServletExecutorPool.available.get()) {
+			throw new IllegalStateException("Executor is no longer available (terminating or is terminated)"); //$NON-NLS-1$
+		}
+		ExecutorService result = ServletExecutorPool.executors.get(ContractCheck.mustNotBeNull(name, "name")); //$NON-NLS-1$
+		if (result == null) {
+			result = Executors.newSingleThreadExecutor();
+			ExecutorService t = ServletExecutorPool.executors.putIfAbsent(name, result);
+			if (t != null) {
+				result.shutdown();
+				result = t;
+			}
+		}
+		return result;
 	}
 
 	public void contextInitialized(final ServletContextEvent sce) {
 		ServletExecutorPool.available.set(false);
+	}
+
+	public void contextDestroyed(final ServletContextEvent sce) {
+		ServletExecutorPool.shutdownAll();
 	}
 
 	public static void shutdownAll() {
@@ -92,31 +115,5 @@ public class ServletExecutorPool implements ServletContextListener {
 				}
 			}
 		}
-	}
-
-	public static <T> Future<T> queueTask(final Enum<?> name, final Callable<T> task) {
-		return ServletExecutorPool.getOrCreateExecutorService(name).submit(ContractCheck.mustNotBeNull(task, "task")); //$NON-NLS-1$
-	}
-
-	/**
-	 * Returns an already created {@link ExecutorService} for the given name or creates one and returns it.
-	 * 
-	 * @param name The name of the executor pool to create
-	 * @return The {@link ExecutorService} already created or a newly created one.
-	 */
-	protected final static ExecutorService getOrCreateExecutorService(final Enum<?> name) {
-		if (!ServletExecutorPool.available.get()) {
-			throw new IllegalStateException("Executor is no longer available (terminating or is terminated)"); //$NON-NLS-1$
-		}
-		ExecutorService result = ServletExecutorPool.executors.get(ContractCheck.mustNotBeNull(name, "name")); //$NON-NLS-1$
-		if (result == null) {
-			result = Executors.newSingleThreadExecutor();
-			ExecutorService t = ServletExecutorPool.executors.putIfAbsent(name, result);
-			if (t != null) {
-				result.shutdown();
-				result = t;
-			}
-		}
-		return result;
 	}
 }

@@ -24,27 +24,25 @@
  */
 package org.jbasics.types.factories;
 
+import org.jbasics.pattern.factory.Factory;
+
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.jbasics.pattern.factory.Factory;
-
 /**
- * A factory creating a {@link Set} implementation offering the option to created an ordered {@link Set}.
- * <p>
- * Creating an ordered {@link Set} means that the set remains the order in which the elements are added when iterated.
- * Normally a {@link Set} does not say anything about the order in which an iterator returns its elements. If however
- * ordered is true this factory returns a {@link LinkedHashSet} rather than a {@link HashSet} as instance providing the
- * order as the elements are added.
- * </p>
- * 
+ * A factory creating a {@link Set} implementation offering the option to created an ordered {@link Set}. <p> Creating
+ * an ordered {@link Set} means that the set remains the order in which the elements are added when iterated. Normally a
+ * {@link Set} does not say anything about the order in which an iterator returns its elements. If however ordered is
+ * true this factory returns a {@link LinkedHashSet} rather than a {@link HashSet} as instance providing the order as
+ * the elements are added. </p>
+ *
+ * @param <E> The type of the elements stored in the set.
+ *
+ * @author Stephan Schloepke
  * @see Set
  * @see LinkedHashSet
- * @author Stephan Schloepke
  * @since 1.0.0
- * @param <E>
- *            The type of the elements stored in the set.
  */
 public class SetFactory<E> implements Factory<Set<E>> {
 	private static final SetFactory<?> UNORDERDED_FACTORY = new SetFactory<Object>(false);
@@ -60,21 +58,12 @@ public class SetFactory<E> implements Factory<Set<E>> {
 
 	/**
 	 * Create a {@link SetFactory} which is either ordered (true) or undefined ordering (false).
-	 * 
-	 * @param ordered
-	 *            True and the factory creates a {@link Set} implementation remaining the order
-	 *            of the elements added.
+	 *
+	 * @param ordered True and the factory creates a {@link Set} implementation remaining the order of the elements
+	 *                added.
 	 */
 	public SetFactory(final boolean ordered) {
 		this.ordered = ordered;
-	}
-
-	public Set<E> newInstance() {
-		if (this.ordered) {
-			return CollectionsFactory.instance().newOrderedSetInstance();
-		} else {
-			return CollectionsFactory.instance().newSetInstance();
-		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -87,4 +76,11 @@ public class SetFactory<E> implements Factory<Set<E>> {
 		return (SetFactory<T>) SetFactory.ORDERDED_FACTORY;
 	}
 
+	public Set<E> newInstance() {
+		if (this.ordered) {
+			return CollectionsFactory.instance().newOrderedSetInstance();
+		} else {
+			return CollectionsFactory.instance().newSetInstance();
+		}
+	}
 }

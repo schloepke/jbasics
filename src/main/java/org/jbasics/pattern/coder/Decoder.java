@@ -27,5 +27,4 @@ package org.jbasics.pattern.coder;
 public interface Decoder<T, TEnc> {
 
 	T decode(TEnc encodedInput);
-
 }

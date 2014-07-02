@@ -24,14 +24,11 @@
  */
 package org.jbasics.utilities;
 
-import java.util.Map;
-
+import junit.framework.Assert;
 import org.jbasics.testing.Java14LoggingTestCase;
-import org.jbasics.utilities.QuickMapCreator;
 import org.junit.Test;
 
-import junit.framework.Assert;
-
+import java.util.Map;
 
 public class QuickMapCreatorTest extends Java14LoggingTestCase {
 
@@ -49,5 +46,4 @@ public class QuickMapCreatorTest extends Java14LoggingTestCase {
 		Assert.assertEquals("Donnovan", marie.get("Surname"));
 		Assert.assertEquals(null, marie.get("Age"));
 	}
-
 }

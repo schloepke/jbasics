@@ -24,33 +24,28 @@
  */
 package org.jbasics.parser.annotations;
 
+import javax.xml.namespace.QName;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.xml.namespace.QName;
-
 /**
- * The annotation marks a method to receive the fully qualified name of the
- * element building the instance.
- * <p>
- * The method signature must only have one parameter with a type assignable by
- * {@link QName}. For example:
+ * The annotation marks a method to receive the fully qualified name of the element building the instance. <p> The
+ * method signature must only have one parameter with a type assignable by {@link QName}. For example:
  * <pre>
  * public SomeBuilder setQualifiedName(QName name) {
  *     // Some content here
  * }
  * </pre>
- * It's primary use is where multiple elements can be added to a collection
- * holding element information not specificly parsed. 
- * </p>
- * 
+ * It's primary use is where multiple elements can be added to a collection holding element information not specificly
+ * parsed. </p>
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.METHOD })
+@Target({ElementType.METHOD})
 public @interface QualifiedName {
 	// TODO
 }

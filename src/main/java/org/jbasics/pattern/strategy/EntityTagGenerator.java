@@ -27,5 +27,4 @@ package org.jbasics.pattern.strategy;
 public interface EntityTagGenerator<T> {
 
 	EntityTag generateEntityTag(final T entity, final boolean mustBeStrong);
-
 }

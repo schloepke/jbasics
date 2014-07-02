@@ -24,26 +24,31 @@
  */
 package org.jbasics.types.delegates;
 
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.pattern.delegation.Delegate;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.pattern.delegation.Delegate;
-
 /**
- * An invocation handler used to proxy calls and send them to a given delegate. This way it is
- * possible to use a delegate instance where no delegate instance can be used in order to
- * extract the behavior of creation, maintaining and so on of the delegated instance.
- * 
- * @author Stephan Schloepke
+ * An invocation handler used to proxy calls and send them to a given delegate. This way it is possible to use a
+ * delegate instance where no delegate instance can be used in order to extract the behavior of creation, maintaining
+ * and so on of the delegated instance.
+ *
  * @param <T> The type of the proxied interface
+ *
+ * @author Stephan Schloepke
  * @since 1.0
  */
 public class DelegateInvocationHandler<T> implements InvocationHandler {
 	private final Delegate<T> delegate;
+
+	public DelegateInvocationHandler(final Delegate<T> delegate) {
+		this.delegate = ContractCheck.mustNotBeNull(delegate, "delegate"); //$NON-NLS-1$
+	}
 
 	@SuppressWarnings("unchecked")
 	public static <IT> IT createProxyForDelegate(final Class<IT> type, final Delegate<IT> delegate) {
@@ -51,16 +56,11 @@ public class DelegateInvocationHandler<T> implements InvocationHandler {
 		if (logger.isLoggable(Level.FINE)) {
 			logger.log(Level.FINE, "Creating Delegate<{0}> Proxy instance", type); //$NON-NLS-1$
 		}
-		return (IT) Proxy.newProxyInstance(delegate.getClass().getClassLoader(), new Class<?>[] { type }, new DelegateInvocationHandler<IT>(
+		return (IT) Proxy.newProxyInstance(delegate.getClass().getClassLoader(), new Class<?>[]{type}, new DelegateInvocationHandler<IT>(
 				delegate));
-	}
-
-	public DelegateInvocationHandler(final Delegate<T> delegate) {
-		this.delegate = ContractCheck.mustNotBeNull(delegate, "delegate"); //$NON-NLS-1$
 	}
 
 	public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
 		return method.invoke(this.delegate.delegate(), args);
 	}
-
 }

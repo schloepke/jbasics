@@ -24,6 +24,9 @@
  */
 package org.jbasics.enviroment;
 
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.exception.ResourceNotFoundException;
+
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -31,10 +34,19 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.exception.ResourceNotFoundException;
-
 public final class JVMEnviroment {
+
+	public static URL getNotNullResource(final String resourceName) {
+		final URL temp = JVMEnviroment.getResource(resourceName);
+		if (temp == null) {
+			throw new ResourceNotFoundException(resourceName);
+		}
+		return temp;
+	}
+
+	public static URL getResource(final String resourceName) {
+		return JVMEnviroment.getContextClassLoader().getResource(ContractCheck.mustNotBeNullOrTrimmedEmpty(resourceName, "resourceName")); //$NON-NLS-1$
+	}
 
 	public static ClassLoader getContextClassLoader() {
 		try {
@@ -43,18 +55,6 @@ public final class JVMEnviroment {
 		} catch (final Exception e) {
 			return JVMEnviroment.class.getClassLoader();
 		}
-	}
-
-	public static URL getResource(final String resourceName) {
-		return JVMEnviroment.getContextClassLoader().getResource(ContractCheck.mustNotBeNullOrTrimmedEmpty(resourceName, "resourceName")); //$NON-NLS-1$
-	}
-
-	public static URL getNotNullResource(final String resourceName) {
-		final URL temp = JVMEnviroment.getResource(resourceName);
-		if (temp == null) {
-			throw new ResourceNotFoundException(resourceName);
-		}
-		return temp;
 	}
 
 	public static List<URL> getResources(final String resourceName) {

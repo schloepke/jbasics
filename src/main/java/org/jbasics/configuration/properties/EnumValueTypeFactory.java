@@ -24,19 +24,15 @@
  */
 package org.jbasics.configuration.properties;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.factory.ParameterFactory;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class EnumValueTypeFactory<T extends Enum<T>> implements ParameterFactory<T, String> {
 	private final boolean allowIllegalValues;
 	private final Class<T> enumClazz;
-
-	public static <ET extends Enum<ET>> EnumValueTypeFactory<ET> newInstance(final Class<ET> enumType) {
-		return new EnumValueTypeFactory<ET>(enumType);
-	}
 
 	public EnumValueTypeFactory(final Class<T> enumClazz) {
 		this(enumClazz, true);
@@ -47,6 +43,10 @@ public class EnumValueTypeFactory<T extends Enum<T>> implements ParameterFactory
 		this.allowIllegalValues = allowIllegalValues;
 	}
 
+	public static <ET extends Enum<ET>> EnumValueTypeFactory<ET> newInstance(final Class<ET> enumType) {
+		return new EnumValueTypeFactory<ET>(enumType);
+	}
+
 	@Override
 	public T create(final String param) {
 		if (param != null) {
@@ -55,7 +55,7 @@ public class EnumValueTypeFactory<T extends Enum<T>> implements ParameterFactory
 					return Enum.valueOf(this.enumClazz, param);
 				} catch (final IllegalArgumentException e) {
 					Logger.getLogger(EnumValueTypeFactory.class.getName()).log(Level.WARNING,
-							"Could not find {0} in enum class {1}", new Object[] { param, this.enumClazz }); //$NON-NLS-1$
+							"Could not find {0} in enum class {1}", new Object[]{param, this.enumClazz}); //$NON-NLS-1$
 				}
 			} else {
 				return Enum.valueOf(this.enumClazz, param);

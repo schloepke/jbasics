@@ -24,11 +24,11 @@
  */
 package org.jbasics.math.impl;
 
-import java.math.BigDecimal;
-
 import org.jbasics.math.AlgorithmStrategy;
 import org.jbasics.math.IrationalNumber;
 import org.jbasics.math.strategies.PiAlgorithmStrategy;
+
+import java.math.BigDecimal;
 
 public class PiIrationalNumber extends BigDecimalIrationalNumber {
 	/**
@@ -46,6 +46,14 @@ public class PiIrationalNumber extends BigDecimalIrationalNumber {
 	 */
 	public static final IrationalNumber<BigDecimal> PI2 = new PiIrationalNumber(MathImplConstants.TWO, MathImplConstants.PI2_INITIAL);
 
+	private PiIrationalNumber(BigDecimal x) {
+		super(STRATEGY, x);
+	}
+
+	private PiIrationalNumber(BigDecimal x, BigDecimal initial) {
+		super(initial, STRATEGY, x);
+	}
+
 	public static final IrationalNumber<BigDecimal> valueOf(BigDecimal x) {
 		if (BigDecimal.ONE.compareTo(x) == 0) {
 			return PI;
@@ -55,13 +63,4 @@ public class PiIrationalNumber extends BigDecimalIrationalNumber {
 			return new PiIrationalNumber(x);
 		}
 	}
-
-	private PiIrationalNumber(BigDecimal x) {
-		super(STRATEGY, x);
-	}
-
-	private PiIrationalNumber(BigDecimal x, BigDecimal initial) {
-		super(initial, STRATEGY, x);
-	}
-
 }

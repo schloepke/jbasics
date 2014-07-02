@@ -24,25 +24,42 @@
  */
 package org.jbasics.parser.deprecated;
 
+import org.jbasics.parser.invoker.Invoker;
+import org.jbasics.pattern.factory.ParameterFactory;
+
+import javax.xml.namespace.QName;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-
-import javax.xml.namespace.QName;
-
-import org.jbasics.parser.invoker.Invoker;
-import org.jbasics.pattern.factory.ParameterFactory;
 
 public class ValueInvoker<InstanceType, ValueType> implements Invoker<InstanceType, String> {
 	private final PropertyMethodTypeInfo unmarshalMethod;
 	private final PropertyMethodTypeInfo marshalMethod;
 	private final ParameterFactory<ValueType, String> adapter;
 
+	public ValueInvoker(Method marshalMethod, Method unmarshalMethod, ParameterFactory<ValueType, String> adapter) {
+		this.marshalMethod = marshalMethod != null ? PropertyMethodTypeInfo.create(marshalMethod) : null;
+		this.unmarshalMethod = unmarshalMethod != null ? PropertyMethodTypeInfo.createCompatibleCounterpart(unmarshalMethod, this.marshalMethod)
+				: null;
+		this.adapter = checkAndCreateTypeAdapter(this.marshalMethod, this.unmarshalMethod, adapter);
+	}
+
+	private ParameterFactory<ValueType, String> checkAndCreateTypeAdapter(PropertyMethodTypeInfo marshalMethod, PropertyMethodTypeInfo unmarshalMethod,
+																		  ParameterFactory<ValueType, String> adapter) {
+		return adapter;
+	}
+
+	private ValueInvoker(PropertyMethodTypeInfo marshalMethod, PropertyMethodTypeInfo unmarshalMethod, ParameterFactory<ValueType, String> adapter) {
+		this.marshalMethod = marshalMethod;
+		this.unmarshalMethod = unmarshalMethod;
+		this.adapter = adapter;
+	}
+
 	public static <I, V> ValueInvoker<I, V> create(Class<I> instanceType, Method marshalMethod, Method unmarshalMethod, ParameterFactory<V, String> adapter) {
 		PropertyMethodTypeInfo marshal = marshalMethod != null ? PropertyMethodTypeInfo.create(marshalMethod) : null;
 		PropertyMethodTypeInfo unmarshal = unmarshalMethod != null ? PropertyMethodTypeInfo.createCompatibleCounterpart(unmarshalMethod, marshal)
-		        : null;
+				: null;
 		Type valueType = marshal != null ? marshal.getValueType() : (unmarshal != null ? unmarshal.getValueType() : null);
 		Class<?> valueClass = null;
 		if (valueType instanceof Class<?>) {
@@ -53,19 +70,6 @@ public class ValueInvoker<InstanceType, ValueType> implements Invoker<InstanceTy
 			throw new RuntimeException("Cannot find any information about the value type");
 		}
 		return new ValueInvoker<I, V>(marshal, unmarshal, adapter);
-	}
-
-	public ValueInvoker(Method marshalMethod, Method unmarshalMethod, ParameterFactory<ValueType, String> adapter) {
-		this.marshalMethod = marshalMethod != null ? PropertyMethodTypeInfo.create(marshalMethod) : null;
-		this.unmarshalMethod = unmarshalMethod != null ? PropertyMethodTypeInfo.createCompatibleCounterpart(unmarshalMethod, this.marshalMethod)
-		        : null;
-		this.adapter = checkAndCreateTypeAdapter(this.marshalMethod, this.unmarshalMethod, adapter);
-	}
-
-	private ValueInvoker(PropertyMethodTypeInfo marshalMethod, PropertyMethodTypeInfo unmarshalMethod, ParameterFactory<ValueType, String> adapter) {
-		this.marshalMethod = marshalMethod;
-		this.unmarshalMethod = unmarshalMethod;
-		this.adapter = adapter;
 	}
 
 	public void invoke(InstanceType instance, QName name, String valueString) {
@@ -84,10 +88,4 @@ public class ValueInvoker<InstanceType, ValueType> implements Invoker<InstanceTy
 			throw new RuntimeException(e);
 		}
 	}
-
-	private ParameterFactory<ValueType, String> checkAndCreateTypeAdapter(PropertyMethodTypeInfo marshalMethod, PropertyMethodTypeInfo unmarshalMethod,
-			ParameterFactory<ValueType, String> adapter) {
-		return adapter;
-	}
-
 }

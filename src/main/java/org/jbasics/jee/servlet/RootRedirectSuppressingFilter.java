@@ -24,9 +24,6 @@
  */
 package org.jbasics.jee.servlet;
 
-import java.io.IOException;
-import java.util.regex.Pattern;
-
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -34,6 +31,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.regex.Pattern;
 
 public class RootRedirectSuppressingFilter implements Filter {
 	private Pattern pattern;
@@ -45,14 +44,10 @@ public class RootRedirectSuppressingFilter implements Filter {
 		}
 	}
 
-	public void destroy() {
-		// TODO Auto-generated method stub
-	}
-
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		if (httpRequest.getPathInfo() == null || "".equals(httpRequest.getPathInfo())
-		        || ("/".equals(httpRequest.getPathInfo()) && !httpRequest.getRequestURI().endsWith("/"))) {
+				|| ("/".equals(httpRequest.getPathInfo()) && !httpRequest.getRequestURI().endsWith("/"))) {
 			// Problem may occur when path info already has a / and request does not. than both gets it attached even path info
 			// should not get it attached!
 			chain.doFilter(new RequestAppendWrapper(httpRequest, "/"), response);
@@ -61,4 +56,7 @@ public class RootRedirectSuppressingFilter implements Filter {
 		}
 	}
 
+	public void destroy() {
+		// TODO Auto-generated method stub
+	}
 }

@@ -24,15 +24,15 @@
  */
 package org.jbasics.net.http;
 
+import org.jbasics.net.mediatype.MediaTypeRange;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jbasics.net.mediatype.MediaTypeRange;
-
 /**
  * Request headers send with the request.
- * 
+ *
  * @author Stephan Schloepke
  */
 @SuppressWarnings("unchecked")
@@ -40,33 +40,41 @@ public class RequestHeaders {
 	/**
 	 * The default media type(s) accepted if no accept media type is set or the accepted is set to null / empty.
 	 */
-	public static final AcceptParameter<MediaTypeRange>[] DEFAULT_ACCEPTED_MEDIA_TYPES = (AcceptParameter<MediaTypeRange>[]) new AcceptParameter[] { new AcceptParameter<MediaTypeRange>(
-			MediaTypeRange.ALL_MEDIA) };
-
+	public static final AcceptParameter<MediaTypeRange>[] DEFAULT_ACCEPTED_MEDIA_TYPES = (AcceptParameter<MediaTypeRange>[]) new AcceptParameter[]{new AcceptParameter<MediaTypeRange>(
+			MediaTypeRange.ALL_MEDIA)};
+	private AcceptParameter<MediaTypeRange>[] acceptMediaTypes = DEFAULT_ACCEPTED_MEDIA_TYPES;
 	/**
 	 * The default character set(s) accepted if no character set is set or the accepted is set to null / empty.
 	 */
-	public static final AcceptParameter<String>[] DEFAULT_ACCEPTED_CHARSETS = new AcceptParameter[] {
-	        new AcceptParameter<String>("ISO-8859-1"), new AcceptParameter<String>("UTF-8", 0.9d) };
-
-	/**
-	 * The default set of languages is suitable for central Europe. It has English as best than German or French and than any other.
-	 */
-	public static final AcceptParameter<String>[] DEFAULT_ACCEPTED_LANGUAGES = new AcceptParameter[] { new AcceptParameter<String>("en"),
-	        new AcceptParameter<String>("de", 0.9d), new AcceptParameter<String>("fr", 0.9d), new AcceptParameter<String>("*", 0.8d) };
-
-	private AcceptParameter<MediaTypeRange>[] acceptMediaTypes = DEFAULT_ACCEPTED_MEDIA_TYPES;
+	public static final AcceptParameter<String>[] DEFAULT_ACCEPTED_CHARSETS = new AcceptParameter[]{
+			new AcceptParameter<String>("ISO-8859-1"), new AcceptParameter<String>("UTF-8", 0.9d)};
 	private AcceptParameter<String>[] acceptCharsets = DEFAULT_ACCEPTED_CHARSETS;
+	/**
+	 * The default set of languages is suitable for central Europe. It has English as best than German or French and
+	 * than any other.
+	 */
+	public static final AcceptParameter<String>[] DEFAULT_ACCEPTED_LANGUAGES = new AcceptParameter[]{new AcceptParameter<String>("en"),
+			new AcceptParameter<String>("de", 0.9d), new AcceptParameter<String>("fr", 0.9d), new AcceptParameter<String>("*", 0.8d)};
 	private AcceptParameter<String>[] acceptEncodings;
 	private AcceptParameter<String>[] acceptLanguages;
-//	private EntityTag ifMatch;
+	//	private EntityTag ifMatch;
 	private Date ifModifiedSince;
 	private String fromEmail;
 	private Map<String, Object[]> extensionHeaders;
 
 	/**
-	 * Set the media types accpeted. Currently there is no way to set a media type with its quality factor. This is subject to change soon.
-	 * 
+	 * Returns the list of accepted media type ranges.
+	 *
+	 * @return The list of accepted media type ranges.
+	 */
+	public final AcceptParameter<MediaTypeRange>[] getAcceptMediaTypes() {
+		return this.acceptMediaTypes;
+	}
+
+	/**
+	 * Set the media types accpeted. Currently there is no way to set a media type with its quality factor. This is
+	 * subject to change soon.
+	 *
 	 * @param acceptMediaTypes the acceptMediaTypes to set
 	 */
 	public final void setAcceptMediaTypes(final AcceptParameter<MediaTypeRange>... acceptMediaTypes) {
@@ -78,17 +86,17 @@ public class RequestHeaders {
 	}
 
 	/**
-	 * Returns the list of accepted media type ranges.
-	 * 
-	 * @return The list of accepted media type ranges.
+	 * Returns the list of accepted character sets.
+	 *
+	 * @return The list of accepted character sets.
 	 */
-	public final AcceptParameter<MediaTypeRange>[] getAcceptMediaTypes() {
-		return this.acceptMediaTypes;
+	public final AcceptParameter<String>[] getAcceptCharsets() {
+		return this.acceptCharsets;
 	}
 
 	/**
 	 * Set the accepted charsets. If non are set the default is ISO-8859-1 and UTF-8.
-	 * 
+	 *
 	 * @param acceptCharsets the acceptCharsets to set
 	 */
 	public final void setAcceptCharsets(final AcceptParameter<String>... acceptCharsets) {
@@ -100,26 +108,8 @@ public class RequestHeaders {
 	}
 
 	/**
-	 * Returns the list of accepted character sets.
-	 * 
-	 * @return The list of accepted character sets.
-	 */
-	public final AcceptParameter<String>[] getAcceptCharsets() {
-		return this.acceptCharsets;
-	}
-
-	/**
-	 * Set the accepted encodings.
-	 * 
-	 * @param acceptEncodings The accepted encodings.
-	 */
-	public final void setAcceptEncodings(final AcceptParameter<String>... acceptEncodings) {
-		this.acceptEncodings = acceptEncodings;
-	}
-
-	/**
 	 * Returns the list of accepted encodings.
-	 * 
+	 *
 	 * @return The list of accepted encodings.
 	 */
 	public final AcceptParameter<String>[] getAcceptEncodings() {
@@ -127,21 +117,30 @@ public class RequestHeaders {
 	}
 
 	/**
-	 * Set the accepted languages.
-	 * 
-	 * @param acceptLanguages The accepted languages.
+	 * Set the accepted encodings.
+	 *
+	 * @param acceptEncodings The accepted encodings.
 	 */
-	public final void setAcceptLanguages(final AcceptParameter<String>... acceptLanguages) {
-		this.acceptLanguages = acceptLanguages;
+	public final void setAcceptEncodings(final AcceptParameter<String>... acceptEncodings) {
+		this.acceptEncodings = acceptEncodings;
 	}
 
 	/**
 	 * Returns the list of accepted languages.
-	 * 
+	 *
 	 * @return The list of accepted languages.
 	 */
 	public final AcceptParameter<String>[] getAcceptLanguages() {
 		return this.acceptLanguages;
+	}
+
+	/**
+	 * Set the accepted languages.
+	 *
+	 * @param acceptLanguages The accepted languages.
+	 */
+	public final void setAcceptLanguages(final AcceptParameter<String>... acceptLanguages) {
+		this.acceptLanguages = acceptLanguages;
 	}
 
 //	/**
@@ -163,17 +162,8 @@ public class RequestHeaders {
 //	}
 
 	/**
-	 * Set the if-modified-since header field.
-	 * 
-	 * @param ifModifiedSince The date to set to the if-modified-since header or null to remove it.
-	 */
-	public final void setIfModifiedSince(final Date ifModifiedSince) {
-		this.ifModifiedSince = ifModifiedSince;
-	}
-
-	/**
 	 * Returns the if-modified-since header or null if not set.
-	 * 
+	 *
 	 * @return The if modified since header.
 	 */
 	public final Date getIfModifiedSince() {
@@ -181,17 +171,17 @@ public class RequestHeaders {
 	}
 
 	/**
-	 * Set the from email header field.
-	 * 
-	 * @param fromEmail The from email header field.
+	 * Set the if-modified-since header field.
+	 *
+	 * @param ifModifiedSince The date to set to the if-modified-since header or null to remove it.
 	 */
-	public void setFromEmail(final String fromEmail) {
-		this.fromEmail = fromEmail;
+	public final void setIfModifiedSince(final Date ifModifiedSince) {
+		this.ifModifiedSince = ifModifiedSince;
 	}
 
 	/**
 	 * Returns the from email header field or null if not set.
-	 * 
+	 *
 	 * @return The from email header field value.
 	 */
 	public String getFromEmail() {
@@ -199,8 +189,17 @@ public class RequestHeaders {
 	}
 
 	/**
+	 * Set the from email header field.
+	 *
+	 * @param fromEmail The from email header field.
+	 */
+	public void setFromEmail(final String fromEmail) {
+		this.fromEmail = fromEmail;
+	}
+
+	/**
 	 * Returns the lazy initialized map of custom request headers to be send with the request.
-	 * 
+	 *
 	 * @return The lazy initialized map of custom request headers to be send with the request.
 	 */
 	public final Map<String, Object[]> getExtensionHeaders() {
@@ -212,7 +211,7 @@ public class RequestHeaders {
 
 	/**
 	 * Returns true if the header has extension headers set.
-	 * 
+	 *
 	 * @return True if extension headers are present.
 	 */
 	public final boolean hasExtensionHeaders() {

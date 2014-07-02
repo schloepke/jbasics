@@ -36,5 +36,4 @@ public class SingletonChangeEvent extends EventObject {
 	public Singleton<?> getSingleton() {
 		return (Singleton<?>) getSource();
 	}
-
 }

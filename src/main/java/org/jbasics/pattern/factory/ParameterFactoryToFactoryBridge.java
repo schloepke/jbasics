@@ -30,18 +30,17 @@ public class ParameterFactoryToFactoryBridge<InstanceType, ParameterType> implem
 	private final ParameterFactory<InstanceType, ParameterType> factory;
 	private final ParameterType paramerter;
 
-	public static <T, P> Factory<T> create(final ParameterFactory<T, P> factory, final P param) {
-		return new ParameterFactoryToFactoryBridge<T, P>(factory, param);
-	}
-
 	public ParameterFactoryToFactoryBridge(final ParameterFactory<InstanceType, ParameterType> factory, final ParameterType parameter) {
 		this.factory = ContractCheck.mustNotBeNull(factory, "factory");
 		this.paramerter = parameter;
+	}
+
+	public static <T, P> Factory<T> create(final ParameterFactory<T, P> factory, final P param) {
+		return new ParameterFactoryToFactoryBridge<T, P>(factory, param);
 	}
 
 	@Override
 	public InstanceType newInstance() {
 		return this.factory.create(this.paramerter);
 	}
-
 }

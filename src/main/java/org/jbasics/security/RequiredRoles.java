@@ -40,5 +40,4 @@ public class RequiredRoles {
 	public String[] getAdditionalRoles() {
 		return this.additionalRoles;
 	}
-
 }

@@ -57,5 +57,4 @@ public class AuthenticationFailedException extends AuthenticationException {
 	public AuthenticationFailedException(final Throwable cause) {
 		super(cause);
 	}
-
 }

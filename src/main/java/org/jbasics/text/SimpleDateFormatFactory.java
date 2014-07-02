@@ -24,13 +24,13 @@
  */
 package org.jbasics.text;
 
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.pattern.factory.Factory;
+
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.pattern.factory.Factory;
 
 public class SimpleDateFormatFactory implements Factory<DateFormat> {
 	public static final SimpleDateFormatFactory ISO_DATE_FORMAT_FACTORY = new SimpleDateFormatFactory("yyyy-MM-dd"); //$NON-NLS-1$
@@ -58,5 +58,4 @@ public class SimpleDateFormatFactory implements Factory<DateFormat> {
 	public DateFormat newInstance() {
 		return this.formatSymbols != null ? new SimpleDateFormat(this.pattern, this.formatSymbols) : new SimpleDateFormat(this.pattern, this.locale);
 	}
-
 }

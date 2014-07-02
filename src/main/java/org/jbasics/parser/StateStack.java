@@ -29,11 +29,8 @@ import java.util.EmptyStackException;
 import java.util.List;
 
 /**
- * Listenbeschreibung
- * <p>
- * Detailierte Beschreibung
- * </p>
- * 
+ * Listenbeschreibung <p> Detailierte Beschreibung </p>
+ *
  * @author stephan
  */
 public class StateStack<E> {
@@ -76,5 +73,4 @@ public class StateStack<E> {
 	public int size() {
 		return this.stackImpl.size();
 	}
-
 }

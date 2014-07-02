@@ -32,17 +32,14 @@ import org.jbasics.pattern.coder.Encoder;
 import org.jbasics.pattern.factory.ParameterFactory;
 
 /**
- * A {@link ParameterFactory} which uses an {@link Encoder} to encode the given
- * content. This is a helpful class when there is an {@link Encoder} used as input where
- * a {@link ParameterFactory} is required.
- * <p>
- * The guarantee to be thread safe is only guaranteed if the encoder given is also thread safe. Same applies to be
- * immutable.
- * </p>
- * 
- * @author Stephan Schloepke
+ * A {@link ParameterFactory} which uses an {@link Encoder} to encode the given content. This is a helpful class when
+ * there is an {@link Encoder} used as input where a {@link ParameterFactory} is required. <p> The guarantee to be
+ * thread safe is only guaranteed if the encoder given is also thread safe. Same applies to be immutable. </p>
+ *
  * @param <Decoded> The decoded type
  * @param <Encoded> The encoded type
+ *
+ * @author Stephan Schloepke
  * @since 1.0
  */
 @ThreadSafe(derived = true)
@@ -51,25 +48,11 @@ public final class EncodeFactory<Decoded, Encoded> implements ParameterFactory<E
 	private final Encoder<Decoded, Encoded> encoder;
 
 	/**
-	 * Create a {@link EncodeFactory} for the given {@link Encoder} with the same input and
-	 * output types.
-	 * 
-	 * @param <Enc> The encoded type
-	 * @param <Dec> The decoded type
-	 * @param encoder The decoder to use (MUST NOT be null).
-	 * @throws ContractViolationException If the decoder is null.
-	 * @return The {@link EncodeFactory} for the supplied {@link Encoder}.
-	 * @since 1.0
-	 */
-	public static <Enc, Dec> EncodeFactory<Enc, Dec> createForEncoder(final Encoder<Enc, Dec> encoder) {
-		return new EncodeFactory<Enc, Dec>(encoder);
-	}
-
-	/**
 	 * Create a decode {@link ParameterFactory} for the given {@link Encoder}.
-	 * 
+	 *
 	 * @param encoder The {@link Encoder} to use to encode the parameter of the {@link ParameterFactory} (MUST NOT be
-	 *            null).
+	 *                null).
+	 *
 	 * @throws ContractViolationException If the {@link Encoder} is null.
 	 * @since 1.0
 	 */
@@ -78,9 +61,26 @@ public final class EncodeFactory<Decoded, Encoded> implements ParameterFactory<E
 	}
 
 	/**
+	 * Create a {@link EncodeFactory} for the given {@link Encoder} with the same input and output types.
+	 *
+	 * @param <Enc>   The encoded type
+	 * @param <Dec>   The decoded type
+	 * @param encoder The decoder to use (MUST NOT be null).
+	 *
+	 * @return The {@link EncodeFactory} for the supplied {@link Encoder}.
+	 *
+	 * @throws ContractViolationException If the decoder is null.
+	 * @since 1.0
+	 */
+	public static <Enc, Dec> EncodeFactory<Enc, Dec> createForEncoder(final Encoder<Enc, Dec> encoder) {
+		return new EncodeFactory<Enc, Dec>(encoder);
+	}
+
+	/**
 	 * Encodes the given parameter and returns the encoded content (Create am encoded version of the decoded input).
-	 * 
+	 *
 	 * @param param The decoded content to encode with this factory (Parameter contract is defined by the encoderâ).
+	 *
 	 * @throws ContractViolationException Possible thrown if the contract of the used {@link Encoder} is broken.
 	 * @see org.jbasics.pattern.factory.ParameterFactory#create(java.lang.Object)
 	 * @since 1.0

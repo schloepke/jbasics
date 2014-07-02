@@ -42,5 +42,4 @@ public class VetoException extends RuntimeException {
 	public VetoException(final Throwable cause) {
 		super(cause);
 	}
-
 }

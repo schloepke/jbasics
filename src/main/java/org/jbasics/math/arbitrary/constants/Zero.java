@@ -48,16 +48,16 @@ public class Zero implements ArbitraryNumber {
 		return 0;
 	}
 
-	public boolean isZero() {
-		return true;
+	public boolean isNegativ() {
+		return false;
 	}
 
 	public boolean isPositiv() {
 		return false;
 	}
 
-	public boolean isNegativ() {
-		return false;
+	public boolean isZero() {
+		return true;
 	}
 
 	// Unary operations
@@ -92,15 +92,7 @@ public class Zero implements ArbitraryNumber {
 		return summand;
 	}
 
-	public ArbitraryNumber add(ArbitraryRational summand) {
-		return summand;
-	}
-
 	public ArbitraryNumber subtract(ArbitraryInteger subtrahend) {
-		return subtrahend.negate();
-	}
-
-	public ArbitraryNumber subtract(ArbitraryRational subtrahend) {
 		return subtrahend.negate();
 	}
 
@@ -108,16 +100,23 @@ public class Zero implements ArbitraryNumber {
 		return this;
 	}
 
-	public ArbitraryNumber multiply(ArbitraryRational factor) {
+	public ArbitraryNumber divide(ArbitraryInteger divisor) {
 		return this;
 	}
 
-	public ArbitraryNumber divide(ArbitraryInteger divisor) {
+	public ArbitraryNumber add(ArbitraryRational summand) {
+		return summand;
+	}
+
+	public ArbitraryNumber subtract(ArbitraryRational subtrahend) {
+		return subtrahend.negate();
+	}
+
+	public ArbitraryNumber multiply(ArbitraryRational factor) {
 		return this;
 	}
 
 	public ArbitraryNumber divide(ArbitraryRational divisor) {
 		return this;
 	}
-
 }

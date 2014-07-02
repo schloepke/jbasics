@@ -77,9 +77,9 @@ public class IntArrayComparatorTest {
 		Assert.assertEquals(-1, IntArrayComparator.compareArrays(this.lessThanBase, this.base));
 		Assert.assertEquals(-1, IntArrayComparator.compareArrays(ArrayConstants.ZERO_LENGTH_INT_ARRAY, this.base));
 		// single element compare
-		Assert.assertEquals(0, IntArrayComparator.compareArrays(new int[] { 10 }, new int[] { 10 }));
-		Assert.assertEquals(1, IntArrayComparator.compareArrays(new int[] { 10 }, new int[] { 8 }));
-		Assert.assertEquals(-1, IntArrayComparator.compareArrays(new int[] { 8 }, new int[] { 10 }));
+		Assert.assertEquals(0, IntArrayComparator.compareArrays(new int[]{10}, new int[]{10}));
+		Assert.assertEquals(1, IntArrayComparator.compareArrays(new int[]{10}, new int[]{8}));
+		Assert.assertEquals(-1, IntArrayComparator.compareArrays(new int[]{8}, new int[]{10}));
 	}
 
 	@Test

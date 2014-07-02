@@ -24,26 +24,34 @@
  */
 package org.jbasics.math.arbitrary;
 
-import java.math.BigInteger;
-
 import org.jbasics.arrays.ArrayConstants;
 import org.jbasics.arrays.IntArrayComparator;
 import org.jbasics.math.arbitrary.internal.InternalCalculation;
 import org.jbasics.math.arbitrary.internal.MagnitudeHelper;
 import org.jbasics.math.obsolete.NumberConvert;
 
+import java.math.BigInteger;
+
 public class ArbitraryInteger implements ArbitraryNumber {
 	public static final ArbitraryInteger ZERO = new ArbitraryInteger(false, null);
-	public static final ArbitraryInteger ONE = new ArbitraryInteger(false, new int[] { 1 });
-	public static final ArbitraryInteger TWO = new ArbitraryInteger(false, new int[] { 2 });
-	public static final ArbitraryInteger MINUS_ONE = new ArbitraryInteger(true, new int[] { 1 });
-
+	public static final ArbitraryInteger ONE = new ArbitraryInteger(false, new int[]{1});
+	public static final ArbitraryInteger TWO = new ArbitraryInteger(false, new int[]{2});
+	public static final ArbitraryInteger MINUS_ONE = new ArbitraryInteger(true, new int[]{1});
+	private static final int[] INT_ARRAY_ONE = new int[]{1};
 	private final boolean negativ;
 	private final int[] magnitude;
 
-	private static final int[] INT_ARRAY_ONE = new int[] { 1 };
-
 	// Construction
+
+	private ArbitraryInteger(boolean negativ, int[] magnitude) {
+		if (magnitude == null) {
+			this.negativ = false;
+			this.magnitude = ArrayConstants.ZERO_LENGTH_INT_ARRAY;
+		} else {
+			this.negativ = negativ;
+			this.magnitude = magnitude;
+		}
+	}
 
 	public static ArbitraryInteger valueOf(byte[] twoComplementByteArray) {
 		if (twoComplementByteArray == null || twoComplementByteArray.length == 0) {
@@ -80,19 +88,9 @@ public class ArbitraryInteger implements ArbitraryNumber {
 				return TWO;
 			default:
 				if (value < 0) {
-					return new ArbitraryInteger(true, new int[] { -value });
+					return new ArbitraryInteger(true, new int[]{-value});
 				}
-				return new ArbitraryInteger(false, new int[] { value });
-		}
-	}
-
-	private ArbitraryInteger(boolean negativ, int[] magnitude) {
-		if (magnitude == null) {
-			this.negativ = false;
-			this.magnitude = ArrayConstants.ZERO_LENGTH_INT_ARRAY;
-		} else {
-			this.negativ = negativ;
-			this.magnitude = magnitude;
+				return new ArbitraryInteger(false, new int[]{value});
 		}
 	}
 
@@ -120,28 +118,14 @@ public class ArbitraryInteger implements ArbitraryNumber {
 		return this.magnitude.length == 0;
 	}
 
-	public int bitLength() {
-		int result = this.magnitude.length * 32;
-		int t = this.magnitude[0];
-		int x = 1 << 31;
-		for (int i = 0; i < 32; i++) {
-			if ((t & x) != 0) {
-				break;
-			}
-			result--;
-			x = x >> 1;
-		}
-		return result;
+	public ArbitraryInteger abs() {
+		return new ArbitraryInteger(false, this.magnitude);
 	}
 
 	// Unary Operations
 
 	public ArbitraryInteger negate() {
 		return new ArbitraryInteger(!this.negativ, this.magnitude);
-	}
-
-	public ArbitraryInteger abs() {
-		return new ArbitraryInteger(false, this.magnitude);
 	}
 
 	public ArbitraryRational reciprocal() {
@@ -208,8 +192,6 @@ public class ArbitraryInteger implements ArbitraryNumber {
 		}
 	}
 
-	// Binary integer operations
-
 	public ArbitraryInteger add(ArbitraryInteger that) {
 		if (this.isZero()) {
 			return that;
@@ -233,6 +215,8 @@ public class ArbitraryInteger implements ArbitraryNumber {
 			}
 		}
 	}
+
+	// Binary integer operations
 
 	public ArbitraryInteger subtract(ArbitraryInteger that) {
 		if (this.isZero()) {
@@ -271,7 +255,39 @@ public class ArbitraryInteger implements ArbitraryNumber {
 	public ArbitraryRational divide(ArbitraryInteger divisor) {
 		return ArbitraryRational.valueOf(this, divisor);
 	}
-	
+
+	public ArbitraryRational add(ArbitraryRational summand) {
+		return summand.add(this);
+	}
+
+	public ArbitraryRational subtract(ArbitraryRational subtrahend) {
+		return subtrahend.negate().add(this);
+	}
+
+	// Binary rational operations
+
+	public ArbitraryRational multiply(ArbitraryRational factor) {
+		return factor.multiply(this);
+	}
+
+	public ArbitraryRational divide(ArbitraryRational divisor) {
+		return divisor.reciprocal().multiply(this);
+	}
+
+	public int bitLength() {
+		int result = this.magnitude.length * 32;
+		int t = this.magnitude[0];
+		int x = 1 << 31;
+		for (int i = 0; i < 32; i++) {
+			if ((t & x) != 0) {
+				break;
+			}
+			result--;
+			x = x >> 1;
+		}
+		return result;
+	}
+
 	@SuppressWarnings("all" /* since we want to allow the assignment of the parameter here */)
 	public ArbitraryInteger pow(int n) {
 		if (n < 0) {
@@ -283,7 +299,7 @@ public class ArbitraryInteger implements ArbitraryNumber {
 		} else {
 			ArbitraryInteger a = this;
 			ArbitraryInteger b = n % 2 == 0 ? ONE : this;
-			while((n >>>= 1) > 0) {
+			while ((n >>>= 1) > 0) {
 				a = a.multiply(a);
 				if (n % 2 == 1) {
 					b = b.multiply(a);
@@ -292,23 +308,4 @@ public class ArbitraryInteger implements ArbitraryNumber {
 			return b;
 		}
 	}
-
-	// Binary rational operations
-
-	public ArbitraryRational add(ArbitraryRational summand) {
-		return summand.add(this);
-	}
-
-	public ArbitraryRational divide(ArbitraryRational divisor) {
-		return divisor.reciprocal().multiply(this);
-	}
-
-	public ArbitraryRational multiply(ArbitraryRational factor) {
-		return factor.multiply(this);
-	}
-
-	public ArbitraryRational subtract(ArbitraryRational subtrahend) {
-		return subtrahend.negate().add(this);
-	}
-
 }

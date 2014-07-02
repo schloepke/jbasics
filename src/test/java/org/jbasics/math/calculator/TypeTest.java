@@ -24,23 +24,16 @@
  */
 package org.jbasics.math.calculator;
 
+import org.jbasics.pattern.strategy.ContextualCalculateStrategy;
+import org.jbasics.text.StringUtilities;
+import org.junit.Test;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-import org.junit.Test;
-
-import org.jbasics.pattern.strategy.ContextualCalculateStrategy;
-import org.jbasics.text.StringUtilities;
-
 public class TypeTest {
-
-	public class Foo implements ContextualCalculateStrategy<BigDecimal, String, MathContext> {
-		public BigDecimal calculate(final String request, final MathContext context) {
-			return null;
-		}
-	}
 
 	@Test
 	public void test() {
@@ -53,6 +46,12 @@ public class TypeTest {
 				System.out.println(pt.getRawType());
 				System.out.println(StringUtilities.joinToString(",", pt.getActualTypeArguments()));
 			}
+		}
+	}
+
+	public class Foo implements ContextualCalculateStrategy<BigDecimal, String, MathContext> {
+		public BigDecimal calculate(final String request, final MathContext context) {
+			return null;
 		}
 	}
 }

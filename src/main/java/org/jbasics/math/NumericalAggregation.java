@@ -24,17 +24,17 @@
  */
 package org.jbasics.math;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.builder.Builder;
 import org.jbasics.pattern.transpose.ElementFilter;
 import org.jbasics.pattern.transpose.Transposer;
 import org.jbasics.types.sequences.Sequence;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 public class NumericalAggregation<E> implements Builder<BigDecimal> {
 
@@ -43,12 +43,8 @@ public class NumericalAggregation<E> implements Builder<BigDecimal> {
 	private final MathContext mc;
 	private BigDecimal aggregatedValue;
 
-	private enum Op {
-		ADD, SUBTRACT, MULTIPLY, DIVIDE, CUSTOM
-	}
-
 	public NumericalAggregation(final MathContext mc, final Transposer<? extends Number, E> elementToNumberTransposer,
-			final ElementFilter<E>... filters) {
+								final ElementFilter<E>... filters) {
 		this.mc = mc == null ? MathContext.DECIMAL128 : mc;
 		this.elementToNumberTransposer = ContractCheck.mustNotBeNull(elementToNumberTransposer, "elementToNumberTransposer"); //$NON-NLS-1$
 		this.filters = Sequence.cons(filters);
@@ -69,6 +65,51 @@ public class NumericalAggregation<E> implements Builder<BigDecimal> {
 
 	public NumericalAggregation<E> add(final E value) {
 		return execute(Op.ADD, Collections.singleton(value));
+	}
+
+	private NumericalAggregation<E> execute(final Op op, final Collection<? extends E> values, final ElementFilter<E>... additionalFilters) {
+		if (values != null && values.size() > 0) {
+			Sequence<ElementFilter<E>> checkFilters = additionalFilters != null && additionalFilters.length > 0 ?
+					Sequence.cons(this.filters, additionalFilters) : this.filters;
+			for (E value : values) {
+				if (!isExcluded(value, checkFilters)) {
+					execute(op, this.elementToNumberTransposer.transpose(value));
+				}
+			}
+		}
+		return this;
+	}
+
+	private boolean isExcluded(final E value, final Sequence<ElementFilter<E>> checkFilters) {
+		for (ElementFilter<E> filter : checkFilters) {
+			if (filter.isElementFiltered(value)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private NumericalAggregation<E> execute(final Op op, Number value) {
+		BigDecimal opParam = NumberConverter.toBigDecimal(value);
+		switch (op) {
+			case ADD:
+				this.aggregatedValue = this.aggregatedValue.add(opParam, this.mc);
+				break;
+			case SUBTRACT:
+				this.aggregatedValue = this.aggregatedValue.subtract(opParam, this.mc);
+				break;
+			case MULTIPLY:
+				this.aggregatedValue = this.aggregatedValue.multiply(opParam, this.mc);
+				break;
+			case DIVIDE:
+				this.aggregatedValue = this.aggregatedValue.divide(opParam, this.mc);
+				break;
+			case CUSTOM:
+				throw new UnsupportedOperationException("Not yet implemented: Custom function"); //$NON-NLS-1$
+			default:
+				throw new UnsupportedOperationException("Unknown operation"); //$NON-NLS-1$
+		}
+		return this;
 	}
 
 	public NumericalAggregation<E> add(final Number value) {
@@ -147,56 +188,15 @@ public class NumericalAggregation<E> implements Builder<BigDecimal> {
 		return execute(Op.DIVIDE, values, additionalFilters);
 	}
 
-	private NumericalAggregation<E> execute(final Op op, final Collection<? extends E> values, final ElementFilter<E>... additionalFilters) {
-		if (values != null && values.size() > 0) {
-			Sequence<ElementFilter<E>> checkFilters = additionalFilters != null && additionalFilters.length > 0 ?
-					Sequence.cons(this.filters, additionalFilters) : this.filters;
-			for (E value : values) {
-				if (!isExcluded(value, checkFilters)) {
-					execute(op, this.elementToNumberTransposer.transpose(value));
-				}
-			}
-		}
-		return this;
-	}
-
-	private NumericalAggregation<E> execute(final Op op, Number value) {
-		BigDecimal opParam = NumberConverter.toBigDecimal(value);
-		switch (op) {
-			case ADD:
-				this.aggregatedValue = this.aggregatedValue.add(opParam, this.mc);
-				break;
-			case SUBTRACT:
-				this.aggregatedValue = this.aggregatedValue.subtract(opParam, this.mc);
-				break;
-			case MULTIPLY:
-				this.aggregatedValue = this.aggregatedValue.multiply(opParam, this.mc);
-				break;
-			case DIVIDE:
-				this.aggregatedValue = this.aggregatedValue.divide(opParam, this.mc);
-				break;
-			case CUSTOM:
-				throw new UnsupportedOperationException("Not yet implemented: Custom function"); //$NON-NLS-1$
-			default:
-				throw new UnsupportedOperationException("Unknown operation"); //$NON-NLS-1$
-		}
-		return this;
-	}
-
-	private boolean isExcluded(final E value, final Sequence<ElementFilter<E>> checkFilters) {
-		for (ElementFilter<E> filter : checkFilters) {
-			if (filter.isElementFiltered(value)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public void reset() {
 		this.aggregatedValue = BigDecimal.ZERO;
 	}
 
 	public BigDecimal build() {
 		return this.aggregatedValue;
+	}
+
+	private enum Op {
+		ADD, SUBTRACT, MULTIPLY, DIVIDE, CUSTOM
 	}
 }

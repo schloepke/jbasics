@@ -24,9 +24,9 @@
  */
 package org.jbasics.xml.transform;
 
-import javax.xml.transform.TransformerFactory;
-
 import org.jbasics.pattern.factory.Factory;
+
+import javax.xml.transform.TransformerFactory;
 
 public class TransformerFactoryFactory implements Factory<TransformerFactory> {
 
@@ -34,5 +34,4 @@ public class TransformerFactoryFactory implements Factory<TransformerFactory> {
 	public TransformerFactory newInstance() {
 		return TransformerFactory.newInstance();
 	}
-
 }

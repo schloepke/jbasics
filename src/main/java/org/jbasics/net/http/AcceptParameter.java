@@ -24,16 +24,17 @@
  */
 package org.jbasics.net.http;
 
+import org.jbasics.checker.ContractCheck;
+
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import org.jbasics.checker.ContractCheck;
-
 /**
- * Holds an accept value with a corresponding qFactor. Each of the given type must have a toString method rendering a correct header field
- * implementation which can append a qFactor ([AcceptType.toString()];q=[qFactor]).
- * 
+ * Holds an accept value with a corresponding qFactor. Each of the given type must have a toString method rendering a
+ * correct header field implementation which can append a qFactor ([AcceptType.toString()];q=[qFactor]).
+ *
  * @param <AcceptType> The type of the accept element.
+ *
  * @author Stephan Schloepke
  */
 public final class AcceptParameter<AcceptType> {
@@ -41,9 +42,18 @@ public final class AcceptParameter<AcceptType> {
 	private final double qFactor;
 
 	/**
+	 * Creates an accept parameter for the given accepted value. The qFactor becomes 1.0 in this case.
+	 *
+	 * @param accept The accepted element.
+	 */
+	public AcceptParameter(final AcceptType accept) {
+		this(accept, 1.0d);
+	}
+
+	/**
 	 * Create an accept value with its corresponding qFactor.
-	 * 
-	 * @param accept The value to accept.
+	 *
+	 * @param accept  The value to accept.
 	 * @param qFactor The qFactor
 	 */
 	public AcceptParameter(final AcceptType accept, final double qFactor) {
@@ -52,17 +62,8 @@ public final class AcceptParameter<AcceptType> {
 	}
 
 	/**
-	 * Creates an accept parameter for the given accepted value. The qFactor becomes 1.0 in this case.
-	 * 
-	 * @param accept The accepted element.
-	 */
-	public AcceptParameter(final AcceptType accept) {
-		this(accept, 1.0d);
-	}
-
-	/**
 	 * Returns the not null accept element.
-	 * 
+	 *
 	 * @return the accept The accepted element.
 	 */
 	public AcceptType getAccept() {
@@ -71,7 +72,7 @@ public final class AcceptParameter<AcceptType> {
 
 	/**
 	 * Returns the qFactor in the range from [0.0, 1.0].
-	 * 
+	 *
 	 * @return the qFactor The qFactor in the range 0.0 to 1.0.
 	 */
 	public double getQFactor() {
@@ -80,7 +81,7 @@ public final class AcceptParameter<AcceptType> {
 
 	/**
 	 * Returns the string representation of this accept parameter as usable in the header.
-	 * 
+	 *
 	 * @return The string representation of the header field.
 	 */
 	public String toString() {

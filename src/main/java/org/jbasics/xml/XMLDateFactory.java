@@ -24,20 +24,19 @@
  */
 package org.jbasics.xml;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import org.jbasics.pattern.factory.Factory;
+import org.jbasics.pattern.factory.ParameterFactory;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.jbasics.pattern.factory.Factory;
-import org.jbasics.pattern.factory.ParameterFactory;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 public final class XMLDateFactory implements ParameterFactory<XMLGregorianCalendar, Date>, Factory<XMLGregorianCalendar> {
 	private final DatatypeFactory datatypeFactory;
@@ -50,6 +49,10 @@ public final class XMLDateFactory implements ParameterFactory<XMLGregorianCalend
 		}
 	}
 
+	public XMLGregorianCalendar newInstance() {
+		return create(null);
+	}
+
 	@SuppressWarnings("all")
 	public XMLGregorianCalendar create(Date date) {
 		if (date == null) {
@@ -60,12 +63,8 @@ public final class XMLDateFactory implements ParameterFactory<XMLGregorianCalend
 		return this.datatypeFactory.newXMLGregorianCalendar(cal);
 	}
 
-	public XMLGregorianCalendar newInstance() {
-		return create(null);
-	}
-
 	public XMLGregorianCalendar createDateTime(final int year, final int month, final int dayOfMonth, final int hour, final int minute,
-			final int second, final int tz) {
+											   final int second, final int tz) {
 		return this.datatypeFactory.newXMLGregorianCalendar(year, month, dayOfMonth, hour, minute, second, DatatypeConstants.FIELD_UNDEFINED, tz);
 	}
 
@@ -102,12 +101,12 @@ public final class XMLDateFactory implements ParameterFactory<XMLGregorianCalend
 	}
 
 	public Duration createDuration(final boolean isPositive, final int years, final int months, final int days, final int hours, final int minutes,
-			final int seconds) {
+								   final int seconds) {
 		return this.datatypeFactory.newDuration(isPositive, years, months, days, hours, minutes, seconds);
 	}
 
 	public Duration createDuration(final boolean isPositive, final BigInteger years, final BigInteger months, final BigInteger days,
-			final BigInteger hours, final BigInteger minutes, final BigDecimal seconds) {
+								   final BigInteger hours, final BigInteger minutes, final BigDecimal seconds) {
 		return this.datatypeFactory.newDuration(isPositive, years, months, days, hours, minutes, seconds);
 	}
 }

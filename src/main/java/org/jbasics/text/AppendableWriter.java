@@ -24,12 +24,12 @@
  */
 package org.jbasics.text;
 
+import org.jbasics.checker.ContractCheck;
+
 import java.io.Closeable;
 import java.io.Flushable;
 import java.io.IOException;
 import java.io.Writer;
-
-import org.jbasics.checker.ContractCheck;
 
 public class AppendableWriter extends Writer {
 	private final Appendable out;
@@ -39,9 +39,9 @@ public class AppendableWriter extends Writer {
 	}
 
 	@Override
-	public void close() throws IOException {
-		if (this.out instanceof Closeable) {
-			((Closeable) this.out).close();
+	public void write(final char[] cbuf, final int off, final int len) throws IOException {
+		for (int i = 0; i < len; i++) {
+			this.out.append(cbuf[off + i]);
 		}
 	}
 
@@ -53,10 +53,9 @@ public class AppendableWriter extends Writer {
 	}
 
 	@Override
-	public void write(final char[] cbuf, final int off, final int len) throws IOException {
-		for (int i = 0; i < len; i++) {
-			this.out.append(cbuf[off + i]);
+	public void close() throws IOException {
+		if (this.out instanceof Closeable) {
+			((Closeable) this.out).close();
 		}
 	}
-
 }

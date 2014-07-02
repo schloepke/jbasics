@@ -38,15 +38,13 @@ public interface BoundedMathFunction<T extends Number> extends MathFunction<T> {
 	public static abstract class AbstractBoundedMathFunction<T extends Number> implements BoundedMathFunction<T> {
 
 		@Override
-		public double calculate(final double x) {
-			return calculate(null, Double.valueOf(x)).doubleValue();
-		}
-
-		@Override
 		public T calculate(final Number x) {
 			return calculate(null, x);
 		}
 
+		@Override
+		public double calculate(final double x) {
+			return calculate(null, Double.valueOf(x)).doubleValue();
+		}
 	}
-
 }

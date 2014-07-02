@@ -24,13 +24,13 @@
  */
 package org.jbasics.discover;
 
-import java.util.Map;
-
 import org.jbasics.annotation.ImmutableState;
 import org.jbasics.annotation.ThreadSafe;
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.types.sequences.Sequence;
+
+import java.util.Map;
 
 @ThreadSafe
 @ImmutableState
@@ -47,5 +47,4 @@ public class GenericsMappedInstanceDiscoveryFactory<T> implements Factory<Map<Se
 	public Map<Sequence<Class<?>>, T> newInstance() {
 		return ServiceClassDiscovery.discoverGenericsMappedImplementations(this.abstractType, this.genericParameters);
 	}
-
 }

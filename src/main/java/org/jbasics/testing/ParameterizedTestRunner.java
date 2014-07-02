@@ -24,15 +24,14 @@
  */
 package org.jbasics.testing;
 
-import java.util.List;
-
+import org.jbasics.checker.ContractCheck;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
-import org.jbasics.checker.ContractCheck;
+import java.util.List;
 
 public class ParameterizedTestRunner extends BlockJUnit4ClassRunner {
 	private final String testName;
@@ -45,13 +44,13 @@ public class ParameterizedTestRunner extends BlockJUnit4ClassRunner {
 	}
 
 	@Override
-	public Object createTest() throws Exception {
-		return getTestClass().getOnlyConstructor().newInstance(this.parameters);
+	protected void validateConstructor(final List<Throwable> errors) {
+		validateOnlyOneConstructor(errors);
 	}
 
 	@Override
-	protected String getName() {
-		return "[" + this.testName + "]"; //$NON-NLS-1$//$NON-NLS-2$
+	public Object createTest() throws Exception {
+		return getTestClass().getOnlyConstructor().newInstance(this.parameters);
 	}
 
 	@Override
@@ -60,13 +59,12 @@ public class ParameterizedTestRunner extends BlockJUnit4ClassRunner {
 	}
 
 	@Override
-	protected void validateConstructor(final List<Throwable> errors) {
-		validateOnlyOneConstructor(errors);
-	}
-
-	@Override
 	protected Statement classBlock(final RunNotifier notifier) {
 		return childrenInvoker(notifier);
 	}
 
+	@Override
+	protected String getName() {
+		return "[" + this.testName + "]"; //$NON-NLS-1$//$NON-NLS-2$
+	}
 }

@@ -41,6 +41,8 @@ public abstract class SpeedTestCallable<T> implements Callable<T> {
 		this.recursive = settings.isRecursive();
 	}
 
+	protected abstract T valueOf(BigInteger value);
+
 	public T call() throws Exception {
 		T x = this.lhs;
 		T y = this.rhs;
@@ -59,7 +61,4 @@ public abstract class SpeedTestCallable<T> implements Callable<T> {
 	}
 
 	protected abstract T process(T lhs, T rhs);
-
-	protected abstract T valueOf(BigInteger value);
-
 }

@@ -32,7 +32,7 @@ public class Multiplier implements Callable<int[]> {
 	private final int[] x;
 	private final int[] y;
 	private final int[] z;
-    private final int[] zAdd;
+	private final int[] zAdd;
 	private final int[] zAdd2;
 
 	public Multiplier(int[] x, int[] y) {
@@ -46,7 +46,7 @@ public class Multiplier implements Callable<int[]> {
 			this.x = x;
 			this.y = y;
 		}
-		this.z = new int[this.x.length+this.y.length];
+		this.z = new int[this.x.length + this.y.length];
 //		this.zSub1 = new int[this.z.length];
 //		this.zSub2 = new int[this.z.length];
 		this.zAdd = new int[this.z.length];
@@ -54,30 +54,27 @@ public class Multiplier implements Callable<int[]> {
 	}
 
 	private void procAdd(int[] x, int x0, int xLen, int[] y, int y0, int yLen, int[] z, int z0, int zLen) {
-		for(int i = 0; i < xLen; i++) {
+		for (int i = 0; i < xLen; i++) {
 //			z[]
 		}
 	}
-	
+
 	private void procMul(int[] x, int x0, int xLen, int[] y, int y0, int yLen, int[] z, int z0, int zLen) {
 		if (xLen > 1) {
 			int split = (xLen + 1) >> 1;
 			procMul(x, x0, split, y, y0, split, z, z0, split << 1);
 			procMul(x, x0 + split, split, y, y0 + split, split, z, z0 + (split << 1), split << 1);
 			int[] temp = new int[zLen - 1];
-			
-			
 		}
 	}
 
 	public int[] call() throws Exception {
-		for(int i = 0; i < this.y.length; i++) {
+		for (int i = 0; i < this.y.length; i++) {
 			long t = this.x[i] * this.y[i];
 			this.z[i << 2] = (int) t;
-			this.z[(i << 2) +1] = (int)(t >>> 32);
+			this.z[(i << 2) + 1] = (int) (t >>> 32);
 		}
-		
-		
+
 		int[] z = new int[this.x.length + this.y.length];
 		procMul(this.x, 0, this.x.length, this.y, 0, this.y.length, z, 0, z.length);
 		return z;
@@ -314,5 +311,4 @@ public class Multiplier implements Callable<int[]> {
 // A[i] = A[i] - (carry << ENTRYSIZE);
 // }
 // }
-
 }

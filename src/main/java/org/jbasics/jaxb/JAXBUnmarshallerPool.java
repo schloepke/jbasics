@@ -24,12 +24,12 @@
  */
 package org.jbasics.jaxb;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-
 import org.jbasics.pattern.pooling.Pool;
 import org.jbasics.types.delegates.UnmodifiableDelegate;
 import org.jbasics.types.pools.LazyQueuePool;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
 
 public class JAXBUnmarshallerPool extends LazyQueuePool<Unmarshaller> implements Pool<Unmarshaller> {
 
@@ -48,5 +48,4 @@ public class JAXBUnmarshallerPool extends LazyQueuePool<Unmarshaller> implements
 	public JAXBUnmarshallerPool(final JAXBContextFactory contextFactory) {
 		super(new JAXBUnmarshallerFactory(contextFactory));
 	}
-
 }

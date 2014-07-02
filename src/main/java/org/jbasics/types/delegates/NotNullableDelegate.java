@@ -31,17 +31,16 @@ public final class NotNullableDelegate<T> extends AbstractConstrainedDelegate<T>
 	}
 
 	@Override
-	protected void checkChangeCostrain(final T delegate, final T oldDelegate) {
-		if (delegate == null) {
-			throw new IllegalArgumentException("Null parameter: delegate"); //$NON-NLS-1$
-		}
-	}
-
-	@Override
 	protected void checkInitConstrain(final T delegate) {
 		if (delegate == null) {
 			throw new IllegalArgumentException("Null parameter: delegate"); //$NON-NLS-1$
 		}
 	}
 
+	@Override
+	protected void checkChangeCostrain(final T delegate, final T oldDelegate) {
+		if (delegate == null) {
+			throw new IllegalArgumentException("Null parameter: delegate"); //$NON-NLS-1$
+		}
+	}
 }

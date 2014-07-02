@@ -27,5 +27,4 @@ package org.jbasics.pattern.transpose;
 public interface Decision<C extends Enum<C>, T> {
 
 	C decide(T input);
-
 }

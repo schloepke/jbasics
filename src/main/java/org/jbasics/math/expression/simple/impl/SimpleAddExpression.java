@@ -24,10 +24,10 @@
  */
 package org.jbasics.math.expression.simple.impl;
 
+import org.jbasics.math.expression.simple.SimpleExpression;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
-
-import org.jbasics.math.expression.simple.SimpleExpression;
 
 public class SimpleAddExpression extends SimpleBinaryExpression {
 
@@ -44,5 +44,4 @@ public class SimpleAddExpression extends SimpleBinaryExpression {
 	public String toString() {
 		return new StringBuilder().append(this.lhs).append(" + ").append(this.rhs).toString(); //$NON-NLS-1$
 	}
-
 }

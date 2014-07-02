@@ -31,5 +31,4 @@ public interface NewPool<T> {
 	PooledInstance<T> aquire(long timeout);
 
 	void close();
-
 }

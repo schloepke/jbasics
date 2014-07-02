@@ -24,11 +24,11 @@
  */
 package org.jbasics.types.transpose;
 
-import java.util.List;
-import java.util.Map;
-
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.pattern.factory.ParameterFactory;
+
+import java.util.List;
+import java.util.Map;
 
 public class MappedListTransposer<K, V> extends KeyValuesTransposer<K, V, V> {
 
@@ -41,12 +41,11 @@ public class MappedListTransposer<K, V> extends KeyValuesTransposer<K, V, V> {
 	}
 
 	public MappedListTransposer(final ParameterFactory<K, V> keyFactory, final Factory<Map<K, List<V>>> mapFactory,
-			final Factory<List<V>> listFactory, final boolean mutable) {
+								final Factory<List<V>> listFactory, final boolean mutable) {
 		super(new KeyFactoryToKeyValueFactoryAdapter<K, V>(keyFactory), mapFactory, listFactory, mutable);
 	}
 
 	public MappedListTransposer(final ParameterFactory<K, V> keyFactory) {
 		super(new KeyFactoryToKeyValueFactoryAdapter<K, V>(keyFactory));
 	}
-
 }

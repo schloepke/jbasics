@@ -24,11 +24,11 @@
  */
 package org.jbasics.utilities;
 
-import java.net.URI;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.factory.ParameterFactory;
 import org.jbasics.types.sequences.Sequence;
+
+import java.net.URI;
 
 @SuppressWarnings("nls")
 /**
@@ -83,10 +83,8 @@ import org.jbasics.types.sequences.Sequence;
  * Final package name: "com.acme.go.espeak".
  **/
 public class NamespacePackageFactory implements ParameterFactory<String, URI> {
-	private static final String HTML_EXTENSION = "html";
-
 	public static final NamespacePackageFactory SHARED_INSTANCE = new NamespacePackageFactory();
-
+	private static final String HTML_EXTENSION = "html";
 	private static final String HTTP_SCHEME = "http"; //$NON-NLS-1$
 	private static final String URN_SCHEME = "urn"; //$NON-NLS-1$
 
@@ -134,5 +132,4 @@ public class NamespacePackageFactory implements ParameterFactory<String, URI> {
 		}
 		return domainParts;
 	}
-
 }

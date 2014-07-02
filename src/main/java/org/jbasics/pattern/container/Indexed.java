@@ -29,5 +29,4 @@ public interface Indexed<T> {
 	int size();
 
 	T getElementAtIndex(int index);
-
 }

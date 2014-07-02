@@ -24,10 +24,6 @@
  */
 package org.jbasics.types.container;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-
 import org.jbasics.collection.CollectionUtilities;
 import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.pattern.factory.Factory;
@@ -37,12 +33,21 @@ import org.jbasics.types.delegates.UnmodifiableDelegate;
 import org.jbasics.types.factories.MapFactory;
 import org.jbasics.utilities.DataUtilities;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+
 public class ChainedMap<K, V> implements Map<K, V>, Concatable<Map<K, V>>, Delegate<Map<K, V>>, Resolver<V, K> {
 	private final Delegate<Map<K, V>> parentMapDelegate;
 	private final Map<K, V> map;
 
 	public ChainedMap() {
 		this(null, (Map<K, V>) null);
+	}
+
+	public ChainedMap(Delegate<Map<K, V>> parentMapDelegate, Map<K, V> map) {
+		this.parentMapDelegate = parentMapDelegate;
+		this.map = map != null ? map : MapFactory.<K, V>unorderedMapFactory().newInstance();
 	}
 
 	public ChainedMap(Map<K, V> parentMap) {
@@ -55,12 +60,7 @@ public class ChainedMap<K, V> implements Map<K, V>, Concatable<Map<K, V>>, Deleg
 
 	@SuppressWarnings("unchecked")
 	public ChainedMap(Delegate<Map<K, V>> parentMapDelegate, Factory<Map<K, V>> mapStorageFactory) {
-		this(parentMapDelegate, DataUtilities.coalesce(mapStorageFactory, MapFactory.<K, V> unorderedMapFactory()).newInstance());
-	}
-
-	public ChainedMap(Delegate<Map<K, V>> parentMapDelegate, Map<K, V> map) {
-		this.parentMapDelegate = parentMapDelegate;
-		this.map = map != null ? map : MapFactory.<K, V> unorderedMapFactory().newInstance();
+		this(parentMapDelegate, DataUtilities.coalesce(mapStorageFactory, MapFactory.<K, V>unorderedMapFactory()).newInstance());
 	}
 
 	@Override

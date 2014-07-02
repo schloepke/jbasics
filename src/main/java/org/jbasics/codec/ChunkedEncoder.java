@@ -31,9 +31,9 @@ import org.jbasics.checker.ContractViolationException;
 import org.jbasics.pattern.coder.Encoder;
 
 /**
- * An encoder to encode the input in chunks with a separator.
- * The encoder takes the input and builds blocks of data separated by the given separator.
- * 
+ * An encoder to encode the input in chunks with a separator. The encoder takes the input and builds blocks of data
+ * separated by the given separator.
+ *
  * @author Stephan Schloepke
  * @since 1.0
  */
@@ -44,14 +44,14 @@ public class ChunkedEncoder implements Encoder<CharSequence, CharSequence> {
 	private final String separator;
 
 	/**
-	 * Creates an {@link ChunkedEncoder} for the given chunk size and the separator to separate the
-	 * chunks. The size of the chunk must be greater than zero and the separator must have a length
-	 * greater than zero.
-	 * 
+	 * Creates an {@link ChunkedEncoder} for the given chunk size and the separator to separate the chunks. The size of
+	 * the chunk must be greater than zero and the separator must have a length greater than zero.
+	 *
 	 * @param chunkSize The size of the chunk (MUST be greater than zero)
 	 * @param separator The String to separate the chunks (MUST not be null and not zero length)
+	 *
 	 * @throws ContractViolationException If the given contract is broken (chunk size < 1 or separator == null or
-	 *             separator.length < 1)
+	 *                                    separator.length < 1)
 	 * @since 1.0
 	 */
 	public ChunkedEncoder(final int chunkSize, final String separator) {
@@ -78,5 +78,4 @@ public class ChunkedEncoder implements Encoder<CharSequence, CharSequence> {
 		}
 		return temp;
 	}
-
 }

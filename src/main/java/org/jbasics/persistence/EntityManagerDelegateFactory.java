@@ -24,15 +24,14 @@
  */
 package org.jbasics.persistence;
 
-import java.util.Map;
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.pattern.delegation.LifecycleDelegate;
+import org.jbasics.pattern.factory.ClosableFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.pattern.delegation.LifecycleDelegate;
-import org.jbasics.pattern.factory.ClosableFactory;
+import java.util.Map;
 
 public class EntityManagerDelegateFactory implements ClosableFactory<LifecycleDelegate<EntityManager>> {
 	private final boolean externalManaged;
@@ -67,5 +66,4 @@ public class EntityManagerDelegateFactory implements ClosableFactory<LifecycleDe
 			}
 		}
 	}
-
 }

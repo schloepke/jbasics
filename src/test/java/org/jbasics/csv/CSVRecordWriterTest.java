@@ -24,11 +24,10 @@
  */
 package org.jbasics.csv;
 
-import java.io.IOException;
-
 import junit.framework.Assert;
-
 import org.junit.Test;
+
+import java.io.IOException;
 
 public class CSVRecordWriterTest {
 

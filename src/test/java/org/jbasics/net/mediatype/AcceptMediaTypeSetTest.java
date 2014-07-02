@@ -24,11 +24,11 @@
  */
 package org.jbasics.net.mediatype;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import org.jbasics.testing.Java14LoggingTestCase;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class AcceptMediaTypeSetTest extends Java14LoggingTestCase {
 
@@ -43,5 +43,4 @@ public class AcceptMediaTypeSetTest extends Java14LoggingTestCase {
 		assertEquals(toMatch, matchedOne);
 		this.logger.exiting(AcceptMediaTypeSetTest.class.getName(), "testSimple");
 	}
-
 }

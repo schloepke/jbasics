@@ -24,14 +24,14 @@
  */
 package org.jbasics.types.builders;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.builder.Builder;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.types.factories.SetFactory;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
 
 public class SetBuilder<E> implements Builder<Set<E>> {
 	private final Factory<Set<E>> setFactory;
@@ -75,14 +75,13 @@ public class SetBuilder<E> implements Builder<Set<E>> {
 		return this;
 	}
 
+	public void reset() {
+		this.set.clear();
+	}
+
 	public Set<E> build() {
 		final Set<E> result = this.setFactory.newInstance();
 		result.addAll(this.set);
 		return this.mutable ? result : Collections.unmodifiableSet(result);
 	}
-
-	public void reset() {
-		this.set.clear();
-	}
-
 }

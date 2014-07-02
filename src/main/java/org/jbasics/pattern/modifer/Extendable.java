@@ -27,5 +27,4 @@ package org.jbasics.pattern.modifer;
 public interface Extendable<T, V> {
 
 	T extend(V... values);
-
 }

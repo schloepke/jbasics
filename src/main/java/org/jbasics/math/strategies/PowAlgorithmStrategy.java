@@ -24,10 +24,10 @@
  */
 package org.jbasics.math.strategies;
 
+import org.jbasics.math.AlgorithmStrategy;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
-
-import org.jbasics.math.AlgorithmStrategy;
 
 public class PowAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
 	private final AlgorithmStrategy<BigDecimal> exponentialFunction;
@@ -48,5 +48,4 @@ public class PowAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
 		}
 		return this.exponentialFunction.calculate(mc, null, this.logarithmFunction.calculate(mc, null, xn[0]).multiply(xn[1], mc));
 	}
-
 }

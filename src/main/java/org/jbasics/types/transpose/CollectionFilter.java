@@ -24,10 +24,6 @@
  */
 package org.jbasics.types.transpose;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.pattern.strategy.SubstitutionStrategy;
@@ -35,38 +31,23 @@ import org.jbasics.pattern.transpose.ElementFilter;
 import org.jbasics.pattern.transpose.Transposer;
 import org.jbasics.types.factories.ListFactory;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 public class CollectionFilter<E> implements Transposer<List<E>, Collection<? extends E>>, SubstitutionStrategy<List<E>, Collection<? extends E>> {
 	private final ElementFilter<E> filterDecision;
 	private final Factory<? extends List<E>> listFactory;
 	private final boolean mutable;
 
-	public static <E> List<E> filter(final Collection<? extends E> input, final ElementFilter<E> filterDecision,
-			final Factory<? extends List<E>> listFactory,
-			final boolean mutable) {
-		ContractCheck.mustNotBeNull(filterDecision, "filterDecision"); //$NON-NLS-1$
-		ContractCheck.mustNotBeNull(listFactory, "listFactory"); //$NON-NLS-1$
-		if (input == null || input.isEmpty()) {
-			return mutable ? listFactory.newInstance() : Collections.<E> emptyList();
-		}
-		List<E> result = listFactory.newInstance();
-		for (E element : input) {
-			if (!filterDecision.isElementFiltered(element)) {
-				result.add(element);
-			}
-		}
-		return mutable ? result : Collections.unmodifiableList(result);
-	}
-
-	public static <E> List<E> filter(final Collection<? extends E> input, final ElementFilter<E> filterDecision) {
-		return CollectionFilter.filter(input, filterDecision, false);
-	}
-
-	public static <E> List<E> filter(final Collection<? extends E> input, final ElementFilter<E> filterDecision, final boolean mutable) {
-		return CollectionFilter.filter(input, filterDecision, ListFactory.<E> randomAccessListFactory(), mutable);
-	}
-
 	public CollectionFilter(final ElementFilter<E> filterDecision) {
 		this(filterDecision, null, false);
+	}
+
+	public CollectionFilter(final ElementFilter<E> filterDecision, final Factory<? extends List<E>> listFactory, final boolean mutable) {
+		this.filterDecision = ContractCheck.mustNotBeNull(filterDecision, "filterDecision"); //$NON-NLS-1$
+		this.listFactory = listFactory != null ? listFactory : ListFactory.<E>randomAccessListFactory();
+		this.mutable = mutable;
 	}
 
 	public CollectionFilter(final ElementFilter<E> filterDecision, final boolean mutable) {
@@ -77,17 +58,32 @@ public class CollectionFilter<E> implements Transposer<List<E>, Collection<? ext
 		this(filterDecision, listFactory, false);
 	}
 
-	public CollectionFilter(final ElementFilter<E> filterDecision, final Factory<? extends List<E>> listFactory, final boolean mutable) {
-		this.filterDecision = ContractCheck.mustNotBeNull(filterDecision, "filterDecision"); //$NON-NLS-1$
-		this.listFactory = listFactory != null ? listFactory : ListFactory.<E> randomAccessListFactory();
-		this.mutable = mutable;
+	public static <E> List<E> filter(final Collection<? extends E> input, final ElementFilter<E> filterDecision) {
+		return CollectionFilter.filter(input, filterDecision, false);
+	}
+
+	public static <E> List<E> filter(final Collection<? extends E> input, final ElementFilter<E> filterDecision, final boolean mutable) {
+		return CollectionFilter.filter(input, filterDecision, ListFactory.<E>randomAccessListFactory(), mutable);
+	}
+
+	public static <E> List<E> filter(final Collection<? extends E> input, final ElementFilter<E> filterDecision,
+									 final Factory<? extends List<E>> listFactory,
+									 final boolean mutable) {
+		ContractCheck.mustNotBeNull(filterDecision, "filterDecision"); //$NON-NLS-1$
+		ContractCheck.mustNotBeNull(listFactory, "listFactory"); //$NON-NLS-1$
+		if (input == null || input.isEmpty()) {
+			return mutable ? listFactory.newInstance() : Collections.<E>emptyList();
+		}
+		List<E> result = listFactory.newInstance();
+		for (E element : input) {
+			if (!filterDecision.isElementFiltered(element)) {
+				result.add(element);
+			}
+		}
+		return mutable ? result : Collections.unmodifiableList(result);
 	}
 
 	public List<E> filter(final Collection<? extends E> input) {
-		return transpose(input);
-	}
-
-	public List<E> substitute(final Collection<? extends E> input) {
 		return transpose(input);
 	}
 
@@ -95,4 +91,7 @@ public class CollectionFilter<E> implements Transposer<List<E>, Collection<? ext
 		return CollectionFilter.filter(input, this.filterDecision, this.listFactory, this.mutable);
 	}
 
+	public List<E> substitute(final Collection<? extends E> input) {
+		return transpose(input);
+	}
 }

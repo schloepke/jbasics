@@ -24,11 +24,11 @@
  */
 package org.jbasics.configuration.properties;
 
-import java.math.BigInteger;
-
 import org.jbasics.math.NumberConverter;
 import org.jbasics.pattern.factory.ParameterFactory;
 import org.jbasics.types.tuples.Pair;
+
+import java.math.BigInteger;
 
 public class BigIntegerValueTypeFactory implements ParameterFactory<BigInteger, String> {
 	public static final BigIntegerValueTypeFactory SHARED_INSTANCE = new BigIntegerValueTypeFactory();

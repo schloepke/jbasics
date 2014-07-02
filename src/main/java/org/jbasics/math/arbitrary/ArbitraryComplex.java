@@ -32,30 +32,22 @@ public class ArbitraryComplex implements ArbitraryNumber {
 	private final ArbitraryRational real;
 	private final ArbitraryRational imaginary;
 
-	public static ArbitraryComplex valueOf(ArbitraryRational real, ArbitraryRational imaginary) {
-		return new ArbitraryComplex(real, imaginary);
-	}
-
 	private ArbitraryComplex(ArbitraryRational real, ArbitraryRational imaginary) {
 		this.real = real;
 		this.imaginary = imaginary;
 	}
 
-	// Converting
-
 	public Number toNumber() {
 		throw new UnsupportedOperationException("Java Number does not support any type of complex number");
 	}
 
-	// Checks
+	// Converting
 
 	public int signum() {
 		throw new UnsupportedOperationException("Currently I do not know what the signum of a complex number is");
 	}
 
-	public boolean isZero() {
-		throw new UnsupportedOperationException("When is a complex number zero?");
-	}
+	// Checks
 
 	public boolean isNegativ() {
 		throw new UnsupportedOperationException("Since signum dosn't work currently this does not either");
@@ -65,12 +57,16 @@ public class ArbitraryComplex implements ArbitraryNumber {
 		throw new UnsupportedOperationException("Since signum dosn't work currently this does not either");
 	}
 
-	// Unary operations
+	public boolean isZero() {
+		throw new UnsupportedOperationException("When is a complex number zero?");
+	}
 
 	public ArbitraryNumber abs() {
 		throw new UnsupportedOperationException(
 				"The absolute value of a complex number requires trigonometric functions wich are not available yet");
 	}
+
+	// Unary operations
 
 	public ArbitraryComplex negate() {
 		return new ArbitraryComplex(this.real.negate(), this.imaginary.negate());
@@ -90,19 +86,13 @@ public class ArbitraryComplex implements ArbitraryNumber {
 		return ArbitraryComplex.valueOf(this.real.increment(), this.imaginary);
 	}
 
+	public static ArbitraryComplex valueOf(ArbitraryRational real, ArbitraryRational imaginary) {
+		return new ArbitraryComplex(real, imaginary);
+	}
+
 	public ArbitraryNumber decrement() {
 		return ArbitraryComplex.valueOf(this.real.decrement(), this.imaginary);
 	}
-
-	public ArbitraryRational real() {
-		return this.real;
-	}
-
-	public ArbitraryRational imaginary() {
-		return this.imaginary;
-	}
-
-	// Binary integer operations
 
 	public ArbitraryComplex add(ArbitraryInteger summand) {
 		return new ArbitraryComplex(this.real.add(summand), this.imaginary);
@@ -112,6 +102,8 @@ public class ArbitraryComplex implements ArbitraryNumber {
 		return new ArbitraryComplex(this.real.subtract(subtrahend), this.imaginary);
 	}
 
+	// Binary integer operations
+
 	public ArbitraryNumber multiply(ArbitraryInteger factor) {
 		return new ArbitraryComplex(this.real.multiply(factor), this.imaginary.multiply(factor));
 	}
@@ -119,8 +111,6 @@ public class ArbitraryComplex implements ArbitraryNumber {
 	public ArbitraryNumber divide(ArbitraryInteger divisor) {
 		return new ArbitraryComplex(this.real.divide(divisor), this.imaginary.divide(divisor));
 	}
-
-	// Binary rational operations
 
 	public ArbitraryNumber add(ArbitraryRational summand) {
 		return new ArbitraryComplex(this.real.add(summand), this.imaginary);
@@ -130,12 +120,22 @@ public class ArbitraryComplex implements ArbitraryNumber {
 		return new ArbitraryComplex(this.real.subtract(subtrahend), this.imaginary);
 	}
 
+	// Binary rational operations
+
 	public ArbitraryComplex multiply(ArbitraryRational factor) {
 		return new ArbitraryComplex(this.real.multiply(factor), this.imaginary.multiply(factor));
 	}
 
 	public ArbitraryNumber divide(ArbitraryRational divisor) {
 		return new ArbitraryComplex(this.real.divide(divisor), this.imaginary.divide(divisor));
+	}
+
+	public ArbitraryRational real() {
+		return this.real;
+	}
+
+	public ArbitraryRational imaginary() {
+		return this.imaginary;
 	}
 
 	// Binary complex operations
@@ -156,11 +156,10 @@ public class ArbitraryComplex implements ArbitraryNumber {
 		}
 		return new ArbitraryComplex(
 				this.real.multiply(factor.real).subtract(this.imaginary.multiply(factor.imaginary)), this.real
-						.multiply(factor.imaginary).add(this.imaginary.multiply(factor.real)));
+				.multiply(factor.imaginary).add(this.imaginary.multiply(factor.real)));
 	}
 
 	public ArbitraryComplex divide(ArbitraryComplex divisor) {
 		return null;
 	}
-
 }

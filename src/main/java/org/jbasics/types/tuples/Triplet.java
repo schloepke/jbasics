@@ -25,19 +25,18 @@
 package org.jbasics.types.tuples;
 
 /**
- * A {@link Triplet} represents a 3-tuple instance.
- * <p>
- * A 3-tuple is created of three elements like {@code x = (a, b, c)}. Internally the 3-tuple is mapped to a pair of a single value and a pair of two
- * single values. Like {@code x = (a, b, c)} is really implemented as {@code x = (a, (b, c))}. So calling the {@link #first()}, {@link #second()} and
- * {@link #third()} method will return the respectiv element. Calling {@link #left()} will return the first value while calling {@link #right()}
- * returns the pair of the second and third value.
- * </p>
- * 
- * @author Stephan Schloepke
- * @since 1.0
+ * A {@link Triplet} represents a 3-tuple instance. <p> A 3-tuple is created of three elements like {@code x = (a, b,
+ * c)}. Internally the 3-tuple is mapped to a pair of a single value and a pair of two single values. Like {@code x =
+ * (a, b, c)} is really implemented as {@code x = (a, (b, c))}. So calling the {@link #first()}, {@link #second()} and
+ * {@link #third()} method will return the respectiv element. Calling {@link #left()} will return the first value while
+ * calling {@link #right()} returns the pair of the second and third value. </p>
+ *
  * @param <A>
  * @param <B>
  * @param <C>
+ *
+ * @author Stephan Schloepke
+ * @since 1.0
  */
 public class Triplet<A, B, C> implements Tuple<A, Tuple<B, C>> {
 	private final A left;
@@ -60,10 +59,6 @@ public class Triplet<A, B, C> implements Tuple<A, Tuple<B, C>> {
 		return this.right.first();
 	}
 
-	public int size() {
-		return 3;
-	}
-
 	public C third() {
 		return this.right.second();
 	}
@@ -74,6 +69,10 @@ public class Triplet<A, B, C> implements Tuple<A, Tuple<B, C>> {
 
 	public Pair<B, C> right() {
 		return this.right;
+	}
+
+	public int size() {
+		return 3;
 	}
 
 	/*
@@ -117,5 +116,4 @@ public class Triplet<A, B, C> implements Tuple<A, Tuple<B, C>> {
 		builder.append("TRIPLET(").append(this.left).append(", ").append(this.right.first()).append(", ").append(this.right.second()).append(")");
 		return builder.toString();
 	}
-
 }

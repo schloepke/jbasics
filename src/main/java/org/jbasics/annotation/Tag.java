@@ -30,19 +30,20 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Tags are list of names to "tag" something. The tag value has no meaning unless a certain
- * function applies a meaning to the tag. The tag can be used to group informations or to
- * make it possible to find functions which conforms to something defined by a tag.
- * 
+ * Tags are list of names to "tag" something. The tag value has no meaning unless a certain function applies a meaning
+ * to the tag. The tag can be used to group informations or to make it possible to find functions which conforms to
+ * something defined by a tag.
+ *
  * @author Stephan Schlšpke
  * @since 1.0
  */
-@Target({ ElementType.TYPE, ElementType.CONSTRUCTOR, ElementType.FIELD, ElementType.METHOD, ElementType.PACKAGE, ElementType.PARAMETER })
+@Target({ElementType.TYPE, ElementType.CONSTRUCTOR, ElementType.FIELD, ElementType.METHOD, ElementType.PACKAGE, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Tag {
+
 	/**
 	 * The value(s) of the tag normally trimmed and with no white space.
-	 * 
+	 *
 	 * @return The tag value(s)
 	 */
 	String[] value();

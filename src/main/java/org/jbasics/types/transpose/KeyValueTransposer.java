@@ -24,10 +24,6 @@
  */
 package org.jbasics.types.transpose;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.pattern.factory.ParameterFactory;
@@ -36,6 +32,10 @@ import org.jbasics.pattern.strategy.SubstitutionStrategy;
 import org.jbasics.pattern.transpose.Transposer;
 import org.jbasics.types.factories.MapFactory;
 import org.jbasics.types.tuples.Tuple;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 
 public class KeyValueTransposer<K, V, E> implements Transposer<Map<K, V>, Collection<E>>, SubstitutionStrategy<Map<K, V>, Collection<E>> {
 	private final ParameterFactory<? extends Tuple<K, V>, E> keyValueFactory;
@@ -46,6 +46,13 @@ public class KeyValueTransposer<K, V, E> implements Transposer<Map<K, V>, Collec
 		this(keyValueFactory, null, false);
 	}
 
+	public KeyValueTransposer(final ParameterFactory<? extends Tuple<K, V>, E> keyValueFactory, final Factory<Map<K, V>> mapFactory,
+							  final boolean mutable) {
+		this.keyValueFactory = ContractCheck.mustNotBeNull(keyValueFactory, "keyValueFactory"); //$NON-NLS-1$
+		this.mapFactory = mapFactory != null ? mapFactory : new MapFactory<K, V>();
+		this.mutable = mutable;
+	}
+
 	public KeyValueTransposer(final ParameterFactory<? extends Tuple<K, V>, E> keyValueFactory, final boolean ordered) {
 		this(keyValueFactory, new MapFactory<K, V>(ordered), false);
 	}
@@ -54,11 +61,9 @@ public class KeyValueTransposer<K, V, E> implements Transposer<Map<K, V>, Collec
 		this(keyValueFactory, new MapFactory<K, V>(ordered), mutable);
 	}
 
-	public KeyValueTransposer(final ParameterFactory<? extends Tuple<K, V>, E> keyValueFactory, final Factory<Map<K, V>> mapFactory,
-			final boolean mutable) {
-		this.keyValueFactory = ContractCheck.mustNotBeNull(keyValueFactory, "keyValueFactory"); //$NON-NLS-1$
-		this.mapFactory = mapFactory != null ? mapFactory : new MapFactory<K, V>();
-		this.mutable = mutable;
+	@Override
+	public Map<K, V> substitute(final Collection<E> input) {
+		return transpose(input);
 	}
 
 	@Override
@@ -84,11 +89,6 @@ public class KeyValueTransposer<K, V, E> implements Transposer<Map<K, V>, Collec
 		return this.mutable ? result : Collections.unmodifiableMap(result);
 	}
 
-	@Override
-	public Map<K, V> substitute(final Collection<E> input) {
-		return transpose(input);
-	}
-
 	protected V handleDuplicateValue(final V newValue, final V oldValue) {
 		if (newValue instanceof Concatable) {
 			try {
@@ -99,5 +99,4 @@ public class KeyValueTransposer<K, V, E> implements Transposer<Map<K, V>, Collec
 		}
 		return newValue;
 	}
-
 }

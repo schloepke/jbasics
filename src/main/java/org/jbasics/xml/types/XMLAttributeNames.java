@@ -29,7 +29,7 @@ import javax.xml.namespace.QName;
 
 /**
  * Constant class holding the standard XML attributes from the xml:* namespace.
- * 
+ *
  * @author Stephan Schloepke
  */
 public final class XMLAttributeNames {
@@ -45,5 +45,4 @@ public final class XMLAttributeNames {
 	 * The standard xml:space attribute name.
 	 */
 	public static final QName XML_SPACE_QNAME = new QName(XMLConstants.XML_NS_URI, "space", XMLConstants.XML_NS_PREFIX);
-
 }

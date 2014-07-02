@@ -24,15 +24,14 @@
  */
 package org.jbasics.types.sequences;
 
-import java.util.Arrays;
-
+import org.jbasics.text.StringUtilities;
 import org.junit.Assert;
 import org.junit.Test;
 
-import org.jbasics.text.StringUtilities;
+import java.util.Arrays;
 
 public class SequenceTest {
-	private static final String[] testData = new String[] { "Hello", "World", "this", "is", "ME!!" };
+	private static final String[] testData = new String[]{"Hello", "World", "this", "is", "ME!!"};
 
 	@Test
 	public void testConsArray() {

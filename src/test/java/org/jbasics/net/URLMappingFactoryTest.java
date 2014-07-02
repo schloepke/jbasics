@@ -24,11 +24,11 @@
  */
 package org.jbasics.net;
 
-import java.net.URI;
-import java.net.URL;
-
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.net.URI;
+import java.net.URL;
 
 public class URLMappingFactoryTest {
 

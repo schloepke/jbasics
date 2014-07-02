@@ -77,9 +77,9 @@ public class ShortArrayComparatorTest {
 		Assert.assertEquals(-1, ShortArrayComparator.compareArrays(this.lessThanBase, this.base));
 		Assert.assertEquals(-1, ShortArrayComparator.compareArrays(ArrayConstants.ZERO_LENGTH_SHORT_ARRAY, this.base));
 		// single element compare
-		Assert.assertEquals(0, ShortArrayComparator.compareArrays(new short[] { 10 }, new short[] { 10 }));
-		Assert.assertEquals(1, ShortArrayComparator.compareArrays(new short[] { 10 }, new short[] { 8 }));
-		Assert.assertEquals(-1, ShortArrayComparator.compareArrays(new short[] { 8 }, new short[] { 10 }));
+		Assert.assertEquals(0, ShortArrayComparator.compareArrays(new short[]{10}, new short[]{10}));
+		Assert.assertEquals(1, ShortArrayComparator.compareArrays(new short[]{10}, new short[]{8}));
+		Assert.assertEquals(-1, ShortArrayComparator.compareArrays(new short[]{8}, new short[]{10}));
 	}
 
 	@Test

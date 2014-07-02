@@ -24,7 +24,6 @@
  */
 package org.jbasics.math.obsolete;
 
-
 public class IntegerMagnitude implements DataStorage<IntegerMagnitude> {
 	public static final IntegerMagnitude ZERO = new IntegerMagnitude();
 	private static final int[] ZERO_ARRAY = new int[0];
@@ -35,18 +34,6 @@ public class IntegerMagnitude implements DataStorage<IntegerMagnitude> {
 		this(ZERO_ARRAY);
 	}
 
-	public IntegerMagnitude(int value) {
-		this(new int[] { value });
-	}
-
-	public IntegerMagnitude(long value) {
-		this(new int[] { (int) (value >>> 32), (int) (value & 0xffffffffL) });
-	}
-
-	public IntegerMagnitude(byte[] input) {
-		this(NumberConvert.convert(input));
-	}
-
 	public IntegerMagnitude(int[] twoComplement) {
 		if (twoComplement == null || twoComplement.length == 0) {
 			this.signum = 0;
@@ -55,6 +42,18 @@ public class IntegerMagnitude implements DataStorage<IntegerMagnitude> {
 			this.signum = twoComplement[0] < 0 ? -1 : 1;
 			this.magnitude = this.signum < 0 ? NumberConvert.complement(twoComplement) : twoComplement;
 		}
+	}
+
+	public IntegerMagnitude(int value) {
+		this(new int[]{value});
+	}
+
+	public IntegerMagnitude(long value) {
+		this(new int[]{(int) (value >>> 32), (int) (value & 0xffffffffL)});
+	}
+
+	public IntegerMagnitude(byte[] input) {
+		this(NumberConvert.convert(input));
 	}
 
 	public IntegerMagnitude(int signum, int[] magnitude) {
@@ -140,12 +139,11 @@ public class IntegerMagnitude implements DataStorage<IntegerMagnitude> {
 		return new IntegerMagnitude(MultiplyStrategy.multipy(this.magnitude, factor.magnitude));
 	}
 
-	public boolean isZero() {
-		return this.magnitude == null || this.magnitude.length == 0 || NumberConvert.zeroscan(this.magnitude);
-	}
-
 	public byte[] toByteArray() {
 		return NumberConvert.convert(this.magnitude);
 	}
 
+	public boolean isZero() {
+		return this.magnitude == null || this.magnitude.length == 0 || NumberConvert.zeroscan(this.magnitude);
+	}
 }

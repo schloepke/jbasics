@@ -24,21 +24,17 @@
  */
 package org.jbasics.parser.deprecated;
 
+import org.jbasics.checker.ContractCheck;
+
+import javax.xml.namespace.QName;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.namespace.QName;
-
-import org.jbasics.checker.ContractCheck;
-
 /**
- * Listenbeschreibung
- * <p>
- * Detailierte Beschreibung
- * </p>
- * 
+ * Listenbeschreibung <p> Detailierte Beschreibung </p>
+ *
  * @author stephan
  */
 public class QNameRuleSet<T> {
@@ -47,18 +43,8 @@ public class QNameRuleSet<T> {
 	private Set<String> excludedNamespaces;
 	private T defaultReference;
 
-	public final Map<QName, T> getDirektReferences() {
-		if (this.direktReferences == null) {
-			this.direktReferences = new HashMap<QName, T>();
-		}
-		return this.direktReferences;
-	}
-
-	public final Map<String, T> getNamespaceMatchingReferences() {
-		if (this.namespaceMatchingReferences == null) {
-			this.namespaceMatchingReferences = new HashMap<String, T>();
-		}
-		return this.namespaceMatchingReferences;
+	public void addExcludedNamespace(String namespace) {
+		getExcludedNamespaces().add(ContractCheck.mustNotBeNull(namespace, "namespace"));
 	}
 
 	public final Set<String> getExcludedNamespaces() {
@@ -66,27 +52,6 @@ public class QNameRuleSet<T> {
 			this.excludedNamespaces = new HashSet<String>();
 		}
 		return this.excludedNamespaces;
-	}
-
-	public void setDefaultRefernce(T reference) {
-		this.defaultReference = reference;
-	}
-
-	public T getDefaultRefernce() {
-		return this.defaultReference;
-	}
-
-	public void putDirectReference(QName name, T reference) {
-		getDirektReferences().put(ContractCheck.mustNotBeNull(name, "name"), ContractCheck.mustNotBeNull(reference, "reference"));
-	}
-
-	public void putNamespaceReference(String namespace, T reference) {
-		getNamespaceMatchingReferences().put(ContractCheck.mustNotBeNull(namespace, "namespace"),
-				ContractCheck.mustNotBeNull(reference, "reference"));
-	}
-
-	public void addExcludedNamespace(String namespace) {
-		getExcludedNamespaces().add(ContractCheck.mustNotBeNull(namespace, "namespace"));
 	}
 
 	public void putReference(String namespace, String name, T reference) {
@@ -104,6 +69,29 @@ public class QNameRuleSet<T> {
 		}
 	}
 
+	public void putNamespaceReference(String namespace, T reference) {
+		getNamespaceMatchingReferences().put(ContractCheck.mustNotBeNull(namespace, "namespace"),
+				ContractCheck.mustNotBeNull(reference, "reference"));
+	}
+
+	public void putDirectReference(QName name, T reference) {
+		getDirektReferences().put(ContractCheck.mustNotBeNull(name, "name"), ContractCheck.mustNotBeNull(reference, "reference"));
+	}
+
+	public final Map<String, T> getNamespaceMatchingReferences() {
+		if (this.namespaceMatchingReferences == null) {
+			this.namespaceMatchingReferences = new HashMap<String, T>();
+		}
+		return this.namespaceMatchingReferences;
+	}
+
+	public final Map<QName, T> getDirektReferences() {
+		if (this.direktReferences == null) {
+			this.direktReferences = new HashMap<QName, T>();
+		}
+		return this.direktReferences;
+	}
+
 	public T getReference(String namespace, String name) {
 		if (name == null || name.length() == 0) {
 			if (namespace == null || namespace.length() == 0) {
@@ -114,6 +102,14 @@ public class QNameRuleSet<T> {
 		} else {
 			return getDirektReferences().get(new QName(namespace, name));
 		}
+	}
+
+	public T getDefaultRefernce() {
+		return this.defaultReference;
+	}
+
+	public void setDefaultRefernce(T reference) {
+		this.defaultReference = reference;
 	}
 
 	public T matchBest(QName name) {
@@ -135,5 +131,4 @@ public class QNameRuleSet<T> {
 		}
 		return result;
 	}
-
 }

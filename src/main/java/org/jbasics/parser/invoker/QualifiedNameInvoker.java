@@ -24,12 +24,11 @@
  */
 package org.jbasics.parser.invoker;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import org.jbasics.checker.ContractCheck;
 
 import javax.xml.namespace.QName;
-
-import org.jbasics.checker.ContractCheck;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class QualifiedNameInvoker<T> implements Invoker<T, QName> {
 	private final Method method;
@@ -48,6 +47,10 @@ public class QualifiedNameInvoker<T> implements Invoker<T, QName> {
 		}
 	}
 
+	public static <T> QualifiedNameInvoker<T> createInvoker(Class<T> type, Method m) {
+		return new QualifiedNameInvoker<T>(m);
+	}
+
 	public void invoke(T instance, QName name, QName data) {
 		try {
 			this.method.invoke(instance, data);
@@ -57,9 +60,4 @@ public class QualifiedNameInvoker<T> implements Invoker<T, QName> {
 			throw new RuntimeException(e);
 		}
 	}
-
-	public static <T> QualifiedNameInvoker<T> createInvoker(Class<T> type, Method m) {
-		return new QualifiedNameInvoker<T>(m);
-	}
-
 }

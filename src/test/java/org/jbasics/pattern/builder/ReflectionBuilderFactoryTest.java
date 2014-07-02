@@ -31,6 +31,16 @@ import org.junit.Test;
 
 public class ReflectionBuilderFactoryTest extends Java14LoggingTestCase {
 
+	@Test
+	public void testBuildConstruction() {
+		this.logger.entering(this.sourceClassName, "testBuildConstruction");
+		Factory<Builder<TestPair>> temp = ReflectionBuilderFactory.createFactory(TestPair.class);
+		TestBuilder builder = (TestBuilder) temp.newInstance();
+		TestPair result = builder.setLeft("MyKey").setRight("MyValue").build();
+		this.logger.info("String representaion of pair: " + result);
+		this.logger.exiting(this.sourceClassName, "testBuildConstruction");
+	}
+
 	public static class TestPair extends Pair<String, String> {
 
 		public TestPair(String left, String right) {
@@ -40,16 +50,11 @@ public class ReflectionBuilderFactoryTest extends Java14LoggingTestCase {
 		public static TestBuilder newBuilder() {
 			return new TestBuilder();
 		}
-
 	}
 
 	public static class TestBuilder implements Builder<TestPair> {
 		private String left;
 		private String right;
-
-		public TestPair build() {
-			return new TestPair(this.left, this.right);
-		}
 
 		public TestBuilder setLeft(String left) {
 			this.left = left;
@@ -66,16 +71,8 @@ public class ReflectionBuilderFactoryTest extends Java14LoggingTestCase {
 			this.right = null;
 		}
 
+		public TestPair build() {
+			return new TestPair(this.left, this.right);
+		}
 	}
-
-	@Test
-	public void testBuildConstruction() {
-		this.logger.entering(this.sourceClassName, "testBuildConstruction");
-		Factory<Builder<TestPair>> temp = ReflectionBuilderFactory.createFactory(TestPair.class);
-		TestBuilder builder = (TestBuilder) temp.newInstance();
-		TestPair result = builder.setLeft("MyKey").setRight("MyValue").build();
-		this.logger.info("String representaion of pair: " + result);
-		this.logger.exiting(this.sourceClassName, "testBuildConstruction");
-	}
-
 }

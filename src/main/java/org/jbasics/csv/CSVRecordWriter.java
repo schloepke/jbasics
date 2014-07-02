@@ -24,10 +24,10 @@
  */
 package org.jbasics.csv;
 
+import org.jbasics.checker.ContractCheck;
+
 import java.io.Closeable;
 import java.io.IOException;
-
-import org.jbasics.checker.ContractCheck;
 
 public class CSVRecordWriter implements Closeable {
 	private final Appendable writer;
@@ -59,5 +59,4 @@ public class CSVRecordWriter implements Closeable {
 			((Closeable) this.writer).close();
 		}
 	}
-
 }

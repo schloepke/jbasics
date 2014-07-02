@@ -24,9 +24,9 @@
  */
 package org.jbasics.types.factories;
 
-import java.util.List;
-
 import org.jbasics.pattern.factory.Factory;
+
+import java.util.List;
 
 public class ListFactory<E> implements Factory<List<E>> {
 	private final static ListFactory<?> RANDOM_ACCESS_FACTORY = new ListFactory<Object>(true);
@@ -41,14 +41,6 @@ public class ListFactory<E> implements Factory<List<E>> {
 		this.randomAccess = randomAccess;
 	}
 
-	public List<E> newInstance() {
-		if (this.randomAccess) {
-			return CollectionsFactory.instance().newRandomAccessListInstance();
-		} else {
-			return CollectionsFactory.instance().newSequentialAccessListInstance();
-		}
-	}
-
 	@SuppressWarnings("unchecked")
 	public static <T> Factory<List<T>> randomAccessListFactory() {
 		return (ListFactory<T>) RANDOM_ACCESS_FACTORY;
@@ -57,5 +49,13 @@ public class ListFactory<E> implements Factory<List<E>> {
 	@SuppressWarnings("unchecked")
 	public static <T> Factory<List<T>> sequentialAccessListFactory() {
 		return (ListFactory<T>) SEQUENTIAL_ACCESS_FACTORY;
+	}
+
+	public List<E> newInstance() {
+		if (this.randomAccess) {
+			return CollectionsFactory.instance().newRandomAccessListInstance();
+		} else {
+			return CollectionsFactory.instance().newSequentialAccessListInstance();
+		}
 	}
 }

@@ -24,10 +24,6 @@
  */
 package org.jbasics.math.expression.simple;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.util.Map;
-
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.MathFunction;
 import org.jbasics.math.expression.simple.impl.SimpleFunctionCallExpression;
@@ -39,6 +35,10 @@ import org.jbasics.pattern.strategy.ContextualResolveStrategy;
 import org.jbasics.types.builders.MapBuilder;
 import org.jbasics.utilities.DataUtilities;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.util.Map;
+
 public class SimpleExpressionContext implements ContextualResolveStrategy<BigDecimal, SimpleSymbolExpression, SimpleExpressionContext>,
 		ContextualExecuteStrategy<BigDecimal, SimpleFunctionCallExpression, SimpleExpressionContext> {
 	private final MathContext mathContext;
@@ -48,21 +48,21 @@ public class SimpleExpressionContext implements ContextualResolveStrategy<BigDec
 	private final ContextualExecuteStrategy<BigDecimal, SimpleFunctionCallExpression, SimpleExpressionContext> additionalFunctionExecutor;
 	private final boolean missingSymbolOrFunctionResolvesToNull;
 
-	public static ContextBuilder newBuilder() {
-		return new ContextBuilder(null);
-	}
-
 	private SimpleExpressionContext(final MathContext mathContext, final boolean missingSymbolOrFunctionResolvesToNull,
-			final Map<String, BigDecimal> symbols, final Map<String, MathFunction> mathFunctions,
-			final Map<String, ContextualExecuteStrategy<BigDecimal, SimpleFunctionCallExpression, SimpleExpressionContext>> functions,
-			final ContextualResolveStrategy<BigDecimal, SimpleSymbolExpression, SimpleExpressionContext> additionalSymbolResolver,
-			final ContextualExecuteStrategy<BigDecimal, SimpleFunctionCallExpression, SimpleExpressionContext> additionalFunctionExecutor) {
+									final Map<String, BigDecimal> symbols, final Map<String, MathFunction> mathFunctions,
+									final Map<String, ContextualExecuteStrategy<BigDecimal, SimpleFunctionCallExpression, SimpleExpressionContext>> functions,
+									final ContextualResolveStrategy<BigDecimal, SimpleSymbolExpression, SimpleExpressionContext> additionalSymbolResolver,
+									final ContextualExecuteStrategy<BigDecimal, SimpleFunctionCallExpression, SimpleExpressionContext> additionalFunctionExecutor) {
 		this.mathContext = ContractCheck.mustNotBeNull(mathContext, "mathContext");
 		this.missingSymbolOrFunctionResolvesToNull = missingSymbolOrFunctionResolvesToNull;
 		this.symbols = ContractCheck.mustNotBeNull(symbols, "symbols");
 		this.functions = ContractCheck.mustNotBeNull(functions, "functions");
 		this.additionalSymbolResolver = additionalSymbolResolver;
 		this.additionalFunctionExecutor = additionalFunctionExecutor;
+	}
+
+	public static ContextBuilder newBuilder() {
+		return new ContextBuilder(null);
 	}
 
 	public MathContext getMathContext() {
@@ -88,6 +88,10 @@ public class SimpleExpressionContext implements ContextualResolveStrategy<BigDec
 		}
 	}
 
+	public boolean isMissingSymbolOrFunctionResolvesToNull() {
+		return this.missingSymbolOrFunctionResolvesToNull;
+	}
+
 	public BigDecimal resolve(final SimpleSymbolExpression symbolExpression) {
 		return resolve(symbolExpression, this);
 	}
@@ -104,20 +108,16 @@ public class SimpleExpressionContext implements ContextualResolveStrategy<BigDec
 		return result;
 	}
 
-	public boolean isMissingSymbolOrFunctionResolvesToNull() {
-		return this.missingSymbolOrFunctionResolvesToNull;
-	}
-
 	public static class ContextBuilder implements Builder<SimpleExpressionContext> {
 		private final boolean subContextBuilder;
-		private MathContext mathContext;
-		private boolean missingSymbolOrFunctionResolvesToNull;
-		private ContextualResolveStrategy<BigDecimal, SimpleSymbolExpression, SimpleExpressionContext> additionalSymbolResolver;
-		private ContextualExecuteStrategy<BigDecimal, SimpleFunctionCallExpression, SimpleExpressionContext> additionalFunctionExecutor;
 		private final MapBuilder<String, BigDecimal> symbolsBuilder = new MapBuilder<String, BigDecimal>().immutable();
 		private final MapBuilder<String, ContextualExecuteStrategy<BigDecimal, SimpleFunctionCallExpression, SimpleExpressionContext>> functionsBuilder = new MapBuilder<String, ContextualExecuteStrategy<BigDecimal, SimpleFunctionCallExpression, SimpleExpressionContext>>()
 				.immutable();
 		private final MapBuilder<String, MathFunction> mathFunctionBuilder = new MapBuilder<String, MathFunction>().immutable();
+		private MathContext mathContext;
+		private boolean missingSymbolOrFunctionResolvesToNull;
+		private ContextualResolveStrategy<BigDecimal, SimpleSymbolExpression, SimpleExpressionContext> additionalSymbolResolver;
+		private ContextualExecuteStrategy<BigDecimal, SimpleFunctionCallExpression, SimpleExpressionContext> additionalFunctionExecutor;
 
 		private ContextBuilder(final SimpleExpressionContext parent) {
 			this.subContextBuilder = parent != null;
@@ -187,7 +187,7 @@ public class SimpleExpressionContext implements ContextualResolveStrategy<BigDec
 		}
 
 		public ContextBuilder withFunction(final String name,
-				final ContextualExecuteStrategy<BigDecimal, SimpleFunctionCallExpression, SimpleExpressionContext> strategy) {
+										   final ContextualExecuteStrategy<BigDecimal, SimpleFunctionCallExpression, SimpleExpressionContext> strategy) {
 			this.functionsBuilder.put(name, strategy);
 			return this;
 		}
@@ -211,5 +211,4 @@ public class SimpleExpressionContext implements ContextualResolveStrategy<BigDec
 			);
 		}
 	}
-
 }
