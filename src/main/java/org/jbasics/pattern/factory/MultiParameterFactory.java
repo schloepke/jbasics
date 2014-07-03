@@ -22,49 +22,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.codec.value;
+package org.jbasics.pattern.factory;
 
-import org.jbasics.annotation.Nullable;
-import org.jbasics.pattern.coder.Codec;
-import org.jbasics.pattern.factory.ParameterFactory;
+public interface MultiParameterFactory<InstanceType, ParameterType> {
 
-import java.math.BigInteger;
-import java.util.UUID;
-
-/**
- * Value string codec to encode and decode UUID's in string's.
- *
- * @author Stephan Schloepke
- * @since 1.0
- */
-public class UUIDValueCodec implements Codec<UUID, String> {
-	public static final UUIDValueCodec SHARED_INSTANCE = new UUIDValueCodec();
-
-	@Override
-	@Nullable
-	public UUID decode(@Nullable final String encodedInput) {
-		if (encodedInput == null) {
-			return null;
-		}
-		String temp = encodedInput.trim();
-		if (temp.length() == 0) {
-			return null;
-		}
-		if (temp.startsWith("0x")) {
-			temp = temp.substring(2);
-		}
-		if (temp.length() == 32) {
-			BigInteger v = new BigInteger(temp, 16);
-			return new UUID(v.shiftRight(64).longValue(), v.longValue());
-			// Hmm how do we do that?
-		}
-		return UUID.fromString(temp);
-	}
-
-	@Override
-	@Nullable(true)
-	public String encode(@Nullable(true) final UUID input) {
-		return input == null ? null : input.toString();
-	}
+	InstanceType create(ParameterType... param);
 
 }

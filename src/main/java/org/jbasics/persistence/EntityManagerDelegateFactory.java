@@ -26,14 +26,14 @@ package org.jbasics.persistence;
 
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.delegation.LifecycleDelegate;
-import org.jbasics.pattern.factory.ClosableFactory;
+import org.jbasics.pattern.factory.Factory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.Map;
 
-public class EntityManagerDelegateFactory implements ClosableFactory<LifecycleDelegate<EntityManager>> {
+public class EntityManagerDelegateFactory implements Factory<LifecycleDelegate<EntityManager>>, AutoCloseable {
 	private final boolean externalManaged;
 	private final EntityManagerFactory factory;
 
@@ -52,6 +52,7 @@ public class EntityManagerDelegateFactory implements ClosableFactory<LifecycleDe
 		this.externalManaged = true;
 	}
 
+	@Override
 	public LifecycleDelegate<EntityManager> newInstance() {
 		if (!this.factory.isOpen()) {
 			throw new IllegalArgumentException("Factory already closed"); //$NON-NLS-1$
@@ -59,6 +60,7 @@ public class EntityManagerDelegateFactory implements ClosableFactory<LifecycleDe
 		return new EntityManagerDelegate(this.factory.createEntityManager());
 	}
 
+	@Override
 	public void close() {
 		if (!this.externalManaged) {
 			if (this.factory.isOpen()) {
