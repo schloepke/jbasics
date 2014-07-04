@@ -30,9 +30,10 @@ import org.jbasics.types.factories.ListFactory;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
 
-public class MapCollection<K, V> {
+public class MapCollection<K, V> implements Iterable<Map.Entry<K, Collection<V>>> {
 	private final Factory<? extends Collection<V>> collectionFactory;
 	private final Map<K, Collection<V>> internalMap;
 
@@ -58,8 +59,24 @@ public class MapCollection<K, V> {
 		return Collections.unmodifiableCollection(internalMap.get(key));
 	}
 
+	public MapCollection<K, V> clear() {
+		this.internalMap.clear();
+		return this;
+	}
+
+	public MapCollection<K, V> clearCollections() {
+		for(Collection<V> collection : internalMap.values()) {
+			collection.clear();;
+		}
+		return this;
+	}
+
 	public Map<K, Collection<V>> map() {
 		return Collections.unmodifiableMap(this.internalMap);
 	}
 
+	@Override
+	public Iterator<Map.Entry<K, Collection<V>>> iterator() {
+		return map().entrySet().iterator();
+	}
 }
