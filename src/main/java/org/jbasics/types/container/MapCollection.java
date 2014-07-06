@@ -50,6 +50,7 @@ public class MapCollection<K, V> implements Iterable<Map.Entry<K, Collection<V>>
 		Collection<V> temp = internalMap.get(key);
 		if (temp == null) {
 			temp = this.collectionFactory.newInstance();
+			internalMap.put(key, temp);
 		}
 		temp.add(value);
 		return this;
