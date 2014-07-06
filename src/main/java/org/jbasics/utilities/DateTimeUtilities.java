@@ -56,6 +56,27 @@ public class DateTimeUtilities {
 		return result;
 	}
 
+	public static <T extends Date> T stripTimeAndDayOfMonthPart(final T dateTime) {
+		return stripTimeAndDayOfMonthPart(dateTime, null);
+	}
+
+	public static <T extends Date> T stripTimeAndDayOfMonthPart(final T dateTime, TimeZone zone) {
+		// we want to clone the original input in order to not modify the mutable input
+		T result = (T) ContractCheck.mustNotBeNull(dateTime, "dateTime").clone(); //$NON-NLS-1$
+		if (zone == null) {
+			zone = TimeZone.getDefault();
+		}
+		Calendar cal = Calendar.getInstance(zone);
+		cal.setTimeInMillis(result.getTime());
+		cal.set(Calendar.MILLISECOND, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+		result.setTime(cal.getTimeInMillis());
+		return result;
+	}
+
 	public static Range<Date> getCalendarWeekRange(final int year, final int week) {
 		return DateTimeUtilities.getCalendarWeekRange(year, week, -5000, 5000, null);
 	}
