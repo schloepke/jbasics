@@ -31,7 +31,7 @@
 
 	<scm>
 		<connection>scm:git:git://github.com/schloepke/jbasics.git</connection>
-		<developerConnection>scm:git:git://github.com/schloepke/jbasics.git</developerConnection>
+		<developerConnection>scm:git:https://github.com/schloepke/jbasics.git</developerConnection>
 		<url>http://github.com/schloepke/jbasics</url>
 	</scm>
 
