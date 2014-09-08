@@ -42,6 +42,7 @@ public class SystemProperty<ValueType> implements Delegate<ValueType> {
 
 	private final String name;
 	private final ValueType defaultValue;
+	private final String defaultSubstitutableValue;
 	private final ParameterFactory<ValueType, String> valueTypeFactory;
 	private final SubstitutionStrategy<String, String> substitutionStrategy;
 
@@ -49,12 +50,24 @@ public class SystemProperty<ValueType> implements Delegate<ValueType> {
 		this(name, valueTypeFactory, defaultValue, null);
 	}
 
-	public SystemProperty(final String name, final ParameterFactory<ValueType, String> valueTypeFactory, final ValueType defaultValue, final SubstitutionStrategy<String, String> substitutionStrategy) {
+	public SystemProperty(final String name, final ParameterFactory<ValueType, String> valueTypeFactory, final ValueType defaultValue,
+						  final SubstitutionStrategy<String, String> substitutionStrategy) {
 		this.name = ContractCheck.mustNotBeNull(name, "name"); //$NON-NLS-1$
 		this.valueTypeFactory = ContractCheck.mustNotBeNull(valueTypeFactory, "valueTypeFactory"); //$NON-NLS-1$
 		this.defaultValue = defaultValue;
+		this.defaultSubstitutableValue = null;
 		this.substitutionStrategy = DataUtilities.coalesce(substitutionStrategy, SubstitutionStrategy.STRING_PASS_THRU);
 	}
+
+	public SystemProperty(final String name, final ParameterFactory<ValueType, String> valueTypeFactory,
+						  final SubstitutionStrategy<String, String> substitutionStrategy, final String defaultSubstitutableValue) {
+		this.name = ContractCheck.mustNotBeNull(name, "name"); //$NON-NLS-1$
+		this.valueTypeFactory = ContractCheck.mustNotBeNull(valueTypeFactory, "valueTypeFactory"); //$NON-NLS-1$
+		this.defaultValue = null;
+		this.defaultSubstitutableValue = defaultSubstitutableValue;
+		this.substitutionStrategy = DataUtilities.coalesce(substitutionStrategy, SubstitutionStrategy.STRING_PASS_THRU);
+	}
+
 
 	public static SystemProperty<String> stringProperty(final String name, final String defaultValue) {
 		return new SystemProperty<String>(name, SystemProperty.STRING_PASS_THRU, defaultValue);
@@ -110,7 +123,7 @@ public class SystemProperty<ValueType> implements Delegate<ValueType> {
 	}
 
 	public final ValueType value() {
-		final String temp = System.getProperty(this.name);
+		final String temp = DataUtilities.coalesce(System.getProperty(this.name), this.defaultSubstitutableValue);
 		if (temp == null) {
 			return this.defaultValue;
 		} else {
