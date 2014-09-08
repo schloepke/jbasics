@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd ">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd ">
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<name>jBasics</name>
 	<groupId>org.jbasics</groupId>
 	<artifactId>jbasics</artifactId>
-	<version>0.5.13-SNAPSHOT</version>
+	<version>0.6.0</version>
 
 	<packaging>jar</packaging>
 
@@ -33,7 +32,8 @@
 		<connection>scm:git:git://github.com/schloepke/jbasics.git</connection>
 		<developerConnection>scm:git:https://github.com/schloepke/jbasics.git</developerConnection>
 		<url>http://github.com/schloepke/jbasics</url>
-	</scm>
+	  <tag>jbasics-0.6.0</tag>
+  </scm>
 
 	<issueManagement>
 		<system>github</system>
