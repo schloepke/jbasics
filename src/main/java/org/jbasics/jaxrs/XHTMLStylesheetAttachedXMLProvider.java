@@ -104,7 +104,7 @@ public class XHTMLStylesheetAttachedXMLProvider implements MessageBodyWriter<XHT
 			}
 			final Writer w = new OutputStreamWriter(entityStream, charset);
 			if (MediaType.APPLICATION_XHTML_XML_TYPE.equals(mediaType) || MediaType.TEXT_HTML_TYPE.equals(mediaType)) {
-				XHTMLStylesheetAttachedXMLProvider.writeToXhtml(t, charset, marshaller, w);
+				XHTMLStylesheetAttachedXMLProvider.writeToXhtml(t, charset, marshaller, w, MediaType.TEXT_HTML_TYPE.equals(mediaType));
 			} else {
 				XHTMLStylesheetAttachedXMLProvider.writeToXml(t, charset, marshaller, w);
 			}
@@ -140,7 +140,8 @@ public class XHTMLStylesheetAttachedXMLProvider implements MessageBodyWriter<XHT
 		return marshaller;
 	}
 
-	private static void writeToXhtml(final XHTMLStylesheetAttachedJAXB<?> t, final Charset charset, final Marshaller marshaller, final Writer w)
+	private static void writeToXhtml(final XHTMLStylesheetAttachedJAXB<?> t, final Charset charset, final Marshaller marshaller, final Writer w,
+									 boolean htmlMethod)
 			throws JAXBException, IOException {
 		try {
 			final Transformer transformer = TransformerFactory.newInstance().newTransformer(
@@ -157,6 +158,9 @@ public class XHTMLStylesheetAttachedXMLProvider implements MessageBodyWriter<XHT
 				source = new SAXSource(reader, new InputSource(new ByteArrayInputStream(temp.toByteArray())));
 			}
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
+			if (htmlMethod) {
+				transformer.setOutputProperty(OutputKeys.METHOD, "html");
+			}
 			transformer.transform(source, result);
 		} catch (final Exception e) {
 			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
