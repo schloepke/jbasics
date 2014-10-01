@@ -40,20 +40,11 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.util.JAXBSource;
 import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.*;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
@@ -61,7 +52,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
- * @author Stephan Schlöpke, Christopher Stolle
+ * @author Stephan Schlï¿½pke, Christopher Stolle
  */
 public class XHTMLStylesheetAttachedXMLProvider implements MessageBodyWriter<XHTMLStylesheetAttachedJAXB<?>> {
 	private static final Charset UTF8 = Charset.forName("UTF-8"); //$NON-NLS-1$
@@ -72,6 +63,76 @@ public class XHTMLStylesheetAttachedXMLProvider implements MessageBodyWriter<XHT
 
 	public XHTMLStylesheetAttachedXMLProvider(@Context final Providers providers) {
 		this.providers = providers;
+	}
+
+	private static void writeToXhtml(final XHTMLStylesheetAttachedJAXB<?> t, final Charset charset, final Marshaller marshaller, final Writer w,
+			boolean htmlMethod)
+			throws JAXBException, IOException {
+		try {
+			final Transformer transformer = TransformerFactory.newInstance().newTransformer(
+					new StreamSource(t.getLocalResource().openStream(), t.getLocalResource().toExternalForm()));
+			Source source = new JAXBSource(marshaller, t.getEntity());
+			final Result result = new StreamResult(w);
+			if (t.isHandleXInclude()) {
+				final SAXParserFactory factory = SAXParserFactory.newInstance();
+				factory.setNamespaceAware(true);
+				factory.setXIncludeAware(true);
+				final XMLReader reader = factory.newSAXParser().getXMLReader();
+				final ByteArrayOutputStream temp = new ByteArrayOutputStream();
+				marshaller.marshal(t.getEntity(), new OutputStreamWriter(temp, charset));
+				source = new SAXSource(reader, new InputSource(new ByteArrayInputStream(temp.toByteArray())));
+			}
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
+			if (htmlMethod) {
+				ByteArrayOutputStream s = new ByteArrayOutputStream();
+				Transformer htmlTransformer = TransformerFactory.newInstance().newTransformer(
+						new StreamSource(XHTMLStylesheetAttachedXMLProvider.class.getResourceAsStream("xhtmlToHtmlTransformer.xslt"),
+								t.getLocalResource().toExternalForm()));
+				transformer.transform(source, new StreamResult(s));
+				htmlTransformer.transform(new StreamSource(new ByteArrayInputStream(s.toByteArray())), result);
+			} else {
+				transformer.transform(source, result);
+			}
+		} catch (final Exception e) {
+			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	private static void writeToXml(final XHTMLStylesheetAttachedJAXB<?> t, final Charset charset, final Marshaller marshaller, final Writer wIn)
+			throws JAXBException, IOException {
+		try {
+			final Object jaxbFragmentProperty = marshaller.getProperty(Marshaller.JAXB_FRAGMENT);
+			marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
+			Writer w = wIn;
+			ByteArrayOutputStream bos = null;
+			if (t.isHandleXInclude()) {
+				bos = new ByteArrayOutputStream();
+				w = new OutputStreamWriter(bos, charset);
+			}
+			w.write("<?xml version=\"1.0\" "); //$NON-NLS-1$
+			if (charset != XHTMLStylesheetAttachedXMLProvider.UTF8 && charset != XHTMLStylesheetAttachedXMLProvider.UTF16) {
+				w.write("encoding=\""); //$NON-NLS-1$
+				w.write(charset.name());
+				w.write("\" "); //$NON-NLS-1$
+			}
+			w.write("?>\n"); //$NON-NLS-1$
+			w.write("<?xml-stylesheet type=\"text/xsl\" href=\""); //$NON-NLS-1$
+			w.write(t.getStylesheet().toASCIIString());
+			w.write("\" ?>\n\n"); //$NON-NLS-1$
+			marshaller.marshal(t.getEntity(), w);
+			if (bos != null) {
+				final Transformer transformer = TransformerFactory.newInstance().newTransformer();
+				final SAXParserFactory factory = SAXParserFactory.newInstance();
+				factory.setNamespaceAware(true);
+				factory.setXIncludeAware(true);
+				final XMLReader reader = factory.newSAXParser().getXMLReader();
+				transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
+				transformer.transform(new SAXSource(reader, new InputSource(new ByteArrayInputStream(bos.toByteArray()))), new StreamResult(wIn));
+			}
+			marshaller.setProperty(Marshaller.JAXB_FRAGMENT, jaxbFragmentProperty);
+		} catch (final Exception e) {
+			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@Override
@@ -85,14 +146,14 @@ public class XHTMLStylesheetAttachedXMLProvider implements MessageBodyWriter<XHT
 
 	@Override
 	public long getSize(final XHTMLStylesheetAttachedJAXB<?> t, final Class<?> type, final Type genericType, final Annotation[] annotations,
-						final MediaType mediaType) {
+			final MediaType mediaType) {
 		return -1;
 	}
 
 	@Override
 	public void writeTo(final XHTMLStylesheetAttachedJAXB<?> t, final Class<?> type, final Type genericType, final Annotation[] annotations,
-						final MediaType mediaType,
-						final MultivaluedMap<String, Object> httpHeaders, final OutputStream entityStream) throws IOException, WebApplicationException {
+			final MediaType mediaType,
+			final MultivaluedMap<String, Object> httpHeaders, final OutputStream entityStream) throws IOException, WebApplicationException {
 		try {
 			final Marshaller marshaller = getMarshaller(t.getEntityType(), mediaType);
 			Charset charset = XHTMLStylesheetAttachedXMLProvider.UTF8;
@@ -138,69 +199,5 @@ public class XHTMLStylesheetAttachedXMLProvider implements MessageBodyWriter<XHT
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		}
 		return marshaller;
-	}
-
-	private static void writeToXhtml(final XHTMLStylesheetAttachedJAXB<?> t, final Charset charset, final Marshaller marshaller, final Writer w,
-									 boolean htmlMethod)
-			throws JAXBException, IOException {
-		try {
-			final Transformer transformer = TransformerFactory.newInstance().newTransformer(
-					new StreamSource(t.getLocalResource().openStream(), t.getLocalResource().toExternalForm()));
-			Source source = new JAXBSource(marshaller, t.getEntity());
-			final Result result = new StreamResult(w);
-			if (t.isHandleXInclude()) {
-				final SAXParserFactory factory = SAXParserFactory.newInstance();
-				factory.setNamespaceAware(true);
-				factory.setXIncludeAware(true);
-				final XMLReader reader = factory.newSAXParser().getXMLReader();
-				final ByteArrayOutputStream temp = new ByteArrayOutputStream();
-				marshaller.marshal(t.getEntity(), new OutputStreamWriter(temp, charset));
-				source = new SAXSource(reader, new InputSource(new ByteArrayInputStream(temp.toByteArray())));
-			}
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
-			if (htmlMethod) {
-				transformer.setOutputProperty(OutputKeys.METHOD, "html");
-			}
-			transformer.transform(source, result);
-		} catch (final Exception e) {
-			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	private static void writeToXml(final XHTMLStylesheetAttachedJAXB<?> t, final Charset charset, final Marshaller marshaller, final Writer wIn)
-			throws JAXBException, IOException {
-		try {
-			final Object jaxbFragmentProperty = marshaller.getProperty(Marshaller.JAXB_FRAGMENT);
-			marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
-			Writer w = wIn;
-			ByteArrayOutputStream bos = null;
-			if (t.isHandleXInclude()) {
-				bos = new ByteArrayOutputStream();
-				w = new OutputStreamWriter(bos, charset);
-			}
-			w.write("<?xml version=\"1.0\" "); //$NON-NLS-1$
-			if (charset != XHTMLStylesheetAttachedXMLProvider.UTF8 && charset != XHTMLStylesheetAttachedXMLProvider.UTF16) {
-				w.write("encoding=\""); //$NON-NLS-1$
-				w.write(charset.name());
-				w.write("\" "); //$NON-NLS-1$
-			}
-			w.write("?>\n"); //$NON-NLS-1$
-			w.write("<?xml-stylesheet type=\"text/xsl\" href=\""); //$NON-NLS-1$
-			w.write(t.getStylesheet().toASCIIString());
-			w.write("\" ?>\n\n"); //$NON-NLS-1$
-			marshaller.marshal(t.getEntity(), w);
-			if (bos != null) {
-				final Transformer transformer = TransformerFactory.newInstance().newTransformer();
-				final SAXParserFactory factory = SAXParserFactory.newInstance();
-				factory.setNamespaceAware(true);
-				factory.setXIncludeAware(true);
-				final XMLReader reader = factory.newSAXParser().getXMLReader();
-				transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
-				transformer.transform(new SAXSource(reader, new InputSource(new ByteArrayInputStream(bos.toByteArray()))), new StreamResult(wIn));
-			}
-			marshaller.setProperty(Marshaller.JAXB_FRAGMENT, jaxbFragmentProperty);
-		} catch (final Exception e) {
-			throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-		}
 	}
 }
