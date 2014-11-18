@@ -25,15 +25,16 @@
 package org.jbasics.types.builders;
 
 import org.jbasics.checker.ContractCheck;
-import org.jbasics.pattern.builder.Builder;
+import org.jbasics.pattern.builder.AddBuilder;
 import org.jbasics.pattern.factory.Factory;
+import org.jbasics.pattern.modifer.Extendable;
 import org.jbasics.types.factories.ListFactory;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class ListBuilder<E> implements Builder<List<E>> {
+public class ListBuilder<E> implements AddBuilder<ListBuilder<E>, List<E>, E>, Extendable<ListBuilder<E>, E> {
 	private final Factory<List<E>> listFactory;
 	private final List<E> list;
 	private boolean mutable = false;
@@ -84,4 +85,10 @@ public class ListBuilder<E> implements Builder<List<E>> {
 		result.addAll(this.list);
 		return this.mutable ? result : Collections.unmodifiableList(result);
 	}
+
+	@Override
+	public ListBuilder<E> extend(E... values) {
+		return addAll(values);
+	}
+
 }

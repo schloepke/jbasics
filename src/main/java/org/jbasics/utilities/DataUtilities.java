@@ -78,7 +78,7 @@ public final class DataUtilities {
 	 *
 	 * @param <T>      The type of the check
 	 * @param instance The instance to check (null always yields false)
-	 * @param enumList The list to check the instance against (null or empty always leads false)
+	 * @param list The list to check the instance against (null or empty always leads false)
 	 *
 	 * @return True of the enum instance on of the enum list element.
 	 */
@@ -92,4 +92,5 @@ public final class DataUtilities {
 		}
 		return false;
 	}
+
 }

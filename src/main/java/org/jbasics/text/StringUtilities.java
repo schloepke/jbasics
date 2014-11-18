@@ -26,9 +26,18 @@ package org.jbasics.text;
 
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.exception.DelegatedException;
+import org.jbasics.net.URLMappingFactory;
+import org.jbasics.pattern.builder.AddBuilder;
+import org.jbasics.pattern.modifer.Extendable;
 import org.jbasics.pattern.transpose.Transposer;
+import org.jbasics.types.builders.ListBuilder;
 
-import java.io.IOException;
+import java.io.*;
+import java.net.URI;
+import java.net.URL;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.util.List;
 
 public final class StringUtilities {
 	public static final String EMPTY_STRING = "".intern(); //$NON-NLS-1$
@@ -210,6 +219,27 @@ public final class StringUtilities {
 		}
 	}
 
+	public static List<String> trimAllAndRemoveNullAndEmptyValues(final Iterable<String> strings) {
+		ListBuilder<String> builder = new ListBuilder<String>().immutable();
+		for (String test : strings) {
+			if (test != null || (test = test.trim()).length() > 0) {
+				builder.add(test);
+			}
+		}
+		return builder.build();
+	}
+
+	public static List<String> trimAllAndRemoveNullAndEmptyValues(final String... strings) {
+		ListBuilder<String> builder = new ListBuilder<String>().immutable();
+		for (String test : strings) {
+			if (test != null || (test = test.trim()).length() > 0) {
+				builder.add(test);
+			}
+		}
+		return builder.build();
+	}
+
+
 	public static boolean isAllNotNullAndNotTrimmedEmpty(final String... strings) {
 		for (final String test : strings) {
 			if (test == null || test.trim().length() == 0) {
@@ -230,5 +260,186 @@ public final class StringUtilities {
 
 	public static String maxLength(final int length, final String input) {
 		return input.length() > length ? input.substring(0, length) : input;
+	}
+
+	public static <T extends AddBuilder<?, ?, String>> T addIfNotNullOrTrimmedEmpty(T addBuilder, String... values) {
+		if (values == null || values.length == 0) {
+			return addBuilder;
+		}
+		for (String temp : values) {
+			if (temp == null || (temp = temp.trim()).length() == 0) {
+				continue;
+			}
+			// the above code modifies temp to be already trimmed!
+			addBuilder.add(temp);
+		}
+		return addBuilder;
+	}
+
+	public static <T extends Extendable<?, String>> T extendIfNotNullOrTrimmedEmpty(T extensible, String... values) {
+		if (values == null || values.length == 0) {
+			return extensible;
+		}
+		for (String temp : values) {
+			if (temp == null || (temp = temp.trim()).length() == 0) {
+				continue;
+			}
+			// the above code modifies temp to be already trimmed!
+			extensible.extend(temp);
+		}
+		return extensible;
+	}
+
+	public static String readFromUri(URI input) {
+		try {
+			URL url = URLMappingFactory.SHARED_INSTANCE.create(input);
+			return fillFromStream(new StringBuffer(), url.openStream()).toString();
+		} catch (IOException e) {
+			throw DelegatedException.delegate(e);
+		}
+	}
+
+	public static String readFromUri(URI input, String charsetName) {
+		try {
+			URL url = URLMappingFactory.SHARED_INSTANCE.create(input);
+			return fillFromStream(new StringBuffer(), url.openStream(), charsetName).toString();
+		} catch (IOException e) {
+			throw DelegatedException.delegate(e);
+		}
+	}
+
+	public static String readFromUri(URI input, Charset charset) {
+		try {
+			URL url = URLMappingFactory.SHARED_INSTANCE.create(input);
+			return fillFromStream(new StringBuffer(), url.openStream(), charset).toString();
+		} catch (IOException e) {
+			throw DelegatedException.delegate(e);
+		}
+	}
+
+	public static String readFromUri(URL input) {
+		try {
+			return fillFromStream(new StringBuffer(), input.openStream()).toString();
+		} catch (IOException e) {
+			throw DelegatedException.delegate(e);
+		}
+	}
+
+	public static String readFromUri(URL input, String charsetName) {
+		try {
+			return fillFromStream(new StringBuffer(), input.openStream(), charsetName).toString();
+		} catch (IOException e) {
+			throw DelegatedException.delegate(e);
+		}
+	}
+
+	public static String readFromUri(URL input, Charset charset) {
+		try {
+			return fillFromStream(new StringBuffer(), input.openStream(), charset).toString();
+		} catch (IOException e) {
+			throw DelegatedException.delegate(e);
+		}
+	}
+
+
+	public static String readFromFile(File input) {
+		try {
+			return fillFromStream(new StringBuffer(), new FileInputStream(input)).toString();
+		} catch (IOException e) {
+			throw DelegatedException.delegate(e);
+		}
+	}
+
+	public static String readFromFile(File input, String charsetName) {
+		try {
+			return fillFromStream(new StringBuffer(), new FileInputStream(input), charsetName).toString();
+		} catch (IOException e) {
+			throw DelegatedException.delegate(e);
+		}
+	}
+
+	public static String readFromFile(File input, Charset charset) {
+		try {
+			return fillFromStream(new StringBuffer(), new FileInputStream(input), charset).toString();
+		} catch (IOException e) {
+			throw DelegatedException.delegate(e);
+		}
+	}
+
+	public static String readFromFile(String input) {
+		try {
+			return fillFromStream(new StringBuffer(), new FileInputStream(input)).toString();
+		} catch (IOException e) {
+			throw DelegatedException.delegate(e);
+		}
+	}
+
+	public static String readFromFile(String input, String charsetName) {
+		try {
+			return fillFromStream(new StringBuffer(), new FileInputStream(input), charsetName).toString();
+		} catch (IOException e) {
+			throw DelegatedException.delegate(e);
+		}
+	}
+
+	public static String readFromFile(String input, Charset charset) {
+		try {
+			return fillFromStream(new StringBuffer(), new FileInputStream(input), charset).toString();
+		} catch (IOException e) {
+			throw DelegatedException.delegate(e);
+		}
+	}
+
+	public static String readFromStream(InputStream input) {
+		return fillFromStream(new StringBuffer(), input).toString();
+	}
+
+	public static String readFromStream(InputStream input, String charsetName) {
+		return fillFromStream(new StringBuffer(), input, charsetName).toString();
+	}
+
+	public static String readFromStream(InputStream input, Charset charset) {
+		return fillFromStream(new StringBuffer(), input, charset).toString();
+	}
+
+	public static String readFromStream(Reader input) {
+		return fillFromReader(new StringBuffer(), input).toString();
+	}
+
+	public static StringBuffer fillFromStream(StringBuffer temp, InputStream r) {
+		return fillFromReader(temp, new InputStreamReader(r));
+	}
+
+	public static StringBuffer fillFromStream(StringBuffer temp, InputStream r, String cs) {
+		try {
+			try (Reader reader = new InputStreamReader(r, cs)) {
+				return fillFromReader(temp, reader);
+			}
+		} catch (Exception e) {
+			throw DelegatedException.delegate(e);
+		}
+	}
+
+	public static StringBuffer fillFromStream(StringBuffer temp, InputStream r, Charset cs) {
+		return fillFromReader(temp, new InputStreamReader(r, cs));
+	}
+
+	public static <T extends Appendable> T fillFromReader(T temp, Reader reader) {
+		try {
+			if (temp == null) {
+				temp = (T) new StringBuilder();
+			}
+			try (Reader r = reader) {
+				CharBuffer buf = CharBuffer.allocate(4096);
+				while (r.read(buf) >= 0) {
+					buf.flip();
+					temp.append(buf);
+					buf.clear();
+				}
+				return temp;
+			}
+		} catch (IOException e) {
+			throw DelegatedException.delegate(e);
+		}
 	}
 }

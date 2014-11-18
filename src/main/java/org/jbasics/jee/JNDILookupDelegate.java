@@ -87,9 +87,6 @@ public class JNDILookupDelegate<T> implements ReleasableDelegate<T> {
 	}
 
 	public boolean release() {
-		if (this.lookupContextDelegate instanceof ReleasableDelegate<?>) {
-			((ReleasableDelegate<?>) this.lookupContextDelegate).release();
-		}
 		if (this.instance == null) {
 			return false;
 		}
@@ -112,4 +109,5 @@ public class JNDILookupDelegate<T> implements ReleasableDelegate<T> {
 		}
 		return this.instance;
 	}
+
 }
