@@ -39,7 +39,6 @@ import java.util.regex.Pattern;
  * @author Stephan Schloepke
  * @since 1.0
  */
-@SuppressWarnings("unchecked")
 public final class RFC2616MediaTypeParser {
 	/**
 	 * The pattern to match a media type range as of RFC2616.
@@ -59,6 +58,7 @@ public final class RFC2616MediaTypeParser {
 	/**
 	 * An empty key value parameter array.
 	 */
+	@SuppressWarnings("unchecked")
 	public static final Pair<String, String>[] EMPTY_KEY_VALUE_ARRAY = new Pair[0];
 
 	/**
@@ -118,9 +118,10 @@ public final class RFC2616MediaTypeParser {
 	 *
 	 * @return An array of key value parameters.
 	 */
+	@SuppressWarnings({"SuspiciousToArrayCall", "unchecked"})
 	public static Pair<String, String>[] parseParameterList(final String parameterListString) {
 		if (parameterListString != null) {
-			List<Pair<String, String>> temp = new ArrayList<Pair<String, String>>();
+			List<Pair<String, String>> temp = new ArrayList<>();
 			String[] paramSplit = parameterListString.split(";");
 			for (String paramPart : paramSplit) {
 				String paramTemp = paramPart.trim();
@@ -151,7 +152,7 @@ public final class RFC2616MediaTypeParser {
 				throw new IllegalArgumentException("Key name of parameter is empty " + parameterString);
 			}
 			String value = temp[1].trim();
-			return new Pair<String, String>(key, value);
+			return new Pair<>(key, value);
 		} else {
 			throw new IllegalArgumentException("Key value parameter not in the right format (key=value) " + parameterString);
 		}
@@ -164,6 +165,7 @@ public final class RFC2616MediaTypeParser {
 	 *
 	 * @return The parsed instance.
 	 */
+	@SuppressWarnings("unchecked")
 	public static AcceptMediaTypeRange parseAcceptMediaTypeEntry(final String acceptString) {
 		ContractCheck.mustNotBeNullOrEmpty(acceptString, "acceptString");
 		Matcher m = ACCEPT_TYPE_PATTERN.matcher(acceptString);
@@ -191,4 +193,5 @@ public final class RFC2616MediaTypeParser {
 		}
 		return result;
 	}
+
 }

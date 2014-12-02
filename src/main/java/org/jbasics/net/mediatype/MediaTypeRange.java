@@ -42,6 +42,7 @@ public class MediaTypeRange implements Serializable {
 	 * The wildcard string used to identify a type or sub type as a wildcard element.
 	 */
 	public static final String WILDCARD = "*";
+	@SuppressWarnings("unchecked")
 	public static final MediaTypeRange ALL_MEDIA = new MediaTypeRange(WILDCARD, WILDCARD);
 	/**
 	 * Regular expression string to check type and subtype validitiy.
@@ -64,6 +65,7 @@ public class MediaTypeRange implements Serializable {
 	 * @param subType    The sub type.
 	 * @param parameters The parameters as key value pairs.
 	 */
+	@SafeVarargs
 	public MediaTypeRange(final String type, final String subType, final Pair<String, String>... parameters) {
 		this.type = processTypeString(type);
 		this.subType = processSubtypeString(subType);

@@ -24,27 +24,16 @@
  */
 package org.jbasics.csv;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.charset.Charset;
 
-public class CSVRecordReaderTest {
-	private static final String csvFileData = "One,Two,Three\n" + // Dont break;
-			"\"2nd,One\",2ndTwo,2ndThree\r\n" + // Dont break;
-			"LastOne,\"Last\nTwo\",LastThree"; // Dont break;
-
-	@Test
-	public void testRead() throws IOException {
-		final CSVRecordReader reader = new CSVRecordReader(new StringReader(CSVRecordReaderTest.csvFileData));
-		final List<CSVRecord> records = new ArrayList<CSVRecord>(3);
-		CSVRecord current = null;
-		while ((current = reader.readNext()) != null) {
-			records.add(current);
-		}
-		Assert.assertEquals(3, records.size());
-	}
+/**
+ * Created by schls1 on 24.11.2014.
+ */
+public interface CSVDataConnection extends AutoCloseable {
+	Charset getCharset();
+	boolean hasHeaders();
+	CSVRecord getHeaders();
+	CSVRecord readNext() throws IOException;
+	void close() throws IOException;
 }

@@ -24,9 +24,9 @@
  */
 package org.jbasics.utilities;
 
-import junit.framework.Assert;
 import org.jbasics.testing.Java14LoggingTestCase;
 import org.jbasics.types.tuples.Pair;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Calendar;
@@ -67,6 +67,7 @@ public class DateTimeUtilitiesTest extends Java14LoggingTestCase {
 	}
 
 	@Test
+	@SuppressWarnings("deprecation")
 	public void testStripTime() {
 		for (int i = 0; i < 100; i++) {
 			final Calendar cal = Calendar.getInstance(Locale.GERMAN);

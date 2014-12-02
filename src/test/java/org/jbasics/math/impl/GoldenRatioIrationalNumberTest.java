@@ -24,7 +24,7 @@
  */
 package org.jbasics.math.impl;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.jbasics.math.BigDecimalMathLibrary;
 import org.junit.Test;
 

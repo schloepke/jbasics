@@ -24,8 +24,8 @@
  */
 package org.jbasics.configuration.properties;
 
-import junit.framework.Assert;
 import org.jbasics.text.StringUtilities;
+import org.junit.Assert;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

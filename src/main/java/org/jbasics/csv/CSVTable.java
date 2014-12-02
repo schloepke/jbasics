@@ -45,7 +45,7 @@ import java.util.Map;
  * @author Stephan Schloepke
  * @since 1.0
  */
-public class CSVTable implements Iterable<CSVRecord>, Mapable<Sequence<String>, CSVRecord>, Indexed<CSVRecord> {
+public class CSVTable implements Iterable<CSVRecord>, Mapable<Sequence<String>, CSVRecord>, Indexed<CSVRecord>, CSVDataReference {
 	@SuppressWarnings("unchecked")
 	public static MediaType RFC4180_MEDIA_TYPE = new MediaType("text", "csv");
 	public static Pair<String, String> HEADER_PRESENT = new Pair<String, String>("header", "present");
@@ -69,6 +69,10 @@ public class CSVTable implements Iterable<CSVRecord>, Mapable<Sequence<String>, 
 
 	public CSVTable(final Collection<CSVRecord> records) {
 		this(null, ',', (CSVRecord) null, records.toArray(new CSVRecord[records.size()]));
+	}
+
+	public CSVTable(final CSVRecord headers, final Collection<CSVRecord> records) {
+		this(null, ',', headers, records.toArray(new CSVRecord[records.size()]));
 	}
 
 	public CSVTable(final String[] headers, final CSVRecord... records) {
@@ -162,5 +166,44 @@ public class CSVTable implements Iterable<CSVRecord>, Mapable<Sequence<String>, 
 
 	public Map<Sequence<String>, CSVRecord> map(final int... fields) {
 		return map(new CSVRecordSequenceTransposer(fields));
+	}
+
+	@Override
+	public CSVDataConnection openConnection() {
+		return new CSVDataConnection() {
+			private Iterator<CSVRecord> iterator = CSVTable.this.iterator();
+
+			@Override
+			public Charset getCharset() {
+				return CSVTable.this.getCharset();
+			}
+
+			@Override
+			public boolean hasHeaders() {
+				return CSVTable.this.hasHeaders();
+			}
+
+			@Override
+			public CSVRecord getHeaders() {
+				return CSVTable.this.getHeaders();
+			}
+
+			@Override
+			public CSVRecord readNext() {
+				if (iterator == null) {
+					throw new IllegalStateException("Already closed");
+				}
+				if (this.iterator.hasNext()) {
+					return this.iterator.next();
+				} else {
+					return null;
+				}
+			}
+
+			@Override
+			public void close() {
+				this.iterator = null;
+			}
+		};
 	}
 }

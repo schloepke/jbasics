@@ -24,27 +24,28 @@
  */
 package org.jbasics.csv;
 
+import org.jbasics.csv.output.CSVOutput;
+import org.jbasics.csv.output.CSVTableOutput;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-
-public class CSVRecordReaderTest {
-	private static final String csvFileData = "One,Two,Three\n" + // Dont break;
-			"\"2nd,One\",2ndTwo,2ndThree\r\n" + // Dont break;
-			"LastOne,\"Last\nTwo\",LastThree"; // Dont break;
+public class CSVDataReferenceBuilderTest {
 
 	@Test
-	public void testRead() throws IOException {
-		final CSVRecordReader reader = new CSVRecordReader(new StringReader(CSVRecordReaderTest.csvFileData));
-		final List<CSVRecord> records = new ArrayList<CSVRecord>(3);
-		CSVRecord current = null;
-		while ((current = reader.readNext()) != null) {
-			records.add(current);
-		}
-		Assert.assertEquals(3, records.size());
+	public void testCSVTableReferenceBuilding() {
+		CSVOutput csvOutput = new CSVTableOutput();
+		CSVDataReferenceBuilder builder = new CSVDataReferenceBuilder(csvOutput);
+		CSVDataReference temp = builder
+				.add(new CSVRecord("one", "two", "three"))
+				.newRecord().addCell("1").addCell("2").addCell("3")
+				.newRecord().addCell("4").addCell("5")
+				.build();
+		Assert.assertSame(CSVTable.class, temp.getClass());
+		CSVTable tempTable = (CSVTable)temp;
+		Assert.assertEquals("one", tempTable.getField(0, 0));
+		Assert.assertEquals("5", tempTable.getField(2, 1));
+		Assert.assertEquals("3", tempTable.getField(1, 2));
+		Assert.assertEquals(3, tempTable.size());
 	}
+
 }

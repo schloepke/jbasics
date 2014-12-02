@@ -60,6 +60,7 @@ public class MediaType extends MediaTypeRange {
 	/**
 	 * application/xhtml+xml media type constant.
 	 */
+	@SuppressWarnings("unchecked")
 	public static final MediaType APPLICATION_XHTML_TYPE = new MediaType("application", "xhtml+xml");
 
 	/**
@@ -69,6 +70,7 @@ public class MediaType extends MediaTypeRange {
 	 * @param subType    The sub type.
 	 * @param parameters The parameters as key value pairs.
 	 */
+	@SuppressWarnings("unchecked")
 	public MediaType(final String type, final String subType, final Pair<String, String>... parameters) {
 		super(type, subType, parameters);
 	}
@@ -121,6 +123,7 @@ public class MediaType extends MediaTypeRange {
 	 *
 	 * @return The derived media type.
 	 */
+	@SuppressWarnings("unchecked")
 	public MediaType deriveWithNewParameters(final Pair<String, String>... parameters) {
 		return new MediaType(getType(), getSubType(), parameters);
 	}

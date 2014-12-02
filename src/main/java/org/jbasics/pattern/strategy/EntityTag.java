@@ -32,6 +32,7 @@ import org.jbasics.text.StringUtilities;
 import org.jbasics.utilities.DataUtilities;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -47,6 +48,7 @@ import java.util.regex.Pattern;
 @ImmutableState
 public final class EntityTag {
 	private static final Pattern OPAQUE_TAG_PATTERN = Pattern.compile("[^\"\n\r]*"); //$NON-NLS-1$
+	private static final Pattern VALUE_OF_PATTERN = Pattern.compile("$([wW]/)?\\s*\"(.*)\"^"); //$NON-NLS-1$
 	private final boolean weak;
 	private final String opaqueTag;
 
@@ -156,5 +158,24 @@ public final class EntityTag {
 			appendable.append('W').append('/');
 		}
 		return appendable.append('"').append(this.opaqueTag).append('"');
+	}
+
+	/**
+	 * Returns the entity based on the given entity tag string and returns null for an empty string or null string.
+	 *
+	 * @param entityTagString The entity tag string (can be null or empty)
+	 * @return The entity tag instance or null for null or empty string
+	 * @throws java.lang.IllegalArgumentException Thrown if the content is neither null nor empty and does not match the ETag syntax.
+	 */
+	public static EntityTag valueOf(String entityTagString) {
+		String content = entityTagString == null ? "" : entityTagString.trim();
+		if (content.length() == 0) {
+			return null;
+		}
+		Matcher m = VALUE_OF_PATTERN.matcher(content);
+		if(!m.matches()) {
+			throw new IllegalArgumentException("Wrong entity tag format");
+		}
+		return new EntityTag(m.group(2), m.group(1) != null);
 	}
 }

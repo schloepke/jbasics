@@ -31,11 +31,13 @@ import java.util.Iterator;
 public class CombinedIterable<T> implements Iterable<T> {
 	private final Iterable<? extends T>[] iterables;
 
+	@SuppressWarnings("unchecked")
 	public CombinedIterable(final Iterable<? extends T>... iterables) {
 		this.iterables = ContractCheck.mustNotBeNullOrEmpty(iterables, "iterables");
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Iterator<T> iterator() {
 		return new CombinedIteratorForIterables<T>(this.iterables);
 	}

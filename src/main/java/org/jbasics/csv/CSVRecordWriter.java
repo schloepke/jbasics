@@ -37,6 +37,11 @@ public class CSVRecordWriter implements Closeable {
 		this(out, ',');
 	}
 
+	public CSVRecordWriter(final Appendable out, CSVSeparator separator) {
+		this(out, separator.asCharacter());
+	}
+
+	@Deprecated
 	public CSVRecordWriter(final Appendable out, final char separator) {
 		this.separator = separator;
 		this.writer = ContractCheck.mustNotBeNull(out, "appendable");

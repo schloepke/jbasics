@@ -24,7 +24,7 @@
  */
 package org.jbasics.math.distribution;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.jbasics.math.NumberConverter;
 import org.jbasics.math.exception.NoConvergenceException;
 import org.junit.Test;

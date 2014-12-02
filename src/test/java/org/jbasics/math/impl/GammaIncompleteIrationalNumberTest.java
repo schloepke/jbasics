@@ -35,6 +35,7 @@ public class GammaIncompleteIrationalNumberTest {
 	private final MathContext mc = MathContext.DECIMAL128;
 
 	@Test
+	@SuppressWarnings("deprecation")
 	public void testLnGammaFunction() {
 		final BigDecimal x = new BigDecimal("41.91066527");
 		final BigRational alpha = BigRational.valueOf(new BigDecimal("0.000841625"));
@@ -48,6 +49,7 @@ public class GammaIncompleteIrationalNumberTest {
 	}
 
 	@Test
+	@SuppressWarnings("deprecation")
 	public void testIncompleteGammaContinuedFraction() {
 		final BigRational x = BigRational.valueOf("10");
 		final BigRational alpha = BigRational.valueOf(new BigDecimal("2.7"));

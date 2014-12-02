@@ -24,7 +24,7 @@
  */
 package org.jbasics.types.transpose;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.jbasics.pattern.transpose.ElementFilter;
 import org.jbasics.types.tuples.Pair;
 import org.junit.Test;

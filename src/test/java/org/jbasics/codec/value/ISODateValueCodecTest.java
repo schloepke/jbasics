@@ -69,7 +69,7 @@ public class ISODateValueCodecTest {
 	public void testError() {
 		try {
 			UUIDValueCodec.SHARED_INSTANCE.decode("Hello Exception!");
-			junit.framework.Assert.fail("No exception thrown on wrong format");
+			Assert.fail("No exception thrown on wrong format");
 		} catch (IllegalArgumentException e) {
 			// Good
 		}

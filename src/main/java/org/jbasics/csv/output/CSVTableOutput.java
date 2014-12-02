@@ -22,29 +22,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.csv;
+package org.jbasics.csv.output;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.jbasics.csv.CSVDataReference;
+import org.jbasics.csv.CSVRecord;
+import org.jbasics.csv.CSVTable;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CSVRecordReaderTest {
-	private static final String csvFileData = "One,Two,Three\n" + // Dont break;
-			"\"2nd,One\",2ndTwo,2ndThree\r\n" + // Dont break;
-			"LastOne,\"Last\nTwo\",LastThree"; // Dont break;
+public class CSVTableOutput implements CSVOutput {
+	private final CSVRecord header;
+	private final List<CSVRecord> records = new ArrayList<>();
 
-	@Test
-	public void testRead() throws IOException {
-		final CSVRecordReader reader = new CSVRecordReader(new StringReader(CSVRecordReaderTest.csvFileData));
-		final List<CSVRecord> records = new ArrayList<CSVRecord>(3);
-		CSVRecord current = null;
-		while ((current = reader.readNext()) != null) {
-			records.add(current);
-		}
-		Assert.assertEquals(3, records.size());
+	public CSVTableOutput() {
+		this.header = null;
+	}
+
+	public CSVTableOutput(CSVRecord header) {
+		this.header = header;
+	}
+
+	@Override
+	public void addRecord(CSVRecord record) {
+		this.records.add(record);
+	}
+
+	@Override
+	public CSVDataReference closeAndGetReference() {
+		return new CSVTable(this.header, this.records);
 	}
 }

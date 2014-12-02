@@ -24,7 +24,7 @@
  */
 package org.jbasics.math.polynom;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.jbasics.math.BigRational;
 import org.jbasics.math.MathFunction;
 import org.jbasics.testing.Java14LoggingTestCase;

@@ -51,6 +51,7 @@ public class ContextualCalculateStrategiesDiscoverFactoryTest {
 		Assert.assertNotNull(calculators);
 		Assert.assertEquals(1, calculators.size());
 		final Sequence<Class<?>> calcKey = Sequence.<Class<?>>cons(BigDecimal.class, Double.class);
+		@SuppressWarnings("unchecked")
 		final ContextualCalculateStrategy<BigDecimal, Double, SomeDummyContext> calculator =
 				(ContextualCalculateStrategy<BigDecimal, Double, SomeDummyContext>) calculators.get(calcKey);
 		Assert.assertNotNull(calculator);

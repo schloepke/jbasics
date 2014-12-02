@@ -25,18 +25,13 @@
 package org.jbasics.types.matrix;
 
 import org.jbasics.checker.ContractCheck;
+import org.jbasics.pattern.container.TabularData;
 import org.jbasics.pattern.transpose.Transposer;
 import org.jbasics.text.StringUtilities;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
-public class ColumnNamedMatrix<T> implements Iterable<List<T>> {
+public class ColumnNamedMatrix<T> implements Iterable<List<T>>, TabularData<T> {
 	private final String[] columns;
 	private final List<List<T>> rows;
 	private transient List<String> columnsList;
@@ -57,6 +52,10 @@ public class ColumnNamedMatrix<T> implements Iterable<List<T>> {
 
 	public int columnSize() {
 		return this.columns.length;
+	}
+
+	public int rowSize() {
+		return this.rows.size();
 	}
 
 	public List<String> columns() {
@@ -178,6 +177,10 @@ public class ColumnNamedMatrix<T> implements Iterable<List<T>> {
 
 	public T getCell(final String column, final int row) {
 		return getCell(getColumnIndex(column), row);
+	}
+
+	public T getCellAtColumnAndRow(final int column, final int row) {
+		return this.rows.get(row).get(column);
 	}
 
 	public T getCell(final int column, final int row) {

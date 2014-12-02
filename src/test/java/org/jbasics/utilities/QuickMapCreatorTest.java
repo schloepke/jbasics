@@ -24,7 +24,7 @@
  */
 package org.jbasics.utilities;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.jbasics.testing.Java14LoggingTestCase;
 import org.junit.Test;
 

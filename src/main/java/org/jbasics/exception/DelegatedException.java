@@ -27,6 +27,8 @@ package org.jbasics.exception;
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.delegation.Delegate;
 
+import java.util.concurrent.Callable;
+
 /**
  * An exception container to hold an exception which is only delegated. The real exception stack trace is taken and used
  * rather than creating the one for the delegated. <p> A {@link DelegatedException} is always a {@link RuntimeException}
@@ -40,12 +42,12 @@ public final class DelegatedException extends RuntimeException implements Delega
 	private static final long serialVersionUID = 8127831096870654601L;
 
 	private DelegatedException(final Throwable t) {
-		super(ContractCheck.mustNotBeNull(t, "t").getMessage(), t); //$NON-NLS-1$
+		super(t.getMessage(), t); //$NON-NLS-1$
 		setStackTrace(t.getStackTrace());
 	}
 
 	public static DelegatedException delegate(final Throwable t) {
-		if (t instanceof DelegatedException) {
+		if (ContractCheck.mustNotBeNull(t, "t") instanceof DelegatedException) {
 			return (DelegatedException) t;
 		}
 		return new DelegatedException(t);
@@ -65,4 +67,16 @@ public final class DelegatedException extends RuntimeException implements Delega
 		}
 		return temp.toString();
 	}
+
+	public static <T> T callDelegated(Callable<T> callable) {
+		if (callable == null) {
+			throw new IllegalArgumentException("Null parameter: callable");
+		}
+		try {
+			return callable.call();
+		} catch(Exception e) {
+			throw DelegatedException.delegate(e);
+		}
+	}
+
 }

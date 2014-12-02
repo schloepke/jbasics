@@ -75,9 +75,9 @@ public class CSVTableProvider implements MessageBodyReader<CSVTable> {
 		} else if (CSVTableProvider.USE_SEPARATOR_AUTO_GUESS.value().booleanValue() && r.markSupported()) {
 			r.mark(8192);
 			try {
-				final int[] commaCount = getRecordsLength(new CSVRecordReader(r, ','), 2);
+				final int[] commaCount = getRecordsLength(new CSVRecordReader(r, CSVSeparator.SEMICOLON), 2);
 				r.reset();
-				final int[] semicolonCount = getRecordsLength(new CSVRecordReader(r, ';'), 2);
+				final int[] semicolonCount = getRecordsLength(new CSVRecordReader(r, CSVSeparator.SEMICOLON), 2);
 				// 1. check if both are equal if not use the equal one
 				if (commaCount[0] == commaCount[1]) {
 					if (semicolonCount[0] == semicolonCount[1]) {

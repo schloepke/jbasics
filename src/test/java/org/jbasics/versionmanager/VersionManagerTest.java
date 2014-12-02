@@ -24,8 +24,8 @@
  */
 package org.jbasics.versionmanager;
 
-import junit.framework.Assert;
 import org.jbasics.testing.Java14LoggingTestCase;
+import org.junit.Assert;
 import org.junit.Test;
 
 @SuppressWarnings("nls")

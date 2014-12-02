@@ -24,27 +24,31 @@
  */
 package org.jbasics.csv;
 
-import org.junit.Assert;
-import org.junit.Test;
+/**
+ * Created by schls1 on 25.11.2014.
+ */
+public enum CSVSeparator {
+	AUTO('@'), COMMA(','), SEMICOLON(';'), TAB('\t'), COLON(':'), SPACE(' '), ;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
+	private char separatorCharacter;
 
-public class CSVRecordReaderTest {
-	private static final String csvFileData = "One,Two,Three\n" + // Dont break;
-			"\"2nd,One\",2ndTwo,2ndThree\r\n" + // Dont break;
-			"LastOne,\"Last\nTwo\",LastThree"; // Dont break;
+	private CSVSeparator(char separatorCharacter) {
+		this.separatorCharacter = separatorCharacter;
+	}
 
-	@Test
-	public void testRead() throws IOException {
-		final CSVRecordReader reader = new CSVRecordReader(new StringReader(CSVRecordReaderTest.csvFileData));
-		final List<CSVRecord> records = new ArrayList<CSVRecord>(3);
-		CSVRecord current = null;
-		while ((current = reader.readNext()) != null) {
-			records.add(current);
+	public static CSVSeparator valueOfChar(char separatorCharacter) {
+		for(CSVSeparator temp  : CSVSeparator.values()) {
+			if (temp.separatorCharacter == separatorCharacter) {
+				return temp;
+			}
 		}
-		Assert.assertEquals(3, records.size());
+		throw new IllegalArgumentException("No separator character '"+separatorCharacter+"' available as CSV separator");
+	}
+
+	public char asCharacter() {
+		if (this == AUTO) {
+			return CSVSeparator.COMMA.separatorCharacter;
+		}
+		return this.separatorCharacter;
 	}
 }

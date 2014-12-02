@@ -25,6 +25,7 @@
 package org.jbasics.csv;
 
 import org.jbasics.checker.ContractCheck;
+import org.jbasics.utilities.DataUtilities;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -35,25 +36,27 @@ import java.util.List;
 public class CSVRecordReader implements Closeable {
 	private final Readable in;
 	private final boolean skipEmptyLines;
-	private final char separator;
+	private final CSVSeparator separator;
 	private final CharBuffer buf = CharBuffer.allocate(128);
+	private char separatorChar;
 
 	public CSVRecordReader(final Readable in) {
 		this(in, true);
 	}
 
 	public CSVRecordReader(final Readable in, final boolean skipEmptyLines) {
-		this(in, ',', skipEmptyLines);
+		this(in, null, skipEmptyLines);
 	}
 
-	public CSVRecordReader(final Readable in, final char separator, final boolean skipEmptyLines) {
+	public CSVRecordReader(final Readable in, final CSVSeparator separator, final boolean skipEmptyLines) {
 		this.in = ContractCheck.mustNotBeNull(in, "in");
-		this.separator = separator;
+		this.separator = DataUtilities.coalesce(separator, CSVSeparator.AUTO);
 		this.skipEmptyLines = skipEmptyLines;
 		this.buf.flip();
+		this.separatorChar = this.separator.asCharacter();
 	}
 
-	public CSVRecordReader(final Readable in, final char separator) {
+	public CSVRecordReader(final Readable in, final CSVSeparator separator) {
 		this(in, separator, true);
 	}
 
@@ -100,7 +103,7 @@ public class CSVRecordReader implements Closeable {
 								state = ParsingState.QUOTED;
 								break;
 							default:
-								if (c == this.separator) {
+								if (c == this.separatorChar) {
 									fields.add(fieldData.toString());
 									fieldData.setLength(0);
 								} else {

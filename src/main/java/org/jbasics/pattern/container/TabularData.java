@@ -22,29 +22,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.csv;
+package org.jbasics.pattern.container;
 
-import org.junit.Assert;
-import org.junit.Test;
+/**
+ * Created by schls1 on 26.11.2014.
+ */
+public interface TabularData<T> {
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
+	int columnSize();
+	int rowSize();
 
-public class CSVRecordReaderTest {
-	private static final String csvFileData = "One,Two,Three\n" + // Dont break;
-			"\"2nd,One\",2ndTwo,2ndThree\r\n" + // Dont break;
-			"LastOne,\"Last\nTwo\",LastThree"; // Dont break;
+	T getCellAtColumnAndRow(int column, int row);
 
-	@Test
-	public void testRead() throws IOException {
-		final CSVRecordReader reader = new CSVRecordReader(new StringReader(CSVRecordReaderTest.csvFileData));
-		final List<CSVRecord> records = new ArrayList<CSVRecord>(3);
-		CSVRecord current = null;
-		while ((current = reader.readNext()) != null) {
-			records.add(current);
-		}
-		Assert.assertEquals(3, records.size());
-	}
 }

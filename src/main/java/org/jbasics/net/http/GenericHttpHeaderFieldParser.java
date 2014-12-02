@@ -22,29 +22,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.jbasics.csv;
+package org.jbasics.net.http;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.jbasics.text.StringUtilities;
+import org.jbasics.types.builders.ListBuilder;
+import org.jbasics.types.tuples.Pair;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
-public class CSVRecordReaderTest {
-	private static final String csvFileData = "One,Two,Three\n" + // Dont break;
-			"\"2nd,One\",2ndTwo,2ndThree\r\n" + // Dont break;
-			"LastOne,\"Last\nTwo\",LastThree"; // Dont break;
+/**
+ * General parser for the format <em>Header: MainValue; key=value, SecondMainValue; secondKey=value thirdKey="Value with space"</em>.
+ */
+public class GenericHttpHeaderFieldParser {
 
-	@Test
-	public void testRead() throws IOException {
-		final CSVRecordReader reader = new CSVRecordReader(new StringReader(CSVRecordReaderTest.csvFileData));
-		final List<CSVRecord> records = new ArrayList<CSVRecord>(3);
-		CSVRecord current = null;
-		while ((current = reader.readNext()) != null) {
-			records.add(current);
+	public static void parse(String headerName, String... headerFields) {
+		ListBuilder<String> singleValues = new ListBuilder<>();
+		for (String headerFieldList : StringUtilities.trimAllAndRemoveNullAndEmptyValues(headerFields)) {
+			StringUtilities.addIfNotNullOrTrimmedEmpty(singleValues, headerFieldList.split(","));
 		}
-		Assert.assertEquals(3, records.size());
+
 	}
+
+	public Pair<String, Map<String, String>> parseSingleValue(String value) {
+		throw new UnsupportedOperationException();
+	}
+
+
 }

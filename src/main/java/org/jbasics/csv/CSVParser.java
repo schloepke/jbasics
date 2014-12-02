@@ -180,6 +180,38 @@ public class CSVParser {
 		}
 	}
 
+	public CSVTable parseWithRuntimeException(final URL location) {
+		try {
+			return parse(location);
+		} catch(IOException e) {
+			throw DelegatedException.delegate(e);
+		}
+	}
+
+	public CSVTable parseWithRuntimeException(final InputStream in, final Charset charset) {
+		try {
+			return parse(in, charset);
+		} catch(IOException e) {
+			throw DelegatedException.delegate(e);
+		}
+	}
+
+	public CSVTable parseWithRuntimeException(final InputStream in) {
+		try {
+			return parse(in);
+		} catch(IOException e) {
+			throw DelegatedException.delegate(e);
+		}
+	}
+
+	public CSVTable parseWithRuntimeException(final Readable reader) {
+		try {
+			return parse(reader);
+		} catch(IOException e) {
+			throw DelegatedException.delegate(e);
+		}
+	}
+
 	private enum ParsingState {
 		NONE, QUOTED, QUOTED_END, RECORD_END
 	}

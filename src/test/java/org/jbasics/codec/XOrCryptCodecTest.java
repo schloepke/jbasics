@@ -24,7 +24,7 @@
  */
 package org.jbasics.codec;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.jbasics.pattern.coder.Codec;
 import org.jbasics.pattern.coder.Decoder;
 import org.jbasics.pattern.coder.Encoder;

@@ -26,6 +26,7 @@ package org.jbasics.math;
 
 import org.jbasics.arrays.unstable.ArrayIterator;
 import org.jbasics.checker.ContractCheck;
+import org.jbasics.pattern.container.TabularData;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -34,7 +35,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public class BigDecimalMatrix implements Iterable<Collection<BigDecimal>> /* , Comparable<BigDecimalMatrix> */ {
+public class BigDecimalMatrix implements TabularData<BigDecimal>, Iterable<Collection<BigDecimal>> /* , Comparable<BigDecimalMatrix> */ {
 	private final int rows, columns;
 	private final BigDecimal[][] matrix;
 	private transient Collection<BigDecimal>[] iterables;
@@ -144,6 +145,10 @@ public class BigDecimalMatrix implements Iterable<Collection<BigDecimal>> /* , C
 	}
 
 	public BigDecimal get(final int row, final int column) {
+		return this.matrix[row][column];
+	}
+
+	public BigDecimal getCellAtColumnAndRow(final int column, final int row) {
 		return this.matrix[row][column];
 	}
 

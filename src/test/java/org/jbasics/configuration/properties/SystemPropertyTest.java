@@ -24,7 +24,7 @@
  */
 package org.jbasics.configuration.properties;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 @SuppressWarnings("nls")

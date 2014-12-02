@@ -39,6 +39,7 @@ public final class TransposerChain<OutType, InType> implements Transposer<OutTyp
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public OutType transpose(InType input) {
 		return (OutType) this.outputTransposer.transpose(this.inputTransposer.transpose(input));
 	}

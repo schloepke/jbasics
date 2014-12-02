@@ -24,17 +24,31 @@
  */
 package org.jbasics.csv;
 
+import org.jbasics.annotation.ImmutableState;
+import org.jbasics.annotation.ThreadSafe;
 import org.jbasics.arrays.ArrayConstants;
 import org.jbasics.arrays.unstable.ArrayIterator;
+import org.jbasics.pattern.builder.AddBuilder;
 import org.jbasics.pattern.container.Indexed;
+import org.jbasics.utilities.DataUtilities;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
+@ThreadSafe
+@ImmutableState
 public class CSVRecord implements Iterable<String>, Indexed<String> {
+	public final static CSVRecord EMPTY_RECORD = new CSVRecord();
+
 	private final String[] fields;
+
+	public static Builder newBuilder() {
+		return new Builder();
+	}
+
+	public CSVRecord() {
+		this.fields = ArrayConstants.ZERO_LENGTH_STRING_ARRAY;
+	}
 
 	public CSVRecord(final List<String> fields) {
 		if (fields == null || fields.isEmpty()) {
@@ -83,6 +97,22 @@ public class CSVRecord implements Iterable<String>, Indexed<String> {
 		return appendable;
 	}
 
+	@Override
+	public int hashCode() {
+		return Arrays.hashCode(fields);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		} else if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		} else {
+			return Arrays.equals(this.fields, ((CSVRecord) obj).fields);
+		}
+	}
+
 	private Appendable appendValue(final String value, final Appendable appendable, final char separator) throws IOException {
 		if (value != null) {
 			final StringBuilder t = new StringBuilder();
@@ -97,6 +127,7 @@ public class CSVRecord implements Iterable<String>, Indexed<String> {
 						case '"':
 							t.append('"');
 						case ',':
+
 						case '\n':
 						case '\r':
 							quote = true;
@@ -117,4 +148,45 @@ public class CSVRecord implements Iterable<String>, Indexed<String> {
 	public String toString() {
 		return Arrays.toString(this.fields);
 	}
+
+	public static class Builder implements AddBuilder<Builder, CSVRecord, String> {
+		private final List<String> cells = new ArrayList<>();
+
+		@Override
+		public Builder add(String value) {
+			this.cells.add(DataUtilities.coalesce(value, "#NULL#"));
+			return this;
+		}
+
+		@Override
+		public Builder addAll(String... elements) {
+			for(String element : elements) {
+				add(element);
+			}
+			return this;
+		}
+
+		@Override
+		public Builder addAll(Collection<? extends String> elements) {
+			for(String element : elements) {
+				add(element);
+			}
+			return this;
+		}
+
+		@Override
+		public void reset() {
+			this.cells.clear();;
+		}
+
+		@Override
+		public CSVRecord build() {
+			if (this.cells.isEmpty()) {
+				return CSVRecord.EMPTY_RECORD;
+			} else {
+				return new CSVRecord(this.cells);
+			}
+		}
+	}
+
 }

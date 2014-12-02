@@ -24,9 +24,9 @@
  */
 package org.jbasics.types.tuples;
 
-import junit.framework.Assert;
 import org.jbasics.checker.ContractViolationException;
 import org.jbasics.testing.Java14LoggingTestCase;
+import org.junit.Assert;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

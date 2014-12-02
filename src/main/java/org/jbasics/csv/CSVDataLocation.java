@@ -24,27 +24,37 @@
  */
 package org.jbasics.csv;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.jbasics.checker.ContractCheck;
 
 import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URL;
+import java.nio.charset.Charset;
 
-public class CSVRecordReaderTest {
-	private static final String csvFileData = "One,Two,Three\n" + // Dont break;
-			"\"2nd,One\",2ndTwo,2ndThree\r\n" + // Dont break;
-			"LastOne,\"Last\nTwo\",LastThree"; // Dont break;
+/**
+ * Created by schls1 on 24.11.2014.
+ */
+public class CSVDataLocation implements CSVDataReference {
+	private final URL url;
+	private final Charset charset;
+	private final boolean withHeaders;
+	private final CSVSeparator separator;
+	private final boolean skipEmptyLines;
 
-	@Test
-	public void testRead() throws IOException {
-		final CSVRecordReader reader = new CSVRecordReader(new StringReader(CSVRecordReaderTest.csvFileData));
-		final List<CSVRecord> records = new ArrayList<CSVRecord>(3);
-		CSVRecord current = null;
-		while ((current = reader.readNext()) != null) {
-			records.add(current);
-		}
-		Assert.assertEquals(3, records.size());
+	public CSVDataLocation(final URL url) {
+		this(url, null, false, null, true);
 	}
+
+	public CSVDataLocation(final URL url, final Charset charset, final boolean withHeaders, final CSVSeparator separator, final boolean skipEmptyLines) {
+		this.url = ContractCheck.mustNotBeNull(url, "url");
+		this.charset = charset;
+		this.withHeaders = withHeaders;
+		this.separator = separator;
+		this.skipEmptyLines = true;
+	}
+
+	@Override
+	public CSVDataConnection openConnection() throws IOException {
+		return new CSVDataURLConnection(this.url, this.charset, this.withHeaders, this.separator, this.skipEmptyLines);
+	}
+
 }

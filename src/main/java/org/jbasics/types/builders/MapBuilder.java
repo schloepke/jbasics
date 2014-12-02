@@ -75,10 +75,12 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
 		return this;
 	}
 
+	@SuppressWarnings("unchecked")
 	public MapBuilder<K, V> putAllConditional(final boolean condition, final Pair<K, V>... keyValuePairs) {
 		return condition ? putAll(keyValuePairs) : this;
 	}
 
+	@SuppressWarnings("unchecked")
 	public MapBuilder<K, V> putAll(final Pair<K, V>... keyValuePairs) {
 		for (final Pair<K, V> keyValuePair : keyValuePairs) {
 			this.map.put(keyValuePair.first(), keyValuePair.second());
