@@ -66,6 +66,7 @@ public class CSVRecordReader implements Closeable {
 		ParsingState state = ParsingState.NONE;
 		do {
 			while (this.buf.hasRemaining()) {
+				this.buf.mark();
 				final char c = this.buf.get();
 				switch (state) {
 					case QUOTED_END:
@@ -92,11 +93,14 @@ public class CSVRecordReader implements Closeable {
 						}
 						//this.buf.compact();
 						fields.add(fieldData.toString());
+						if (c != '\n') {
+							this.buf.reset();
+						}
 						return new CSVRecord(fields);
 					case NONE:
 						switch (c) {
-							case '\n':
 							case '\r':
+							case '\n':
 								state = ParsingState.RECORD_END;
 								break;
 							case '"':

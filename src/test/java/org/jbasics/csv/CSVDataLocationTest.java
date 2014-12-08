@@ -24,8 +24,8 @@
  */
 package org.jbasics.csv;
 
-import junit.framework.Assert;
 import org.jbasics.enviroment.JVMEnviroment;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
