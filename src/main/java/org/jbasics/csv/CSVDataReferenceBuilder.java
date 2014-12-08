@@ -27,6 +27,7 @@ package org.jbasics.csv;
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.csv.output.CSVOutput;
 import org.jbasics.pattern.builder.AddBuilder;
+import org.jbasics.pattern.transpose.Transposer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,6 +50,12 @@ public class CSVDataReferenceBuilder implements AddBuilder<CSVDataReferenceBuild
 		return this;
 	}
 
+	public <T> CSVDataReferenceBuilder add(Transposer<CSVRecord, T> transposer, T record) {
+		newRecord();
+		this.store.addRecord(transposer.transpose(record));
+		return this;
+	}
+
 	@Override
 	public CSVDataReferenceBuilder addAll(CSVRecord... records) {
 		for(CSVRecord record : records) {
@@ -57,10 +64,24 @@ public class CSVDataReferenceBuilder implements AddBuilder<CSVDataReferenceBuild
 		return this;
 	}
 
+	public <T> CSVDataReferenceBuilder addAll(Transposer<CSVRecord, T> transposer, T... records) {
+		for(T record : records) {
+			add(transposer.transpose(record));
+		}
+		return this;
+	}
+
 	@Override
 	public CSVDataReferenceBuilder addAll(Collection<? extends CSVRecord> records) {
 		for(CSVRecord record : records) {
 			add(record);
+		}
+		return this;
+	}
+
+	public <T> CSVDataReferenceBuilder addAll(Transposer<CSVRecord, T> transposer, Collection<? extends T> records) {
+		for(T record : records) {
+			add(transposer.transpose(record));
 		}
 		return this;
 	}
