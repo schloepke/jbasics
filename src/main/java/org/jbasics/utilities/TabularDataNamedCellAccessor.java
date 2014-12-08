@@ -24,17 +24,34 @@
  */
 package org.jbasics.utilities;
 
+import org.jbasics.annotation.ImmutableState;
+import org.jbasics.annotation.ThreadSafe;
+import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.container.TabularData;
 
 import java.util.Map;
 
+@ImmutableState(derived = true)
+@ThreadSafe(derived = true)
 public class TabularDataNamedCellAccessor<ColT, RowT, T> {
-	private Map<ColT, Integer> columnIndexes;
-	private Map<RowT, Integer> rowIndexes;
-	private TabularData<T> data;
+	private final Map<RowT, Integer> rowIndexes;
+	private final Map<ColT, Integer> columnIndexes;
 
-	public T get(RowT row, ColT column) {
-		return null;
+	public TabularDataNamedCellAccessor(Map<RowT, Integer> rowIndexes, Map<ColT, Integer> columnIndexes) {
+		this.rowIndexes = ContractCheck.mustNotBeNullOrEmpty(rowIndexes, "rowIndexes");
+		this.columnIndexes = ContractCheck.mustNotBeNullOrEmpty(columnIndexes, "columnIndexes");
+	}
+
+	public T getValueFromTabularDataAtRowAndColumn(TabularData<T> data, RowT row, ColT column) {
+		Integer rowIndex = this.rowIndexes.get(row);
+		if (rowIndex == null) {
+			throw new IllegalArgumentException("Illegal row "+row);
+		}
+		Integer columnIndex = this.columnIndexes.get(column);
+		if (columnIndex == null) {
+			throw new IllegalArgumentException("Illegal column "+column);
+		}
+		return ContractCheck.mustNotBeNull(data, "data").getValueAtRowAndColumn(rowIndex, columnIndex);
 	}
 
 }

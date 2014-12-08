@@ -28,6 +28,7 @@ import org.jbasics.arrays.unstable.ArrayIterator;
 import org.jbasics.net.mediatype.MediaType;
 import org.jbasics.pattern.container.Indexed;
 import org.jbasics.pattern.container.Mapable;
+import org.jbasics.pattern.container.TabularData;
 import org.jbasics.pattern.factory.ParameterFactory;
 import org.jbasics.types.sequences.Sequence;
 import org.jbasics.types.tuples.Pair;
@@ -45,7 +46,7 @@ import java.util.Map;
  * @author Stephan Schloepke
  * @since 1.0
  */
-public class CSVTable implements Iterable<CSVRecord>, Mapable<Sequence<String>, CSVRecord>, Indexed<CSVRecord>, CSVDataReference {
+public class CSVTable implements Iterable<CSVRecord>, Mapable<Sequence<String>, CSVRecord>, Indexed<CSVRecord>, CSVDataReference, TabularData<String> {
 	@SuppressWarnings("unchecked")
 	public static MediaType RFC4180_MEDIA_TYPE = new MediaType("text", "csv");
 	public static Pair<String, String> HEADER_PRESENT = new Pair<String, String>("header", "present");
@@ -55,6 +56,7 @@ public class CSVTable implements Iterable<CSVRecord>, Mapable<Sequence<String>, 
 	private final CSVRecord headers;
 	private final CSVRecord[] records;
 	private final char separator;
+	private final int maxColumnSize;
 
 	public CSVTable(final CSVRecord... records) {
 		this(null, ',', (CSVRecord) null, records);
@@ -65,6 +67,11 @@ public class CSVTable implements Iterable<CSVRecord>, Mapable<Sequence<String>, 
 		this.headers = headers;
 		this.records = records == null ? new CSVRecord[0] : records;
 		this.separator = separator;
+		int columnSize = 0;
+		for(CSVRecord record : this.records) {
+			columnSize = Math.max(columnSize, record.size());
+		}
+		this.maxColumnSize = columnSize;
 	}
 
 	public CSVTable(final Collection<CSVRecord> records) {
@@ -85,6 +92,31 @@ public class CSVTable implements Iterable<CSVRecord>, Mapable<Sequence<String>, 
 
 	public int size() {
 		return this.records.length;
+	}
+
+
+	@Override
+	public int columnSize() {
+		return maxColumnSize;
+	}
+
+	@Override
+	public int rowSize() {
+		return size();
+	}
+
+	@Override
+	public String getValueAtRowAndColumn(int row, int column) {
+		if (this.maxColumnSize > column) {
+			CSVRecord record = getRecord(row);
+			if (record.size() > column) {
+				return record.getField(column);
+			} else {
+				return null;
+			}
+		} else {
+			throw new IndexOutOfBoundsException("Column higher than columnSize");
+		}
 	}
 
 	@Override

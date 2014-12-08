@@ -32,6 +32,6 @@ public interface TabularData<T> {
 	int columnSize();
 	int rowSize();
 
-	T getCellAtColumnAndRow(int column, int row);
+	T getValueAtRowAndColumn(int row, int column);
 
 }

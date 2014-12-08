@@ -175,14 +175,31 @@ public class ColumnNamedMatrix<T> implements Iterable<List<T>>, TabularData<T> {
 		}
 	}
 
+	public T getValueAtRowAndColumn(final int row, final int column) {
+		return this.rows.get(row).get(column);
+	}
+
+	public T getCellValue(final int row, final String column) {
+		return getValueAtRowAndColumn(row, getColumnIndex(column));
+	}
+	public T getCellValue(final int row, final int column) {
+		return getValueAtRowAndColumn(row, column);
+	}
+
+	/**
+	 * @deprecated This method has the signature col, row and should not be used. Instead use {@link #getCellValue(int, String)}
+	 * with signature row,col!
+	 */
+	@Deprecated
 	public T getCell(final String column, final int row) {
 		return getCell(getColumnIndex(column), row);
 	}
 
-	public T getCellAtColumnAndRow(final int column, final int row) {
-		return this.rows.get(row).get(column);
-	}
-
+	/**
+	 * @deprecated This method has the signature col, row and should not be used. Instead use {@link #getCellValue(int, String)}
+	 * with signature row,col!
+	 */
+	@Deprecated
 	public T getCell(final int column, final int row) {
 		return this.rows.get(row).get(column);
 	}

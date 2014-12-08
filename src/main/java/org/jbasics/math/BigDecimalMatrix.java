@@ -148,7 +148,8 @@ public class BigDecimalMatrix implements TabularData<BigDecimal>, Iterable<Colle
 		return this.matrix[row][column];
 	}
 
-	public BigDecimal getCellAtColumnAndRow(final int column, final int row) {
+	@Override
+	public BigDecimal getValueAtRowAndColumn(int row, int column) {
 		return this.matrix[row][column];
 	}
 
