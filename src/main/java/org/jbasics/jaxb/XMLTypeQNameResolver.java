@@ -30,7 +30,7 @@ import org.jbasics.pattern.strategy.SubstitutionStrategy;
 import org.jbasics.types.sequences.Sequence;
 
 import javax.xml.XMLConstants;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchema;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
@@ -48,7 +48,7 @@ public class XMLTypeQNameResolver implements Resolver<QName, Class<?>>, Substitu
 			String namespace = null;
 			if (name == null || name.trim().length() == 0 || DEFAULT_NAME_OR_NAMESPACE.equals(name)) {
 				name = null;
-				XmlElement elementAnnotation = type.getAnnotation(XmlElement.class);
+				XmlRootElement elementAnnotation = type.getAnnotation(XmlRootElement.class);
 				if (elementAnnotation != null) {
 					name = elementAnnotation.name();
 					namespace = elementAnnotation.namespace();
