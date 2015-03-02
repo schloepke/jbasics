@@ -52,13 +52,16 @@ public class NaturalLogarithmAlgorithmStrategy implements AlgorithmStrategy<BigD
 		if (BigDecimal.ONE.compareTo(x) == 0) {
 			return BigDecimal.ZERO;
 		}
-		BigDecimal result = guess != null ? guess : new BigDecimal(Math.log(Math.max(x.doubleValue(), Double.MIN_NORMAL)), mc);
+		BigDecimal result = guess != null ? guess : BigDecimal.valueOf(Math.log(Math.max(x.doubleValue(), Double.MIN_NORMAL)));
 		BigDecimal oldResult;
+		BigDecimal diff = null, oldDiff = null;
 		do {
 			oldResult = result;
 			final BigDecimal temp = this.exponentialFunction.calculate(mc, null, result.negate()).multiply(x, mc).subtract(BigDecimal.ONE);
 			result = result.add(temp);
-		} while (oldResult.round(mc).subtract(result.round(mc)).signum() != 0);
+			oldDiff = diff;
+			diff = oldResult.round(mc).subtract(result.round(mc));
+		} while (diff.signum() != 0 && (oldDiff == null || oldDiff.subtract(diff).signum() < 0));
 		return result.round(mc);
 	}
 }

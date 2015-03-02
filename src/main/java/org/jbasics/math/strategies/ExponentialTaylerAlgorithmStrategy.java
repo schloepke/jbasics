@@ -49,8 +49,7 @@ public class ExponentialTaylerAlgorithmStrategy implements AlgorithmStrategy<Big
 			scale = scale + ((int) (x.scale() * (Math.log(10) / Math.log(2))));
 		}
 		BigDecimal xScaled = x.divide(new BigDecimal(BigInteger.ONE.shiftLeft(scale)));
-		MathContext calcContext = new MathContext(mc.getPrecision() + (int) Math.ceil(scale * Math.log10(2)) + 1,
-				RoundingMode.HALF_EVEN);
+		MathContext calcContext = new MathContext(mc.getPrecision() + (int) Math.ceil(scale * Math.log10(2)) + 1, RoundingMode.HALF_EVEN);
 		BigInteger k = BigInteger.ONE;
 		int n = 1;
 		BigDecimal xPower = BigDecimal.ONE;
