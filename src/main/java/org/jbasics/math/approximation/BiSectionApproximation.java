@@ -24,6 +24,9 @@
  */
 package org.jbasics.math.approximation;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.BigDecimalMathLibrary;
 import org.jbasics.math.MathFunction;
@@ -32,9 +35,6 @@ import org.jbasics.math.NumberConverter;
 import org.jbasics.math.exception.NoConvergenceException;
 import org.jbasics.types.tuples.Range;
 import org.jbasics.utilities.DataUtilities;
-
-import java.math.BigDecimal;
-import java.math.MathContext;
 
 public class BiSectionApproximation implements Approximation {
 	private final MathFunction<?> function;
@@ -62,8 +62,8 @@ public class BiSectionApproximation implements Approximation {
 	@Override
 	public ApproximatedResult approximate(final MathContext mcIn, final BigDecimal c, final Range<BigDecimal> range) {
 		final MathContext mc = DataUtilities.coalesce(mcIn, MathContext.DECIMAL64);
-		BigDecimal x1 = range == null ? BigDecimal.ONE.negate() : DataUtilities.coalesce(range.first(), BigDecimal.ONE.negate());
-		BigDecimal x2 = range == null ? BigDecimal.ONE : DataUtilities.coalesce(range.second(), BigDecimal.ONE);
+		BigDecimal x1 = range == null ? BigDecimal.ONE.negate() : DataUtilities.coalesce(range.from(), BigDecimal.ONE.negate());
+		BigDecimal x2 = range == null ? BigDecimal.ONE : DataUtilities.coalesce(range.to(), BigDecimal.ONE);
 		if (x1.compareTo(x2) == 0) {
 			x2 = x1.add(x1.ulp());
 		}

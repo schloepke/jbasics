@@ -24,6 +24,11 @@
  */
 package org.jbasics.types.singleton;
 
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jbasics.event.SynchronizedEventListenerSet;
 import org.jbasics.pattern.delegation.MutableDelegate;
 import org.jbasics.pattern.delegation.ReleasableDelegate;
@@ -31,11 +36,6 @@ import org.jbasics.pattern.factory.Factory;
 import org.jbasics.pattern.singleton.Singleton;
 import org.jbasics.pattern.singleton.SingletonChangeEvent;
 import org.jbasics.pattern.singleton.VetoableSingletonChangeListener;
-
-import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public abstract class AbstractManageableSingleton<T> implements Singleton<T>, ReleasableDelegate<T>, MutableDelegate<T> {
 	protected final Factory<T> factory;
@@ -50,6 +50,7 @@ public abstract class AbstractManageableSingleton<T> implements Singleton<T>, Re
 		SingletonManager.instance().registerSingleton(this);
 	}
 
+	@Override
 	public void addSingletonListener(final VetoableSingletonChangeListener listener) {
 		synchronized (this) {
 			if (this.listeners == null) {
@@ -59,6 +60,7 @@ public abstract class AbstractManageableSingleton<T> implements Singleton<T>, Re
 		this.listeners.addListener(listener);
 	}
 
+	@Override
 	public void removeSingletonListener(final VetoableSingletonChangeListener listener) {
 		if (this.listeners != null) {
 			this.listeners.removeListener(listener);
@@ -156,6 +158,7 @@ public abstract class AbstractManageableSingleton<T> implements Singleton<T>, Re
 		}
 	}
 
+	@Override
 	public T setDelegate(final T instance) {
 		T temp = null;
 		if (isInstanciated()) {
@@ -169,6 +172,4 @@ public abstract class AbstractManageableSingleton<T> implements Singleton<T>, Re
 	public boolean isDelegateSet() {
 		return isInstanciated();
 	}
-
-	;
 }

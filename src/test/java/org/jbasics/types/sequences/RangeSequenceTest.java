@@ -24,20 +24,21 @@
  */
 package org.jbasics.types.sequences;
 
-import org.jbasics.types.tuples.Range;
 import org.junit.Assert;
 import org.junit.Test;
+
+import org.jbasics.types.tuples.Range;
 
 public class RangeSequenceTest {
 	@Test
 	public void testRightOpen() {
 		final RangeSequence<Integer> temp = new RangeSequence<Integer>(5, 10, 15, 20, 25, null);
 		Range<Integer> testA = temp.findRangeFor(6);
-		Assert.assertEquals(5, testA.first().intValue());
-		Assert.assertEquals(10, testA.second().intValue());
+		Assert.assertEquals(5, testA.from().intValue());
+		Assert.assertEquals(10, testA.to().intValue());
 		Range<Integer> testB = temp.findRangeFor(10);
-		Assert.assertEquals(10, testB.first().intValue());
-		Assert.assertEquals(15, testB.second().intValue());
+		Assert.assertEquals(10, testB.from().intValue());
+		Assert.assertEquals(15, testB.to().intValue());
 		Assert.assertNotSame(testA, testB);
 		testA = temp.findRangeFor(14);
 		Assert.assertSame(testA, testB);
@@ -45,8 +46,8 @@ public class RangeSequenceTest {
 		Assert.assertNull(testA);
 		testA = temp.findRangeFor(25);
 		Assert.assertNotNull(testA);
-		Assert.assertEquals(25, testA.first().intValue());
-		Assert.assertNull(testA.second());
+		Assert.assertEquals(25, testA.from().intValue());
+		Assert.assertNull(testA.to());
 		testB = temp.findRangeFor(Integer.MAX_VALUE);
 		Assert.assertSame(testA, testB);
 	}
@@ -55,11 +56,11 @@ public class RangeSequenceTest {
 	public void testLeftOpen() {
 		final RangeSequence<Integer> temp = new RangeSequence<Integer>(null, 5, 10, 15, 20, 25);
 		Range<Integer> testA = temp.findRangeFor(6);
-		Assert.assertEquals(5, testA.first().intValue());
-		Assert.assertEquals(10, testA.second().intValue());
+		Assert.assertEquals(5, testA.from().intValue());
+		Assert.assertEquals(10, testA.to().intValue());
 		Range<Integer> testB = temp.findRangeFor(10);
-		Assert.assertEquals(10, testB.first().intValue());
-		Assert.assertEquals(15, testB.second().intValue());
+		Assert.assertEquals(10, testB.from().intValue());
+		Assert.assertEquals(15, testB.to().intValue());
 		Assert.assertNotSame(testA, testB);
 		testA = temp.findRangeFor(14);
 		Assert.assertSame(testA, testB);
@@ -67,8 +68,8 @@ public class RangeSequenceTest {
 		Assert.assertNull(testA);
 		testA = temp.findRangeFor(0);
 		Assert.assertNotNull(testA);
-		Assert.assertNull(testA.first());
-		Assert.assertEquals(5, testA.second().intValue());
+		Assert.assertNull(testA.from());
+		Assert.assertEquals(5, testA.to().intValue());
 		testB = temp.findRangeFor(Integer.MIN_VALUE);
 		Assert.assertSame(testA, testB);
 	}
@@ -77,24 +78,24 @@ public class RangeSequenceTest {
 	public void testBothOpen() {
 		final RangeSequence<Integer> temp = new RangeSequence<Integer>(null, 5, 10, 15, 20, 25, null);
 		Range<Integer> testA = temp.findRangeFor(6);
-		Assert.assertEquals(5, testA.first().intValue());
-		Assert.assertEquals(10, testA.second().intValue());
+		Assert.assertEquals(5, testA.from().intValue());
+		Assert.assertEquals(10, testA.to().intValue());
 		Range<Integer> testB = temp.findRangeFor(10);
-		Assert.assertEquals(10, testB.first().intValue());
-		Assert.assertEquals(15, testB.second().intValue());
+		Assert.assertEquals(10, testB.from().intValue());
+		Assert.assertEquals(15, testB.to().intValue());
 		Assert.assertNotSame(testA, testB);
 		testA = temp.findRangeFor(14);
 		Assert.assertSame(testA, testB);
 		testA = temp.findRangeFor(25);
 		Assert.assertNotNull(testA);
-		Assert.assertEquals(25, testA.first().intValue());
-		Assert.assertNull(testA.second());
+		Assert.assertEquals(25, testA.from().intValue());
+		Assert.assertNull(testA.to());
 		testB = temp.findRangeFor(Integer.MAX_VALUE);
 		Assert.assertSame(testA, testB);
 		testA = temp.findRangeFor(0);
 		Assert.assertNotNull(testA);
-		Assert.assertNull(testA.first());
-		Assert.assertEquals(5, testA.second().intValue());
+		Assert.assertNull(testA.from());
+		Assert.assertEquals(5, testA.to().intValue());
 		testB = temp.findRangeFor(Integer.MIN_VALUE);
 		Assert.assertSame(testA, testB);
 	}

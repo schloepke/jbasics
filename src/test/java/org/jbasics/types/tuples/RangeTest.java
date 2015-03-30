@@ -24,21 +24,22 @@
  */
 package org.jbasics.types.tuples;
 
-import org.jbasics.checker.ContractViolationException;
-import org.jbasics.testing.Java14LoggingTestCase;
-import org.junit.Assert;
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.jbasics.checker.ContractViolationException;
+import org.jbasics.testing.Java14LoggingTestCase;
 
 @SuppressWarnings("nls")
 @RunWith(Parameterized.class)
@@ -122,17 +123,13 @@ public class RangeTest<T extends Comparable<T>> extends Java14LoggingTestCase {
 			Assert.assertEquals("Value " + this.check + " should" + (this.expectedResult ? "" : "n't") + " be in the range " + temp,
 					this.expectedResult,
 					temp.isInRange(this.check));
-			Range<T> equalCheck = Range.create(temp, temp.isIncludeFrom(), temp.isIncludeTo());
+			Range<T> equalCheck = Range.create(new Pair<T, T>(temp.from(), temp.to()), temp.isIncludeFrom(), temp.isIncludeTo());
 			Assert.assertNotSame(temp, equalCheck);
 			Assert.assertEquals(temp, equalCheck);
 			Assert.assertTrue(temp.equals(temp));
 			if (this.from != null || this.to != null) {
-				Assert.assertFalse(temp.hashCode() == Range.create(this.to, this.includeFrom, this.from, this.includeTo).hashCode());
-				if (!temp.isIncludeFrom() || !temp.isIncludeTo()) {
-					equalCheck = Range.create(temp);
-				} else {
-					equalCheck = Range.create(temp.to(), temp.isIncludeTo(), temp.from(), temp.isIncludeFrom());
-				}
+				Assert.assertTrue(temp.hashCode() == Range.create(this.to, this.includeFrom, this.from, this.includeTo).hashCode());
+				equalCheck = Range.create(temp.from(), !temp.isIncludeFrom(), temp.to(), !temp.isIncludeTo());
 				Assert.assertNotSame(temp, equalCheck);
 				Assert.assertFalse(temp.equals(equalCheck));
 			}
@@ -161,4 +158,79 @@ public class RangeTest<T extends Comparable<T>> extends Java14LoggingTestCase {
 		expected = Range.create(10, false, 20, true);
 		Assert.assertEquals(expected, one.intersect(two));
 	}
+
+	@Test
+	public void testOverlap() {
+		Range<Integer> basis = Range.create(3, true, 7, false);
+		Range<Integer> check = Range.create(3, true, 7, false);
+		Assert.assertTrue(check.isOverlapped(basis));
+
+		check = Range.create(2, true, 8, false);
+		Assert.assertTrue(check.isOverlapped(basis));
+		check = Range.create(4, true, 8, false);
+		Assert.assertTrue(check.isOverlapped(basis));
+		check = Range.create(2, true, 6, false);
+		Assert.assertTrue(check.isOverlapped(basis));
+		check = Range.create(4, true, 6, false);
+		Assert.assertTrue(check.isOverlapped(basis));
+		check = Range.create(3, true, 6, false);
+		Assert.assertTrue(check.isOverlapped(basis));
+		check = Range.create(3, true, 8, false);
+		Assert.assertTrue(check.isOverlapped(basis));
+		check = Range.create(2, true, 7, false);
+		Assert.assertTrue(check.isOverlapped(basis));
+		check = Range.create(4, true, 7, false);
+		Assert.assertTrue(check.isOverlapped(basis));
+
+		check = Range.create(1, true, 2, false);
+		Assert.assertFalse(check.isOverlapped(basis));
+		check = Range.create(1, true, 3, false);
+		Assert.assertFalse(check.isOverlapped(basis));
+		check = Range.create(7, true, 9, false);
+		Assert.assertFalse(check.isOverlapped(basis));
+		check = Range.create(8, true, 9, false);
+		Assert.assertFalse(check.isOverlapped(basis));
+
+		check = Range.create(7, true, 3, false);
+		Assert.assertTrue(check.isOverlapped(basis));
+	}
+
+	@Test
+	public void testOverlapInverse() {
+		Range<Integer> basis = Range.create(7, false, 3, true);
+		Range<Integer> check = Range.create(7, false, 3, true);
+		Assert.assertTrue(check.isOverlapped(basis));
+
+		check = Range.create(8, false, 2, true);
+		Assert.assertTrue(check.isOverlapped(basis));
+		check = Range.create(8, false, 4, true);
+		Assert.assertTrue(check.isOverlapped(basis));
+		check = Range.create(6, false, 2, true);
+		Assert.assertTrue(check.isOverlapped(basis));
+		check = Range.create(6, false, 4, true);
+		Assert.assertTrue(check.isOverlapped(basis));
+		check = Range.create(6, false, 3, true);
+		Assert.assertTrue(check.isOverlapped(basis));
+		check = Range.create(8, false, 3, true);
+		Assert.assertTrue(check.isOverlapped(basis));
+		check = Range.create(7, false, 2, true);
+		Assert.assertTrue(check.isOverlapped(basis));
+		check = Range.create(7, false, 4, true);
+		Assert.assertTrue(check.isOverlapped(basis));
+
+		check = Range.create(2, false, 1, true);
+		Assert.assertFalse(check.isOverlapped(basis));
+		check = Range.create(3, false, 1, true);
+		Assert.assertFalse(check.isOverlapped(basis));
+		check = Range.create(9, false, 7, true);
+		Assert.assertFalse(check.isOverlapped(basis));
+		check = Range.create(9, false, 8, true);
+		Assert.assertFalse(check.isOverlapped(basis));
+
+		check = Range.create(3, false, 7, true);
+		Assert.assertTrue(check.isOverlapped(basis));
+
+
+	}
+
 }

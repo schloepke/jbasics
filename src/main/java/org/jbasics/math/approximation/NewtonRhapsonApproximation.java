@@ -24,6 +24,10 @@
  */
 package org.jbasics.math.approximation;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.BigDecimalMathLibrary;
 import org.jbasics.math.MathFunction;
@@ -31,10 +35,6 @@ import org.jbasics.math.MathFunctionHelper;
 import org.jbasics.math.exception.NoConvergenceException;
 import org.jbasics.types.tuples.Range;
 import org.jbasics.utilities.DataUtilities;
-
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 
 public class NewtonRhapsonApproximation implements Approximation {
 	private final MathFunction<BigDecimal> function;
@@ -66,8 +66,8 @@ public class NewtonRhapsonApproximation implements Approximation {
 	@Override
 	public ApproximatedResult approximate(final MathContext mcInput, final BigDecimal FxResult, final Range<BigDecimal> range) {
 		final MathContext mcIn = DataUtilities.coalesce(mcInput, MathFunction.DEFAULT_MATH_CONTEXT);
-		final BigDecimal guess = range.first() == null ? range.second() : range.second() == null ? range.first() : range.first().add(
-				range.second().subtract(range.first()).divide(BigDecimalMathLibrary.CONSTANT_TWO, mcIn));
+		final BigDecimal guess = range.from() == null ? range.to() : range.to() == null ? range.from() : range.from().add(
+				range.to().subtract(range.from()).divide(BigDecimalMathLibrary.CONSTANT_TWO, mcIn));
 		final MathContext mc = new MathContext(Math.max(mcInput.getPrecision(), this.accuracy.scale()) + 16, RoundingMode.HALF_EVEN);
 		BigDecimal xn, xn1 = guess;
 		for (int i = this.maxIterations; i > 0; i--) {

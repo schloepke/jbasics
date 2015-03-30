@@ -24,16 +24,17 @@
  */
 package org.jbasics.utilities;
 
-import org.jbasics.testing.Java14LoggingTestCase;
-import org.jbasics.types.tuples.Pair;
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.logging.Level;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import org.jbasics.testing.Java14LoggingTestCase;
+import org.jbasics.types.tuples.Range;
 
 public class DateTimeUtilitiesTest extends Java14LoggingTestCase {
 
@@ -105,9 +106,9 @@ public class DateTimeUtilitiesTest extends Java14LoggingTestCase {
 
 	@Test
 	public void testWeekRange() {
-		final Pair<Date, Date> temp = DateTimeUtilities.getCalendarWeekRange(2010, 43);
+		final Range<Date> temp = DateTimeUtilities.getCalendarWeekRange(2010, 43);
 		this.logger.log(Level.INFO, "Range for 2010-W43 is [{0,date,yyyy'-'MM'-'dd' 'HH:mm:ss'Z'Z}, {1,date,yyyy'-'MM'-'dd' 'HH:mm:ss'Z'Z}]",
-				new Object[]{temp.left(), temp.right()});
+				new Object[]{temp.from(), temp.to()});
 	}
 
 	@Test

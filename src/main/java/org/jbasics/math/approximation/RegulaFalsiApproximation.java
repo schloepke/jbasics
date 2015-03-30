@@ -24,6 +24,10 @@
  */
 package org.jbasics.math.approximation;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.math.MathFunction;
 import org.jbasics.math.MathFunctionHelper;
@@ -31,10 +35,6 @@ import org.jbasics.math.NumberConverter;
 import org.jbasics.math.exception.NoConvergenceException;
 import org.jbasics.types.tuples.Range;
 import org.jbasics.utilities.DataUtilities;
-
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 
 public class RegulaFalsiApproximation implements Approximation {
 	private final MathFunction<?> function;
@@ -57,16 +57,16 @@ public class RegulaFalsiApproximation implements Approximation {
 		xMin = BigDecimal.ZERO;
 		xMax = BigDecimal.TEN;
 		if (range != null) {
-			if (range.first() != null) {
-				xMin = range.first();
-				if (range.second() == null) {
+			if (range.from() != null) {
+				xMin = range.from();
+				if (range.to() == null) {
 					xMax = xMin.add(xMax);
 				} else {
-					xMax = range.second();
+					xMax = range.to();
 				}
-			} else if (range.second() != null) {
-				xMin = range.second().subtract(xMax);
-				xMax = range.second();
+			} else if (range.to() != null) {
+				xMin = range.to().subtract(xMax);
+				xMax = range.to();
 			}
 		}
 		final MathContext mc = DataUtilities.coalesce(mcIn, MathContext.DECIMAL64);

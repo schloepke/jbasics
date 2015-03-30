@@ -37,4 +37,6 @@ public interface AddBuilder<B extends AddBuilder<B, T, E>, T, E> extends Builder
 
 	B addAll(final Collection<? extends E> elements);
 
+	B addAll(final Iterable<? extends E> elements);
+
 }

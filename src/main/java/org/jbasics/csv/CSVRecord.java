@@ -175,6 +175,14 @@ public class CSVRecord implements Iterable<String>, Indexed<String> {
 		}
 
 		@Override
+		public Builder addAll(Iterable<? extends String> elements) {
+			for(String element : elements) {
+				add(element);
+			}
+			return this;
+		}
+
+		@Override
 		public void reset() {
 			this.cells.clear();;
 		}

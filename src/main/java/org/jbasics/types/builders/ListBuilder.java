@@ -66,6 +66,14 @@ public class ListBuilder<E> implements AddBuilder<ListBuilder<E>, List<E>, E>, E
 		return this;
 	}
 
+	public ListBuilder<E> addAll(final Iterable<? extends E> elements) {
+		for (E element : elements) {
+			this.list.add(element);
+		}
+		return this;
+	}
+
+
 	public ListBuilder<E> mutable() {
 		this.mutable = true;
 		return this;

@@ -79,6 +79,14 @@ public class CSVDataReferenceBuilder implements AddBuilder<CSVDataReferenceBuild
 		return this;
 	}
 
+	@Override
+	public CSVDataReferenceBuilder addAll(Iterable<? extends CSVRecord> records) {
+		for(CSVRecord record : records) {
+			add(record);
+		}
+		return this;
+	}
+
 	public <T> CSVDataReferenceBuilder addAll(Transposer<CSVRecord, T> transposer, Collection<? extends T> records) {
 		for(T record : records) {
 			add(transposer.transpose(record));

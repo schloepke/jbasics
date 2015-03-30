@@ -24,11 +24,11 @@
  */
 package org.jbasics.types.sequences;
 
+import java.util.Iterator;
+
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.modifer.Concatable;
 import org.jbasics.types.tuples.Range;
-
-import java.util.Iterator;
 
 public final class RangeSequence<T extends Comparable<T>> extends Range<T> implements Iterable<Range<T>>, Concatable<RangeSequence<T>> {
 	private final Sequence<Range<T>> rangeSequence;
@@ -46,7 +46,7 @@ public final class RangeSequence<T extends Comparable<T>> extends Range<T> imple
 	}
 
 	public RangeSequence(final RangeSequence<T> lhs, final RangeSequence<T> rhs) {
-		super(ContractCheck.mustNotBeNull(lhs, "lhs").first(), lhs.isIncludeFrom(), ContractCheck.mustNotBeNull(rhs, "rhs").second(), rhs
+		super(ContractCheck.mustNotBeNull(lhs, "lhs").from(), lhs.isIncludeFrom(), ContractCheck.mustNotBeNull(rhs, "rhs").to(), rhs
 				.isIncludeTo());
 		this.rangeSequence = lhs.rangeSequence.concat(rhs.rangeSequence);
 	}
