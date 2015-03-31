@@ -43,42 +43,12 @@ import org.jbasics.checker.ContractCheck;
  *
  * @author schls1
  */
-public class Range<T extends Comparable<T>> implements /*Tuple<T, T>,*/ Comparable<Range<T>> {
+public class Range<T extends Comparable<T>> implements Comparable<Range<T>> {
 	private static final String INFINITE = "#INFINITY#".intern(); //$NON-NLS-1$
 	private final T from;
 	private final T to;
 	private final boolean includeFrom;
 	private final boolean includeTo;
-
-	/**
-	 * Constructs a range for the given borders and both are included in the range.
-	 *
-	 * @param from The range left side or lower value (included)
-	 * @param to   The range right side or higher value (included)
-	 */
-	public Range(final T from, final T to) {
-		this(from, true, to, true);
-	}
-
-	/**
-	 * Constructs a range for the given borders and info if the border is included or not.
-	 *
-	 * @param from        The range left side or lower value
-	 * @param includeFrom True if the left side is included
-	 * @param to          The range right side or higher value
-	 * @param includeTo   True if the right side is included
-	 */
-	public Range(final T from, final boolean includeFrom, final T to, final boolean includeTo) {
-		if(from != null && to != null && from.compareTo(to) > 0) {
-			this.from = to;
-			this.to = from;
-		} else {
-			this.from = from;
-			this.to = to;
-		}
-		this.includeFrom = from == null || includeFrom;
-		this.includeTo = to == null || includeTo;
-	}
 
 	/**
 	 * Factory method to create a {@link Range} instance based on a given from an to value.
@@ -136,6 +106,36 @@ public class Range<T extends Comparable<T>> implements /*Tuple<T, T>,*/ Comparab
 	 */
 	public static <X extends Comparable<X>> Range<X> create(final Pair<X, X> fromToValues, final boolean includeFrom, final boolean includeTo) {
 		return new Range<X>(ContractCheck.mustNotBeNull(fromToValues, "fromToValues").left(), includeFrom, fromToValues.right(), includeTo); //$NON-NLS-1$
+	}
+
+	/**
+	 * Constructs a range for the given borders and both are included in the range.
+	 *
+	 * @param from The range left side or lower value (included)
+	 * @param to   The range right side or higher value (included)
+	 */
+	public Range(final T from, final T to) {
+		this(from, true, to, true);
+	}
+
+	/**
+	 * Constructs a range for the given borders and info if the border is included or not.
+	 *
+	 * @param from        The range left side or lower value
+	 * @param includeFrom True if the left side is included
+	 * @param to          The range right side or higher value
+	 * @param includeTo   True if the right side is included
+	 */
+	public Range(final T from, final boolean includeFrom, final T to, final boolean includeTo) {
+		if(from != null && to != null && from.compareTo(to) > 0) {
+			this.from = to;
+			this.to = from;
+		} else {
+			this.from = from;
+			this.to = to;
+		}
+		this.includeFrom = from == null || includeFrom;
+		this.includeTo = to == null || includeTo;
 	}
 
 	/**
@@ -209,80 +209,40 @@ public class Range<T extends Comparable<T>> implements /*Tuple<T, T>,*/ Comparab
 		return this.includeTo;
 	}
 
-	public boolean isOverlapped(final Range<T> checkRange) {
-		final int left = compareLeft(checkRange);
+	/**
+	 * Returns true if this range represents an empty range (from and to equal and neiher included)
+	 *
+	 * @return true If this range is considered an empty interval false otherwise.
+	 */
+	public boolean isEmpty() {
+		return this.from != null && this.to != null  && !this.includeFrom && !this.includeTo && this.from.compareTo(this.to) == 0;
+	}
+
+	/**
+	 * Returns true if this and the other range overlap in at least one ulp of the data type.
+	 *
+	 * @param other The other range to check for overlapping
+	 * @return true If both ranges overlap otherwise false.
+	 */
+	public boolean isOverlapped(final Range<T> other) {
+		final int left = fromCompareToFrom(other);
 		if (left == 0) {
 			return true;
 		}
-		final int right = compareRight(checkRange);
+		final int right = toCompareToTo(other);
 		if (right == 0) {
 			return true;
 		}
 		if (right != left) {
 			return true;
 		}
-		if (left == 1 && checkRange.compareRightToLeft(this) >= 0) {
+		if (left == 1 && other.toCompareToFrom(this) >= 0) {
 			return true;
 		}
-		if (left == -1 && compareRightToLeft(checkRange) >= 0) {
+		if (left == -1 && toCompareToFrom(other) >= 0) {
 			return true;
 		}
 		return false;
-	}
-
-	public int compareLeft(final Range<T> o) {
-		if (this.from == null) {
-			return o.from == null ? 0 : -1;
-		} else {
-			final int temp = this.from.compareTo(o.from);
-			if (temp != 0) {
-				return temp;
-			} else if (this.includeFrom) {
-				return o.includeFrom ? 0 : -1;
-			} else {
-				return o.includeFrom ? 1 : 0;
-			}
-		}
-	}
-
-	public int compareRight(final Range<T> o) {
-		if (this.to == null) {
-			return o.to == null ? 0 : 1;
-		} else {
-			final int temp = this.to.compareTo(o.to);
-			if (temp != 0) {
-				return temp;
-			} else if (this.includeFrom) {
-				return o.includeFrom ? 0 : -1;
-			} else {
-				return o.includeFrom ? 1 : 0;
-			}
-		}
-	}
-
-	public int compareRightToLeft(final Range<T> o) {
-		if (this.to == null || o.from == null) {
-			return 1;
-		} else {
-			final int temp = this.to.compareTo(o.from);
-			if (temp != 0) {
-				return temp;
-			} else if (this.includeTo) {
-				return o.includeFrom ? 0 : -1;
-			} else {
-				return -1;
-			}
-		}
-	}
-
-	public Pair<Range<T>, Range<T>> split(final T splitPoint) {
-		if (!isInRange(splitPoint)) {
-			throw new IllegalArgumentException("Split point is not part of the range"); //$NON-NLS-1$
-		} else {
-			return new Pair<Range<T>, Range<T>>(
-					createNewInstance(from(), this.includeFrom, splitPoint, false),
-					createNewInstance(splitPoint, true, to(), isIncludeTo()));
-		}
 	}
 
 	/**
@@ -291,6 +251,7 @@ public class Range<T extends Comparable<T>> implements /*Tuple<T, T>,*/ Comparab
 	 * @param check The value to check (MUST not be null).
 	 *
 	 * @return true if the check value is inside the range otherwise false.
+	 * @throws org.jbasics.checker.ContractViolationException if the check element is null
 	 */
 	public boolean isInRange(final T check) {
 		ContractCheck.mustNotBeNull(check, "check"); //$NON-NLS-1$
@@ -317,30 +278,6 @@ public class Range<T extends Comparable<T>> implements /*Tuple<T, T>,*/ Comparab
 			}
 		}
 		return true;
-	}
-
-	@SuppressWarnings("unchecked")
-	protected <E extends Range<T>> E createNewInstance(final T from, final boolean includeLeft, final T to, final boolean includeRight) {
-		return (E) new Range<T>(from, includeLeft, to, includeRight);
-	}
-
-	/**
-	 * Locates the given value in the range. Returns -1 if the given value is left outer the range, 0 if it is in the
-	 * range and 1 if it is right outer range.
-	 *
-	 * @param check The value to check
-	 *
-	 * @return The value where the range to check is located. -1 left outer, 1 right outer and 0 overlapping or in
-	 * range.
-	 */
-	public int locate(final T check) {
-		if (isLeftOuterRange(check)) {
-			return -1;
-		} else if (isRightOuterRange(check)) {
-			return 1;
-		} else {
-			return 0;
-		}
 	}
 
 	/**
@@ -373,31 +310,81 @@ public class Range<T extends Comparable<T>> implements /*Tuple<T, T>,*/ Comparab
 			return to != null && (this.includeTo ? to.compareTo(check) < 0 : to.compareTo(check) <= 0);
 	}
 
+	/**
+	 * Locates the given value in the range. Returns -1 if the given value is left outer the range, 0 if it is in the
+	 * range and 1 if it is right outer range.
+	 *
+	 * @param check The value to check
+	 *
+	 * @return The value where the range to check is located. -1 left outer, 1 right outer and 0 overlapping or in
+	 * range.
+	 */
+	public int locate(final T check) {
+		if (isLeftOuterRange(check)) {
+			return -1;
+		} else if (isRightOuterRange(check)) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+
+	/**
+	 * Splits this range into two ranges at the given split point.
+	 *
+	 * @param splitPoint The split point where to split the ranges (MUST not be null and MUST be inside this range)
+	 * @return The two ranges split at the given split point
+	 * @throws IllegalArgumentException if the split point is not within this range.
+	 * @throws org.jbasics.checker.ContractViolationException if the split point is null
+	 */
+	public Pair<Range<T>, Range<T>> split(final T splitPoint) {
+		if (!isInRange(splitPoint)) {
+			throw new IllegalArgumentException("Split point is not part of the range"); //$NON-NLS-1$
+		} else {
+			return new Pair<Range<T>, Range<T>>(
+					createNewInstance(from(), this.includeFrom, splitPoint, false),
+					createNewInstance(splitPoint, true, to(), isIncludeTo()));
+		}
+	}
+
+	/**
+	 * Returns a new range based on the intersection of this and other. The returned range is never
+	 * null but can result in an empty range if the two ranges do not intersect.
+	 *
+	 * @param other The other range to intersect this range with (MUST not be null)
+	 * @return 
+	 */
 	public Range<T> intersect(final Range<T> other) {
-		if (compareLeft(other) < 0) {
-			if (compareRight(other) > 0) {
+		int fromCompare = fromCompareToFrom(other);
+		int toCompare = toCompareToTo(other);
+		if (fromCompare < 0) {
+			if (toCompare > 0) {
 				return other;
+			} else if (toCompare < 0 && toCompareToFrom(other) < 0) {
+				return createNewInstance(this.from, false, this.from, false);
 			} else {
 				return createNewInstance(other.from, other.includeFrom, this.to, this.includeTo);
 			}
-		} else {
-			if (compareRight(other) > 0) {
-				return createNewInstance(this.from, this.includeFrom, other.to, other.includeTo);
+		} else if (toCompare > 0) {
+			if (fromCompare > 0 && other.toCompareToFrom(this) < 0) {
+				return createNewInstance(this.from, false, this.from, false);
 			} else {
-				return this;
+				return createNewInstance(this.from, this.includeFrom, other.to, other.includeTo);
 			}
+		} else {
+			return this;
 		}
 	}
 
 	public Range<T> unite(final Range<T> other) {
-		if (compareLeft(other) > 0) {
-			if (compareRight(other) < 0) {
+		if (fromCompareToFrom(other) > 0) {
+			if (toCompareToTo(other) < 0) {
 				return other;
 			} else {
 				return createNewInstance(other.from, other.includeFrom, this.to, this.includeTo);
 			}
 		} else {
-			if (compareRight(other) < 0) {
+			if (toCompareToTo(other) < 0) {
 				return createNewInstance(this.from, this.includeFrom, other.to, other.includeTo);
 			} else {
 				return this;
@@ -474,27 +461,61 @@ public class Range<T extends Comparable<T>> implements /*Tuple<T, T>,*/ Comparab
 	}
 
 	public int compareTo(final Range<T> o) {
-		int temp = compareLeft(o);
+		int temp = fromCompareToFrom(o);
 		if (temp == 0) {
-			temp = compareRight(o);
+			temp = toCompareToTo(o);
 		}
 		return temp;
 	}
 
-	/*
-	@Override
-	public T left() {
-		return this.from();
+	protected int fromCompareToFrom(final Range<T> o) {
+		if (this.from == null) {
+			return o.from == null ? 0 : -1;
+		} else {
+			final int temp = this.from.compareTo(o.from);
+			if (temp != 0) {
+				return temp;
+			} else if (this.includeFrom) {
+				return o.includeFrom ? 0 : -1;
+			} else {
+				return o.includeFrom ? 1 : 0;
+			}
+		}
 	}
 
-	@Override
-	public T right() {
-		return this.to();
+	protected int toCompareToTo(final Range<T> o) {
+		if (this.to == null) {
+			return o.to == null ? 0 : 1;
+		} else {
+			final int temp = this.to.compareTo(o.to);
+			if (temp != 0) {
+				return temp;
+			} else if (this.includeFrom) {
+				return o.includeFrom ? 0 : -1;
+			} else {
+				return o.includeFrom ? 1 : 0;
+			}
+		}
 	}
 
-	@Override
-	public int size() {
-		return 2;
+	protected int toCompareToFrom(final Range<T> o) {
+		if (this.to == null || o.from == null) {
+			return 1;
+		} else {
+			final int temp = this.to.compareTo(o.from);
+			if (temp != 0) {
+				return temp;
+			} else if (this.includeTo) {
+				return o.includeFrom ? 0 : -1;
+			} else {
+				return -1;
+			}
+		}
 	}
-	*/
+
+	@SuppressWarnings("unchecked")
+	protected <E extends Range<T>> E createNewInstance(final T from, final boolean includeLeft, final T to, final boolean includeRight) {
+		return (E) new Range<T>(from, includeLeft, to, includeRight);
+	}
+
 }
