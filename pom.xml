@@ -7,7 +7,7 @@
 	<name>jBasics</name>
 	<groupId>org.jbasics</groupId>
 	<artifactId>jbasics</artifactId>
-	<version>0.6.7-SNAPSHOT</version>
+	<version>0.6.7</version>
 
 	<packaging>jar</packaging>
 
@@ -32,7 +32,7 @@
 		<connection>scm:git:git://github.com/schloepke/jbasics.git</connection>
 		<developerConnection>scm:git:https://github.com/schloepke/jbasics.git</developerConnection>
 		<url>http://github.com/schloepke/jbasics</url>
-	  <tag>HEAD</tag>
+	  <tag>jbasics-0.6.7</tag>
   </scm>
 
 	<issueManagement>
