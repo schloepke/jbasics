@@ -24,50 +24,70 @@
  */
 package org.jbasics.configuration.properties;
 
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.pattern.delegation.Delegate;
-import org.jbasics.pattern.factory.ParameterFactory;
-import org.jbasics.pattern.strategy.SubstitutionStrategy;
-import org.jbasics.utilities.DataUtilities;
-
-import javax.xml.datatype.Duration;
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.util.Locale;
 
-public class SystemProperty<ValueType> implements Delegate<ValueType> {
-	public static final ParameterFactory<String, String> STRING_PASS_THRU = new PassThruValueTypeFactory<String>();
+import javax.xml.datatype.Duration;
+import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.pattern.delegation.Delegate;
+import org.jbasics.pattern.factory.ParameterFactory;
+import org.jbasics.pattern.resolver.Resolver;
+import org.jbasics.pattern.strategy.SubstitutionStrategy;
+import org.jbasics.utilities.DataUtilities;
+
+public class SystemProperty<ValueType> implements Delegate<ValueType> {
+	public static final Resolver<String, String> DEFAULT_SYSTEM_PROPERTY_RESOLVER = new Resolver<String, String>() {
+		@Override public String resolve(final String request, final String defaultResult) {
+			return System.getProperty(request, defaultResult);
+		}
+	};
+	public static final ParameterFactory<String, String> STRING_PASS_THRU = new PassThruValueTypeFactory<String>();
 	private final String name;
 	private final ValueType defaultValue;
 	private final String defaultSubstitutableValue;
 	private final ParameterFactory<ValueType, String> valueTypeFactory;
 	private final SubstitutionStrategy<String, String> substitutionStrategy;
+	private final Resolver<String, String> systemPropertyResolver;
 
 	public SystemProperty(final String name, final ParameterFactory<ValueType, String> valueTypeFactory, final ValueType defaultValue) {
-		this(name, valueTypeFactory, defaultValue, null);
+		this(name, valueTypeFactory, defaultValue, null, null);
 	}
 
-	public SystemProperty(final String name, final ParameterFactory<ValueType, String> valueTypeFactory, final ValueType defaultValue,
-						  final SubstitutionStrategy<String, String> substitutionStrategy) {
+	public SystemProperty(final String name, final ParameterFactory<ValueType, String> valueTypeFactory, final ValueType defaultValue, final Resolver<String, String> systemPropertyResolver) {
+		this(name, valueTypeFactory, defaultValue, null, systemPropertyResolver);
+	}
+
+	public SystemProperty(final String name, final ParameterFactory<ValueType, String> valueTypeFactory, final ValueType defaultValue, final SubstitutionStrategy<String, String> substitutionStrategy) {
+		this(name, valueTypeFactory, defaultValue, substitutionStrategy, null);
+	}
+
+	public SystemProperty(final String name, final ParameterFactory<ValueType, String> valueTypeFactory, final ValueType defaultValue, final SubstitutionStrategy<String, String> substitutionStrategy,
+			final Resolver<String, String> systemPropertyResolver) {
 		this.name = ContractCheck.mustNotBeNull(name, "name"); //$NON-NLS-1$
 		this.valueTypeFactory = ContractCheck.mustNotBeNull(valueTypeFactory, "valueTypeFactory"); //$NON-NLS-1$
 		this.defaultValue = defaultValue;
 		this.defaultSubstitutableValue = null;
 		this.substitutionStrategy = DataUtilities.coalesce(substitutionStrategy, SubstitutionStrategy.STRING_PASS_THRU);
+		this.systemPropertyResolver = DataUtilities.coalesce(systemPropertyResolver, DEFAULT_SYSTEM_PROPERTY_RESOLVER);
+	}
+	public SystemProperty(final String name, final ParameterFactory<ValueType, String> valueTypeFactory, final SubstitutionStrategy<String, String> substitutionStrategy,
+			final String defaultSubstitutableValue) {
+		this(name, valueTypeFactory, substitutionStrategy, defaultSubstitutableValue, null);
 	}
 
-	public SystemProperty(final String name, final ParameterFactory<ValueType, String> valueTypeFactory,
-						  final SubstitutionStrategy<String, String> substitutionStrategy, final String defaultSubstitutableValue) {
+	public SystemProperty(final String name, final ParameterFactory<ValueType, String> valueTypeFactory, final SubstitutionStrategy<String, String> substitutionStrategy,
+			final String defaultSubstitutableValue, final Resolver<String, String> systemPropertyResolver) {
 		this.name = ContractCheck.mustNotBeNull(name, "name"); //$NON-NLS-1$
 		this.valueTypeFactory = ContractCheck.mustNotBeNull(valueTypeFactory, "valueTypeFactory"); //$NON-NLS-1$
 		this.defaultValue = null;
 		this.defaultSubstitutableValue = defaultSubstitutableValue;
 		this.substitutionStrategy = DataUtilities.coalesce(substitutionStrategy, SubstitutionStrategy.STRING_PASS_THRU);
+		this.systemPropertyResolver = DataUtilities.coalesce(systemPropertyResolver, DEFAULT_SYSTEM_PROPERTY_RESOLVER);
 	}
-
 
 	public static SystemProperty<String> stringProperty(final String name, final String defaultValue) {
 		return new SystemProperty<String>(name, SystemProperty.STRING_PASS_THRU, defaultValue);
@@ -123,7 +143,7 @@ public class SystemProperty<ValueType> implements Delegate<ValueType> {
 	}
 
 	public final ValueType value() {
-		final String temp = DataUtilities.coalesce(System.getProperty(this.name), this.defaultSubstitutableValue);
+		final String temp = this.systemPropertyResolver.resolve(this.name, this.defaultSubstitutableValue);
 		if (temp == null) {
 			return this.defaultValue;
 		} else {
