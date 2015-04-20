@@ -24,16 +24,18 @@
  */
 package org.jbasics.csv;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 public class CSVRecordReaderTest {
-	private static final String csvFileData = "One,Two,Three\n" + // Dont break;
+	private static final String csvFileData =
+			"\"x\",\"y\",\"z\"\n" +
+			"One,Two,Three\n" + // Dont break;
 			"\"2nd,One\",2ndTwo,2ndThree\r\n" + // Dont break;
 			"LastOne,\"Last\nTwo\",LastThree"; // Dont break;
 
@@ -45,6 +47,11 @@ public class CSVRecordReaderTest {
 		while ((current = reader.readNext()) != null) {
 			records.add(current);
 		}
-		Assert.assertEquals(3, records.size());
+		System.out.println(records);
+		Assert.assertEquals(4, records.size());
+		Assert.assertEquals(3, records.get(0).size());
+		Assert.assertEquals(3, records.get(1).size());
+		Assert.assertEquals(3, records.get(2).size());
+		Assert.assertEquals(3, records.get(3).size());
 	}
 }

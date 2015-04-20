@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- * 
+ *
  * Stephan Schloepke: http://www.schloepke.de/
  * innoQ Deutschland GmbH: http://www.innoq.com/
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,14 +24,14 @@
  */
 package org.jbasics.csv;
 
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.utilities.DataUtilities;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.utilities.DataUtilities;
 
 public class CSVRecordReader implements Closeable {
 	private final Readable in;
@@ -69,14 +69,6 @@ public class CSVRecordReader implements Closeable {
 				this.buf.mark();
 				final char c = this.buf.get();
 				switch (state) {
-					case QUOTED_END:
-						if (c == '"') {
-							fieldData.append(c);
-							state = ParsingState.QUOTED;
-						} else {
-							state = ParsingState.NONE;
-						}
-						break;
 					case QUOTED:
 						if (c == '"') {
 							state = ParsingState.QUOTED_END;
@@ -91,12 +83,19 @@ public class CSVRecordReader implements Closeable {
 								break;
 							}
 						}
-						//this.buf.compact();
 						fields.add(fieldData.toString());
 						if (c != '\n') {
 							this.buf.reset();
 						}
 						return new CSVRecord(fields);
+					case QUOTED_END:
+						if (c == '"') {
+							fieldData.append(c);
+							state = ParsingState.QUOTED;
+							break;
+						} else {
+							state = ParsingState.NONE;
+						}
 					case NONE:
 						switch (c) {
 							case '\r':
