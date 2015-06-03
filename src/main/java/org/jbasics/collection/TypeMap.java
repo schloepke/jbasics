@@ -1,3 +1,27 @@
+/*
+ * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
+ *
+ * Stephan Schloepke: http://www.schloepke.de/
+ * innoQ Deutschland GmbH: http://www.innoq.com/
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 package org.jbasics.collection;
 
 import java.util.Collection;
@@ -85,10 +109,9 @@ public class TypeMap<E> implements Map<Class<?>, E> {
 
 	private E lookup(final Class<?> type) {
 		E bestRanked = null;
-		int bestRank = MAX_RANK;
+		int bestRank = TypeMap.MAX_RANK;
 		for (final Map.Entry<Class<?>, E> cls : this.rawMap.entrySet()) {
 			final int rank = getRank(cls.getKey(), type);
-			System.out.println("Rank " + cls.getKey().getSimpleName() + " --> " + type.getSimpleName() + " = " + rank);
 			if (rank < bestRank) {
 				bestRank = rank;
 				bestRanked = cls.getValue();
@@ -108,7 +131,7 @@ public class TypeMap<E> implements Map<Class<?>, E> {
 		case COVARIANT:
 			return findRank(0, special, general);
 		default:
-			return MAX_RANK;
+			return TypeMap.MAX_RANK;
 		}
 	}
 
@@ -116,13 +139,13 @@ public class TypeMap<E> implements Map<Class<?>, E> {
 		if (general.equals(special)) {
 			return currentRank;
 		} else if (!general.isAssignableFrom(special)) {
-			return MAX_RANK;
+			return TypeMap.MAX_RANK;
 		} else {
-			int classRank = MAX_RANK;
+			int classRank = TypeMap.MAX_RANK;
 			if (special.getSuperclass() != null) {
 				classRank = findRank(currentRank + 1, general, special.getSuperclass());
 			}
-			int interfaceRank = MAX_RANK;
+			int interfaceRank = TypeMap.MAX_RANK;
 			for (final Class<?> iface : special.getInterfaces()) {
 				final int currentInterfaceRank = findRank(currentRank + 1, general, iface);
 				interfaceRank = Math.min(interfaceRank, currentInterfaceRank);
