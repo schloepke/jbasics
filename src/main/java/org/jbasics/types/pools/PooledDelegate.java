@@ -1,8 +1,7 @@
 /*
- * Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH
- *
- * Stephan Schloepke: http://www.schloepke.de/
- * innoQ Deutschland GmbH: http://www.innoq.com/
+ * Copyright (c) 2009-2015
+ * 	IT-Consulting Stephan Schloepke (http://www.schloepke.de/)
+ * 	klemm software consulting Mirko Klemm (http://www.klemm-scs.com/)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +23,16 @@
  */
 package org.jbasics.types.pools;
 
+import java.io.Closeable;
+import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
+
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.pattern.delegation.MutableDelegate;
 import org.jbasics.pattern.delegation.ReleasableDelegate;
 import org.jbasics.pattern.pooling.Pool;
 import org.jbasics.types.delegates.ModifiableDelegate;
-
-import java.lang.ref.Reference;
-import java.lang.ref.SoftReference;
 
 /**
  * A {@link MutableDelegate} implementation which acquires a delegated instance from a {@link Pool}. <p> The method
@@ -44,7 +44,7 @@ import java.lang.ref.SoftReference;
  *
  * @author Stephan Schloepke
  */
-public class PooledDelegate<T> implements ReleasableDelegate<T>, MutableDelegate<T> {
+public class PooledDelegate<T> implements ReleasableDelegate<T>, MutableDelegate<T>, Closeable {
 	private final MutableDelegate<Pool<T>> pool;
 	private final boolean keepSoftreferenceIfPoolIsFull;
 	private T delegate;
@@ -139,4 +139,10 @@ public class PooledDelegate<T> implements ReleasableDelegate<T>, MutableDelegate
 		}
 		return false;
 	}
+
+	@Override
+	public void close() {
+		release();
+	}
+
 }
