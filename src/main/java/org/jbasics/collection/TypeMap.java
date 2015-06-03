@@ -24,7 +24,7 @@
 package org.jbasics.collection;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,7 +32,7 @@ public class TypeMap<E> implements Map<Class<?>, E> {
 
 	public static final int MAX_RANK = 100;
 	private final Variance variance;
-	private final Map<Class<?>, E> rawMap = new HashMap<>();
+	private final Map<Class<?>, E> rawMap = new LinkedHashMap<>();
 
 	public TypeMap(final Variance variance) {
 		this.variance = variance;

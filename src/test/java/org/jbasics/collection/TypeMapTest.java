@@ -68,9 +68,9 @@ public class TypeMapTest {
 		typeMap.put(Exception.class, "Exception");
 		typeMap.put(Throwable.class, "Throwable");
 		// typeMap.put(Iterable.class, "Iterable");
+		typeMap.put(AbstractList.class, "AbstractList");
 		typeMap.put(ArrayList.class, "ArrayList");
 		typeMap.put(TypeMapTest.class, "TypeMapTest");
-		typeMap.put(AbstractList.class, "AbstractList");
 		typeMap.put(Object.class, "Object");
 
 		Assert.assertEquals("Integer", typeMap.get(Number.class));
