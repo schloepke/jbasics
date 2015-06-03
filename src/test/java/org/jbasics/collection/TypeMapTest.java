@@ -56,28 +56,26 @@ public class TypeMapTest {
 		Assert.assertEquals("AbstractList", typeMap.get(LinkedList.class));
 		Assert.assertEquals("ArrayList", typeMap.get(ArrayList.class));
 		Assert.assertEquals("Object", typeMap.get(SimpleDateFormat.class));
-
+		Assert.assertEquals("Throwable", typeMap.get(Throwable.class));
+		Assert.assertEquals("Exception", typeMap.get(Exception.class));
 	}
 
 	@Test
 	public void testCovariant() {
 		final TypeMap<String> typeMap = new TypeMap<>(Variance.COVARIANT);
-		// typeMap.put(Comparable.class, "Comparable");
 		typeMap.put(Integer.class, "Integer");
-		// typeMap.put(Number.class, "Number");
 		typeMap.put(Exception.class, "Exception");
 		typeMap.put(Throwable.class, "Throwable");
-		// typeMap.put(Iterable.class, "Iterable");
 		typeMap.put(AbstractList.class, "AbstractList");
 		typeMap.put(ArrayList.class, "ArrayList");
-		typeMap.put(TypeMapTest.class, "TypeMapTest");
 		typeMap.put(Object.class, "Object");
 
 		Assert.assertEquals("Integer", typeMap.get(Number.class));
 		Assert.assertEquals("Integer", typeMap.get(Integer.class));
 		Assert.assertEquals("AbstractList", typeMap.get(Iterable.class));
 		Assert.assertEquals("ArrayList", typeMap.get(ArrayList.class));
-		// Assert.assertEquals("Object", typeMap.get(SimpleDateFormat.class));
-
+		Assert.assertEquals("Throwable", typeMap.get(Throwable.class));
+		Assert.assertEquals("Exception", typeMap.get(Exception.class));
+		Assert.assertNull(typeMap.get(TypeMapTest.class));
 	}
 }
