@@ -23,12 +23,12 @@
  */
 package org.jbasics.math.strategies;
 
-import org.jbasics.math.AlgorithmStrategy;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
+
+import org.jbasics.math.AlgorithmStrategy;
 
 public class ExponentialTaylerAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
 	public static final AlgorithmStrategy<BigDecimal> STRATEGY = new ExponentialTaylerAlgorithmStrategy();
@@ -38,6 +38,9 @@ public class ExponentialTaylerAlgorithmStrategy implements AlgorithmStrategy<Big
 			throw new IllegalArgumentException("must supply x as input (the xn array must contain one x)");
 		}
 		BigDecimal x = xn[0];
+		if (x.signum() == 0) {
+			return BigDecimal.ONE;
+		}
 		int scale = (int) Math.ceil(Math.sqrt((mc.getPrecision() + 10) * Math.log(10) / Math.log(2)));
 		if (x.abs().compareTo(BigDecimal.ONE) > 0) {
 			BigInteger temp = x.unscaledValue();
