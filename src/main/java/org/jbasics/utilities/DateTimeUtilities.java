@@ -23,13 +23,13 @@
  */
 package org.jbasics.utilities;
 
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.types.tuples.Range;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.types.tuples.Range;
 
 public class DateTimeUtilities {
 
@@ -111,11 +111,41 @@ public class DateTimeUtilities {
 		return DateTimeUtilities.getCalendarWeekRange(year, week, minYear, maxYear, null);
 	}
 
+	/**
+	 * Return a range of month from the given range of dates. This method is broken because it dosn't handle the year. It
+	 * only works if the date range is within a year! Use {@link #getMonthYearRangeOf(Range)} for a correct handling of
+	 * a date range crossing the year border.
+	 *
+	 * @param dateRange The range of dates to get the month range from. (MUST NOT be null)
+	 * @return The range of month
+	 * @deprecated Use {@link #getMonthYearRangeOf(Range)} now because this range won't work unless both dates are in the same year!
+	 */
+	@Deprecated
 	public static Range<Integer> getMonthRangeOf(final Range<Date> dateRange) {
 		return DateTimeUtilities.getMonthRangeOf(dateRange, null);
 	}
 
+	/**
+	 * Return a range of month from the given range of dates. This method is broken because it dosn't handle the year. It
+	 * only works if the date range is within a year! Use {@link #getMonthYearRangeOf(Range, Locale)} for a correct handling of
+	 * a date range crossing the year border.
+	 *
+	 * @param dateRange The range of dates to get the month range from. (MUST NOT be null)
+	 * @param locale The locale to use (use null for default locale)
+	 * @return The range of month
+	 * @deprecated Use {@link #getMonthYearRangeOf(Range, Locale)} now because this range won't work unless both dates are in the same year!
+	 */
+	@Deprecated
 	public static Range<Integer> getMonthRangeOf(final Range<Date> dateRange, final Locale locale) {
+		Range<MonthYearTuple> temp = getMonthYearRangeOf(dateRange, locale);
+		return new Range<Integer>(temp.from().getMonth(), temp.to().getMonth());
+	}
+
+	public static Range<MonthYearTuple> getMonthYearRangeOf(final Range<Date> dateRange) {
+		return DateTimeUtilities.getMonthYearRangeOf(dateRange, null);
+	}
+
+	public static Range<MonthYearTuple> getMonthYearRangeOf(final Range<Date> dateRange, final Locale locale) {
 		ContractCheck.mustNotBeNull(dateRange, "dateRange"); //$NON-NLS-1$
 		Calendar cal = null;
 		if (locale != null) {
@@ -123,18 +153,20 @@ public class DateTimeUtilities {
 		} else {
 			cal = Calendar.getInstance();
 		}
-		Integer from = null;
+		MonthYearTuple from = null;
 		if (dateRange.from() != null) {
 			cal.setTime(dateRange.from());
-			from = Integer.valueOf(cal.get(Calendar.MONTH));
+			from = new MonthYearTuple(cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));
 		}
-		Integer to = null;
+		MonthYearTuple to = null;
 		if (dateRange.to() != null) {
 			cal.setTime(dateRange.to());
-			to = Integer.valueOf(cal.get(Calendar.MONTH));
+			to = new MonthYearTuple(cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));
 		}
-		return new Range<Integer>(from, to);
+		return new Range<MonthYearTuple>(from, to);
 	}
+
+
 
 	public static int getMonthOf(final int year, final int week) {
 		return DateTimeUtilities.getMonthOf(year, week, null);
