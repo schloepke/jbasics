@@ -23,36 +23,54 @@
  */
 package org.jbasics.jaxb;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.validation.Schema;
+
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.types.delegates.LazySoftReferenceDelegate;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.validation.Schema;
-
 public class JAXBMarshallerFactory implements Factory<Marshaller> {
 	private final Delegate<JAXBContext> jaxbContextDelegate;
+	private final boolean formatted;
 	private final Schema schema;
 
 	public JAXBMarshallerFactory(final Delegate<JAXBContext> contextDelegate) {
-		this(contextDelegate, null);
+		this(contextDelegate, false, null);
+	}
+
+	public JAXBMarshallerFactory(final Delegate<JAXBContext> contextDelegate, final boolean formatted) {
+		this(contextDelegate, formatted, null);
 	}
 
 	public JAXBMarshallerFactory(final Delegate<JAXBContext> contextDelegate, final Schema schema) {
+		this(contextDelegate, false, schema);
+	}
+
+	public JAXBMarshallerFactory(final Delegate<JAXBContext> contextDelegate, final boolean formatted, final Schema schema) {
 		this.jaxbContextDelegate = ContractCheck.mustNotBeNull(contextDelegate, "contextDelegate"); //$NON-NLS-1$
+		this.formatted = formatted;
 		this.schema = schema;
 	}
 
 	public JAXBMarshallerFactory(final Factory<JAXBContext> contextFactory) {
-		this(contextFactory, null);
+		this(contextFactory, false, null);
+	}
+
+	public JAXBMarshallerFactory(final Factory<JAXBContext> contextFactory, final boolean formatted) {
+		this(contextFactory, formatted, null);
 	}
 
 	public JAXBMarshallerFactory(final Factory<JAXBContext> contextFactory, final Schema schema) {
-		this(new LazySoftReferenceDelegate<JAXBContext>(ContractCheck.mustNotBeNull(contextFactory, "contextFactory")), schema); //$NON-NLS-1$
+		this(contextFactory, false, schema);
+	}
+
+	public JAXBMarshallerFactory(final Factory<JAXBContext> contextFactory, final boolean formatted, final Schema schema) {
+		this(new LazySoftReferenceDelegate<JAXBContext>(ContractCheck.mustNotBeNull(contextFactory, "contextFactory")), formatted, schema); //$NON-NLS-1$
 	}
 
 	public Marshaller newInstance() {
@@ -64,6 +82,9 @@ public class JAXBMarshallerFactory implements Factory<Marshaller> {
 			Marshaller m = ctx.createMarshaller();
 			if (this.schema != null) {
 				m.setSchema(this.schema);
+			}
+			if(formatted) {
+				m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			}
 			return m;
 		} catch (JAXBException e) {
