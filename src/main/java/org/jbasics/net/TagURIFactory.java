@@ -23,15 +23,15 @@
  */
 package org.jbasics.net;
 
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.pattern.factory.ParameterFactory;
-import org.jbasics.pattern.modifer.Extendable;
-import org.jbasics.text.StringUtilities;
-
 import java.net.URI;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.pattern.factory.ParameterFactory;
+import org.jbasics.pattern.modifer.Extendable;
+import org.jbasics.text.StringUtilities;
 
 /**
  * A simple factory to generate Tag URIs as outlined by the informal <a href="http://tools.ietf.org/html/rfc4151">RFC
@@ -123,8 +123,15 @@ public class TagURIFactory implements ParameterFactory<URI, String>, Extendable<
 		if (specific.trim().length() == 0) {
 			return URI.create(this.base);
 		} else {
-			return URI.create(StringUtilities.join(this.pathSegments == null ? TagURIFactory.TAG_PARTS_DELIMITER : TagURIFactory.TAG_PATH_DELIMITER,
-					this.base, specific));
+			String uriString = null;
+			if (this.pathSegments == null) {
+				uriString = StringUtilities.join(TagURIFactory.TAG_PARTS_DELIMITER, this.base, specific);
+			} else if (specific.startsWith("#")) {
+				uriString = this.base + specific;
+			} else {
+				uriString = StringUtilities.join(TagURIFactory.TAG_PATH_DELIMITER, this.base, specific);
+			}
+			return URI.create(uriString);
 		}
 	}
 }

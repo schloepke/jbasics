@@ -23,13 +23,14 @@
  */
 package org.jbasics.net;
 
-import org.junit.Assert;
-import org.jbasics.testing.Java14LoggingTestCase;
-import org.junit.Test;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.logging.Level;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import org.jbasics.testing.Java14LoggingTestCase;
 
 public class TagURIFactoryTest extends Java14LoggingTestCase {
 
@@ -52,9 +53,10 @@ public class TagURIFactoryTest extends Java14LoggingTestCase {
 
 	@Test
 	public void testTagUri() {
-		TagURIFactory fac = TagURIFactory.newInstance("mark.mustermann@example.org", 2010, 2);
+//		TagURIFactory fac = TagURIFactory.newInstance("mark.mustermann@example.org", 2010, 2);
+		TagURIFactory fac = TagURIFactory.newInstance("dvbbank.com", 2015);
 		Level level = Level.INFO;
-		logUri(level, fac.create("web/example"));
+		logUri(level, fac.extend("com.dvb.applications", "cpm-application").create("#nill"));
 	}
 
 	private void logUri(final Level level, final URI input) {
