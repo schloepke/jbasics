@@ -23,22 +23,26 @@
  */
 package org.jbasics.xml.transform;
 
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
+
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.pattern.factory.ParameterFactory;
 import org.jbasics.types.delegates.LazySoftReferenceDelegate;
 
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerFactory;
-
 public class XMLTransformerFactory implements Factory<Transformer>, ParameterFactory<Transformer, Source> {
-	public final static XMLTransformerFactory SHARED_INSTANCE = new XMLTransformerFactory();
+	public final static XMLTransformerFactory SHARED_INSTANCE;
 
-	private static final LazySoftReferenceDelegate<TransformerFactory> DEFAULT_TRANSFORMER_FACTORY_DELEGATE =
-			new LazySoftReferenceDelegate<TransformerFactory>(new TransformerFactoryFactory());
+	private static final LazySoftReferenceDelegate<TransformerFactory> DEFAULT_TRANSFORMER_FACTORY_DELEGATE;
+
+	static {
+		DEFAULT_TRANSFORMER_FACTORY_DELEGATE = new LazySoftReferenceDelegate<TransformerFactory>(new TransformerFactoryFactory());
+		SHARED_INSTANCE = new XMLTransformerFactory(DEFAULT_TRANSFORMER_FACTORY_DELEGATE);
+	}
 
 	private final Delegate<TransformerFactory> transformerFactoryDelegate;
 
