@@ -19,12 +19,9 @@
 	<licenses>
 		<license>
 			<name>MIT License</name>
-			<url>http://www.atomify.org/jbasics/license.html</url>
+			<url>http://opensource.org/licenses/MIT</url>
 			<distribution>repo</distribution>
-			<comments>
-				Copyright (c) 2009 Stephan Schloepke and innoQ Deutschland GmbH - Use under MIT license as pointed out
-				under the URL.
-			</comments>
+			<comments>Copyright (c) 2015 Stephan Schloepke and Mirko Klemm - Use under MIT license found at given URL.</comments>
 		</license>
 	</licenses>
 
@@ -32,8 +29,8 @@
 		<connection>scm:git:git://github.com/schloepke/jbasics.git</connection>
 		<developerConnection>scm:git:https://github.com/schloepke/jbasics.git</developerConnection>
 		<url>http://github.com/schloepke/jbasics</url>
-	  <tag>HEAD</tag>
-  </scm>
+		<tag>HEAD</tag>
+	</scm>
 
 	<issueManagement>
 		<system>github</system>
@@ -55,6 +52,19 @@
 			<timezone>+1</timezone>
 			<roles>
 				<role>Project manager</role>
+				<role>Build manager</role>
+				<role>Developer</role>
+				<role>Architect</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Mirko Klemm</name>
+			<email>mirko@cm-klemm.de</email>
+			<url>http://www.cm-klemm.de</url>
+			<organization>Mirko Klemm Software Consulting</organization>
+			<organizationUrl>http://www.cm-klemm.de</organizationUrl>
+			<timezone>+1</timezone>
+			<roles>
 				<role>Build manager</role>
 				<role>Developer</role>
 				<role>Architect</role>
@@ -228,7 +238,11 @@
                 <version>2.5</version>
                 <configuration>
                     <pushChanges>false</pushChanges>
-                </configuration>
+ 					<autoVersionSubmodules>true</autoVersionSubmodules>
+					<useReleaseProfile>false</useReleaseProfile>
+					<releaseProfiles>release</releaseProfiles>
+					<goals>deploy</goals>
+               </configuration>
             </plugin>
         </plugins>
 	</build>
@@ -387,18 +401,86 @@
 
 	<profiles>
 		<profile>
-			<id>github-repo</id>
+			<id>release</id>
 			<distributionManagement>
-				<repository>
-					<id>github-pages</id>
-					<url>file:///${basedir}/_gh-pages/repository/</url>
-				</repository>
 				<snapshotRepository>
-					<id>github-pages</id>
-					<url>file:///${basedir}/_gh-pages/repository/</url>
+					<id>ossrh</id>
+					<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 				</snapshotRepository>
+				<repository>
+					<id>ossrh</id>
+					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+				</repository>
 			</distributionManagement>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>1.6.5</version>
+						<extensions>true</extensions>
+						<configuration>
+							<serverId>ossrh</serverId>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.4</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<phase>package</phase>
+								<goals>
+									<goal>jar-no-fork</goal>
+									<goal>test-jar-no-fork</goal>
+								</goals>
+								<configuration>
+									<includePom>true</includePom>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>2.10.1</version>
+						<executions>
+							<execution>
+								<id>javadoc</id>
+								<phase>package</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<maxmemory>512m</maxmemory>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.5</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<keyname>mirko@cm-klemm.de</keyname>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
+
 
 </project>
