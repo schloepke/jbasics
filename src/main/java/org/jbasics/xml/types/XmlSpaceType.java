@@ -26,7 +26,7 @@ package org.jbasics.xml.types;
 /**
  * Enum type for the values allowed in xml:space. <p> The enumeration does not return the right XML representation when
  * using the {@link #toString()} or {@link #name()} method since the enumeration name is in all upper case letters
- * rather than in lower case letters as required by xml. use the {@link #xmlName()} or {@link #toXmlString()} methods to
+ * rather than in lower case letters as required by xml. use the {@link #name()} or {@link #toXmlString()} methods to
  * serialize the XML value. In order to process a {@link #valueOf(String)} you also need to use the {@link
  * #xmlValueOf(String)} since it allows both upper and lower case letters for the value. </p>
  *

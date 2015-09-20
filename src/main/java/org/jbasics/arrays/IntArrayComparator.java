@@ -85,7 +85,7 @@ public final class IntArrayComparator implements Comparator<int[]> {
 	 * @param x The left array
 	 * @param y The right array
 	 *
-	 * @return True if x > y
+	 * @return True if x &gt; y
 	 *
 	 * @since 1.0
 	 */
@@ -137,7 +137,7 @@ public final class IntArrayComparator implements Comparator<int[]> {
 	 * @param x The left array
 	 * @param y The right array
 	 *
-	 * @return True if x >= y
+	 * @return True if x &gt;= y
 	 *
 	 * @since 1.0
 	 */
@@ -165,7 +165,7 @@ public final class IntArrayComparator implements Comparator<int[]> {
 	 * @param x The left array
 	 * @param y The right array
 	 *
-	 * @return True if x < y
+	 * @return True if x &lt; y
 	 *
 	 * @since 1.0
 	 */
@@ -179,7 +179,7 @@ public final class IntArrayComparator implements Comparator<int[]> {
 	 * @param x The left array
 	 * @param y The right array
 	 *
-	 * @return True if x <= y
+	 * @return True if x &lt;= y
 	 *
 	 * @since 1.0
 	 */
@@ -193,7 +193,7 @@ public final class IntArrayComparator implements Comparator<int[]> {
 	 * @param x The left array
 	 * @param y The right array
 	 *
-	 * @return True if x <> y
+	 * @return True if x &lt;&gt; y
 	 *
 	 * @since 1.0
 	 */

@@ -36,7 +36,7 @@ import org.jbasics.checker.ContractCheck;
  * set to null is considered to be infinity so this is everything less than B</li> <li>[A, null] - same but everything
  * above or equal A (]A, null] would be above A)</li> </ul> Here a list of ranges possible to create but which do not
  * make any sense: <ul> <li>[A, B] or ]A, B[ - All variants where A is greater than B. The result is an empty range</li>
- * <li>[null, null] - That is a range where everything is in between. Can make sense sometimes</li> </ul> </p>
+ * <li>[null, null] - That is a range where everything is in between. Can make sense sometimes</li> </ul>
  *
  * @param <T>
  *

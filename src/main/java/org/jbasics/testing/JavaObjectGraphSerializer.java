@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  * to instantiate it. The helper itself is fully thread safe and can easily be used as a singleton. However the logging
  * used needs to be thread safe as well since the helper does use a private attribute of the logger instance. Since Java
  * Logging is used there should be no problem involved. </p> <p> The easiest way to use the helper is to create one use
- * it and destroy it right away (unless you serialize more than one graph at a time). </p> <p> Example:<br /> {@code new
+ * it and destroy it right away (unless you serialize more than one graph at a time). </p> <p> Example:<br> {@code new
  * JavaObjectGraphSerializer().serialize(instance, new File(filename))} </p>
  *
  * @author Stephan Schloepke

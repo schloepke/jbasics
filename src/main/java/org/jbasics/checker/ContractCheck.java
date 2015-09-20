@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  * Simple class offering methods to check if a call contract is broken or not. <p> Usually one makes a check of null and
  * throws an {@link IllegalAccessException} or a {@link NullPointerException}. This is a line of code written
  * constantly. This helper is supposed to limit the code to write especially in constructors or setter methods. </p> <p>
- * Example: </p> <p/>
+ * Example: </p>
  * <pre>
  * public void setSomething(Object something) {
  *     if (something == null) {
@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
  *     this.something = something;
  * }
  * </pre>
- * <p/> Would change to: <p/>
+ * <p> Would change to: </p>
  * <pre>
  * public void setSomething(Object something) {
  *     this.something = {@link ContractCheck#mustNotBeNull(Object, String)}(something, &quot;something&quot;);

@@ -49,8 +49,8 @@ public class ChunkedEncoder implements Encoder<CharSequence, CharSequence> {
 	 * @param chunkSize The size of the chunk (MUST be greater than zero)
 	 * @param separator The String to separate the chunks (MUST not be null and not zero length)
 	 *
-	 * @throws ContractViolationException If the given contract is broken (chunk size < 1 or separator == null or
-	 *                                    separator.length < 1)
+	 * @throws ContractViolationException If the given contract is broken (chunk size &lt; 1 or separator == null or
+	 *                                    separator.length &lt; 1)
 	 * @since 1.0
 	 */
 	public ChunkedEncoder(final int chunkSize, final String separator) {

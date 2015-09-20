@@ -54,7 +54,7 @@ public class ArrayCharacterSequence implements CharSequence {
 	 * @param characters The array (must not be null).
 	 * @param offset     The offset in the array (must be in the range of the array length).
 	 * @param length     The length to use (must be in the range of the array length without the the offset (offset +
-	 *                   length < chars.length).
+	 *                   length &lt; chars.length).
 	 */
 	public ArrayCharacterSequence(final char[] characters, final int offset, final int length) {
 		if (characters == null) {

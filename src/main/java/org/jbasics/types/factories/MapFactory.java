@@ -37,7 +37,8 @@ import java.util.Set;
  * ordered is true this factory returns a {@link LinkedHashMap} rather than a {@link HashMap} as instance providing the
  * order as the elements are added. </p>
  *
- * @param <E> The type of the elements stored in the set.
+ * @param <K> The key type of the map.
+ * @param <V> The type of the elements stored in the map.
  *
  * @author Stephan Schloepke
  * @see Map

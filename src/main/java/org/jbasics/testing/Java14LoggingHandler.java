@@ -51,8 +51,6 @@ public class Java14LoggingHandler extends Handler {
 	/**
 	 * Constructs the logging handler for the {@link System#out} / {@link System#err} as default output and a newly
 	 * created {@link Java14LoggingFormatter} and {@link Level#ALL}. <p> This should be used in testing only. </p>
-	 *
-	 * @param level The logging level to use for this handler (Must not be null)
 	 */
 	public Java14LoggingHandler() {
 		this(Level.ALL, System.out, System.err, new Java14LoggingFormatter());
