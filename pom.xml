@@ -11,7 +11,11 @@
 
 	<packaging>jar</packaging>
 
-	<description>Generel purpose classes and helpers often helpful for java 7 and up.</description>
+	<description>
+		jBasics is a collection of useful utility classes for Java. This includes helper for XML, mathematic functions,
+		restful web services helper, pattern oriented programming interfaces and more. Currently Java7 and up is
+		supported. Version 1.0 will required at leaset Java8.
+	</description>
 
 	<url>http://www.jbasics.org</url>
 
