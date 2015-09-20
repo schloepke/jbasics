@@ -11,6 +11,10 @@
 
 	<packaging>jar</packaging>
 
+	<description>Generel purpose classes and helpers often helpful for java 7 and up.</description>
+
+	<url>http://www.jbasics.org</url>
+
 	<prerequisites>
 		<maven>3.2.1</maven>
 	</prerequisites>
