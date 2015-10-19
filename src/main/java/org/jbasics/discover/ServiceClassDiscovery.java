@@ -23,12 +23,6 @@
  */
 package org.jbasics.discover;
 
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.configuration.properties.SystemProperty;
-import org.jbasics.exception.DelegatedException;
-import org.jbasics.types.builders.MapBuilder;
-import org.jbasics.types.sequences.Sequence;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -40,6 +34,12 @@ import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.configuration.properties.SystemProperty;
+import org.jbasics.exception.DelegatedException;
+import org.jbasics.types.builders.MapBuilder;
+import org.jbasics.types.sequences.Sequence;
 
 /**
  * Helper to discover an concrete class for an abstract one base on the java services concept.
@@ -80,15 +80,23 @@ public class ServiceClassDiscovery {
 	}
 
 	private static ClassLoader getClassLoader(final Class<?> abstractClass) {
+		ClassLoader loader = null;
 		try {
-			return Thread.currentThread().getContextClassLoader();
+			loader = Thread.currentThread().getContextClassLoader();
 		} catch (final Throwable e) {
 			if (abstractClass != null) {
-				return abstractClass.getClassLoader();
+				loader = abstractClass.getClassLoader();
 			} else {
-				return ServiceClassDiscovery.class.getClassLoader();
+				loader = ServiceClassDiscovery.class.getClassLoader();
 			}
 		}
+		if (loader == null) {
+			loader = ClassLoader.getSystemClassLoader();
+		}
+		if (loader == null) {
+			throw new RuntimeException("Giving up since no class loader can be found for " + abstractClass);
+		}
+		return loader;
 	}
 
 	private static Set<String> parseURL(final URL url, final Set<String> found) throws IOException {
