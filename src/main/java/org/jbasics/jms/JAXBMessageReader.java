@@ -30,9 +30,7 @@ import org.jbasics.pattern.delegation.ReleasableDelegate;
 import org.jbasics.stream.AdaptiveGZIPInputStream;
 
 import javax.jms.*;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.io.IOException;
 import java.io.StringReader;
 
 public class JAXBMessageReader {
