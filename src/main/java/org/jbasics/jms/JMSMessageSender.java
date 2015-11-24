@@ -1,3 +1,26 @@
+/*
+ * Copyright (c) 2009-2015
+ * IT-Consulting Stephan Schloepke (http://www.schloepke.de/)
+ * klemm software consulting Mirko Klemm (http://www.klemm-scs.com/)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 package org.jbasics.jms;
 
 import org.jbasics.checker.ContractCheck;
@@ -24,7 +47,7 @@ public class JMSMessageSender<M extends Message, T> implements AutoCloseable {
     private final Delegate<Destination> defaultReplyDestinationDelegate;
     private final Pattern copyPropertyPattern;
 
-    public static interface MessageHandler<T, M> {
+    public interface MessageHandler<T, M> {
         M createEmptyMessage(Delegate<Session> sessionDelegate) throws JMSException;
         void fillMessage(T message, M jmsMessage) throws JMSException;
     }
@@ -99,16 +122,18 @@ public class JMSMessageSender<M extends Message, T> implements AutoCloseable {
         try {
             final M jmsMessage = this.messageHandler.createEmptyMessage(this.sessionDelegate);
             jmsMessage.setJMSCorrelationID(determineCorrelationId(correlationId, correlatedMessage));
-            if (replyQueue != null) {
-                jmsMessage.setJMSReplyTo(replyQueue == null ? this.defaultReplyDestinationDelegate.delegate() : replyQueue);
+            Destination replyTo = replyQueue == null ? this.defaultReplyDestinationDelegate.delegate() : replyQueue;
+            if (replyTo != null) {
+                jmsMessage.setJMSReplyTo(replyTo);
             }
             final URI temp = DataUtilities.coalesce(dvbEndpointSelector, this.defaultEndpoint);
             if (temp != null) {
                 jmsMessage.setStringProperty(JMSMessageSender.ENDPOINT_NAMESPACE, dvbEndpointSelector.toASCIIString());
             }
             if(correlatedMessage != null && this.copyPropertyPattern != null) {
+                //noinspection unchecked
                 for (final String name : Collections.list((Enumeration<String>)correlatedMessage.getPropertyNames())) {
-                    if (this.copyPropertyPattern.matcher(name).matches()) { //$NON-NLS-1$
+                    if (this.copyPropertyPattern.matcher(name).matches()) {
                         if (correlatedMessage.getStringProperty(name) != null) {
                             jmsMessage.setStringProperty(name, correlatedMessage.getStringProperty(name));
                         } else {
