@@ -55,16 +55,44 @@ public class JMSMessageSender<M extends Message, T> implements AutoCloseable {
         return send(message, null, null, null, jmsGroupId, replyQueue);
     }
 
-    public String send(final URI dvbEndpointSelector, final T message) {
+    public String send(final T message, final URI dvbEndpointSelector) {
         return send(message, null, null, dvbEndpointSelector, null, null);
     }
 
-    public String send(final URI dvbEndpointSelector, final String jmsGroupId, final T message) {
+    public String send(final T message, final URI dvbEndpointSelector, final String jmsGroupId) {
         return send(message, null, null, dvbEndpointSelector, jmsGroupId, null);
     }
 
-    public String send(final URI dvbEndpointSelector, final T message, final Destination replyQueue) {
+    public String send(final T message, final URI dvbEndpointSelector, final Destination replyQueue) {
         return send(message, null, null, dvbEndpointSelector, null, replyQueue);
+    }
+
+    public String send(final T message, final Message correlatedMessage, final String correlationId) {
+        return send(message, correlatedMessage, correlationId, null, null, null);
+    }
+
+    public String send(final T message, final Message correlatedMessage, final String correlationId, final String jmsGroupId) {
+        return send(message, correlatedMessage, correlationId, null, jmsGroupId, null);
+    }
+
+    public String send(final T message, final Message correlatedMessage, final String correlationId, final Destination replyQueue) {
+        return send(message, correlatedMessage, correlationId, null, null, replyQueue);
+    }
+
+    public String send(final T message, final Message correlatedMessage, final String correlationId, final String jmsGroupId, final Destination replyQueue) {
+        return send(message, correlatedMessage, correlationId, null, jmsGroupId, replyQueue);
+    }
+
+    public String send(final T message, final Message correlatedMessage, final String correlationId, final URI dvbEndpointSelector) {
+        return send(message, correlatedMessage, correlationId, dvbEndpointSelector, null, null);
+    }
+
+    public String send(final T message, final Message correlatedMessage, final String correlationId, final URI dvbEndpointSelector, final String jmsGroupId) {
+        return send(message, correlatedMessage, correlationId, dvbEndpointSelector, jmsGroupId, null);
+    }
+
+    public String send(final T message, final Message correlatedMessage, final String correlationId, final URI dvbEndpointSelector, final Destination replyQueue) {
+        return send(message, correlatedMessage, correlationId, dvbEndpointSelector, null, replyQueue);
     }
 
     public String send(final T message, final Message correlatedMessage, final String correlationId, final URI dvbEndpointSelector, final String jmsGroupId, final Destination replyQueue) {
