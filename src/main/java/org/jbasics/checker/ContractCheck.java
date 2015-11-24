@@ -25,6 +25,7 @@ package org.jbasics.checker;
 
 import org.jbasics.annotation.ImmutableState;
 import org.jbasics.annotation.ThreadSafe;
+import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.types.sequences.Sequence;
 import org.jbasics.types.tuples.Range;
 
@@ -80,6 +81,27 @@ public final class ContractCheck {
 		}
 		return instance;
 	}
+
+	/**
+	 * Checks if the given delegated instance is not null (neither the delegate nor the call to delegate() must be null)
+	 *
+	 * @param <T>          		The type of the delegated instance to check
+	 * @param instanceName 		The name of the delegated instance (should not be null).
+	 * @param delegatedInstance	The delegate instance to check.
+	 *
+	 * @return The checked instance which is guaranteed to not be null.
+	 *
+	 * @throws ContractViolationException If the delage instance to check is null or the delegated value is null.
+	 * @since 1.0
+	 */
+	public static <T> T mustNotBeDelegatedNull(final Delegate<T> delegatedInstance, final String instanceName) {
+		T instance;
+		if (delegatedInstance == null || (instance = delegatedInstance.delegate()) == null) {
+			throw ContractCheck.createNotNullException("mustNotBeNullDelegate", instanceName);
+		}
+		return instance;
+	}
+
 
 	/**
 	 * Creates a {@link ContractViolationException} and removes all parts of the {@link ContractCheck} class from the
