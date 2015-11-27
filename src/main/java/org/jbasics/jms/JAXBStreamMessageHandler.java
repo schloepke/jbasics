@@ -27,6 +27,7 @@ import org.jbasics.checker.ContractCheck;
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.pattern.delegation.ReleasableDelegate;
+import org.jbasics.pattern.factory.ParameterFactory;
 
 import javax.jms.JMSException;
 import javax.jms.Session;
@@ -37,36 +38,33 @@ import java.io.OutputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class JAXBStreamMessageHandler<T> implements JMSMessageSender.MessageHandler<T, StreamMessage> {
-    private final Delegate<Marshaller> marshallerDelegate;
+    private final ParameterFactory<Delegate<Marshaller>, T> marshallerFactory;
     private final boolean compressed;
 
-    public JAXBStreamMessageHandler(Delegate<Marshaller> marshallerDelegate) {
-        this(marshallerDelegate, false);
+    public JAXBStreamMessageHandler(final ParameterFactory<Delegate<Marshaller>, T> marshallerFactory) {
+        this(marshallerFactory, false);
     }
 
-    public JAXBStreamMessageHandler(Delegate<Marshaller> marshallerDelegate, boolean compressed) {
-        this.marshallerDelegate = ContractCheck.mustNotBeNull(marshallerDelegate, "marshallerDelegate");
+    public JAXBStreamMessageHandler(final ParameterFactory<Delegate<Marshaller>, T> marshallerFactory, final boolean compressed) {
+        this.marshallerFactory = ContractCheck.mustNotBeNull(marshallerFactory, "marshallerFactory");
         this.compressed = compressed;
     }
 
     @Override
-    public StreamMessage createEmptyMessage(Delegate<Session> sessionDelegate) throws JMSException {
+    public StreamMessage createEmptyMessage(final Delegate<Session> sessionDelegate) throws JMSException {
         return ContractCheck.mustNotBeDelegatedNull(sessionDelegate, "sessionDelegate").createStreamMessage();
     }
 
     @Override
-    public void fillMessage(T message, StreamMessage jmsMessage) {
-        try {
-            OutputStream out = new StreamMessageOutputStream(jmsMessage);
-            if (this.compressed) {
-                out = new GZIPOutputStream(out);
-            }
-            this.marshallerDelegate.delegate().marshal(message, out);
+    public void fillMessage(final T message, final StreamMessage jmsMessage) {
+        final Delegate<Marshaller> marshallerDelegate = this.marshallerFactory.create(message);
+        try (final OutputStream out = this.compressed ? new GZIPOutputStream(new StreamMessageOutputStream(jmsMessage)) : new StreamMessageOutputStream(jmsMessage)) {
+            marshallerDelegate.delegate().marshal(message, out);
         } catch(Exception e) {
             throw DelegatedException.delegate(e);
         } finally {
-            if (this.marshallerDelegate instanceof ReleasableDelegate) {
-                ((ReleasableDelegate) this.marshallerDelegate).release();
+            if (marshallerDelegate instanceof ReleasableDelegate) {
+                ((ReleasableDelegate) marshallerDelegate).release();
             }
         }
     }

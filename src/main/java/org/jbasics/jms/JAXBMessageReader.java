@@ -31,9 +31,13 @@ import org.jbasics.stream.AdaptiveGZIPInputStream;
 
 import javax.jms.*;
 import javax.xml.bind.Unmarshaller;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
+import java.util.logging.Logger;
 
 public class JAXBMessageReader {
+    private static final Logger LOGGER = Logger.getLogger(JAXBMessageReader.class.getName());
     private final Delegate<Unmarshaller> unmarshallerDelegate;
 
     public JAXBMessageReader(Delegate<Unmarshaller> unmarshallerDelegate) {
@@ -42,11 +46,12 @@ public class JAXBMessageReader {
 
     @SuppressWarnings("unchecked")
     public <T> T readMessage(Message message) throws JMSException {
+        InputStream in = null;
         try {
             if (message instanceof BytesMessage) {
-                return (T) this.unmarshallerDelegate.delegate().unmarshal(new AdaptiveGZIPInputStream(new BytesMessageInputStream((BytesMessage) message)));
+                return (T) this.unmarshallerDelegate.delegate().unmarshal(in = new AdaptiveGZIPInputStream(new BytesMessageInputStream((BytesMessage) message)));
             } else if (message instanceof StreamMessage) {
-                return (T) this.unmarshallerDelegate.delegate().unmarshal(new AdaptiveGZIPInputStream(new StreamMessageInputStream((StreamMessage) message)));
+                return (T) this.unmarshallerDelegate.delegate().unmarshal(in = new AdaptiveGZIPInputStream(new StreamMessageInputStream((StreamMessage) message)));
             } else if (message instanceof TextMessage) {
                 return (T) this.unmarshallerDelegate.delegate().unmarshal(new StringReader(((TextMessage) message).getText()));
             } else {
@@ -59,6 +64,14 @@ public class JAXBMessageReader {
         } finally {
             if (this.unmarshallerDelegate instanceof ReleasableDelegate) {
                 ((ReleasableDelegate) this.unmarshallerDelegate).release();
+            }
+            if (in != null) {
+                try {
+                    in.close();
+                } catch(IOException e) {
+                    // ignore the close exception here but log a warning
+                    LOGGER.warning("Could not close input stream due to exception: "+e);
+                }
             }
         }
     }

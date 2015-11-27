@@ -27,6 +27,7 @@ import org.jbasics.checker.ContractCheck;
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.pattern.delegation.ReleasableDelegate;
+import org.jbasics.pattern.factory.ParameterFactory;
 
 import javax.jms.JMSException;
 import javax.jms.Session;
@@ -36,10 +37,10 @@ import javax.xml.bind.Marshaller;
 import java.io.StringWriter;
 
 public class JAXBTextMessageHandler<T> implements JMSMessageSender.MessageHandler<T, TextMessage> {
-    private final Delegate<Marshaller> marshallerDelegate;
+    private final ParameterFactory<Delegate<Marshaller>, T> marshallerFactory;
 
-    public JAXBTextMessageHandler(Delegate<Marshaller> marshallerDelegate) {
-        this.marshallerDelegate = ContractCheck.mustNotBeNull(marshallerDelegate, "marshallerDelegate");
+    public JAXBTextMessageHandler(ParameterFactory<Delegate<Marshaller>, T> marshallerFactory) {
+        this.marshallerFactory = ContractCheck.mustNotBeNull(marshallerFactory, "marshallerFactory");
     }
 
     @Override
@@ -49,15 +50,16 @@ public class JAXBTextMessageHandler<T> implements JMSMessageSender.MessageHandle
 
     @Override
     public void fillMessage(T message, TextMessage jmsMessage) throws JMSException {
+        final Delegate<Marshaller> marshallerDelegate = this.marshallerFactory.create(message);
         try {
             final StringWriter contentWriter = new StringWriter();
-            this.marshallerDelegate.delegate().marshal(message, contentWriter);
+            marshallerDelegate.delegate().marshal(message, contentWriter);
             jmsMessage.setText(contentWriter.toString());
         } catch(JAXBException e) {
             throw DelegatedException.delegate(e);
         } finally {
-            if (this.marshallerDelegate instanceof ReleasableDelegate) {
-                ((ReleasableDelegate) this.marshallerDelegate).release();
+            if (marshallerDelegate instanceof ReleasableDelegate) {
+                ((ReleasableDelegate) marshallerDelegate).release();
             }
         }
     }
