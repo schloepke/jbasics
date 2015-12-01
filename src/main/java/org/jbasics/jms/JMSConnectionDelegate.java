@@ -23,17 +23,16 @@
  */
 package org.jbasics.jms;
 
-import org.jbasics.checker.ContractCheck;
-import org.jbasics.exception.DelegatedException;
-import org.jbasics.pattern.delegation.Delegate;
-import org.jbasics.pattern.delegation.ReleasableDelegate;
-import org.jbasics.types.tuples.Pair;
-import org.jbasics.types.tuples.Tuple;
-
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.XAConnectionFactory;
+
+import org.jbasics.checker.ContractCheck;
+import org.jbasics.exception.DelegatedException;
+import org.jbasics.pattern.delegation.Delegate;
+import org.jbasics.pattern.delegation.ReleasableDelegate;
+import org.jbasics.types.tuples.Tuple;
 
 public class JMSConnectionDelegate implements ReleasableDelegate<Connection>, AutoCloseable {
     private final Delegate<ConnectionFactory> connectionFactoryDelegate;
@@ -44,12 +43,11 @@ public class JMSConnectionDelegate implements ReleasableDelegate<Connection>, Au
         return new JMSConnectionDelegate(connectionFactoryDelegate, null);
     }
 
-    public static JMSConnectionDelegate createForConnectionFactory(Delegate<ConnectionFactory> connectionFactoryDelegate,
-																   Delegate<? extends Tuple<String, String>> credentialsDelegate) {
-        return new JMSConnectionDelegate(connectionFactoryDelegate, null);
+    public static JMSConnectionDelegate createForConnectionFactory(Delegate<ConnectionFactory> connectionFactoryDelegate, Delegate<? extends Tuple<String, String>> credentialsDelegate) {
+        return new JMSConnectionDelegate(connectionFactoryDelegate, credentialsDelegate);
     }
 
-    public JMSConnectionDelegate(Delegate<ConnectionFactory> connectionFactoryDelegate, Delegate<Pair<String, String>> credentialsDelegate) {
+    public JMSConnectionDelegate(Delegate<ConnectionFactory> connectionFactoryDelegate, Delegate<? extends Tuple<String, String>> credentialsDelegate) {
         this.connectionFactoryDelegate = ContractCheck.mustNotBeNull(connectionFactoryDelegate, "connectionFactoryDelegate");
         this.credentialsDelegate = credentialsDelegate;
     }
