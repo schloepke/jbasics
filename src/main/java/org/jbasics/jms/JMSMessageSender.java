@@ -23,19 +23,24 @@
  */
 package org.jbasics.jms;
 
+import java.net.URI;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.UUID;
+import java.util.regex.Pattern;
+
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
+
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.pattern.delegation.ReleasableDelegate;
 import org.jbasics.types.delegates.UnmodifiableDelegate;
 import org.jbasics.utilities.DataUtilities;
-
-import javax.jms.*;
-import java.net.URI;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.UUID;
-import java.util.regex.Pattern;
 
 public class JMSMessageSender<M extends Message, T> implements AutoCloseable {
     public static final String JMSX_GROUP_ID = "JMSXGroupID";
@@ -146,7 +151,11 @@ public class JMSMessageSender<M extends Message, T> implements AutoCloseable {
             if (jmsGroupId != null) {
                 jmsMessage.setStringProperty(JMSMessageSender.JMSX_GROUP_ID, jmsGroupId);
             }
-            this.producerDelegate.delegate().send(jmsMessage);
+            Delegate<MessageProducer> producer = this.producerDelegate;
+            if (correlatedMessage != null && correlatedMessage.getJMSReplyTo() != null) {
+                producer =  new JMSMessageProducerDelegate(sessionDelegate, new UnmodifiableDelegate<>(correlatedMessage.getJMSReplyTo()));
+            }
+            producer.delegate().send(jmsMessage);
             return jmsMessage.getJMSMessageID();
         } catch (final JMSException e) {
             throw DelegatedException.delegate(e);
