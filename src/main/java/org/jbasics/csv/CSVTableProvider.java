@@ -39,6 +39,7 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.HttpHeaders;
@@ -54,6 +55,8 @@ import org.jbasics.configuration.properties.SystemProperty;
 import static org.jbasics.utilities.DataUtilities.coalesce;
 
 @Provider
+@Produces({"text/csv","text/plain"})
+@Consumes({"text/csv","text/plain"})
 public class CSVTableProvider implements MessageBodyReader<CSVTable>,MessageBodyWriter<CSVTable> {
 	public static final String USE_SEMICOLON_AS_STANDARD_PROPERTY = "org.jbasics.csv.CSVTableProvider.invertAlternateSeparator";
 	public static final SystemProperty<Boolean> INVERT_ALTERNATE_SEPARATOR = SystemProperty.booleanProperty(CSVTableProvider.USE_SEMICOLON_AS_STANDARD_PROPERTY, Boolean.FALSE);
@@ -65,7 +68,7 @@ public class CSVTableProvider implements MessageBodyReader<CSVTable>,MessageBody
 
 	@Override
 	public boolean isReadable(final Class<?> type, final Type genericType, final Annotation[] annotations, final MediaType mediaType) {
-		return CSVTable.class.isAssignableFrom(type) && mediaType.isCompatible(MediaType.valueOf(CSVTable.RFC4180_MEDIA_TYPE.toString()));
+		return CSVTable.class.isAssignableFrom(type);
 	}
 
 	@Override
@@ -136,33 +139,18 @@ public class CSVTableProvider implements MessageBodyReader<CSVTable>,MessageBody
 	}
 
 	@Override
-	public void writeTo(final CSVTable csvRecords, final Class<?> type, final Type genericType, final Annotation[] annotations, final MediaType mediaType,
+	public void writeTo(final CSVTable csvTable, final Class<?> type, final Type genericType, final Annotation[] annotations, final MediaType mediaType,
 			final MultivaluedMap<String, Object> responseHeaders, final OutputStream entityStream) throws IOException, WebApplicationException {
-		final MediaType resolvedMediaType = getMediaTypeSpec(annotations, mediaType.getSubtype().equals("csv") ? mediaType : MediaType.valueOf("text/csv"));
-		final Charset charset = Charset.forName(coalesce(mediaType.getParameters().get("charset"), "us-ascii"));
-		responseHeaders.putSingle(HttpHeaders.CONTENT_TYPE, new MediaType("text","csv", new HashMap<String,String>(){{put("charset", charset.name());}}));
+		final Charset charset = mediaType.getParameters().get("charset") == null ? coalesce(csvTable.getCharset(), Charset.forName("windows-1252")) : Charset.forName(mediaType.getParameters().get("charset"));
+		final boolean headerPresent = mediaType.getParameters().get("header") == null ? csvTable.hasHeaders() : mediaType.getParameters().get("header").equals("present");
+		responseHeaders.putSingle(HttpHeaders.CONTENT_TYPE, new MediaType(mediaType.getType(), mediaType.getSubtype(), new HashMap<String,String>(){{put("charset", charset.name()); put("header", headerPresent ? "present" : "absent");}}));
 		try(final OutputStreamWriter ow = new OutputStreamWriter(entityStream, charset)) {
-			csvRecords.append(ow, getPreferredSeparator(responseHeaders.get("Content-Language")));
+			csvTable.append(ow, getPreferredSeparator(responseHeaders.get(HttpHeaders.CONTENT_LANGUAGE)));
 		}
-	}
-
-	private MediaType getMediaTypeSpec(final Annotation[] annotations, MediaType defaultMediaType) {
-		for(final Annotation annotation:annotations) {
-			if(annotation instanceof Produces) {
-				final Produces producesAnnotation = (Produces)annotation;
-				for(final String mediaTypeString : producesAnnotation.value()) {
-					final MediaType mediaType = MediaType.valueOf(mediaTypeString);
-					if(mediaType.getSubtype().equals("csv")) {
-						return mediaType;
-					}
-				}
-			}
-		}
-		return defaultMediaType;
 	}
 
 	private char getPreferredSeparator(final Object lang) {
-		final Locale locale = lang == null ? Locale.getDefault() : Locale.forLanguageTag(lang.toString());
+		final Locale locale = lang == null ? Locale.ROOT : Locale.forLanguageTag(lang.toString());
 		final DecimalFormatSymbols decimalFormat = DecimalFormatSymbols.getInstance(locale);
 		return decimalFormat.getDecimalSeparator() == ',' ? ';' : ',';
 	}
