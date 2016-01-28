@@ -23,28 +23,38 @@
  */
 package org.jbasics.csv;
 
-import org.jbasics.configuration.properties.BooleanValueTypeFactory;
-import org.jbasics.configuration.properties.SystemProperty;
-import org.jbasics.utilities.DataUtilities;
-
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.MessageBodyReader;
-import javax.ws.rs.ext.Provider;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.text.DecimalFormatSymbols;
+import java.util.HashMap;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.ext.MessageBodyReader;
+import javax.ws.rs.ext.MessageBodyWriter;
+import javax.ws.rs.ext.Provider;
+
+import org.jbasics.configuration.properties.BooleanValueTypeFactory;
+import org.jbasics.configuration.properties.SystemProperty;
+
+import static org.jbasics.utilities.DataUtilities.coalesce;
+
 @Provider
-public class CSVTableProvider implements MessageBodyReader<CSVTable> {
+public class CSVTableProvider implements MessageBodyReader<CSVTable>,MessageBodyWriter<CSVTable> {
 	public static final String USE_SEMICOLON_AS_STANDARD_PROPERTY = "org.jbasics.csv.CSVTableProvider.invertAlternateSeparator";
 	public static final SystemProperty<Boolean> INVERT_ALTERNATE_SEPARATOR = SystemProperty.booleanProperty(CSVTableProvider.USE_SEMICOLON_AS_STANDARD_PROPERTY, Boolean.FALSE);
 	public static final String GERMAN_GUESS_PROPERTY = "org.jbasics.csv.CSVTableProvider.germanUseSemicolonSeparator";
@@ -60,7 +70,7 @@ public class CSVTableProvider implements MessageBodyReader<CSVTable> {
 
 	@Override
 	public CSVTable readFrom(final Class<CSVTable> type, final Type genericType, final Annotation[] annotations, final MediaType mediaType, final MultivaluedMap<String, String> httpHeaders, final InputStream entityStream) throws IOException, WebApplicationException {
-		final Charset charset = Charset.forName(DataUtilities.coalesce(mediaType.getParameters().get("charset"), "ISO-8859-15")); //$NON-NLS-1$ //$NON-NLS-2$
+		final Charset charset = Charset.forName(coalesce(mediaType.getParameters().get("charset"), "ISO-8859-15"));
 		final Reader r = new BufferedReader(new InputStreamReader(entityStream, charset), 16384);
 		final boolean headerPresent = CSVTable.HEADER_PRESENT.right().equalsIgnoreCase(mediaType.getParameters().get(CSVTable.HEADER_PRESENT.first()));
 		boolean useAlternateSeparator = CSVTableProvider.INVERT_ALTERNATE_SEPARATOR.value().booleanValue();
@@ -69,7 +79,7 @@ public class CSVTableProvider implements MessageBodyReader<CSVTable> {
 			if (BooleanValueTypeFactory.SHARED_INSTANCE.create(temp).booleanValue()) {
 				useAlternateSeparator = !useAlternateSeparator;
 			}
-		} else if (CSVTableProvider.USE_GERMAN_SEPARATOR_DETECTION.value().booleanValue() && DataUtilities.coalesce(httpHeaders.getFirst("Content-Language"), "en").equals("de")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		} else if (CSVTableProvider.USE_GERMAN_SEPARATOR_DETECTION.value().booleanValue() && coalesce(httpHeaders.getFirst("Content-Language"), "en").equals("de")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			useAlternateSeparator = true;
 		} else if (CSVTableProvider.USE_SEPARATOR_AUTO_GUESS.value().booleanValue() && r.markSupported()) {
 			r.mark(8192);
@@ -115,5 +125,45 @@ public class CSVTableProvider implements MessageBodyReader<CSVTable> {
 			result[i] = temp == null ? -1 : temp.size();
 		}
 		return result;
+	}
+
+	@Override public boolean isWriteable(final Class<?> type, final Type genericType, final Annotation[] annotations, final MediaType mediaType) {
+		return CSVTable.class.isAssignableFrom(type);
+	}
+
+	@Override public long getSize(final CSVTable csvRecords, final Class<?> type, final Type genericType, final Annotation[] annotations, final MediaType mediaType) {
+		return -1;
+	}
+
+	@Override
+	public void writeTo(final CSVTable csvRecords, final Class<?> type, final Type genericType, final Annotation[] annotations, final MediaType mediaType,
+			final MultivaluedMap<String, Object> responseHeaders, final OutputStream entityStream) throws IOException, WebApplicationException {
+		final MediaType resolvedMediaType = getMediaTypeSpec(annotations, mediaType.getSubtype().equals("csv") ? mediaType : MediaType.valueOf("text/csv"));
+		final Charset charset = Charset.forName(coalesce(mediaType.getParameters().get("charset"), "us-ascii"));
+		responseHeaders.putSingle(HttpHeaders.CONTENT_TYPE, new MediaType("text","csv", new HashMap<String,String>(){{put("charset", charset.name());}}));
+		try(final OutputStreamWriter ow = new OutputStreamWriter(entityStream, charset)) {
+			csvRecords.append(ow, getPreferredSeparator(responseHeaders.get("Content-Language")));
+		}
+	}
+
+	private MediaType getMediaTypeSpec(final Annotation[] annotations, MediaType defaultMediaType) {
+		for(final Annotation annotation:annotations) {
+			if(annotation instanceof Produces) {
+				final Produces producesAnnotation = (Produces)annotation;
+				for(final String mediaTypeString : producesAnnotation.value()) {
+					final MediaType mediaType = MediaType.valueOf(mediaTypeString);
+					if(mediaType.getSubtype().equals("csv")) {
+						return mediaType;
+					}
+				}
+			}
+		}
+		return defaultMediaType;
+	}
+
+	private char getPreferredSeparator(final Object lang) {
+		final Locale locale = lang == null ? Locale.getDefault() : Locale.forLanguageTag(lang.toString());
+		final DecimalFormatSymbols decimalFormat = DecimalFormatSymbols.getInstance(locale);
+		return decimalFormat.getDecimalSeparator() == ',' ? ';' : ',';
 	}
 }
