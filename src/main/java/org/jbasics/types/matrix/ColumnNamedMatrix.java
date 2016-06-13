@@ -24,13 +24,18 @@
 package org.jbasics.types.matrix;
 
 import org.jbasics.checker.ContractCheck;
+import org.jbasics.csv.CSVRecord;
+import org.jbasics.csv.CSVRecordSequenceTransposer;
+import org.jbasics.pattern.container.Mapable;
 import org.jbasics.pattern.container.TabularData;
+import org.jbasics.pattern.factory.ParameterFactory;
 import org.jbasics.pattern.transpose.Transposer;
 import org.jbasics.text.StringUtilities;
+import org.jbasics.types.sequences.Sequence;
 
 import java.util.*;
 
-public class ColumnNamedMatrix<T> implements Iterable<List<T>>, TabularData<T> {
+public class ColumnNamedMatrix<T> implements Iterable<List<T>>, TabularData<T>, Mapable<Sequence<T>, List<T>> {
 	private final String[] columns;
 	private final List<List<T>> rows;
 	private transient List<String> columnsList;
@@ -179,36 +184,34 @@ public class ColumnNamedMatrix<T> implements Iterable<List<T>>, TabularData<T> {
 	}
 
 	public T getCellValue(final int row, final String column) {
-		return getValueAtRowAndColumn(row, getColumnIndex(column));
+		int columnIndex = getColumnIndex(column);
+		if (columnIndex < 0) {
+			return null;
+		}
+		return getValueAtRowAndColumn(row, columnIndex);
 	}
 	public T getCellValue(final int row, final int column) {
 		return getValueAtRowAndColumn(row, column);
 	}
 
-	/**
-	 * @deprecated This method has the signature col, row and should not be used. Instead use {@link #getCellValue(int, String)}
-	 * with signature row,col!
-	 */
-	@Deprecated
-	public T getCell(final String column, final int row) {
-		return getCell(getColumnIndex(column), row);
-	}
-
-	/**
-	 * @deprecated This method has the signature col, row and should not be used. Instead use {@link #getCellValue(int, String)}
-	 * with signature row,col!
-	 */
-	@Deprecated
-	public T getCell(final int column, final int row) {
-		return this.rows.get(row).get(column);
+	public T getCellValueOrDefaultIfNotExist(final int row, final String column, final T defaultForMissingColumns) {
+		int columnIndex = getColumnIndex(column);
+		if (columnIndex < 0) {
+			return defaultForMissingColumns;
+		}
+		return getValueAtRowAndColumn(row, columnIndex);
 	}
 
 	public T getCellInCurrentRow(final int column) {
-		return getCell(column, this.currentRow);
+		return getCellValue(this.currentRow, column);
 	}
 
 	public T getCellInCurrentRow(final String column) {
-		return getCell(getColumnIndex(column), this.currentRow);
+		int columnIndex = getColumnIndex(column);
+		if (columnIndex < 0) {
+			return null;
+		}
+		return getCellValue(this.currentRow, columnIndex);
 	}
 
 	public Transposer<String, T> getValueToStringTransposer() {
@@ -276,14 +279,32 @@ public class ColumnNamedMatrix<T> implements Iterable<List<T>>, TabularData<T> {
 	private List<String> diffLine(final List<?> lhs, final List<?> rhs) {
 		List<String> result = new ArrayList<String>(Math.max(lhs.size(), rhs.size()));
 		for (int i = 0; i < result.size(); i++) {
-			String lhsString = i < lhs.size() ? String.valueOf(lhs.get(i)) : "[N/A]"; //$NON-NLS-1$
-			String rhsString = i < rhs.size() ? String.valueOf(rhs.get(i)) : "[N/A]"; //$NON-NLS-1$
+			String lhsString = i < lhs.size() ? String.valueOf(lhs.get(i)) : "[N/A]";
+			String rhsString = i < rhs.size() ? String.valueOf(rhs.get(i)) : "[N/A]";
 			if (lhsString.equals(rhsString)) {
 				result.add(lhsString);
 			} else {
-				result.add("!! " + lhs + " <> " + rhs + " !!"); //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
+				result.add("!! " + lhs + " <> " + rhs + " !!");
 			}
 		}
 		return result;
 	}
+
+	@Override
+	public Map<Sequence<T>, List<T>> map(final ParameterFactory<Sequence<T>, List<T>> keyFactory) {
+		final Map<Sequence<T>, List<T>> result = new HashMap<>();
+		for (final List<T> record : this) {
+			result.put(keyFactory.create(record), record);
+		}
+		return Collections.unmodifiableMap(result);
+	}
+
+	public Map<Sequence<T>, List<T>> map(final String... columnNames) {
+		return map(new ColumnNamedMatrixSequenceTransposer<T>(this, columnNames));
+	}
+
+	public Map<Sequence<T>, List<T>> map(final int... fields) {
+		return map(new ColumnNamedMatrixSequenceTransposer<T>(fields));
+	}
+
 }
