@@ -28,6 +28,7 @@ import org.jbasics.enviroment.JVMEnviroment;
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.resolver.Resolver;
 import org.jbasics.types.builders.MapBuilder;
+import org.jbasics.types.factories.MapFactory;
 import org.jbasics.types.tuples.Pair;
 import org.jbasics.utilities.DataUtilities;
 
@@ -71,7 +72,7 @@ public class VersionsResourceResolver implements Resolver<VersionInformation, Ve
 	}
 
 	public static Map<VersionIdentifier, VersionInformation> scanVersions(final Iterable<URL> resourceURLs) {
-		final MapBuilder<VersionIdentifier, VersionInformation> builder = new MapBuilder<VersionIdentifier, VersionInformation>().immutable();
+		final MapBuilder<VersionIdentifier, VersionInformation> builder = new MapBuilder<>(MapFactory.<VersionIdentifier, VersionInformation> orderedMapFactory()).immutable();
 		for (final URL resourceURL : resourceURLs) {
 			final Pair<VersionIdentifier, VersionInformation> temp = VersionsResourceResolver.loadVersionInformation(resourceURL);
 			if (VersionsResourceResolver.LOGGER.isLoggable(Level.FINEST)) {
