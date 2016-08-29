@@ -33,13 +33,16 @@ import java.util.logging.Logger;
 
 /**
  * A convenient helper to access a message from a {@link ResourceBundle} and format it with arguments in a single call.
+ *
  * <p> All methods are fail save. Any exception is suppressed and in worst case the key is returned. Exception raised
  * trying to load the {@link ResourceBundle} or determine the current {@link ClassLoader} are logged with the finest
- * level for debugging purpose. It is wise to not use this logging in production systems. </p> <p> This class is all you
- * need for localization. It is in most cases not really helpful to implement some sort of localization framework. The
- * {@link ResourceBundle} of java already offer such a framework by far more useful than most frameworks I have seen in
- * the past. If you need a special localization like key values in a database it is much better to supply your own
- * derived Implementation of the resource bundle class than actually creating you own framework. </p>
+ * level for debugging purpose. It is wise to not use this logging in production systems.</p>
+ *
+ * <p> This class is all you need for localization. It is in most cases not really helpful to implement some sort of
+ * localization framework. The {@link ResourceBundle} of java already offer such a framework by far more useful than
+ * most frameworks I have seen in the past. If you need a special localization like key values in a database it is much
+ * better to supply your own derived Implementation of the resource bundle class than actually creating you own
+ * framework.</p>
  *
  * @author Stephan Schloepke
  * @since 1.0
@@ -275,4 +278,57 @@ public class LocalizedMessageAccessor {
 	public static String getLocalizedMessage(final String bundle, final String key) {
 		return LocalizedMessageAccessor.getLocalizedMessage(null, bundle, key);
 	}
+
+	/**
+	 * Returns the message formatted for the current default {@link Locale} and the given enum value where the enum class name is the bundle and the name property the key
+	 *
+	 * @param enumValue {@link Enum} value to get the localized message (fully qualified type name is the bundle and name property the key) (should not be null).
+	 *
+	 * @return The formatted string or the key if any error occurred trying to format the message or lookup the bundle or '#null#' for a given null enum value.
+	 * (guaranteed to be not null)
+	 *
+	 * @since 1.0
+	 */
+	public static String getLocalizedEnumMessage(final Enum<?> enumValue) {
+		if (enumValue == null) {
+			return "#null#";
+		}
+		return getLocalizedMessage(enumValue.getClass().getName(), enumValue.name());
+	}
+
+	/**
+	 * Returns the message formatted for the given {@link Locale} and the given enum value where the enum class name is the bundle and the name property the key
+	 *
+	 * @param locale The {@link Locale} to use for the localized message
+	 * @param enumValue {@link Enum} value to get the localized message (fully qualified type name is the bundle and name property the key) (should not be null).
+	 *
+	 * @return The formatted string or the key if any error occurred trying to format the message or lookup the bundle or '#null#' for a given null enum value.
+	 * (guaranteed to be not null)
+	 *
+	 * @since 1.0
+	 */
+	public static String getLocalizedEnumMessage(final Locale locale, final Enum<?> enumValue) {
+		if (enumValue == null) {
+			return "#null#";
+		}
+		return getLocalizedMessage(locale, enumValue.getClass().getName(), enumValue.name());
+	}
+
+	/**
+	 * Returns the message formatted for the locale {@link Locale#US} and the given enum value where the enum class name is the bundle and the name property the key
+	 *
+	 * @param enumValue {@link Enum} value to get the localized message (fully qualified type name is the bundle and name property the key) (should not be null).
+	 *
+	 * @return The formatted string or the key if any error occurred trying to format the message or lookup the bundle or '#null#' for a given null enum value.
+	 * (guaranteed to be not null)
+	 *
+	 * @since 1.0
+	 */
+	public static String getUSEnglishEnumMessage(final Enum<?> enumValue) {
+		if (enumValue == null) {
+			return "#null#";
+		}
+		return getUSEnglishMessage(enumValue.getClass().getName(), enumValue.name());
+	}
+
 }
