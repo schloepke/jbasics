@@ -27,6 +27,7 @@ import org.jbasics.math.AlgorithmStrategy;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 
 public class PowAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
 	private final AlgorithmStrategy<BigDecimal> exponentialFunction;
@@ -45,6 +46,17 @@ public class PowAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
 		if (xn == null || xn.length != 2) {
 			throw new IllegalArgumentException("Illegal amount of arguments supplied (required 2, got " + (xn == null ? 0 : xn.length) + ")");
 		}
-		return this.exponentialFunction.calculate(mc, null, this.logarithmFunction.calculate(mc, null, xn[0]).multiply(xn[1], mc));
+		BigDecimal base = xn[0];
+		BigDecimal exponent = xn[1];
+		if (base.signum() < 0) {
+			throw new ArithmeticException("Currently all negtive base values are not supported");
+		}
+		if (exponent.signum() == 0) {
+			return BigDecimal.ONE;
+		} else if (base.signum() == 0) {
+			return BigDecimal.ZERO;
+		}
+ 		return this.exponentialFunction.calculate(mc, null, this.logarithmFunction.calculate(mc, null, base).multiply(exponent, mc));
 	}
+
 }
