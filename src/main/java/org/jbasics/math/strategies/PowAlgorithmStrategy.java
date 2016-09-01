@@ -50,8 +50,7 @@ public class PowAlgorithmStrategy implements AlgorithmStrategy<BigDecimal> {
 		BigDecimal exponent = xn[1];
 		if (base.signum() < 0) {
 			throw new ArithmeticException("Currently all negtive base values are not supported");
-		}
-		if (exponent.signum() == 0) {
+		} else if (exponent.signum() == 0) {
 			return BigDecimal.ONE;
 		} else if (base.signum() == 0) {
 			return BigDecimal.ZERO;
