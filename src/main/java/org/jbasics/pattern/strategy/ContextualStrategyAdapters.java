@@ -25,57 +25,115 @@ package org.jbasics.pattern.strategy;
 
 public class ContextualStrategyAdapters {
 
-	public static <Out, In, Ctx> ContextualCalculateStrategy<Out, In, Ctx> createCalculateStrategy(final ContextualExecuteStrategy<Out, In, Ctx> input) {
-		return new ContextualCalculateStrategy<Out, In, Ctx>() {
+	public static <O, I, C> ContextualCalculateStrategy<O, I, C> createCalculateStrategy(final ContextualExecuteStrategy<O, I, C> input) {
+		return new ContextualCalculateStrategy<O, I, C>() {
 			@Override
-			public Out calculate(final In request, final Ctx context) {
+			public O calculate(final I request, final C context) {
 				return input.execute(request, context);
 			}
 		};
 	}
 
-	public static <Out, In, Ctx> ContextualCalculateStrategy<Out, In, Ctx> createCalculateStrategy(final ContextualResolveStrategy<Out, In, Ctx> input) {
-		return new ContextualCalculateStrategy<Out, In, Ctx>() {
+	public static <O, I, C> ContextualCalculateStrategy<O, I, C> createCalculateStrategy(final ContextualResolveStrategy<O, I, C> input) {
+		return new ContextualCalculateStrategy<O, I, C>() {
 			@Override
-			public Out calculate(final In request, final Ctx context) {
+			public O calculate(final I request, final C context) {
 				return input.resolve(request, context);
 			}
 		};
 	}
 
-	public static <Out, In, Ctx> ContextualExecuteStrategy<Out, In, Ctx> createExecuteStrategy(final ContextualCalculateStrategy<Out, In, Ctx> input) {
-		return new ContextualExecuteStrategy<Out, In, Ctx>() {
+	public static <O, I, C> ContextualCalculateStrategy<O, I, C> createCalculateStrategy(final ContextualEvaluateStrategy<O, I, C> input) {
+		return new ContextualCalculateStrategy<O, I, C>() {
 			@Override
-			public Out execute(final In request, final Ctx context) {
+			public O calculate(final I request, final C context) {
+				return input.evaluate(request, context);
+			}
+		};
+	}
+
+	
+	public static <O, I, C> ContextualExecuteStrategy<O, I, C> createExecuteStrategy(final ContextualCalculateStrategy<O, I, C> input) {
+		return new ContextualExecuteStrategy<O, I, C>() {
+			@Override
+			public O execute(final I request, final C context) {
 				return input.calculate(request, context);
 			}
 		};
 	}
 
-	public static <Out, In, Ctx> ContextualExecuteStrategy<Out, In, Ctx> createExecuteStrategy(final ContextualResolveStrategy<Out, In, Ctx> input) {
-		return new ContextualExecuteStrategy<Out, In, Ctx>() {
+	public static <O, I, C> ContextualExecuteStrategy<O, I, C> createExecuteStrategy(final ContextualResolveStrategy<O, I, C> input) {
+		return new ContextualExecuteStrategy<O, I, C>() {
 			@Override
-			public Out execute(final In request, final Ctx context) {
+			public O execute(final I request, final C context) {
 				return input.resolve(request, context);
 			}
 		};
 	}
 
-	public static <Out, In, Ctx> ContextualResolveStrategy<Out, In, Ctx> createResolveStrategy(final ContextualCalculateStrategy<Out, In, Ctx> input) {
-		return new ContextualResolveStrategy<Out, In, Ctx>() {
+	public static <O, I, C> ContextualExecuteStrategy<O, I, C> createExecuteStrategy(final ContextualEvaluateStrategy<O, I, C> input) {
+		return new ContextualExecuteStrategy<O, I, C>() {
 			@Override
-			public Out resolve(final In request, final Ctx context) {
+			public O execute(final I request, final C context) {
+				return input.evaluate(request, context);
+			}
+		};
+	}
+
+
+	public static <O, I, C> ContextualResolveStrategy<O, I, C> createResolveStrategy(final ContextualCalculateStrategy<O, I, C> input) {
+		return new ContextualResolveStrategy<O, I, C>() {
+			@Override
+			public O resolve(final I request, final C context) {
 				return input.calculate(request, context);
 			}
 		};
 	}
 
-	public static <Out, In, Ctx> ContextualResolveStrategy<Out, In, Ctx> createResolveStrategy(final ContextualExecuteStrategy<Out, In, Ctx> input) {
-		return new ContextualResolveStrategy<Out, In, Ctx>() {
+	public static <O, I, C> ContextualResolveStrategy<O, I, C> createResolveStrategy(final ContextualExecuteStrategy<O, I, C> input) {
+		return new ContextualResolveStrategy<O, I, C>() {
 			@Override
-			public Out resolve(final In request, final Ctx context) {
+			public O resolve(final I request, final C context) {
 				return input.execute(request, context);
 			}
 		};
 	}
+
+	public static <O, I, C> ContextualResolveStrategy<O, I, C> createResolveStrategy(final ContextualEvaluateStrategy<O, I, C> input) {
+		return new ContextualResolveStrategy<O, I, C>() {
+			@Override
+			public O resolve(final I request, final C context) {
+				return input.evaluate(request, context);
+			}
+		};
+	}
+
+
+	public static <O, I, C> ContextualEvaluateStrategy<O, I, C> createEvaluateStrategy(final ContextualCalculateStrategy<O, I, C> input) {
+		return new ContextualEvaluateStrategy<O, I, C>() {
+			@Override
+			public O evaluate(final I request, final C context) {
+				return input.calculate(request, context);
+			}
+		};
+	}
+
+	public static <O, I, C> ContextualEvaluateStrategy<O, I, C> createEvaluateStrategy(final ContextualExecuteStrategy<O, I, C> input) {
+		return new ContextualEvaluateStrategy<O, I, C>() {
+			@Override
+			public O evaluate(final I request, final C context) {
+				return input.execute(request, context);
+			}
+		};
+	}
+
+	public static <O, I, C> ContextualEvaluateStrategy<O, I, C> createEvaluateStrategy(final ContextualResolveStrategy<O, I, C> input) {
+		return new ContextualEvaluateStrategy<O, I, C>() {
+			@Override
+			public O evaluate(final I request, final C context) {
+				return input.resolve(request, context);
+			}
+		};
+	}
+
 }
