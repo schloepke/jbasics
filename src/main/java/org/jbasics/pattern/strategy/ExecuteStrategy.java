@@ -23,7 +23,7 @@
  */
 package org.jbasics.pattern.strategy;
 
-public interface ExecuteStrategy<ResultType, RequestType> {
+public interface ExecuteStrategy<O, I> {
 
-	ResultType execute(RequestType request);
+	O execute(I input);
 }

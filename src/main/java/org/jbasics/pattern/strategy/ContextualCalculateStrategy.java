@@ -23,7 +23,8 @@
  */
 package org.jbasics.pattern.strategy;
 
-public interface ContextualCalculateStrategy<Result, Request, Context> {
+public interface ContextualCalculateStrategy<O, I, C> {
 
-	Result calculate(Request request, Context context);
+	O calculate(I input, C context);
+
 }

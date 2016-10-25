@@ -23,7 +23,7 @@
  */
 package org.jbasics.pattern.strategy;
 
-public interface CalculateStrategy<Result, Request> {
+public interface CalculateStrategy<O, I> {
 
-	Result calculate(Request request);
+	O calculate(I input);
 }

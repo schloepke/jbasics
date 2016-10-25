@@ -23,7 +23,8 @@
  */
 package org.jbasics.pattern.strategy;
 
-public interface ContextualSubstitutionStrategy<OutputType, InputType, ContextType> {
+public interface ContextualSubstitutionStrategy<O, I, C> {
 
-	OutputType substitute(InputType input, ContextType context);
+	O substitute(I input, C context);
+
 }

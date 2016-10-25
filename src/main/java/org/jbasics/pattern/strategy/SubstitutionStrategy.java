@@ -23,10 +23,10 @@
  */
 package org.jbasics.pattern.strategy;
 
-public interface SubstitutionStrategy<OutputType, InputType> {
+public interface SubstitutionStrategy<O, I> {
 	public static PassThru<String> STRING_PASS_THRU = new PassThru<String>();
 
-	OutputType substitute(InputType input);
+	O substitute(I input);
 
 	public static class PassThru<T> implements SubstitutionStrategy<T, T> {
 		@Override

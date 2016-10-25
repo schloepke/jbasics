@@ -23,7 +23,8 @@
  */
 package org.jbasics.pattern.strategy;
 
-public interface ContextualExecuteStrategy<ResultType, RequestType, ContextType> {
+public interface ContextualExecuteStrategy<O, I, C> {
 
-	ResultType execute(RequestType request, ContextType context);
+	O execute(I request, C context);
+
 }

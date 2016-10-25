@@ -23,7 +23,7 @@
  */
 package org.jbasics.pattern.strategy;
 
-public interface ContextualResolveStrategy<ResultType, RequestType, ContextType> {
+public interface ContextualResolveStrategy<O, I, C> {
 
-	ResultType resolve(final RequestType request, final ContextType context);
+	O resolve(final I request, final C context);
 }
