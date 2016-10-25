@@ -23,15 +23,15 @@
  */
 package org.jbasics.types.builders;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.builder.AddBuilder;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.pattern.modifer.Extendable;
 import org.jbasics.types.factories.ListFactory;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 public class ListBuilder<E> implements AddBuilder<ListBuilder<E>, List<E>, E>, Extendable<ListBuilder<E>, E> {
 	private final Factory<List<E>> listFactory;
@@ -48,15 +48,12 @@ public class ListBuilder<E> implements AddBuilder<ListBuilder<E>, List<E>, E>, E
 		this.list = this.listFactory.newInstance();
 	}
 
-	public ListBuilder<E> add(final E element) {
-		this.list.add(element);
-		return this;
+	public ListBuilder<E> addConditional(final boolean condition, final E element) {
+		return condition ? add(element) : this;
 	}
 
-	public ListBuilder<E> addAll(final E... elements) {
-		for (E element : elements) {
-			this.list.add(element);
-		}
+	public ListBuilder<E> add(final E element) {
+		this.list.add(element);
 		return this;
 	}
 
@@ -71,7 +68,6 @@ public class ListBuilder<E> implements AddBuilder<ListBuilder<E>, List<E>, E>, E
 		}
 		return this;
 	}
-
 
 	public ListBuilder<E> mutable() {
 		this.mutable = true;
@@ -96,6 +92,13 @@ public class ListBuilder<E> implements AddBuilder<ListBuilder<E>, List<E>, E>, E
 	@Override
 	public ListBuilder<E> extend(E... values) {
 		return addAll(values);
+	}
+
+	public ListBuilder<E> addAll(final E... elements) {
+		for (E element : elements) {
+			this.list.add(element);
+		}
+		return this;
 	}
 
 }

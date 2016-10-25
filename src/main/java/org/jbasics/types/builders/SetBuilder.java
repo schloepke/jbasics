@@ -23,14 +23,14 @@
  */
 package org.jbasics.types.builders;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
+
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.builder.Builder;
 import org.jbasics.pattern.factory.Factory;
 import org.jbasics.types.factories.SetFactory;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
 
 public class SetBuilder<E> implements Builder<Set<E>> {
 	private final Factory<Set<E>> setFactory;
@@ -45,6 +45,10 @@ public class SetBuilder<E> implements Builder<Set<E>> {
 	public SetBuilder(final Factory<Set<E>> setFactory) {
 		this.setFactory = ContractCheck.mustNotBeNull(setFactory, "setFactory"); //$NON-NLS-1$
 		this.set = this.setFactory.newInstance();
+	}
+
+	public SetBuilder<E> addConditional(final boolean condition, final E element) {
+		return condition ? add(element) : this;
 	}
 
 	public SetBuilder<E> add(final E element) {
