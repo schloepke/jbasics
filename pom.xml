@@ -131,6 +131,12 @@
 
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-core</artifactId>
+			<version>1.17</version>
+			<scope>optional</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-client</artifactId>
 			<version>1.5</version>
 			<scope>test</scope>

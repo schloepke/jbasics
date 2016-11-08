@@ -49,6 +49,8 @@ import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
+import com.sun.jersey.core.header.LanguageTag;
+
 import org.jbasics.configuration.properties.BooleanValueTypeFactory;
 import org.jbasics.configuration.properties.SystemProperty;
 
@@ -145,13 +147,20 @@ public class CSVTableProvider implements MessageBodyReader<CSVTable>,MessageBody
 		final boolean headerPresent = mediaType.getParameters().get("header") == null ? csvTable.hasHeaders() : mediaType.getParameters().get("header").equals("present");
 		responseHeaders.putSingle(HttpHeaders.CONTENT_TYPE, new MediaType(mediaType.getType(), mediaType.getSubtype(), new HashMap<String,String>(){{put("charset", charset.name()); put("header", headerPresent ? "present" : "absent");}}));
 		try(final OutputStreamWriter ow = new OutputStreamWriter(entityStream, charset)) {
-			csvTable.append(ow, getPreferredSeparator(responseHeaders.get(HttpHeaders.CONTENT_LANGUAGE)));
+			csvTable.append(ow, getPreferredSeparator(responseHeaders.getFirst(HttpHeaders.CONTENT_LANGUAGE), mediaType));
 		}
 	}
 
-	private char getPreferredSeparator(final Object lang) {
-		final Locale locale = lang == null ? Locale.ROOT : Locale.forLanguageTag(lang.toString());
-		final DecimalFormatSymbols decimalFormat = DecimalFormatSymbols.getInstance(locale);
-		return decimalFormat.getDecimalSeparator() == ',' ? ';' : ',';
+	private char getPreferredSeparator(final Object langHeader, final MediaType mediaType) {
+		final String separator = mediaType.getParameters().get("separator");
+		if(separator == null) {
+			final String useAlternateSeparatorString = mediaType.getParameters().get("use-alternate-separator");
+			final boolean useAlternateSeparator = useAlternateSeparatorString != null && BooleanValueTypeFactory.SHARED_INSTANCE.create(useAlternateSeparatorString);
+			final Locale locale = langHeader == null ? Locale.ROOT : LanguageTag.valueOf(langHeader.toString()).getAsLocale();
+			final DecimalFormatSymbols decimalFormat = DecimalFormatSymbols.getInstance(locale);
+			return decimalFormat.getDecimalSeparator() == ',' ^ useAlternateSeparator ? ';' : ',';
+		} else {
+			return separator.charAt(0);
+		}
 	}
 }
