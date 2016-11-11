@@ -24,13 +24,18 @@
 package org.jbasics.pattern.delegation;
 
 /**
- * A {@link LifecycleDelegate} is a class delegating an object with the capability to handle the lifecycle inside. <p>
- * Typically used in conjunction with pooling where we want to be able to inject handling into the case that we
- * activate, passivate or release an instance. </p> <p> The current lifecyle is defined: <ul> <li>Creating - No extra
- * method since the factory must handle the creation. <li>Activating - Called when the owner activates the instance for
- * use. <li>Passivate - Called when the owner passivates the instance after use. <li>Release - Called when the owner no
- * long wants to keep the instance and the instance should be destroyed. </ul> </p>
+ * A {@link LifecycleDelegate} is a class delegating an object with the capability to handle the lifecycle inside.
+ * <p>Typically used in conjunction with pooling where we want to be able to inject handling into the case that we
+ * activate, passivate or release an instance.</p>
  *
+ * <p>The current lifecyle is defined:
+ * <ul>
+ *     <li>Creating - No extra method since the factory must handle the creation.</li>
+ *     <li>Activating - Called when the owner activates the instance for use.</li>
+ *     <li>Passivate - Called when the owner passivates the instance after use.</li>
+ *     <li>Release - Called when the owner no long wants to keep the instance and the instance should be destroyed.</li>
+ * </ul>
+clr *
  * @param <T> The type of the instance which get the lifecycle
  *
  * @author Stephan Schloepke

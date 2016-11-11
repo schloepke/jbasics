@@ -124,7 +124,7 @@ public class InitialContextFactory implements Factory<InitialContext>, Parameter
 	}
 
 	/**
-	 * Returns the default environment as a <strong>new<strong> {@link Properties} instance (shallow copy of the
+	 * Returns the default environment as a <strong>new</strong> {@link Properties} instance (shallow copy of the
 	 * original). The returned {@link Properties} can be used in any way without modifying the internal default {@link
 	 * Properties}.
 	 *

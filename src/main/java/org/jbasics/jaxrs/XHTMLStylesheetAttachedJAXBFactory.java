@@ -39,7 +39,7 @@ import java.net.URL;
  * to the style sheet. A typical scenario is to lazy create this factory with an absolute URI to the style sheet and
  * than only use the factory to create styled instances. </p>
  *
- * @param <T> The JAXB entity type (must be either JAXBElement<?> or an {@link XmlRootElement} annotated class)
+ * @param <T> The JAXB entity type (must be either JAXBElement&lt;?&gt; or an {@link XmlRootElement} annotated class)
  *
  * @author Stephan Schloepke
  * @since 1.0

@@ -78,7 +78,7 @@ public final class EncodeFactory<Decoded, Encoded> implements ParameterFactory<E
 	/**
 	 * Encodes the given parameter and returns the encoded content (Create am encoded version of the decoded input).
 	 *
-	 * @param param The decoded content to encode with this factory (Parameter contract is defined by the encoderâ).
+	 * @param decoded The decoded content to encode with this factory (Parameter contract is defined by the encoderâ).
 	 *
 	 * @throws ContractViolationException Possible thrown if the contract of the used {@link Encoder} is broken.
 	 * @see org.jbasics.pattern.factory.ParameterFactory#create(java.lang.Object)

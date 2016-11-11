@@ -33,7 +33,7 @@ import java.math.MathContext;
  * The Hyperbolic Sine function algorithm. <p> Hyperbolic Sine is defined as: <p style="margin-left: 2 em"> cosh(x) =
  * (e<sup>x</sup> - e<sup>-x</sup>) / 2 </p> Since e<sup>-x</sup> = 1 / e<sup>x</sup> we can change the function in a
  * way that we only need to calculate e<sup>x</sup> once: <p style="margin-left: 2 em"> cosh(x) = (e<sup>x</sup> -
- * 1/e<sup>x</sup>) / 2 </p> </p>
+ * 1/e<sup>x</sup>) / 2 </p>
  *
  * @author Stephan Schloepke
  */

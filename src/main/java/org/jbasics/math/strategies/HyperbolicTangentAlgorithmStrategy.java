@@ -31,7 +31,7 @@ import java.math.MathContext;
 
 /**
  * The Hyperbolic Tangent function algorithm. <p> Hyperbolic Tangent is defined as: <p style="margin-left: 2 em">
- * tanh(x) = (e<sup>x</sup> - 1) / (e<sup>-x</sup> + 1) </p> </p>
+ * tanh(x) = (e<sup>x</sup> - 1) / (e<sup>-x</sup> + 1) </p>
  *
  * @author Stephan Schloepke
  */

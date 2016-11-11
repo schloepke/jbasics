@@ -36,7 +36,7 @@ import java.net.URL;
  * attached as link or the XML document is transformed to XHTML. The style sheet must produce XHTML since the message
  * body writer is meant for a web browser. </p>
  *
- * @param <T> The entity type (must be either a JAXBElement<?> or a type which is an JAXB XML Root element)
+ * @param <T> The entity type (must be either a JAXBElement&lt;?&gt; or a type which is an JAXB XML Root element)
  *
  * @author Stephan Schloepke
  */

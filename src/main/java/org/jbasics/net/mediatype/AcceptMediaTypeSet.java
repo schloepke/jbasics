@@ -72,7 +72,7 @@ public class AcceptMediaTypeSet implements SortedSet<AcceptMediaTypeRange>, Seri
 	/**
 	 * Add the accept media type string to the accepted media types.
 	 *
-	 * @param acceptMediaTypeStrings The string to add.
+	 * @param acceptMediaTypeString The string to add.
 	 */
 	public void add(final String acceptMediaTypeString) {
 		String[] splits = ContractCheck.mustNotBeNullOrEmpty(acceptMediaTypeString, "acceptMediaTypeString").split(",");

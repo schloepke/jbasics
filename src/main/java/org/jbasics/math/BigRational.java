@@ -236,10 +236,10 @@ public final class BigRational extends Number implements Comparable<BigRational>
 
 	/**
 	 * Extend this {@link BigRational} by a given factor.
-	 * <p/>
+	 * <p>
 	 * This method is a convenient wrapper for {@link BigRational#extend(BigInteger)} and calls it with {@link
 	 * BigInteger#valueOf(long)}.
-	 * <p/>
+	 * </p>
 	 *
 	 * @param factor The factor to multiply numerator and denominator with (must not be null or zero).
 	 *
@@ -254,12 +254,12 @@ public final class BigRational extends Number implements Comparable<BigRational>
 
 	/**
 	 * Extend this {@link BigRational} by a given factor.
-	 * <p/>
+	 * <p>
 	 * The result is a {@link BigRational} with its numerator and denominator multiplied by the factor. If the given
 	 * factor is one than this is returned (no extension when multiplying numerator and denominator with one). Howere
 	 * the factor of zero is not allowed and yields an {@link ArithmeticException} since it would lead to a division by
 	 * zero (x*0/y*0 = 0/0).
-	 * <p/>
+	 * </p>
 	 *
 	 * @param factor The factor to multiply numerator and denominator with (must not be null or zero).
 	 *
@@ -315,7 +315,7 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	}
 
 	/**
-	 * Returns the reciprocal value of this {@link BigRational} (x/y => y/x).
+	 * Returns the reciprocal value of this {@link BigRational} (x/y =&gt; y/x).
 	 *
 	 * @return The reciprocal {@link BigRational} of this {@link BigRational}.
 	 */
@@ -324,7 +324,7 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	}
 
 	/**
-	 * Returns the negation of this {@link BigRational} (x/y => -x/y).
+	 * Returns the negation of this {@link BigRational} (x/y =&gt; -x/y).
 	 *
 	 * @return The negated {@link BigRational}.
 	 */
@@ -333,7 +333,7 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	}
 
 	/**
-	 * Returns the absolute value of this BigRational ( |-x/y| => x/y ). If this {@link BigRational} is already positive
+	 * Returns the absolute value of this BigRational ( |-x/y| =&gt; x/y ). If this {@link BigRational} is already positive
 	 * this is returned.
 	 *
 	 * @return The absolute {@link BigRational}.
@@ -370,10 +370,10 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	}
 
 	/**
-	 * Adds a value to the numerator and returns a new BigRational with the value added. <p> This is a useful method
-	 * especially for programming certain algorithms more effectively. Consider the constant E which can be represented
-	 * by the Taylor series <code>E = 1/0! + 1/1! + 1/2! + 1/3! + 1/4! + ... + 1/n!</code>. Now the algorithm could do
-	 * an extend and addNumerator in the following way: <p/>
+	 * Adds a value to the numerator and returns a new BigRational with the value added.
+	 * <p> This is a useful method especially for programming certain algorithms more effectively. Consider the constant
+	 * E which can be represented by the Taylor series <code>E = 1/0! + 1/1! + 1/2! + 1/3! + 1/4! + ... + 1/n!</code>.
+	 * Now the algorithm could do an extend and addNumerator in the following way:</p>
 	 * <pre>
 	 * BigRational[] results = new BigRational[100];
 	 * results[0] = BigRational.ONE; // 1/0! is 1/1
@@ -381,7 +381,7 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	 * 	results[i] = results[i - 1].extend(i).addNumerator(BigInteger.ONE);
 	 * }
 	 * </pre>
-	 * <p/> as you see it would be faster due to the fact that the denominator extends by the iteration step each time.
+	 * <p>as you see it would be faster due to the fact that the denominator extends by the iteration step each time.
 	 * So the current numerator must advance in the same way. Those the effect is that we have two multiplications and
 	 * one addition. If we would always add 1/(n+1)! there is the multiplication to extend the faculty to the next step
 	 * and two multiplications to bring the rational numbers to match the same denominator. The number would raise very
@@ -389,7 +389,7 @@ public final class BigRational extends Number implements Comparable<BigRational>
 	 * amount of calculating the GCD is added as overhead. The result still would be quite close to the algorithm
 	 * outlined above. With other words the algorithm above is quite a bit faster (even not linear to n because the
 	 * multiplication is quadric). However it only works if you do not reduce in each step so the number raises quite a
-	 * bit. In the typical exp function this does not matter a lot though since the reduction dosn't save much. </p>
+	 * bit. In the typical exp function this does not matter a lot though since the reduction dosn't save much.</p>
 	 *
 	 * @param x The value to add to the numerator of this {@link BigRational}
 	 *

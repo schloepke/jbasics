@@ -54,7 +54,7 @@ public class BigDecimalIrationalNumber implements MemorizedIrationalNumber<BigDe
 	 * Create an {@link BigDecimalIrationalNumber} with the given x as input and no initial value. The first calculation
 	 * will be delayed until the value is accessed with {@link IrationalNumber#valueToPrecision(MathContext)}.
 	 *
-	 * @param x The input value of the algorithm (if the algorithm requires more input values these needs to be stored
+	 * @param xn The input value of the algorithm (if the algorithm requires more input values these needs to be stored
 	 *          separately. Be aware that while this implementation memorized the result thread safe any other
 	 *          calculation value might not be thread safe. So all input variables should be considered constant like
 	 *          the x value is).
@@ -69,7 +69,7 @@ public class BigDecimalIrationalNumber implements MemorizedIrationalNumber<BigDe
 	 * Create an {@link BigDecimalIrationalNumber} with the given x as input and the optional initial value as initial
 	 * value of the calculation.
 	 *
-	 * @param x       The input value of the algorithm (if the algorithm requires more input values these needs to be
+	 * @param xn       The input value of the algorithm (if the algorithm requires more input values these needs to be
 	 *                stored separately. Be aware that while this implementation memorized the result thread safe any
 	 *                other calculation value might not be thread safe. So all input variables should be considered
 	 *                constant like the x value is).

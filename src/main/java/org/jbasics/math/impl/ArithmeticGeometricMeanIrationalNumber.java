@@ -31,11 +31,19 @@ import java.math.BigDecimal;
 
 /**
  * Calculates the arithmetic geometric mean (agm) of the two given numbers x and y to the {@link IrationalNumber}
- * agm(x,y). Can result in a rational number which is exact (for instance the agm(2, 2) is 2). <p> The iteration used to
- * find the agm is: <code> <ul> <li>a<sub>0</sub> = (x+y)/2</li> <li>b<sub>0</sub> = &radic;xy</li> </ul> <p>Repeat </p>
- * <ul> <li>a<sub>n+1</sub> = 2<sup>-1</sup>(a<sub>n</sub>+b<sub>n</sub>)</li> <li>b<sub>n+1</sub> =
- * &radic;a<sub>n</sub>b<sub>n</sub></li> </ul> <p> until a<sub>n+1</sub> = b<sub>n</sub> than the result is either
- * a<sub>n</sub> or b<sub>n</sub> (since both are equal) </p> </code> </p>
+ * agm(x,y). Can result in a rational number which is exact (for instance the agm(2, 2) is 2).
+ * <p>The iteration used to find the agm is:</p>
+ * <ul>
+ *     <li>a<sub>0</sub> = (x+y)/2</li>
+ *     <li>b<sub>0</sub> = &radic;xy</li>
+ * </ul>
+ * <p>Repeat</p>
+ * <ul>
+ *     <li>a<sub>n+1</sub> = 2<sup>-1</sup>(a<sub>n</sub>+b<sub>n</sub>)</li>
+ *     <li>b<sub>n+1</sub> = &radic;a<sub>n</sub>b<sub>n</sub></li>
+ * </ul>
+ * <p>until a<sub>n+1</sub> = b<sub>n</sub> than the result is either
+ * a<sub>n</sub> or b<sub>n</sub> (since both are equal)</p>
  *
  * @author Stephan Schloepke
  * @since 1.0

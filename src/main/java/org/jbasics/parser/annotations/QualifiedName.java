@@ -31,14 +31,14 @@ import java.lang.annotation.Target;
 
 /**
  * The annotation marks a method to receive the fully qualified name of the element building the instance. <p> The
- * method signature must only have one parameter with a type assignable by {@link QName}. For example:
+ * method signature must only have one parameter with a type assignable by {@link QName}. For example:</p>
  * <pre>
  * public SomeBuilder setQualifiedName(QName name) {
  *     // Some content here
  * }
  * </pre>
- * It's primary use is where multiple elements can be added to a collection holding element information not specificly
- * parsed. </p>
+ * <p>It's primary use is where multiple elements can be added to a collection holding element information not
+ * specifically parsed.</p>
  *
  * @author Stephan Schloepke
  * @since 1.0

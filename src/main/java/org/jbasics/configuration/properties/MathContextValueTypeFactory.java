@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
  * Factory to create a {@link MathContext} instance from a {@link String}. The given {@link String} is the precision
  * followed by a comma and the rounding mode. The rounding mode available is all {@link RoundingMode} values. The value
  * is the exact same name though case dosn't matter and a space or a minus is translated to an underscore. So <em>Half
- * Up</em>, <em>half-up</em>, <em>HALF_UP<em> will all lead to the same {@link RoundingMode#HALF_UP}.
+ * Up</em>, <em>half-up</em>, <em>HALF_UP</em> will all lead to the same {@link RoundingMode#HALF_UP}.
  *
  * @author Stephan Schlöpke
  * @since 1.0

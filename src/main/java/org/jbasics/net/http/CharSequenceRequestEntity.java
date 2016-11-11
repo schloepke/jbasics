@@ -117,7 +117,6 @@ public class CharSequenceRequestEntity extends RequestEntity<CharSequence> {
 	 * @param out The stream to write to.
 	 *
 	 * @throws IOException If an IO error occurred.
-	 * @see de.rms.atom.client.http.RequestEntity#serializeEntity(java.io.OutputStream)
 	 */
 	@Override
 	public void serializeEntity(final OutputStream out) throws IOException {
