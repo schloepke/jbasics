@@ -52,7 +52,7 @@ public class ContextualStrategyAdapters {
 		};
 	}
 
-	
+
 	public static <O, I, C> ContextualExecuteStrategy<O, I, C> createExecuteStrategy(final ContextualCalculateStrategy<O, I, C> input) {
 		return new ContextualExecuteStrategy<O, I, C>() {
 			@Override
