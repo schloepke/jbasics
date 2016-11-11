@@ -49,8 +49,6 @@ import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
-import com.sun.jersey.core.header.LanguageTag;
-
 import org.jbasics.configuration.properties.BooleanValueTypeFactory;
 import org.jbasics.configuration.properties.SystemProperty;
 
@@ -156,11 +154,15 @@ public class CSVTableProvider implements MessageBodyReader<CSVTable>,MessageBody
 		if(separator == null) {
 			final String useAlternateSeparatorString = mediaType.getParameters().get("use-alternate-separator");
 			final boolean useAlternateSeparator = useAlternateSeparatorString != null && BooleanValueTypeFactory.SHARED_INSTANCE.create(useAlternateSeparatorString);
-			final Locale locale = langHeader == null ? Locale.ROOT : LanguageTag.valueOf(langHeader.toString()).getAsLocale();
+			final Locale locale = findLocale(langHeader);
 			final DecimalFormatSymbols decimalFormat = DecimalFormatSymbols.getInstance(locale);
 			return decimalFormat.getDecimalSeparator() == ',' ^ useAlternateSeparator ? ';' : ',';
 		} else {
 			return separator.charAt(0);
 		}
+	}
+
+	private Locale findLocale(final Object headerValue) {
+		return headerValue == null ? Locale.ROOT : headerValue instanceof Locale ? (Locale)headerValue : Locale.forLanguageTag(headerValue.toString());
 	}
 }
