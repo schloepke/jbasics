@@ -110,7 +110,7 @@ public class ServiceClassDiscovery {
 			String line = null;
 			while ((line = reader.readLine()) != null) {
 				line = ServiceClassDiscovery.stripComment(line);
-				if (line.trim().isEmpty()) {
+				if (!line.trim().isEmpty()) {
 					if (!Character.isJavaIdentifierStart(line.charAt(0))) {
 						throw new RuntimeException("Illegal class name found (" + line + ") at line " + reader.getLineNumber() + " in service file " //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
 								+ url);
