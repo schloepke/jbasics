@@ -171,7 +171,7 @@ public class CSVTable implements Iterable<CSVRecord>, Mapable<Sequence<String>, 
 	}
 
 	public Appendable append(final Appendable appendable) throws IOException {
-		return append(appendable, ',');
+		return append(appendable, this.separator);
 	}
 
 	public Appendable append(final Appendable appendable, final char separator) throws IOException {
