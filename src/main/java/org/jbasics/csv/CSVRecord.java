@@ -125,8 +125,6 @@ public class CSVRecord implements Iterable<String>, Indexed<String> {
 					switch (c) {
 						case '"':
 							t.append('"');
-						case ',':
-
 						case '\n':
 						case '\r':
 							quote = true;
