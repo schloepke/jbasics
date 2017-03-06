@@ -100,7 +100,7 @@ public class CSVRecordTest {
 		Assert.assertEquals(CSVRecordTest.TO_ESCAPE_FIFTH, record.getField(7));
 		Assert.assertEquals("First,\"Some,Text\",Second,\"Some\nText\",Third,\"Some\rText\",\"Some\"\"Text\",Some;Text",
 				record.append(new StringBuilder(), ',').toString());
-		Assert.assertEquals("First;\"Some,Text\";Second;\"Some\nText\";Third;\"Some\rText\";\"Some\"\"Text\";\"Some;Text\"",
+		Assert.assertEquals("First;Some,Text;Second;\"Some\nText\";Third;\"Some\rText\";\"Some\"\"Text\";\"Some;Text\"",
 				record.append(new StringBuilder(), ';').toString());
 	}
 
