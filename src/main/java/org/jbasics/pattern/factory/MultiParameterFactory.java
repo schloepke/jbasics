@@ -23,8 +23,8 @@
  */
 package org.jbasics.pattern.factory;
 
-public interface MultiParameterFactory<InstanceType, ParameterType> {
+public interface MultiParameterFactory<T, P> {
 
-	InstanceType create(ParameterType... param);
+	T create(P... parameters);
 
 }
