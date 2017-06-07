@@ -23,6 +23,10 @@
  */
 package org.jbasics.pattern.delegation;
 
+import java.util.function.Consumer;
+
+import org.jbasics.function.ThrowableConsumer;
+
 /**
  * Interface offering the access to an element inside a delegated wrapper. <p> The contract of usage does not put any
  * constraints on how the delegate is received / lazy created or must be set. It is depending on the implementation if
@@ -44,4 +48,44 @@ public interface Delegate<T> {
 	 * @return The instance (can be null or lazy created. Even changing in every call).
 	 */
 	T delegate();
+
+	default void delegate(final Consumer<T> delegateInstance) {
+		delegateInstance.accept(this.delegate());
+		if (this instanceof ReleasableDelegate) {
+			((ReleasableDelegate<T>)this).release();
+		}
+	}
+
+	;
+
+	default void delegate(final ThrowableConsumer<T> delegateInstance) {
+		delegateInstance.accept(this.delegate());
+		if (this instanceof ReleasableDelegate) {
+			((ReleasableDelegate<T>)this).release();
+		}
+	}
+
+	;
+
+	default void delegateIfNotNull(final Consumer<T> delegateInstance) {
+		if (this.delegate() != null) {
+			delegateInstance.accept(this.delegate());
+		}
+		if (this instanceof ReleasableDelegate) {
+			((ReleasableDelegate<T>)this).release();
+		}
+	}
+
+	;
+
+	default void delegateIfNotNull(final ThrowableConsumer<T> delegateInstance) {
+		if (this.delegate() != null) {
+			delegateInstance.accept(this.delegate());
+		}
+		if (this instanceof ReleasableDelegate) {
+			((ReleasableDelegate<T>)this).release();
+		}
+	}
+
+	;
 }

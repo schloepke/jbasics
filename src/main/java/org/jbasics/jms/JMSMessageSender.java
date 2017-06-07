@@ -26,7 +26,9 @@ package org.jbasics.jms;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.function.BiConsumer;
 import java.util.regex.Pattern;
 
 import javax.jms.Destination;
@@ -37,148 +39,157 @@ import javax.jms.Session;
 
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.exception.DelegatedException;
+import org.jbasics.function.ThrowableConsumer;
+import org.jbasics.function.ThrowableFunction;
 import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.pattern.delegation.ReleasableDelegate;
 import org.jbasics.types.delegates.UnmodifiableDelegate;
 import org.jbasics.utilities.DataUtilities;
 
 public class JMSMessageSender<M extends Message, T> implements AutoCloseable {
-    public static final String JMSX_GROUP_ID = "JMSXGroupID";
-    public static final String ENDPOINT_NAMESPACE = "ENDPOINT_NAMESPACE";
-    private final MessageHandler<T, M> messageHandler;
-    private final URI defaultEndpoint;
-    private final Delegate<Session> sessionDelegate;
-    private final Delegate<MessageProducer> producerDelegate;
-    private final Delegate<Destination> defaultReplyDestinationDelegate;
-    private final Pattern copyPropertyPattern;
+	public static final String JMSX_GROUP_ID = "JMSXGroupID";
+	public static final String ENDPOINT_NAMESPACE = "ENDPOINT_NAMESPACE";
+	private final MessageHandler<T, M> messageHandler;
+	private final URI defaultEndpoint;
+	private final Delegate<Session> sessionDelegate;
+	private final Delegate<MessageProducer> producerDelegate;
+	private final Delegate<Destination> defaultReplyDestinationDelegate;
+	private final Pattern copyPropertyPattern;
 
-    public interface MessageHandler<T, M> {
-        M createEmptyMessage(Delegate<Session> sessionDelegate) throws JMSException;
-        void fillMessage(T message, M jmsMessage) throws JMSException;
-    }
+	public interface MessageHandler<T, M> {
+		M createEmptyMessage(Delegate<Session> sessionDelegate) throws JMSException;
 
-    public JMSMessageSender(final MessageHandler<T, M> messageHandler, final Delegate<Session> sessionDelegate, final Delegate<Destination> destinationDelegate,
-                            final Delegate<Destination> defaultReplyDestinationDelegate, final URI defaultEndpoint, Pattern copyPropertyPattern) {
-        this.messageHandler = ContractCheck.mustNotBeNull(messageHandler, "messageHandler");
-        this.sessionDelegate = ContractCheck.mustNotBeNull(sessionDelegate, "sessionDelegate");
-        this.producerDelegate = new JMSMessageProducerDelegate(sessionDelegate, destinationDelegate);
-        this.defaultReplyDestinationDelegate = defaultReplyDestinationDelegate == null ? UnmodifiableDelegate.<Destination>nullDelegate() : defaultReplyDestinationDelegate;
-        this.defaultEndpoint = defaultEndpoint;
-        this.copyPropertyPattern = copyPropertyPattern;
-    }
+		void fillMessage(T message, M jmsMessage) throws JMSException;
+	}
 
-    public String send(final T message) {
-        return send(message, null, null, null, null, null);
-    }
+	public JMSMessageSender(final MessageHandler<T, M> messageHandler, final Delegate<Session> sessionDelegate, final Delegate<Destination> destinationDelegate,
+			final Delegate<Destination> defaultReplyDestinationDelegate, final URI defaultEndpoint, Pattern copyPropertyPattern) {
+		this.messageHandler = ContractCheck.mustNotBeNull(messageHandler, "messageHandler");
+		this.sessionDelegate = ContractCheck.mustNotBeNull(sessionDelegate, "sessionDelegate");
+		this.producerDelegate = new JMSMessageProducerDelegate(sessionDelegate, destinationDelegate);
+		this.defaultReplyDestinationDelegate = defaultReplyDestinationDelegate == null ? UnmodifiableDelegate.<Destination>nullDelegate() : defaultReplyDestinationDelegate;
+		this.defaultEndpoint = defaultEndpoint;
+		this.copyPropertyPattern = copyPropertyPattern;
+	}
 
-    public String send(final T message, final String jmsGroupId) {
-        return send(message, null, null, null, jmsGroupId, null);
-    }
+	public String send(final T message) {
+		return send(message, null, null, null, null, null);
+	}
 
-    public String send(final T message, final Destination replyQueue) {
-        return send(message, null, null, null, null, replyQueue);
-    }
+	public String send(final T message, final String jmsGroupId) {
+		return send(message, null, null, null, jmsGroupId, null);
+	}
 
-    public String send(final T message, final String jmsGroupId, final Destination replyQueue) {
-        return send(message, null, null, null, jmsGroupId, replyQueue);
-    }
+	public String send(final T message, final Destination replyQueue) {
+		return send(message, null, null, null, null, replyQueue);
+	}
 
-    public String send(final T message, final URI dvbEndpointSelector) {
-        return send(message, null, null, dvbEndpointSelector, null, null);
-    }
+	public String send(final T message, final String jmsGroupId, final Destination replyQueue) {
+		return send(message, null, null, null, jmsGroupId, replyQueue);
+	}
 
-    public String send(final T message, final URI dvbEndpointSelector, final String jmsGroupId) {
-        return send(message, null, null, dvbEndpointSelector, jmsGroupId, null);
-    }
+	public String send(final T message, final URI endpointSelector) {
+		return send(message, null, null, endpointSelector, null, null);
+	}
 
-    public String send(final T message, final URI dvbEndpointSelector, final Destination replyQueue) {
-        return send(message, null, null, dvbEndpointSelector, null, replyQueue);
-    }
+	public String send(final T message, final URI endpointSelector, final String jmsGroupId) {
+		return send(message, null, null, endpointSelector, jmsGroupId, null);
+	}
 
-    public String send(final T message, final Message correlatedMessage, final String correlationId) {
-        return send(message, correlatedMessage, correlationId, null, null, null);
-    }
+	public String send(final T message, final URI endpointSelector, final Destination replyQueue) {
+		return send(message, null, null, endpointSelector, null, replyQueue);
+	}
 
-    public String send(final T message, final Message correlatedMessage, final String correlationId, final String jmsGroupId) {
-        return send(message, correlatedMessage, correlationId, null, jmsGroupId, null);
-    }
+	public String send(final T message, final Message correlatedMessage, final String correlationId) {
+		return send(message, correlatedMessage, correlationId, null, null, null);
+	}
 
-    public String send(final T message, final Message correlatedMessage, final String correlationId, final Destination replyQueue) {
-        return send(message, correlatedMessage, correlationId, null, null, replyQueue);
-    }
+	public String send(final T message, final Message correlatedMessage, final String correlationId, final String jmsGroupId) {
+		return send(message, correlatedMessage, correlationId, null, jmsGroupId, null);
+	}
 
-    public String send(final T message, final Message correlatedMessage, final String correlationId, final String jmsGroupId, final Destination replyQueue) {
-        return send(message, correlatedMessage, correlationId, null, jmsGroupId, replyQueue);
-    }
+	public String send(final T message, final Message correlatedMessage, final String correlationId, final Destination replyQueue) {
+		return send(message, correlatedMessage, correlationId, null, null, replyQueue);
+	}
 
-    public String send(final T message, final Message correlatedMessage, final String correlationId, final URI dvbEndpointSelector) {
-        return send(message, correlatedMessage, correlationId, dvbEndpointSelector, null, null);
-    }
+	public String send(final T message, final Message correlatedMessage, final String correlationId, final String jmsGroupId, final Destination replyQueue) {
+		return send(message, correlatedMessage, correlationId, null, jmsGroupId, replyQueue);
+	}
 
-    public String send(final T message, final Message correlatedMessage, final String correlationId, final URI dvbEndpointSelector, final String jmsGroupId) {
-        return send(message, correlatedMessage, correlationId, dvbEndpointSelector, jmsGroupId, null);
-    }
+	public String send(final T message, final Message correlatedMessage, final String correlationId, final URI endpointSelector) {
+		return send(message, correlatedMessage, correlationId, endpointSelector, null, null);
+	}
 
-    public String send(final T message, final Message correlatedMessage, final String correlationId, final URI dvbEndpointSelector, final Destination replyQueue) {
-        return send(message, correlatedMessage, correlationId, dvbEndpointSelector, null, replyQueue);
-    }
+	public String send(final T message, final Message correlatedMessage, final String correlationId, final URI endpointSelector, final String jmsGroupId) {
+		return send(message, correlatedMessage, correlationId, endpointSelector, jmsGroupId, null);
+	}
 
-    public String send(final T message, final Message correlatedMessage, final String correlationId, final URI dvbEndpointSelector, final String jmsGroupId, final Destination replyQueue) {
-        try {
-            final M jmsMessage = this.messageHandler.createEmptyMessage(this.sessionDelegate);
-            jmsMessage.setJMSCorrelationID(determineCorrelationId(correlationId, correlatedMessage));
-            Destination replyTo = replyQueue == null ? this.defaultReplyDestinationDelegate.delegate() : replyQueue;
-            if (replyTo != null) {
-                jmsMessage.setJMSReplyTo(replyTo);
-            }
-            final URI temp = DataUtilities.coalesce(dvbEndpointSelector, this.defaultEndpoint);
-            if (temp != null) {
-                jmsMessage.setStringProperty(JMSMessageSender.ENDPOINT_NAMESPACE, dvbEndpointSelector.toASCIIString());
-            }
-            if(correlatedMessage != null && this.copyPropertyPattern != null) {
-                //noinspection unchecked
-                for (final String name : Collections.list((Enumeration<String>)correlatedMessage.getPropertyNames())) {
-                    if (this.copyPropertyPattern.matcher(name).matches()) {
-                        if (correlatedMessage.getStringProperty(name) != null) {
-                            jmsMessage.setStringProperty(name, correlatedMessage.getStringProperty(name));
-                        } else {
-                            jmsMessage.setObjectProperty(name, correlatedMessage.getObjectProperty(name));
-                        }
-                    }
-                }
-            }
-            this.messageHandler.fillMessage(message, jmsMessage);
-            if (jmsGroupId != null) {
-                jmsMessage.setStringProperty(JMSMessageSender.JMSX_GROUP_ID, jmsGroupId);
-            }
-            Delegate<MessageProducer> producer = this.producerDelegate;
-            if (correlatedMessage != null && correlatedMessage.getJMSReplyTo() != null) {
-                producer =  new JMSMessageProducerDelegate(sessionDelegate, new UnmodifiableDelegate<>(correlatedMessage.getJMSReplyTo()));
-            }
-            producer.delegate().send(jmsMessage);
-            return jmsMessage.getJMSMessageID();
-        } catch (final JMSException e) {
-            throw DelegatedException.delegate(e);
-        }
-    }
+	public String send(final T message, final Message correlatedMessage, final String correlationId, final URI endpointSelector, final Destination replyQueue) {
+		return send(message, correlatedMessage, correlationId, endpointSelector, null, replyQueue);
+	}
 
-    @Override
-    public void close() {
-        if (this.sessionDelegate instanceof ReleasableDelegate) {
-            ((ReleasableDelegate)this.sessionDelegate).release();
-        }
-    }
+	public String send(final T message, final Message correlatedMessage, final String correlationId, final URI endpointSelector, final String jmsGroupId, final Destination replyQueue) {
+		return send(message, correlatedMessage, correlationId, endpointSelector, jmsGroupId, replyQueue, null);
+	}
 
-    private String determineCorrelationId(String correlationId, Message correlatedMessage) {
-        try {
-            if (correlatedMessage != null) {
-                return correlatedMessage.getJMSCorrelationID() == null ? correlatedMessage.getJMSMessageID() : correlatedMessage.getJMSCorrelationID();
-            } else {
-                return UUID.randomUUID().toString();
-            }
-        } catch (final JMSException e) {
-            throw DelegatedException.delegate(e);
-        }
-    }
+	public String send(final T message, final Message correlatedMessage, final String correlationId, final URI endpointSelector, final String jmsGroupId, final Destination replyQueue,
+			BiConsumer<M, MessageProducer> sendInjection) {
+		try {
+			final M jmsMessage = this.messageHandler.createEmptyMessage(this.sessionDelegate);
+			jmsMessage.setJMSCorrelationID(determineCorrelationId(correlationId, correlatedMessage));
+			Destination replyTo = replyQueue == null ? this.defaultReplyDestinationDelegate.delegate() : replyQueue;
+			if (replyTo != null) {
+				jmsMessage.setJMSReplyTo(replyTo);
+			}
+			final URI temp = DataUtilities.coalesce(endpointSelector, this.defaultEndpoint);
+			if (temp != null) {
+				jmsMessage.setStringProperty(JMSMessageSender.ENDPOINT_NAMESPACE, endpointSelector.toASCIIString());
+			}
+			if (correlatedMessage != null && this.copyPropertyPattern != null) {
+				//noinspection unchecked
+				for (final String name : Collections.list((Enumeration<String>)correlatedMessage.getPropertyNames())) {
+					if (this.copyPropertyPattern.matcher(name).matches()) {
+						if (correlatedMessage.getStringProperty(name) != null) {
+							jmsMessage.setStringProperty(name, correlatedMessage.getStringProperty(name));
+						} else {
+							jmsMessage.setObjectProperty(name, correlatedMessage.getObjectProperty(name));
+						}
+					}
+				}
+			}
+			this.messageHandler.fillMessage(message, jmsMessage);
+			Optional.ofNullable(jmsGroupId)
+					.ifPresent(ThrowableConsumer.wrap(gid -> jmsMessage.setStringProperty(JMSMessageSender.JMSX_GROUP_ID, gid)));
+			Optional.ofNullable(correlatedMessage)
+					.map(ThrowableFunction.wrap(Message::getJMSReplyTo))
+					.map(x -> (Delegate<MessageProducer>)new JMSMessageProducerDelegate(this.sessionDelegate, new UnmodifiableDelegate<>(x)))
+					.orElse(this.producerDelegate)
+					.delegate(p -> {
+						Optional.ofNullable(sendInjection).ifPresent(c -> c.accept(jmsMessage, p));
+						p.send(jmsMessage);
+					});
+			return jmsMessage.getJMSMessageID();
+		} catch (final JMSException e) {
+			throw DelegatedException.delegate(e);
+		}
+	}
 
+	@Override
+	public void close() {
+		if (this.sessionDelegate instanceof ReleasableDelegate) {
+			((ReleasableDelegate)this.sessionDelegate).release();
+		}
+	}
+
+	private String determineCorrelationId(String correlationId, Message correlatedMessage) {
+		try {
+			if (correlatedMessage != null) {
+				return correlatedMessage.getJMSCorrelationID() == null ? correlatedMessage.getJMSMessageID() : correlatedMessage.getJMSCorrelationID();
+			} else {
+				return UUID.randomUUID().toString();
+			}
+		} catch (final JMSException e) {
+			throw DelegatedException.delegate(e);
+		}
+	}
 }
