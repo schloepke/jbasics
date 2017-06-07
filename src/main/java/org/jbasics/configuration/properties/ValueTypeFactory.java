@@ -62,7 +62,7 @@ public final class ValueTypeFactory {
 	public static <T> ParameterFactory<T, String> getFactory(final Class<T> type) {
 		ParameterFactory<T, String> temp = (ParameterFactory<T, String>) ValueTypeFactory.FACTORIES.get(ContractCheck.mustNotBeNull(type, "type"));
 		if (temp == null && Enum.class.isAssignableFrom(type)) {
-			temp = EnumValueTypeFactory.newInstance((Class<? extends Enum>) type);
+			temp = (ParameterFactory<T, String>)EnumValueTypeFactory.newInstance((Class<? extends Enum>) type);
 			ValueTypeFactory.registerFactory(type, temp);
 		}
 		return temp;
