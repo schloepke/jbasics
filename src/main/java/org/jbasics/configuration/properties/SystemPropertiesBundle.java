@@ -25,6 +25,7 @@ package org.jbasics.configuration.properties;
 
 import org.jbasics.checker.ContractCheck;
 import org.jbasics.pattern.factory.ParameterFactory;
+import org.jbasics.pattern.resolver.Resolver;
 import org.jbasics.pattern.strategy.SubstitutionStrategy;
 import org.jbasics.text.StringUtilities;
 import org.jbasics.types.tuples.Pair;
@@ -57,6 +58,7 @@ public class SystemPropertiesBundle extends Properties {
 	private final String prefix;
 	private final SubstitutionStrategy<String, String> substitutionStrategy;
 	private transient ConcurrentMap<Pair<String, Class<?>>, SystemProperty<?>> sharedTypedProperties;
+	private final Resolver<String, String> systemPropertyResolver;
 
 	public SystemPropertiesBundle() {
 		this(null, null);
@@ -67,9 +69,14 @@ public class SystemPropertiesBundle extends Properties {
 	}
 
 	public SystemPropertiesBundle(final String prefix, final Properties defaults, SubstitutionStrategy<String, String> substitutionStrategy) {
+		this(prefix, defaults, substitutionStrategy, null);
+	}
+
+	public SystemPropertiesBundle(final String prefix, final Properties defaults, SubstitutionStrategy<String, String> substitutionStrategy, final Resolver<String, String> systemPropertyResolver) {
 		super(defaults);
 		this.prefix = prefix;
 		this.substitutionStrategy = DataUtilities.coalesce(substitutionStrategy, SubstitutionStrategy.STRING_PASS_THRU);
+		this.systemPropertyResolver = systemPropertyResolver != null ? systemPropertyResolver : SystemProperty.DEFAULT_SYSTEM_PROPERTY_RESOLVER;
 	}
 
 	public SystemPropertiesBundle(final Properties defaults) {
@@ -84,9 +91,9 @@ public class SystemPropertiesBundle extends Properties {
 	public String getProperty(final String key) {
 		String result = null;
 		if (this.prefix != null) {
-			result = System.getProperty(StringUtilities.join(".", this.prefix, key)); //$NON-NLS-1$
+			result = this.systemPropertyResolver.resolve(StringUtilities.join(".", this.prefix, key), null); //$NON-NLS-1$
 		} else {
-			result = System.getProperty(key);
+			result = this.systemPropertyResolver.resolve(key, null);
 		}
 		return result != null ? result : super.getProperty(key);
 	}
@@ -101,7 +108,7 @@ public class SystemPropertiesBundle extends Properties {
 		SystemProperty<T> result = getSharedTypedProperty(key);
 		if (result == null) {
 			result = addSharedTypedProperty(key, new SystemProperty<T>(name, typeFactory, ContractCheck.mustNotBeNull(typeFactory, "typeFactory") //$NON-NLS-1$
-					.create(substitutionStrategy.substitute(super.getProperty(name))), this.substitutionStrategy));
+					.create(substitutionStrategy.substitute(super.getProperty(name))), this.substitutionStrategy, this.systemPropertyResolver));
 		}
 		return result;
 	}

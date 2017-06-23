@@ -33,6 +33,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.MessageBodyWriter;
+import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.Providers;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -51,8 +52,9 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
- * @author Stephan Schl�pke, Christopher Stolle
+ * @author Stephan Schloepke, Christopher Stolle
  */
+@Provider
 public class XHTMLStylesheetAttachedXMLProvider implements MessageBodyWriter<XHTMLStylesheetAttachedJAXB<?>> {
 	private static final Charset UTF8 = Charset.forName("UTF-8"); //$NON-NLS-1$
 	private static final Charset UTF16 = Charset.forName("UTF-16"); //$NON-NLS-1$
