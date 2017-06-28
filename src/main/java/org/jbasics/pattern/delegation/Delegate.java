@@ -23,9 +23,13 @@
  */
 package org.jbasics.pattern.delegation;
 
+import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.jbasics.function.ThrowableConsumer;
+import org.jbasics.function.ThrowableFunction;
 
 /**
  * Interface offering the access to an element inside a delegated wrapper. <p> The contract of usage does not put any
@@ -40,7 +44,8 @@ import org.jbasics.function.ThrowableConsumer;
  * @author Stephan Schloepke
  * @since 1.0
  */
-public interface Delegate<T> {
+@FunctionalInterface
+public interface Delegate<T> extends Supplier<T> {
 
 	/**
 	 * Returns the instance to which it is supposed to be delegated.
@@ -49,6 +54,22 @@ public interface Delegate<T> {
 	 */
 	T delegate();
 
+	/**
+	 * Execute the function on the instance inside the delegate
+	 *
+	 * @param function The function to execute on a non null delegated instance
+	 * @param <R> The result type of the function
+	 * @return Returns an Optional with the result set to non null in case the delegated instance was not null. Otherwise it returns an Option with null.
+	 */
+	default <R> Optional<R> map(ThrowableFunction<T, R> function) {
+		return Optional.ofNullable(delegate()).map(function);
+	}
+
+	@Override
+	default  T get() {
+		return delegate();
+	}
+
 	default void delegate(final Consumer<T> delegateInstance) {
 		delegateInstance.accept(this.delegate());
 		if (this instanceof ReleasableDelegate) {
@@ -56,16 +77,12 @@ public interface Delegate<T> {
 		}
 	}
 
-	;
-
 	default void delegate(final ThrowableConsumer<T> delegateInstance) {
 		delegateInstance.accept(this.delegate());
 		if (this instanceof ReleasableDelegate) {
 			((ReleasableDelegate<T>)this).release();
 		}
 	}
-
-	;
 
 	default void delegateIfNotNull(final Consumer<T> delegateInstance) {
 		if (this.delegate() != null) {
@@ -76,8 +93,6 @@ public interface Delegate<T> {
 		}
 	}
 
-	;
-
 	default void delegateIfNotNull(final ThrowableConsumer<T> delegateInstance) {
 		if (this.delegate() != null) {
 			delegateInstance.accept(this.delegate());
@@ -87,5 +102,4 @@ public interface Delegate<T> {
 		}
 	}
 
-	;
 }
