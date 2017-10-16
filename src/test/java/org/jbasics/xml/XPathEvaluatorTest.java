@@ -23,22 +23,44 @@
  */
 package org.jbasics.xml;
 
-import org.junit.Test;
+import java.util.Optional;
 
+import org.junit.Test;
+import org.w3c.dom.Document;
+
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
+import javax.xml.xpath.XPathConstants;
 
 import static org.jbasics.xml.DOMDocumentParser.xmlXIncludeAwareDocumentFrom;
 
 public class XPathEvaluatorTest {
 
     @Test public void test() {
-        XPathEvaluator evaluator = new XPathEvaluator(xmlXIncludeAwareDocumentFrom(getClass().getResource("xpath-test.xml")))
+        final Document baseNode = xmlXIncludeAwareDocumentFrom(getClass().getResource("xpath-test.xml"));
+        new XPathEvaluator(baseNode)
                 .withNSPrefix("a", "http://example.org/ns1")
                 .withNSPrefix("b", "http://example.org/ns2")
                 .withVariable(new QName("myVar"), "stephan")
                 .evaluate("//a:test/b:string[@name = $myVar]", System.out::println)
                 .evaluate("//a:test/b:string[@name = $temp]", System.out::println)
                 .evaluate("//a:test/b:string[@name = 'world']", System.out::println);
+    }
+
+    @Test public void testSecond() {
+        final Document baseNode = xmlXIncludeAwareDocumentFrom(getClass().getResource("xpath-test.xml"));
+        Optional<String> result = new XPathEvaluator(baseNode)
+                .withNSPrefix("a", "http://example.org/ns1")
+                .withNSPrefix("b", "http://example.org/ns2")
+                .withVariable(new QName("myVar"), "stephan")
+                .evaluate("//a:test/b:string[@name = $myVar]");
+
+        Optional<Object> resultNew = new XPathEvaluator(baseNode)
+                .withNSPrefix("a", "http://example.org/ns1")
+                .withNSPrefix("b", "http://example.org/ns2")
+                .withVariable(new QName("myVar"), "stephan")
+                .evaluate("//a:test/b:string[@name = $myVar]", XPathConstants.NODESET);
+
     }
 
 }

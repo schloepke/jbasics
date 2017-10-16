@@ -25,6 +25,7 @@ package org.jbasics.jmx;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.function.Consumer;
 
 import javax.management.MBeanServerConnection;
 import javax.management.MBeanServerFactory;
@@ -41,10 +42,6 @@ import org.jbasics.types.delegates.FunctionDelegate;
 
 public class JMXServerAccessor implements AutoCloseable {
 	private final ReleasableDelegate<MBeanServerConnection> jmxConnectorDelegate;
-
-	public interface Visitor {
-		void visit(ObjectAccessor bean);
-	}
 
 	public JMXServerAccessor() {
 		this.jmxConnectorDelegate = FunctionDelegate.create(
@@ -69,10 +66,10 @@ public class JMXServerAccessor implements AutoCloseable {
 		return this.jmxConnectorDelegate.delegate();
 	}
 
-	public void accept(ObjectName query, Visitor visitor) {
+	public void accept(ObjectName query, Consumer<ObjectAccessor> visitor) {
 		try {
 			for (ObjectName name : this.jmxConnectorDelegate.delegate().queryNames(query, null)) {
-				visitor.visit(createObjectAccessor(name));
+				visitor.accept(createObjectAccessor(name));
 			}
 		} catch (IOException e) {
 			throw DelegatedException.delegate(e);
@@ -82,5 +79,4 @@ public class JMXServerAccessor implements AutoCloseable {
 	public ObjectAccessor createObjectAccessor(final ObjectName name) {
 		return new ObjectAccessor(ContractCheck.mustNotBeNull(name, "name"), this.jmxConnectorDelegate);
 	}
-
 }
