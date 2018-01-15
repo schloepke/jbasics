@@ -23,7 +23,19 @@
  */
 package org.jbasics.math;
 
-public interface RandomNumberSequence<T extends Number> {
+import java.util.Iterator;
+
+public interface RandomNumberSequence<T extends Number> extends Iterator<T> {
 
 	T nextRandomNumber();
+
+	@Override
+	default T next() {
+		return nextRandomNumber();
+	}
+
+	@Override
+	default boolean hasNext() {
+		return true;
+	}
 }
