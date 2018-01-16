@@ -23,19 +23,13 @@
  */
 package org.jbasics.math;
 
-import java.util.Iterator;
+import java.util.function.Supplier;
 
-public interface RandomNumberSequence<T extends Number> extends Iterator<T> {
+public interface RandomNumberSequence<T extends Number> extends Supplier<T> {
 
 	T nextRandomNumber();
 
-	@Override
-	default T next() {
+	default T get() {
 		return nextRandomNumber();
-	}
-
-	@Override
-	default boolean hasNext() {
-		return true;
 	}
 }
