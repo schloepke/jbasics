@@ -25,6 +25,8 @@ package org.jbasics.jmx;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
+import java.util.Properties;
 import java.util.function.Consumer;
 
 import javax.management.MBeanServerConnection;
@@ -38,45 +40,56 @@ import org.jbasics.checker.ContractCheck;
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.pattern.delegation.ReleasableDelegate;
+import org.jbasics.types.builders.MapBuilder;
 import org.jbasics.types.delegates.FunctionDelegate;
+import org.jbasics.types.tuples.Pair;
 
 public class JMXServerAccessor implements AutoCloseable {
-	private final ReleasableDelegate<MBeanServerConnection> jmxConnectorDelegate;
+    private final ReleasableDelegate<MBeanServerConnection> jmxConnectorDelegate;
 
-	public JMXServerAccessor() {
-		this.jmxConnectorDelegate = FunctionDelegate.create(
-				() -> MBeanServerFactory.findMBeanServer(null).get(0)
-		);
-	}
+    public JMXServerAccessor() {
+        this.jmxConnectorDelegate = FunctionDelegate.create(
+                () -> MBeanServerFactory.findMBeanServer(null).get(0)
+        );
+    }
 
-	public JMXServerAccessor(Delegate<URI> jmxServiceURL) {
-		this.jmxConnectorDelegate = FunctionDelegate.create(
-				() -> JMXConnectorFactory.connect(new JMXServiceURL(jmxServiceURL.delegate().toASCIIString()), null),
-				JMXConnector::close,
-				JMXConnector::getMBeanServerConnection
-		);
-	}
+    public JMXServerAccessor(final Delegate<URI> jmxServiceURL) {
+        this(jmxServiceURL, (Map<String, ?>) null);
+    }
 
-	@Override
-	public void close() throws Exception {
-		this.jmxConnectorDelegate.release();
-	}
+    public JMXServerAccessor(final Delegate<URI> jmxServiceURL, Pair<String, String> credentials) {
+        this(jmxServiceURL, new MapBuilder<String, Object>().put(JMXConnector.CREDENTIALS,
+                new String[]{credentials.first(), credentials.second()}).build());
+    }
 
-	public MBeanServerConnection getConnection() {
-		return this.jmxConnectorDelegate.delegate();
-	}
+    public JMXServerAccessor(final Delegate<URI> jmxServiceURL, final Map<String, ?> env) {
+        this.jmxConnectorDelegate = FunctionDelegate.create(
+                () -> JMXConnectorFactory.connect(new JMXServiceURL(jmxServiceURL.delegate().toASCIIString()), env),
+                JMXConnector::close,
+                JMXConnector::getMBeanServerConnection
+        );
+    }
 
-	public void accept(ObjectName query, Consumer<ObjectAccessor> visitor) {
-		try {
-			for (ObjectName name : this.jmxConnectorDelegate.delegate().queryNames(query, null)) {
-				visitor.accept(createObjectAccessor(name));
-			}
-		} catch (IOException e) {
-			throw DelegatedException.delegate(e);
-		}
-	}
+    @Override
+    public void close() throws Exception {
+        this.jmxConnectorDelegate.release();
+    }
 
-	public ObjectAccessor createObjectAccessor(final ObjectName name) {
-		return new ObjectAccessor(ContractCheck.mustNotBeNull(name, "name"), this.jmxConnectorDelegate);
-	}
+    public MBeanServerConnection getConnection() {
+        return this.jmxConnectorDelegate.delegate();
+    }
+
+    public void accept(ObjectName query, Consumer<ObjectAccessor> visitor) {
+        try {
+            for (ObjectName name : this.jmxConnectorDelegate.delegate().queryNames(query, null)) {
+                visitor.accept(createObjectAccessor(name));
+            }
+        } catch (IOException e) {
+            throw DelegatedException.delegate(e);
+        }
+    }
+
+    public ObjectAccessor createObjectAccessor(final ObjectName name) {
+        return new ObjectAccessor(ContractCheck.mustNotBeNull(name, "name"), this.jmxConnectorDelegate);
+    }
 }

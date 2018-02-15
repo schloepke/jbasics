@@ -26,6 +26,7 @@ package org.jbasics.jmx;
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
 
+import org.jbasics.checker.ContractCheck;
 import org.jbasics.exception.DelegatedException;
 import org.jbasics.pattern.delegation.Delegate;
 import org.jbasics.types.tuples.Pair;
@@ -90,4 +91,9 @@ public class ObjectAccessor {
 			throw DelegatedException.delegate(e);
 		}
 	}
+
+    public ObjectAccessor createDependendObjectAccessor(final ObjectName name) {
+        return new ObjectAccessor(ContractCheck.mustNotBeNull(name, "name"), this.mBeanServerConnectionDelegate);
+    }
+
 }
