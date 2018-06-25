@@ -107,7 +107,7 @@ public class SystemPropertiesBundle extends Properties {
 				type, "type")); //$NON-NLS-1$
 		SystemProperty<T> result = getSharedTypedProperty(key);
 		if (result == null) {
-			result = addSharedTypedProperty(key, new SystemProperty<T>(name, typeFactory, ContractCheck.mustNotBeNull(typeFactory, "typeFactory") //$NON-NLS-1$
+			result = addSharedTypedProperty(key, new SystemProperty<T>(StringUtilities.join(".", this.prefix, name), typeFactory, ContractCheck.mustNotBeNull(typeFactory, "typeFactory")
 					.create(substitutionStrategy.substitute(super.getProperty(name))), this.substitutionStrategy, this.systemPropertyResolver));
 		}
 		return result;
