@@ -23,9 +23,17 @@
  */
 package org.jbasics.jaxrs;
 
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
-
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.nio.charset.Charset;
+import java.util.Map;
+import java.util.WeakHashMap;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -40,16 +48,17 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.util.JAXBSource;
 import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.*;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.*;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.nio.charset.Charset;
-import java.util.Map;
-import java.util.WeakHashMap;
+
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
 
 /**
  * @author Stephan Schloepke, Christopher Stolle
@@ -138,11 +147,14 @@ public class XHTMLStylesheetAttachedXMLProvider implements MessageBodyWriter<XHT
 
 	@Override
 	public boolean isWriteable(final Class<?> type, final Type genericType, final Annotation[] annotations, final MediaType mediaType) {
-		return XHTMLStylesheetAttachedJAXB.class.isAssignableFrom(type) && (MediaType.APPLICATION_XHTML_XML_TYPE.equals(mediaType) ||
-				MediaType.APPLICATION_XML_TYPE.equals(mediaType) ||
-				MediaType.TEXT_HTML_TYPE.equals(mediaType) ||
-				MediaType.TEXT_XML_TYPE.equals(mediaType) ||
-				mediaType != null && mediaType.getSubtype().endsWith("+xml")); //$NON-NLS-1$
+		return XHTMLStylesheetAttachedJAXB.class.isAssignableFrom(type) &&
+				mediaType != null && (
+				MediaType.APPLICATION_XHTML_XML_TYPE.getType().equals(mediaType.getType()) ||
+				MediaType.APPLICATION_XML_TYPE.getType().equals(mediaType.getType()) ||
+				MediaType.TEXT_HTML_TYPE.getType().equals(mediaType.getType()) ||
+				MediaType.TEXT_XML_TYPE.getType().equals(mediaType.getType()) ||
+				mediaType.getSubtype().endsWith("+xml")
+		);
 	}
 
 	@Override
