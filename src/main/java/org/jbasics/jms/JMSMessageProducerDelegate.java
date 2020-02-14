@@ -33,8 +33,6 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 
 public class JMSMessageProducerDelegate implements Delegate<MessageProducer> {
-    protected static final String DEFAULT_CREDENTIAL_PROPERTY = "com.dvb.foundation.messaging.credentials"; //$NON-NLS-1$
-
     private final Delegate<Session> sessionDelegate;
     private final Delegate<Destination> destinationDelegate;
     private MessageProducer producer;

@@ -34,25 +34,25 @@ import java.util.Collection;
 @SuppressWarnings({"nls", "unchecked"})
 public class CollectionFilterTest {
 
-	private static final CollectionFilter<Pair<String, String>> DVB_FILTER = new CollectionFilter<Pair<String, String>>(
+	private static final CollectionFilter<Pair<String, String>> COMPANY1_FILTER = new CollectionFilter<Pair<String, String>>(
 			new ElementFilter<Pair<String, String>>() {
 				public boolean isElementFiltered(final Pair<String, String> element) {
-					return !"DVB".equalsIgnoreCase(element.right());
+					return !"Company1".equalsIgnoreCase(element.right());
 				}
 			});
 
 	@Test
 	public void test() {
-		Collection<Pair<String, String>> allPics = Arrays.asList(
-				new Pair<String, String>("Peter", "DVB"),
-				new Pair<String, String>("Klaus", "CoBa"),
-				new Pair<String, String>("Torsten", "DVB"),
-				new Pair<String, String>("Stephan", "innoQ"));
-		Collection<Pair<String, String>> dvbPics = CollectionFilterTest.DVB_FILTER.filter(allPics);
-		System.out.println(allPics);
-		System.out.println(dvbPics);
-		Assert.assertNotSame(allPics, dvbPics);
-		Assert.assertFalse(allPics.equals(dvbPics));
-		Assert.assertEquals(2, dvbPics.size());
+		Collection<Pair<String, String>> allPersons = Arrays.asList(
+				new Pair<String, String>("Peter", "Company1"),
+				new Pair<String, String>("Klaus", "Company2"),
+				new Pair<String, String>("Torsten", "Company1"),
+				new Pair<String, String>("Stephan", "Company3"));
+		Collection<Pair<String, String>> company1Persons = CollectionFilterTest.COMPANY1_FILTER.filter(allPersons);
+		System.out.println(allPersons);
+		System.out.println(company1Persons);
+		Assert.assertNotSame(allPersons, company1Persons);
+		Assert.assertFalse(allPersons.equals(company1Persons));
+		Assert.assertEquals(2, company1Persons.size());
 	}
 }

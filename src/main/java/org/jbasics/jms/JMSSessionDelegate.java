@@ -35,8 +35,6 @@ import javax.jms.JMSException;
 import javax.jms.Session;
 
 public class JMSSessionDelegate implements ReleasableDelegate<Session>, AutoCloseable {
-    protected static final String DEFAULT_CREDENTIAL_PROPERTY = "com.dvb.foundation.messaging.credentials"; //$NON-NLS-1$
-
     private final Delegate<Connection> connectionDelegate;
     private final JMSSessionMode sessionMode;
     private Session session;

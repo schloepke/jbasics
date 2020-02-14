@@ -54,9 +54,9 @@ public class TagURIFactoryTest extends Java14LoggingTestCase {
 	@Test
 	public void testTagUri() {
 //		TagURIFactory fac = TagURIFactory.newInstance("mark.mustermann@example.org", 2010, 2);
-		TagURIFactory fac = TagURIFactory.newInstance("dvbbank.com", 2015);
+		TagURIFactory fac = TagURIFactory.newInstance("example.com", 2015);
 		Level level = Level.INFO;
-		logUri(level, fac.extend("com.dvb.applications", "cpm-application").create("#nill"));
+		logUri(level, fac.extend("com.example.applications", "my-application").create("#nill"));
 	}
 
 	private void logUri(final Level level, final URI input) {
